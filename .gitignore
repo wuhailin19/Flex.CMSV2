@@ -375,3 +375,4 @@ FodyWeavers.xsd
 /src/Flex.SingleWeb/server.db
 
 
+/src/Flex.SingleWeb/appsettings.json
