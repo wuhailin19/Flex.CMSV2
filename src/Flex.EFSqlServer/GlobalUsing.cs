@@ -1,7 +1,1 @@
-﻿namespace Flex.EFSqlServer
-{
-    public class GlobalUsing
-    {
-
-    }
-}
+﻿global using Flex.Domain;
