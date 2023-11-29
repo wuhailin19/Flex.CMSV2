@@ -1,0 +1,22 @@
+﻿global using Flex.Application.Services;
+global using Flex.Application.Authorize;
+global using Flex.Application.Contracts.Basics.ResultModels;
+global using Flex.Application.Contracts.IServices;
+global using AutoMapper;
+global using Flex.Core;
+global using Flex.Core.Admin.Application;
+global using Flex.Application.Extensions;
+global using Flex.Core.Helper;
+global using Flex.Core.Helper.MemoryCacheHelper;
+global using Flex.Core.IDCode;
+global using Flex.Core.Timing;
+global using Flex.Domain.Dtos.Admin;
+global using Flex.Domain.Dtos.AuthCode;
+global using Flex.Domain.Entities.System;
+global using Flex.EFSqlServer.UnitOfWork;
+global using System.Net;
+global using Flex.Domain.Dtos.Menu;
+global using Flex.Domain.Entities;
+global using Flex.Core.Extensions;
+global using Flex.Domain.Collections;
+

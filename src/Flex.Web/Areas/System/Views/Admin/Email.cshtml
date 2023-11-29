@@ -1,0 +1,201 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <style>
+        html, body, .main { width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden; font-family: 微软雅黑; }
+        .left_box { width: 20%; height: 100%; float: left; }
+        .right_box { width: 80%; height: 100%; float: left; }
+        .email_title { width: 100%; height: 100%; overflow-y: scroll; }
+        .email_title li { position: relative; width: 100%; padding-left: 5%; font-size: 12px; height: 60px; overflow: hidden; line-height: 50px; background-color: #f1f1f1; list-style: none; color: #666; border: 5px solid #fff; box-sizing: border-box; }
+        .email_title li.active, .email_title li:hover { color: #fff; background-color: #666; transition: .35s; cursor: pointer; }
+        .email_title li.new::before { position: absolute; right: 10px; content: '未读'; color: #fff; font-size: 12px; /* font-weight: bold; */ top: 10px; /* line-height: 1; */ width: 34px; height: 16px; border-radius: 5px; background: rgb(102, 177, 255); text-align: center; line-height: 16px; font-family: 微软雅黑; }
+        .email_title li .title_box { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 75%; display: inline-block; }
+        /* 滚动条样式 IE支持*/ html { scrollbar-arrow-color: #f0f0f0; font-family: 微软雅黑; scrollbar-darkshadow-color: #f0f0f0; scrollbar-face-color: #cdcdcd; scrollbar-base-color: #f0f0f0; scrollbar-shadow-color: #f0f0f0; scrollbar-track-color: #f0f0f0; scrollbar-3dlight-color: #f0f0f0; }
+        ::-webkit-scrollbar { /*滚动条整体样式*/ width: 5px; /*高宽分别对应横竖滚动条的尺寸*/ height: 5px; }
+        ::-webkit-scrollbar-thumb { /*滚动条里面小方块*/ border-radius: 10px; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); background: #535353; }
+        ::-webkit-scrollbar-track { /*滚动条里面轨道*/ box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); border-radius: 10px; background: #ededed; }
+        .right_box_title { width: 95%; padding: 1%; line-height: 20px; color: #666; font-size: 14px; }
+        .content_title { line-height: 30px; color: #666; font-size: 14px; }
+        .content_desc { width: 95%; padding: 1%; font-size: 14px; height: 200px; overflow-y: scroll; overflow-x: hidden; }
+        span.timespan { position: absolute; right: 10px; font-size: 12px; bottom: 0; line-height: 20px; }
+        .email_box { height: 90%; }
+        .page_box { background-color: #ccc; padding: 1%; position: absolute; bottom: 0; width: 100%; }
+        .page_box a { cursor: pointer; display: inline-block; width: 20px; height: 20px; line-height: 20px; border: 1px solid rgb(102, 177, 255); background: #fff; text-align: center; }
+        .page_box a.active { background: rgb(102, 177, 255); color: #fff; }
+        @@media screen and (min-width: 800px) {
+            .content_desc{height:400px;}
+        }
+        @@media screen and (min-width: 1200px) {
+            .content_desc { height: 450px; }
+        }
+        @@media screen and (min-width: 1350px) {
+            .content_desc { height: 500px; }
+        }
+        @@media screen and (min-width: 1900px) {
+            .content_desc { height: 550px; }
+        }
+    </style>
+    <script src="~/huidewuyeffa56c06f48b/js/jquery-1.4.3.min.js"></script>
+    <script src="~/Scripts/route.js"></script>
+</head>
+<body>
+    <div class="main">
+        <div class="email_box">
+            <div class="left_box">
+                <ul class="email_title">
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        for (int i = 0; i < Model.Count; i++)
+                        {
+                            var title = Model[i].title;
+                            var timestr = Model[i].addTime.ToTimeSpanStr();
+                            if (i == 0)
+                            {
+                                if (Model[i].IsRead)
+                                {
+                                    <li class="active" data-id="@Model[i].mId"><span class="title_box">@title</span><span class="timespan">@timestr</span></li>
+                                }
+                                else
+                                {
+                                    <li class="layui-icon active new" data-id="@Model[i].mId"><span class="title_box">@title</span><span class="timespan">@timestr</span></li>
+                                }
+                            }
+                            else
+                            {
+                                if (Model[i].IsRead)
+                                {
+                                    <li data-id="@Model[i].mId"><span class="title_box">@title</span><span class="timespan">@timestr</span></li>
+                                }
+                                else
+                                {
+                                    <li class="layui-icon new" data-id="@Model[i].mId"><span class="title_box">@title</span><span class="timespan">@timestr</span></li>
+                                }
+                            }
+                        }
+                    }
+                </ul>
+            </div>
+            <div class="right_box">
+                <div class="right_box_main">
+                    <div class="right_box_title">
+                        标题：<span class="_title"></span>
+                        <hr />
+                        发件人：<span class="_sender"></span>
+                        <hr />
+                        发件时间：<span class="_addTime"></span>
+                        <hr />
+                    </div>
+                    <div class="right_box_content">
+                        <div class="content_desc">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page_box">
+            <a class="active" data-page="1">1</a>
+            <a data-page="2">2</a>
+            <a data-page="3">3</a>
+            <a data-page="4">4</a>
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.js"></script>
+    <script>
+        var UnitHtml = {
+            unhtml: function (str, reg) {
+                return str ? str.replace(reg || /[&<">]/g, function (m) {
+                    return {
+                        "<": "&lt;",
+                        "&": "&amp;",
+                        '"': "&quot;",
+                        ">": "&gt;"
+                    }[m]
+                }) : ""
+            },
+            html: function (str) {
+                return str ? str.replace(/&((g|l|quo)t|amp);/g, function (m) {
+                    return {
+                        "&lt;": "<",
+                        "&amp;": "&",
+                        "&quot;": '"',
+                        "&gt;": ">"
+                    }[m]
+                }) : ""
+            }
+        }
+        $('.email_title').on('click', 'li', function () {
+            $(this).addClass('active').siblings().removeClass('active');
+            var that = $(this);
+            $.ajax({
+                url: api + 'queueMessage/GetEmail?id=' + $(this).data('id'),
+                type: 'get',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.code == 200) {
+                        that.removeClass('new');
+                        var json = res.data[0];
+                        $('._title').html(json.title);
+                        $('._sender').html(json.sender);
+                        var t = Date.parse(json.addTime);
+                        $('._addTime').html(GMTToStr(t));
+                        $('.content_desc').html(UnitHtml.html(json.content));
+                        parent.ws.send("1");
+                    }
+                }
+            })
+        })
+        $('.page_box a').click(function () {
+            var that = $(this);
+            $.ajax({
+                url: api + 'queueMessage/getMessageList?page=' + $(this).data('page'),
+                type: 'get',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.code == 200) {
+                        var json = res.data;
+                        var li_str = '';
+                        console.log(json.length)
+                        for (var i = 0; i < json.length; i++) {
+                            if (json[i].IsRead)
+                                li_str += '<li class=\"layui-icon\" data-id=\"' + json[i].mId + '\"><span class=\"title_box\">' + json[i].title + '</span><span class=\"timespan\">' + json[i].timespan + '</span></li>';
+                            else
+                                li_str += '<li class=\"layui-icon new\" data-id=\"' + json[i].mId + '\"><span class=\"title_box\">' + json[i].title + '</span><span class=\"timespan\">' + json[i].timespan + '</span></li>';
+                        }
+                        $('.email_title').html(li_str);
+                        that.addClass('active').siblings().removeClass('active');
+                    }
+                }
+            })
+        })
+
+        $(function () {
+            $('.email_title li').eq(0).trigger('click');
+        })
+        //GMT时间格式转换成字符串
+        function GMTToStr(time) {
+            let date = new Date(time)
+            let Str = date.getFullYear() + '-' +
+                check(date.getMonth() + 1) + '-' +
+                date.getDate() + ' ' +
+                check(date.getHours()) + ':' +
+                check(date.getMinutes()) + ':' +
+                check(date.getSeconds())
+            return Str
+        }
+        //判断时间是否为个位数，如果时间为个位数就在时间之前补上一个“0”
+        function check(val) {
+            if (val < 10) {
+                return ("0" + val);
+            }
+            else {
+                return (val);
+            }
+        }
+    </script>
+</body>
+</html>

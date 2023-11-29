@@ -1,0 +1,124 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" /><link href="~/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js" type="text/javascript"></script><script src="~/Scripts/route.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <style>
+        .layui-form-item .layui-form-label { text-align: center; }
+        .edui-editor.edui-default { width: 100% !important; }
+        .layui-input-block > .edui-default { width: 100% !important; }
+        .layui-select-title .layui-anim.layui-anim-upbit { display: none; }
+        .iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
+        .checkboxitem { float: left; width: 25%; margin-bottom: 5px; margin-top: 5px; }
+        .view { margin-bottom: 15px; display: inline-block; }
+        .layui-unselect span{font-size:12px; }
+        .group_class{display:inline-block;width:100%;height:30px;line-height:30px;text-align:center;background-color:#f1f1f1;}
+    </style>
+</head>
+<body>
+    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
+        <div class="layui-form-item">系统权限</div>
+        @*<div id="ParentID" class="demo-tree-more" style="height:500px;overflow-y:scroll;"></div>*@
+    <script id="demo" type="text/html">
+        {{#var groupid=columnlist.data[0].GroupId;layui.each(columnlist.data, function(index, item){ }}
+        {{#if(item.GroupId!=groupid||index==0){}}
+        <div class="group_class">{{item.GroupName}}<br /></div>
+        {{#groupid=item.GroupId;console.log(groupid==item.GroupId)}}
+        {{#  } }}
+        <div class="checkboxitem">
+            {{# if(item.checked==true){ }}
+            <input type="checkbox" name="{{ item.PermissionName }}" title="{{ item.Description }}" checked>
+            {{#  }else{ }}
+            <input type="checkbox" name="{{ item.PermissionName }}" title="{{ item.Description }}">
+            {{#  } }}
+        </div>
+        {{#  }); }}
+        {{#  if(columnlist.data.length === 0){ }}
+        无数据
+        {{#  } }}
+    </script>
+        <div id="view" class="view"></div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        var columnlist;
+        function getChecked_list(data) {
+            let checked = '';
+            $.each(data, function (item, index) {
+                if (checked == '')
+                    checked = item;
+                else
+                    checked += ',' + item;
+            })
+            return checked;
+        }
+        layui.config({
+            base: '/Scripts/layui/module/'
+        }).use(['form', 'laytpl'], function () {
+            var form = layui.form;
+            var laytpl = layui.laytpl;
+            var parent_json = parent.req_Data;
+            $.ajax({
+                url: api + 'SystemPermission/getSystemPermission/' + parent_json.RolesID,
+                type: 'Post',
+                async: false,
+                success: function (result) {
+                    let json = JSON.parse(result);
+                    if (json.code == 200) {
+                        columnlist = json;
+                        var getTpl = demo.innerHTML
+                            , view = document.getElementById('view');
+                        laytpl(getTpl).render(columnlist, function (html) {
+                            view.innerHTML = html;
+                        });
+                        form.render();
+                    }
+                },
+                complete: function () { }
+            })
+
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                var json = data.field;
+                var list = getChecked_list(json);
+                $.ajax({
+                    url: api + 'RolesPermission/UpdateWebPermission',
+                    type: 'Post',
+                    datatype: 'json',
+                    data: { Id: parent_json.RolesID, chooseId: list },
+                    async: false,
+                    success: function (result) {
+                        let json = JSON.parse(result);
+                        if (json.code == 200) {
+                            layer.msg(json.msg, { icon: 6, time: 300 }, function () {
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                            });
+                        } else {
+                            layer.msg(json.msg, { icon: 5, time: 1000 });
+                        }
+                    },
+                    complete: function () {
+
+                    }
+                })
+                return false;
+            });
+            //$('#reset').click(function () {
+            //    insTb.reload();
+            //    return false;
+            //})
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.Application", "src\Flex.Application\Flex.Application.csproj", "{8B421F44-6188-446F-8848-07EA7EF429DB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.Application.Contracts", "src\Flex.Application.Contracts\Flex.Application.Contracts.csproj", "{93098B1D-12DB-4364-AEE7-A17319F25E64}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.Core", "src\Flex.Core\Flex.Core.csproj", "{95E6FC09-BA91-4268-94BC-A8677AEF1A91}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.Domain", "src\Flex.Domain\Flex.Domain.csproj", "{3222DFD8-9156-4D6A-B340-5D2E77D5711D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.EFSqlServer", "src\Flex.EFSqlServer\Flex.EFSqlServer.csproj", "{B4D0B007-3432-43CF-9E9E-A5915A60A008}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "src\UnitTest\UnitTest.csproj", "{87DE32E9-1A99-4832-B536-ADC63E04E013}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.Web", "src\Flex.Web\Flex.Web.csproj", "{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8B421F44-6188-446F-8848-07EA7EF429DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B421F44-6188-446F-8848-07EA7EF429DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B421F44-6188-446F-8848-07EA7EF429DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B421F44-6188-446F-8848-07EA7EF429DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93098B1D-12DB-4364-AEE7-A17319F25E64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93098B1D-12DB-4364-AEE7-A17319F25E64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93098B1D-12DB-4364-AEE7-A17319F25E64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93098B1D-12DB-4364-AEE7-A17319F25E64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95E6FC09-BA91-4268-94BC-A8677AEF1A91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95E6FC09-BA91-4268-94BC-A8677AEF1A91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95E6FC09-BA91-4268-94BC-A8677AEF1A91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95E6FC09-BA91-4268-94BC-A8677AEF1A91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3222DFD8-9156-4D6A-B340-5D2E77D5711D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3222DFD8-9156-4D6A-B340-5D2E77D5711D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3222DFD8-9156-4D6A-B340-5D2E77D5711D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3222DFD8-9156-4D6A-B340-5D2E77D5711D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4D0B007-3432-43CF-9E9E-A5915A60A008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4D0B007-3432-43CF-9E9E-A5915A60A008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4D0B007-3432-43CF-9E9E-A5915A60A008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4D0B007-3432-43CF-9E9E-A5915A60A008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87DE32E9-1A99-4832-B536-ADC63E04E013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87DE32E9-1A99-4832-B536-ADC63E04E013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87DE32E9-1A99-4832-B536-ADC63E04E013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87DE32E9-1A99-4832-B536-ADC63E04E013}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9A14F168-C7A3-45A3-B377-346258828708}
+	EndGlobalSection
+EndGlobal

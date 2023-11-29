@@ -1,0 +1,93 @@
+﻿{
+  "errCode": 0,
+  "msg": "成功",
+  "count": null,
+  "data": {
+    "count": 11,
+    "user": [
+      {
+        "userid": 1,
+        "username": "甘肃",
+        "usersex": "1",
+        "userbirth": "2020-10-14",
+        "pid": 0,
+        "children": [
+          {
+            "userid": 4,
+            "username": "榆中",
+            "usersex": "男的",
+            "userbirth": "2020-10-17",
+            "pid": 1,
+            "children": null
+          },
+          {
+            "userid": 5,
+            "username": "兰州",
+            "usersex": "男的",
+            "userbirth": "2020-10-18",
+            "pid": 1,
+            "children": null
+          },
+          {
+            "userid": 6,
+            "username": "武威",
+            "usersex": "男的",
+            "userbirth": "2020-10-19",
+            "pid": 1,
+            "children": null
+          },
+          {
+            "userid": 7,
+            "username": "金昌",
+            "usersex": "男的",
+            "userbirth": "2020-10-20",
+            "pid": 1,
+            "children": null
+          }
+        ]
+      },
+      {
+        "userid": 2,
+        "username": "青海",
+        "usersex": "男的",
+        "userbirth": "2020-10-15",
+        "pid": 0,
+        "children": [
+          {
+            "userid": 8,
+            "username": "西宁",
+            "usersex": "男的",
+            "userbirth": "2020-10-21",
+            "pid": 2,
+            "children": null
+          }
+        ]
+      },
+      {
+        "userid": 3,
+        "username": "四川",
+        "usersex": "男的",
+        "userbirth": "2020-10-16",
+        "pid": 0,
+        "children": [
+          {
+            "userid": 9,
+            "username": "成都",
+            "usersex": "男的",
+            "userbirth": "2020-10-22",
+            "pid": 3,
+            "children": null
+          },
+          {
+            "userid": 10,
+            "username": "乐山大佛",
+            "usersex": "男的",
+            "userbirth": "2020-10-23",
+            "pid": 3,
+            "children": null
+          }
+        ]
+      }
+    ]
+  }
+}

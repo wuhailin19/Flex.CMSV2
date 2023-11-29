@@ -1,0 +1,105 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" /><link href="~/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js" type="text/javascript"></script><script src="~/Scripts/route.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <style>
+        .layui-form-item .layui-form-label { text-align: center; }
+        .edui-editor.edui-default { width: 100% !important; }
+        .layui-input-block > .edui-default { width: 100% !important; }
+        .layui-select-title .layui-anim.layui-anim-upbit { display: none; }
+        .iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">权限名</label>
+            <div class="layui-input-block">
+                <input type="text" name="PermissionName" placeholder="请输入权限名" autocomplete="off" class="layui-input" lay-verify='required'>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">权限描述</label>
+            <div class="layui-input-block">
+                <input type="text" name="Description" placeholder="请输入权限描述" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">权限分组</label>
+            <div class="layui-input-block">
+                <input type="text" name="GroupId" placeholder="请输入权限分组" autocomplete="off" class="layui-input" lay-verify='required'>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        // 获取选中节点的id
+        function getChecked_list(data, type) {
+            var id = "";
+            $.each(data, function (index, item) {
+                if (item.children.length == 0) {
+                    if (id != "") {
+                        id = id + "," + item.id;
+                    }
+                    else {
+                        id = item.id;
+                    }
+                }
+                var i = getChecked_list(item.children);
+                if (i != "") {
+                    id = id + "," + i;
+                }
+            });
+            return id;
+        }
+
+        layui.config({
+            base: '/Scripts/layui/module/'
+        }).use(['form', 'tree'], function () {
+            var form = layui.form;
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                var json = data.field;
+                $.ajax({
+                    url: api + 'SystemPermission/Add',
+                    type: 'Post',
+                    datatype: 'json',
+                    data: JSON.stringify(json),
+                    async: false,
+                    success: function (result) {
+                        let json = JSON.parse(result);
+                        if (json.code == 200) {
+                            layer.msg(json.msg, { icon: 6, time: 300 }, function () {
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                            });
+                        } else {
+                            layer.msg(json.msg, { icon: 5, time: 1000 });
+                        }
+                    },
+                    complete: function () {
+
+                    }
+                })
+                return false;
+            });
+            $('#reset').click(function () {
+                insTb.reload();
+                return false;
+            })
+        });
+    </script>
+</body>
+</html>

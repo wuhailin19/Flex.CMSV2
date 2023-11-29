@@ -1,0 +1,58 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" /><link href="~/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js" type="text/javascript"></script><script src="~/Scripts/route.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="/Views/MenuApi/js/openPageOptions.js" type="text/javascript"></script>
+    <link href="~/Scripts/Page/index/index.css" rel="stylesheet" />
+    <style>
+        .layer_notice { float: left; height: 75px; width: 330px; overflow: hidden; background: #5FB878; padding: 10px; color: #fff }
+        .layui-layer-tips { width: auto !important; max-width: 400px; }
+    </style>
+</head>
+<body>
+    <div style="width:100%;overflow-x:scroll;">
+        <table id="demo" lay-filter="test"></table>
+    </div>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs" lay-event="roleAppUser">授权管理</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="addRole">添加</button>
+            <button class="layui-btn layui-btn-sm" lay-event="deleteAll">删除选中</button>
+        </div>
+    </script>
+    <script type="text/html" id="DescInfo">
+        <a style="cursor:pointer;" data-d="{{d.Description}}" onclick="showProStatus(this)">{{d.Description}}</a>
+    </script>
+    <script>
+        var routeLink = api + 'MenuApi/';
+        defaultOptions.operawidths = 600;
+        defaultOptions.operaheights = 650;
+        defaultOptions.isOperaReload = false;
+        defaultOptions.IsEditReload = false;
+        defaultOptions.cateid = 2;
+        defaultOptions.IdName = 'MenuId';
+    </script>
+    <script src="/Views/MenuApi/js/index.js"></script>
+    <script>
+        // 操作列tips
+        function showProStatus(t) {
+            var row = $(t).attr('data-d'); // 获取显示内容 若需要，把tips第一个属性替换为row
+            layer.tips(row, t, {
+                tips: 1,           // 在标签上面显示tips
+                time: 3000     // 1秒消失
+            })
+        }
+    </script>
+</body>
+</html>

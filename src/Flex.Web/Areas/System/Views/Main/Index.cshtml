@@ -1,0 +1,198 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="/Scripts/iconfont/iconfont.css" rel="stylesheet" />
+    <link href="/Scripts/layui/css/adminui.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <script src="/Scripts/jquery-1.8.2.min.js"></script>
+	<title>网站后台管理系统</title>
+	<link href="~/css/system/main/style.css" rel="stylesheet" />
+</head>
+<body class="layui-layout-body">
+    <div class="messagebox layui-anim layui-anim-scale" style="display:none;">
+        <a href="javascript:;" layadmin-event="email" class="rabbit_email">
+            <i class="layui-icon layui-icon-release"></i>
+            <span class="msginfo">新消息</span>
+        </a>
+    </div>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">
+                <img src="" class="layui-nav-img admin_useravatar" />
+                <span>后台管理系统</span>
+            </div>
+            <!-- Header -->
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item layadmin-flexible" lay-unselect>
+                    <a href="javascript:;" layadmin-event="flexible" class="flexible" title="收缩">
+                        <i class="layui-icon layui-icon-shrink-right"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="/" target="_blank" title="访问首页">
+                        <i class="layui-icon layui-icon-website"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;" layadmin-event="refresh" class="refresh" title="刷新">
+                        <i class="layui-icon layui-icon-refresh-3"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;" layadmin-event="email" class="rabbit_email" title="信息">
+                        <i class="layui-icon layui-icon-email email_extension">
+                            <span class="email_num"></span>
+                        </i>
+                    </a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;" layadmin-event="changesite" class="changesite" title="切换站点">
+                        <i class="layui-icon layui-icon-down"></i>
+                    </a>
+                    <dl class="layui-nav-child changesite">
+                        <dd><a href="" target="_blank">主站点</a></dd>
+                        <dd><a href="javascript:void(0);" data-type="changeChild">子站点</a></dd>
+                    </dl>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">今天是：</li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img src="" class="layui-nav-img admin_useravatar" />
+                        <span class="admin_username"></span>
+                    </a>
+                    <dl class="layui-nav-child addnewIframe">
+                        <dd><a href="javascript:void(0);" data-type="addtype" data-id="a_a_a" data-cite="基本资料" data-linkstatus="false" data-href="Admin/SimpleEdit">基本资料</a></dd>
+                        <dd><a href="javascript:void(0);" data-type="addtype" data-id="u_p_a" data-cite="修改密码" data-linkstatus="false" data-href="Admin/EditPassword">修改密码</a></dd>
+                        @*<dd><a href="adminUpdatePassword.aspx">安全设置</a></dd>*@
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="loginout.aspx">退出</a></li>
+            </ul>
+        </div>
+
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree layui_menu_tree" lay-shrink="all" lay-filter="menu">
+                </ul>
+            </div>
+        </div>
+        <!-- 页面标签 -->
+        <div class="layui-body" id="nav1">
+            <div class="layui-tab" lay-allowclose="true" lay-filter="main_content">
+                <ul class="layui-tab-title" id="main_content">
+                    <li class="layui-this first-tab">主页</li>
+                </ul>
+                <div class="layui-tab-content" lay-filter="test1">
+                    <div class="layui-tab-item layui-show" id="0_0_0">
+                        <div class="loadings">
+                            <i class="layui-icon layui-anim layui-anim-loop">&#xe63d;</i>
+                            <iframe src="/Main/Welcome" class="layadmin-iframe" id="iframe0_0_0" frameborder="0"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/Scripts/layui/layui.js"></script>
+    <script src="/Scripts/route.js?v=0.1" type="text/javascript"></script>
+    <script type="text/javascript">
+        var elment;
+        var layer;
+        layui.use(['element', 'layer'], function () {
+            elment = layui.element;
+            layer = layui.layer;
+            Init();
+
+        })
+        function InitAdmin() {
+            $.ajax({
+                url: api + 'Admin/getLoginInfo',
+                type: 'Get',
+                async: false,
+                dataType: "json",
+                success: function (json) {
+                    var admin = json.data[0];
+                    $('.admin_useravatar').each(function () {
+                        $(this).attr('src', '/' + admin.UserAvatar);
+                    })
+                    $('.admin_username').text(admin.UserName)
+                }
+            })
+        }
+        function Init() {
+            ajaxHttp({
+                url: api + 'Menu/getMainMenuStrAsync',
+                type: 'Get',
+                //data: { _type: 'getMainMenuStr' },
+                async: false,
+                dataType: "json",
+                success: function (result) {
+                    let count = 0;
+                    var content = '';
+                    if (result.code != 200) { layer.msg(result.content, { icon: 5, time: 1000 }); return; }
+                    $.each(result.content[0].children, function (i, item) {
+                        if (!item.status) {
+                            return;
+                        }
+                        content += '<li class="layui-nav-item">';
+                        if (count == 0)
+                            content = '<li class="layui-nav-item layui-nav-itemed">';
+                        count++;
+                        content += '<a href="javascript:void(0);" data-linkstatus="' + item.isaspx + '" ' + (!item.ismenu ? "data-href=" + item.linkurl + " data-direction=" + item.parentid + "_" + item.id + "" : "") + '  lay-tips="' + item.title + '" lay-direction="' + item.parentid + "_" + item.id + '">' +
+                            '<i class="' + item.className + ' ' + item.icode + '"></i>' +
+                            '<cite>' + item.title + '</cite>' + (item.children != undefined && item.children.length > 0 ? '<span class="layui-nav-more"></span>' : "") +
+                            '</a>';
+
+                        //这里是添加所有的子菜单
+                        content += loadchild(item);
+                        content += '</li>';
+                    });
+                    $(".layui-nav-tree").html(content);
+                    elment.init();
+                },
+                complete: function () { }
+            })
+        }
+        //组装子菜单的方法
+        function loadchild(obj) {
+            if (obj == null) {
+                return;
+            }
+            var content = '';
+            if (obj.children != null && obj.children.length > 0) {
+                content += '<dl class="layui-nav-child">';
+            } else {
+                content += '<dl>';
+            }
+            if (obj.children != null && obj.children.length > 0) {
+                $.each(obj.children, function (i, note) {
+                    if (!note.status) {
+                        return;
+                    }
+                    if (i == 0)
+                        content += '<dd class="layui-nav-itemed">';
+                    else
+                        content += '<dd>';
+                    content += '<a href="javascript:void(0);" data-linkstatus="' + note.isaspx + '" ' + (!note.ismenu ? "data-href=" + note.linkurl + " data-direction=" + note.parentid + "_" + note.id + "" : "") + ' lay-tips="' + note.title + '" lay-direction="' + note.parentid + "_" + note.id + '">' +
+                        '<i class="' + note.className + ' ' + (note.icode == 'null' || note.icode == '' ? "layui-icon-file" : note.icode) + '"></i>' +
+                        '<cite>' + note.title + '</cite>' + (note.children != undefined && note.children.length > 0 ? '<span class="layui-nav-more"></span>' : "") +
+                        '</a>';
+                    if (note.children == null) {
+                        return;
+                    }
+                    content += loadchild(note);
+                    content += '</dd>';
+                });
+                content += '</dl>';
+            }
+            return content;
+        }
+    </script>
+    <script src="/Scripts/layui/menujs.js?v=1.0"></script>
+</body>
+</html>

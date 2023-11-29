@@ -1,0 +1,216 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" /><link href="~/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js" type="text/javascript"></script><script src="~/Scripts/route.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <link href="~/Scripts/iconfont/iconfont.css" rel="stylesheet" />
+    <style>
+        .layui-form-item .layui-form-label { text-align: center; }
+        .edui-editor.edui-default { width: 100% !important; }
+        .layui-input-block > .edui-default { width: 100% !important; }
+        .layui-select-title .layui-anim.layui-anim-upbit { display: none; }
+        .iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
+        .layui-layer-page { width: 60% !important; }
+        .layui-col-xs9 { width: 70% }
+        .img-box { width: auto !important; border: 4px solid rgb(102, 177, 255); border-radius: 3px; cursor: pointer; overflow: hidden; background-color: #999; }
+        .message-info { width: auto !important; line-height: 50px; color: #535353 }
+        .img-box .img-box-corner { position: absolute; right: -11px; bottom: -11px; width: 20px; height: 20px; background-color: rgb(102, 177, 255); transform: rotate( 40deg ); }
+    </style>
+</head>
+<body>
+    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
+        <div class="layui-form-item" style="display:none;">
+            <label class="layui-form-label">编号</label>
+            <div class="layui-input-block">
+                <input type="text" name="AdminId" readonly="readonly" autocomplete="off" class="layui-input" value="">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">昵称</label>
+            <div class="layui-input-block">
+                <input type="text" name="UserName" required lay-verify="required" placeholder="请输入昵称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">头像</label>
+            <div class="layui-input-inline img-box" id="editimg">
+                <img src="/Content/images/face.png" id="srcimgurl" width="50" height="50" onerror="" />
+                <div class="img-box-corner"></div>
+                <input type="text" name="UserAvatar" id="inputimgurl" placeholder="图片地址" style="display:none;" class="layui-input">
+            </div>
+            <div class="layui-input-inline message-info">
+                头像的尺寸限定150x150px,大小在50kb以内
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户签名</label>
+            <div class="layui-input-block">
+                <input type="text" name="UserSign" autocomplete="off" placeholder="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">多人登录</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="AllowMultiLogin" lay-skin="switch" lay-text="允许|不允许" value="true">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">锁定状态</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="Islock" lay-skin="switch" lay-text="锁定|未锁定" value="true">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">白名单</label>
+            <div class="layui-input-inline" style="width:40%;">
+                <textarea name="FilterIp" placeholder="" class="layui-textarea"></textarea>
+            </div>
+            <div class="layui-input-inline" style="width:30%;margin-top:10px ">
+                授权指定IP来源的请求才可使用，每行填写一条，留空则不限制
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">本次登录时间</label>
+            <div class="layui-input-inline" id="LastLoginTime" style="width:30%;margin-top:10px ">
+
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">本次登录IP</label>
+            <div class="layui-input-inline" id="LastLoginIP" style="width:30%;margin-top:10px ">
+
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">上次退出时间</label>
+            <div class="layui-input-inline" id="LastLogoutTime" style="width:30%;margin-top:10px ">
+
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        $(".show").on("click", ".iconyanjing_bi", function () {
+            $(this).removeClass("iconyanjing_bi").addClass("iconyanjing_kai");
+            $('input[name=' + $(this).data('bind') + ']').attr("type", "text");
+        });
+        $(".show").on("click", ".iconyanjing_kai", function () {
+            $(this).removeClass("iconyanjing_kai").addClass("iconyanjing_bi");
+            $('input[name=' + $(this).data('bind') + ']').attr("type", "password");
+        });
+
+        // 操作列tips
+
+        var ischeck = true;
+        layui.config({
+            base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
+        }).use(['form', 'croppers'], function () {
+            var form = layui.form, croppers = layui.croppers, layer = layui.layer;
+            var tips = {
+                timeout: 2000,
+                msgboxtime: 1000,
+                index: undefined,
+                showProStatus: function ($emlemt, msg) {
+                    tips.index = layer.tips(msg, $emlemt, {
+                        tips: 2,
+                        time: tips.timeout     // 3秒消失
+                    })
+                },
+                showSuccess: function (msg) {
+                    layer.msg(msg, { icon: 6, time: tips.msgboxtime }, function () { });
+                },
+                showFail: function (msg) {
+                    layer.msg(msg, { icon: 5, time: tips.msgboxtime }, function () { });
+                },
+                closeTips: function () {
+                    layer.close(tips.index);
+                }
+            }
+            var parent_json;
+            $.ajax({
+                url: api + 'Admin/getLoginInfo',
+                type: 'Get',
+                datatype: 'json',
+                async: false,
+                success: function (result) {
+                    let json = JSON.parse(result);
+                    if (json.code == 200) {
+                        parent_json = json.data[0];
+                    } else {
+                        layer.msg(json.msg, { icon: 5, time: 1000 });
+                    }
+                }
+            })
+            //创建一个头像上传组件
+            croppers.render({
+                elem: '#editimg'
+                , saveW: 150     //保存宽度
+                , saveH: 150
+                , mark: 1 / 1    //选取比例
+                , area: '900px'  //弹窗宽度
+                , url: "OnloadUserAvatar"  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
+                , done: function (data) { //上传完毕回调
+                    $("#inputimgurl").val(data);
+                    $("#srcimgurl").attr('src', "/" + data);
+                }
+            });
+            function formRender() {
+                form.val("formTest", {
+                    'AdminId': parent_json.AdminId
+                    , 'UserName': parent_json.UserName
+                    , 'UserSign': parent_json.UserSign
+                    , 'UserAvatar': parent_json.UserAvatar
+                    , 'AllowMultiLogin': parent_json.AllowMultiLogin
+                    , 'FilterIp': parent_json.FilterIp
+                    , 'GroupId': parent_json.GroupId
+                    , 'Islock': parent_json.Islock
+                });
+                $('#srcimgurl').attr('src', "/" + parent_json.UserAvatar);
+            }
+            $('#LastLoginIP').html(parent_json.LastLoginIP);
+            $('#LastLoginTime').html(parent_json.LastLoginTimeStr);
+            $('#LastLogoutTime').html(parent_json.LastLogoutTimestr);
+            formRender();
+            $('#editimg').attr('data-id', parent_json.AdminId);
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                $.ajax({
+                    url: api + 'Admin/UpdateUserAvatar',
+                    type: 'Post',
+                    datatype: 'json',
+                    data: JSON.stringify(data.field),
+                    async: false,
+                    success: function (result) {
+                        let json = JSON.parse(result);
+                        if (json.code == 200) {
+                            layer.msg(json.msg, { icon: 6, time: 300 }, function () {
+                                parent.InitAdmin();
+                            });
+                        } else {
+                            layer.msg(json.msg, { icon: 5, time: 1000 });
+                        }
+                    },
+                    complete: function () {
+
+                    }
+                })
+                return false;
+            });
+            $('#reset').click(function () {
+                formRender();
+                return false;
+            })
+        });
+    </script>
+</body>
+</html>

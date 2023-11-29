@@ -1,0 +1,137 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" /><link href="~/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js" type="text/javascript"></script><script src="~/Scripts/route.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="/Scripts/htmlEditor/_ueditor/editor_all.js"></script>
+    <script src="/Scripts/htmlEditor/_ueditor/editor_config.js"></script>
+</head>
+<body>
+    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
+        <div class="layui-form-item">
+            <label class="layui-form-label">标题</label>
+            <div class="layui-input-inline" style="width:40%;">
+                <input type="text" name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">接收者</label>
+            <div class="layui-input-inline" style="width:40%;">
+                <select name="receiver" lay-search="" id="receiver" lay-filter="receiver">
+                    @if (Model != null)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <option value="@item.AdminId">@item.UserName</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">内容</label>
+            <div class="layui-input-inline" style="width:40%;">
+                <textarea id="content" placeholder="" class=""></textarea>
+                <script type="text/javascript">var editorOption = { initialFrameWidth: 700, initialFrameHeight: 420 }; var ue = new UE.ui.Editor(editorOption); ue.render("content");</script>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
+            </div>
+        </div>
+    </form>
+    <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.js"></script>
+    <script>
+        var UnitHtml = {
+            unhtml: function (str, reg) {
+                return str ? str.replace(reg || /[&<">]/g, function (m) {
+                    return {
+                        "<": "&lt;",
+                        "&": "&amp;",
+                        '"': "&quot;",
+                        ">": "&gt;"
+                    }[m]
+                }) : ""
+            },
+            html: function (str) {
+                return str ? str.replace(/&((g|l|quo)t|amp);/g, function (m) {
+                    return {
+                        "&lt;": "<",
+                        "&amp;": "&",
+                        "&quot;": '"',
+                        "&gt;": ">"
+                    }[m]
+                }) : ""
+            }
+        }
+        // 操作列tips
+        var ischeck = true;
+        layui.config({
+            base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
+        }).use(['form'], function () {
+            var form = layui.form, layer = layui.layer;
+            var tips = {
+                timeout: 2000,
+                msgboxtime: 1000,
+                index: undefined,
+                showProStatus: function ($emlemt, msg) {
+                    tips.index = layer.tips(msg, $emlemt, {
+                        tips: 2,
+                        time: tips.timeout     // 3秒消失
+                    })
+                },
+                showSuccess: function (msg) {
+                    layer.msg(msg, { icon: 6, time: tips.msgboxtime }, function () { });
+                },
+                showFail: function (msg) {
+                    layer.msg(msg, { icon: 5, time: tips.msgboxtime }, function () { });
+                },
+                closeTips: function () {
+                    layer.close(tips.index);
+                }
+            }
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                var content = ue.getAllHtml();
+                var newcontent = content.substring(content.indexOf("<body"));
+                newcontent = newcontent.replace('<body >', '').replace('<body>', '').replace('</body>', '').replace('</html>', '')
+                newcontent = UnitHtml.unhtml(newcontent);
+                data.field['content'] = newcontent;
+                var json_data = JSON.stringify(data.field);
+                $.ajax({
+                    url: api + 'queueMessage/SendMessage',
+                    type: 'Post',
+                    datatype: 'json',
+                    data: json_data,
+                    async: false,
+                    success: function (result) {
+                        let json = JSON.parse(result);
+                        if (json.code == 200) {
+                            layer.msg(json.msg, { icon: 6, time: 300 }, function () {
+
+                            });
+                            parent.ws.send(json_data);
+                        } else {
+                            layer.msg(json.msg, { icon: 5, time: 1000 });
+                        }
+                    },
+                    complete: function () {
+
+                    }
+                })
+                return false;
+            });
+            $('#reset').click(function () {
+                ue.body.innerHTML = '';
+            })
+        });
+    </script>
+</body>
+</html>

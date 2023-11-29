@@ -1,0 +1,79 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" /><link href="~/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js" type="text/javascript"></script><script src="~/Scripts/route.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <style>
+        .layui-form-item .layui-form-label { text-align: center; }
+        .edui-editor.edui-default { width: 100% !important; }
+        .layui-input-block > .edui-default { width: 100% !important; }
+        .layui-select-title .layui-anim.layui-anim-upbit { display: none; }
+        .iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">Api名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="Name" placeholder="请输入Api名称" autocomplete="off" class="layui-input" lay-verify='required'>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">Api链接</label>
+            <div class="layui-input-block">
+                <input type="text" name="Url" placeholder="请输入Api链接" autocomplete="off" class="layui-input" lay-verify='required'>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">请求类型</label>
+            <div class="layui-input-block">
+                <input type="text" name="Type" placeholder="请输入请求类型" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">接口描述</label>
+            <div class="layui-input-block">
+                <textarea name="Description" placeholder="请输入接口描述" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">允许密钥错误次数</label>
+            <div class="layui-input-block">
+                <input type="text" name="ErrorCount" placeholder="请输入允许密钥错误次数" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">单次访问时间</label>
+            <div class="layui-input-inline" style="width:40%;">
+                <input type="text" name="SingleTime" placeholder="请输入单次访问时间" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline" style="width:30%;margin-top:10px ">
+                单位为小时（不填则默认一天）
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">Api返回数据</label>
+            <div class="layui-input-block">
+                <textarea name="ReturnContent" placeholder="请输入内容" class="layui-textarea" style="height:400px"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        var cateid = 2;
+    </script>
+    <script src="/Views/MenuApi/js/adds.js"></script>
+</body>
+</html>
