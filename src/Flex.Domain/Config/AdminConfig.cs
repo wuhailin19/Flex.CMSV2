@@ -1,4 +1,5 @@
-﻿using Flex.Core.Extensions;
+﻿using Flex.Core;
+using Flex.Core.Extensions;
 using Flex.Domain.Entities.System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
