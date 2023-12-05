@@ -4,7 +4,7 @@
     {
         public string Name { get; set; }
         public string Icode { get; set; }
-        public long ParentID { get; set; }
+        public int ParentID { get; set; }
         public bool ShowStatus { get; set; }
         public bool isMenu { get; set; }
         public bool IsControllerUrl { get; set; }
