@@ -9,7 +9,8 @@ namespace Flex.Domain.Config
         public void Configure(EntityTypeBuilder<SysRole> builder)
         {
             base.ConfigureLongId(builder);
-
+            builder.Property(m => m.RolesName).HasMaxLength(20).IsRequired();
+            builder.Property(m => m.RolesDesc).HasMaxLength(20);
             builder.ToTable("tbl_core_role");
         }
     }
