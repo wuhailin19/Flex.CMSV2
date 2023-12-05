@@ -10,7 +10,7 @@ public class DesignTimeSqlServerContextFactory : IDesignTimeDbContextFactory<Sql
     public SqlServerContext CreateDbContext(string[] args)
     {
         var builder = new DbContextOptionsBuilder<SqlServerContext>();
-        builder.UseSqlServer("Data Source=.;Initial Catalog=cms_core;uid=sa;pwd=123456;TrustServerCertificate=true;");
+        builder.UseSqlServer("Data Source=.;Initial Catalog=cms_core_copy;uid=sa;pwd=123456;TrustServerCertificate=true;");
 
         return new SqlServerContext(builder.Options);
     }
