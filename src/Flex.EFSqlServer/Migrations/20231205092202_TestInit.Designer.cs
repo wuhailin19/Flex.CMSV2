@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flex.EFSqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    [Migration("20231129111008_FlexCmsDbInit")]
-    partial class FlexCmsDbInit
+    [Migration("20231205092202_TestInit")]
+    partial class TestInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -272,7 +272,8 @@ namespace Flex.EFSqlServer.Migrations
 
                     b.Property<string>("Account")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("AddTime")
                         .HasColumnType("datetime2");
@@ -284,7 +285,9 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("AllowMultiLogin")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<int>("ErrorCount")
                         .HasColumnType("int");
@@ -293,7 +296,9 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Islock")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime?>("LastEditDate")
                         .HasColumnType("datetime2");
@@ -306,7 +311,8 @@ namespace Flex.EFSqlServer.Migrations
 
                     b.Property<string>("LastLoginIP")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime?>("LastLoginTime")
                         .HasColumnType("datetime2");
@@ -315,49 +321,90 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("LoginCount")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<int>("MaxErrorCount")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(10);
 
                     b.Property<string>("Mutiloginccode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoleName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("SaltValue")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("StatusCode")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("UserAvatar")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("UserSign")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int?>("Version")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.HasKey("Id");
 
                     b.ToTable("tbl_core_admin", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1560206066204151804L,
+                            Account = "webmaster",
+                            AddTime = new DateTime(2023, 12, 5, 17, 22, 2, 775, DateTimeKind.Local).AddTicks(2777),
+                            AddUser = 1560206066204151804L,
+                            AddUserName = "webmaster",
+                            AllowMultiLogin = true,
+                            ErrorCount = 0,
+                            Islock = false,
+                            LastEditDate = new DateTime(2023, 12, 5, 17, 22, 2, 775, DateTimeKind.Local).AddTicks(2777),
+                            LastEditUser = 1560206066204151804L,
+                            LastEditUserName = "webmaster",
+                            LastLoginIP = "127.0.0.1",
+                            LastLoginTime = new DateTime(2023, 12, 5, 17, 22, 2, 775, DateTimeKind.Local).AddTicks(2777),
+                            LoginCount = 0,
+                            MaxErrorCount = 0,
+                            Mutiloginccode = "7675038.28325281",
+                            Password = "5A72A8F355E9A88D03C30778C2770E27",
+                            RoleId = "0",
+                            RoleName = "超级管理员",
+                            SaltValue = "4ad9879fb285407f",
+                            UserName = "超级管理员",
+                            Version = 0
+                        });
                 });
 
             modelBuilder.Entity("Flex.Domain.Entities.System.SysRole", b =>

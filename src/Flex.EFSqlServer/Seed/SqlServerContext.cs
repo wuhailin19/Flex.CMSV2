@@ -27,7 +27,7 @@ namespace Flex.EFSqlServer
             {
                 optionsBuilder.UseLoggerFactory(MyLoggerFactory);
                 // 在这里添加其他的配置，例如
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=cms_core;uid=sa;pwd=123456;TrustServerCertificate=true;");
+                //optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=cms_core;uid=sa;pwd=123456;TrustServerCertificate=true;");
             }
         }
         public void EnsureDatabaseCreated()
