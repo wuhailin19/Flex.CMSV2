@@ -26,5 +26,6 @@
     <Folder Include="Areas\System\Data\" />
     <Folder Include="Areas\System\Models\" />
     <Folder Include="Views\" />
+    <Folder Include="wwwroot\Content\images\" />
   </ItemGroup>
 </Project>
