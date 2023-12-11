@@ -9,7 +9,7 @@ namespace Flex.Domain.Config
         public void Configure(EntityTypeBuilder<SysGroup> builder)
         {
             base.ConfigureLongId(builder);
-
+            builder.Property(m=>m.GroupName).IsRequired().HasMaxLength(50);
             builder.ToTable("tbl_core_group");
         }
     }
