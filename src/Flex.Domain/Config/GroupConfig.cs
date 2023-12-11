@@ -1,4 +1,4 @@
-﻿using Flex.Domain.Entities;
+using Flex.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

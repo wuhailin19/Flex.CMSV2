@@ -12,6 +12,8 @@ namespace Flex.Domain.Config
             builder.Property(m => m.Name).HasMaxLength(50);
             builder.Property(m => m.Icode).HasMaxLength(50);
             builder.Property(m => m.ParentID).HasDefaultValue(0);
+            builder.Property(m => m.Version).HasDefaultValue(0);
+            builder.Property(m=>m.ShowStatus).HasDefaultValue(true);
             base.ConfigureIntId(builder);
 
         }
