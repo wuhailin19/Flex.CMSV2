@@ -16,8 +16,8 @@ namespace Flex.Domain.Entities.System
         public DateTime? LockTime { get; set; }
         public bool AllowMultiLogin { get; set; }
         public bool Islock { get; set; }
-        public string RoleId { get; set; }
-        public bool IsSystem { get { return RoleId == "0"; } }
+        public int RoleId { get; set; }
+        public bool IsSystem { get { return RoleId == 0; } }
         public string? RoleName { get; set; }
         public int LoginCount { get; set; }
         public string? FilterIp { get; set; }

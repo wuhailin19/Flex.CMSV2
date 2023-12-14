@@ -46,7 +46,7 @@ namespace Flex.Domain.Config
                     LastLoginTime = dateTime,
                     AllowMultiLogin = true,
                     SaltValue= "4ad9879fb285407f",
-                    RoleId = "0",
+                    RoleId = 0,
                     RoleName= "超级管理员",
                     LoginCount = 0,
                     Islock = false,

@@ -9,7 +9,7 @@ namespace Flex.Domain.Dtos.Role
         public controlType checkbox { get; set; }
         [ToolAttr(NameAttr = "ID", Width = "80")]
         [JsonConverter(typeof(IdToStringConverter))]
-        public long Id { get; set; }
+        public int Id { get; set; }
         [ToolAttr(NameAttr = "角色名", Width = "200")]
         public string RolesName { get; set; }
         [ToolAttr(NameAttr = "角色描述", Width = "200")]

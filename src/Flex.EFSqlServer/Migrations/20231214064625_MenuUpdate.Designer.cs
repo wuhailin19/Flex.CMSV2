@@ -4,6 +4,7 @@ using Flex.EFSqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flex.EFSqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20231214064625_MenuUpdate")]
+    partial class MenuUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,8 +40,7 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("AddUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DataPermission")
                         .IsRequired()
@@ -60,8 +62,7 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("LastEditUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MenuPermissions")
                         .IsRequired()
@@ -138,13 +139,11 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("AddUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FontSort")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Icode")
                         .IsRequired()
@@ -161,16 +160,14 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("LastEditUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
                     b.Property<string>("LinkUrl")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -221,8 +218,7 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("AddUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Category")
                         .HasColumnType("int");
@@ -238,8 +234,7 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("LastEditUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MaxErrorCount")
                         .HasColumnType("int");
@@ -297,8 +292,7 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("AddUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("AllowMultiLogin")
                         .ValueGeneratedOnAdd()
@@ -323,8 +317,7 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("LastEditUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastLoginIP")
                         .IsRequired()
@@ -357,8 +350,9 @@ namespace Flex.EFSqlServer.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoleName")
                         .HasMaxLength(20)
@@ -400,22 +394,22 @@ namespace Flex.EFSqlServer.Migrations
                         {
                             Id = 1560206066204151804L,
                             Account = "webmaster",
-                            AddTime = new DateTime(2023, 12, 14, 15, 6, 33, 586, DateTimeKind.Local).AddTicks(4952),
+                            AddTime = new DateTime(2023, 12, 14, 14, 46, 25, 309, DateTimeKind.Local).AddTicks(6517),
                             AddUser = 1560206066204151804L,
                             AddUserName = "webmaster",
                             AllowMultiLogin = true,
                             ErrorCount = 0,
                             Islock = false,
-                            LastEditDate = new DateTime(2023, 12, 14, 15, 6, 33, 586, DateTimeKind.Local).AddTicks(4952),
+                            LastEditDate = new DateTime(2023, 12, 14, 14, 46, 25, 309, DateTimeKind.Local).AddTicks(6517),
                             LastEditUser = 1560206066204151804L,
                             LastEditUserName = "webmaster",
                             LastLoginIP = "127.0.0.1",
-                            LastLoginTime = new DateTime(2023, 12, 14, 15, 6, 33, 586, DateTimeKind.Local).AddTicks(4952),
+                            LastLoginTime = new DateTime(2023, 12, 14, 14, 46, 25, 309, DateTimeKind.Local).AddTicks(6517),
                             LoginCount = 0,
                             MaxErrorCount = 0,
                             Mutiloginccode = "7675038.28325281",
                             Password = "5A72A8F355E9A88D03C30778C2770E27",
-                            RoleId = 0,
+                            RoleId = "0",
                             RoleName = "超级管理员",
                             SaltValue = "4ad9879fb285407f",
                             UserName = "超级管理员",
@@ -425,11 +419,11 @@ namespace Flex.EFSqlServer.Migrations
 
             modelBuilder.Entity("Flex.Domain.Entities.System.SysRole", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("AddTime")
                         .HasColumnType("datetime2");
@@ -438,8 +432,7 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("AddUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DataPermission")
                         .HasColumnType("nvarchar(max)");
@@ -454,15 +447,14 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("LastEditUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MenuPermissions")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RolesDesc")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("RolesName")
                         .IsRequired()

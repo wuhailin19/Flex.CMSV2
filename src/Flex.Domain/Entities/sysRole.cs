@@ -1,6 +1,6 @@
 ﻿namespace Flex.Domain.Entities.System
 {
-    public class SysRole : BaseLongEntity, EntityContext
+    public class SysRole : BaseIntEntity, EntityContext
     {
         public string  RolesName { get; set; }
         public string? WebsitePermissions { get; set; }
