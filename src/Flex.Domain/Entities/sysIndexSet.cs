@@ -5,11 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace Flex.Domain.Entities
 {
-    public class SysIndexSet : EntityContext
+    public class SysIndexSet :BaseIntEntity,EntityContext
     {
-        [Key] //主键 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]  //设置自增
-        public int Id { set; get; }
         /// <summary>
         /// 网站菜单
         /// </summary>

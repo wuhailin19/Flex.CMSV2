@@ -53,7 +53,6 @@ namespace Flex.Domain.Config
                     Mutiloginccode= "7675038.28325281",
                     AddTime= dateTime,
                     AddUserName= "webmaster",
-                    LastEditDate= dateTime,
                     LastEditUserName= "webmaster",
                     LockTime=null,
                     AddUser= 1560206066204151804,
