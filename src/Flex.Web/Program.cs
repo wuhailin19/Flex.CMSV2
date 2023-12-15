@@ -6,14 +6,32 @@ using Flex.Application.Extensions.Register.AutoMapper;
 using Flex.Application.Extensions.Register.MemoryCacheExtension;
 using Flex.Application.Extensions.Register.WebCoreExtensions;
 using Flex.Application.Extensions.Swagger;
+using Flex.Core.JsonConvertExtension;
 using Flex.EFSqlServer;
 using Flex.EFSqlServer.Register;
+using Microsoft.Extensions.FileProviders;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 var AssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+            {
+                // 可选：修改默认的ModelState验证行为
+                options.SuppressModelStateInvalidFilter = true;
+            })
+            .AddJsonOptions(options =>
+            {
+                // 配置System.Text.Json的选项
+                options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                options.JsonSerializerOptions.PropertyNamingPolicy = null; // 保留属性的原始命名
+                options.JsonSerializerOptions.WriteIndented = true; // 缩进输出以提高可读性
+                // 添加其他选项...
+
+                // 在这里添加你的自定义转换器，如果有需要
+                options.JsonSerializerOptions.Converters.Add(new IdToStringConverter());
+            });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //注册swagger
@@ -58,6 +76,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
+
 app.UseRouting();
 app.UseAuthentication();
 

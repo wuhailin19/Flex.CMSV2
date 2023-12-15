@@ -160,7 +160,7 @@
                 , url: api + 'Admin/OnloadUserAvatar'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
                 , done: function (data) { //上传完毕回调
                     $("#inputimgurl").val(data);
-                    $("#srcimgurl").attr('src', "/" + data);
+                    $("#srcimgurl").attr('src',data);
                 }
             });
             function formRender() {
@@ -171,7 +171,6 @@
                     , 'UserAvatar': parent_json.UserAvatar
                     , 'AllowMultiLogin': parent_json.AllowMultiLogin
                     , 'FilterIp': parent_json.FilterIp
-                    , 'GroupId': parent_json.GroupId
                     , 'Islock': parent_json.Islock
                 });
                 $('#srcimgurl').attr('src', "/" + parent_json.UserAvatar);
@@ -183,6 +182,7 @@
             $('#editimg').attr('data-id', parent_json.AdminId);
             //监听提交
             form.on('submit(formDemo)', function (data) {
+                data.field.Version = parent_json.Version;
                 ajaxHttp({
                     url: api + 'Admin/UpdateUserAvatar',
                     type: 'Post',

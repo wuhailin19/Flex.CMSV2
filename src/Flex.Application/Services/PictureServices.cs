@@ -1,5 +1,6 @@
 ﻿using Flex.Core.Helper.ImgFiles;
 using Flex.Core.Helper.UploadHelper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.PlatformAbstractions;
 using System;
@@ -12,14 +13,17 @@ namespace Flex.Application.Services
 {
     public class PictureServices : BaseService, IPictureServices
     {
-        private string basePath = PlatformServices.Default.Application.ApplicationBasePath;
+        IWebHostEnvironment _env;
+        string basePath = string.Empty;
         /// <summary>
         /// 图片储存位置
         /// </summary>
-        private string imgpath = $"upload/image/{DateTime.Now.ToDefaultDateTimeStr()}/normal";
-        public PictureServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims) 
+        private string imgpath = $"/upload/image/{DateTime.Now.ToDefaultDateTimeStr()}";
+        public PictureServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IWebHostEnvironment env) 
             : base(unitOfWork, mapper, idWorker, claims)
         {
+            _env = env;
+            basePath = Path.Combine(_env.WebRootPath);
         }
         public ProblemDetails<string> UploadImgService(IFormFileCollection input)
         {
@@ -30,10 +34,11 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, "上传文件格式不正确");
             string uniqueFileName = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString() + new Random().Next(1000, 9999).ToString();
             var extension = Path.GetExtension(file.FileName);
-            if (!Directory.Exists(basePath + imgpath))
-                Directory.CreateDirectory(basePath + imgpath);
+
+            if (!Directory.Exists(Path.Combine(basePath + imgpath)))
+                Directory.CreateDirectory(Path.Combine(basePath + imgpath));
             string imgrelationpath = imgpath + "/" + uniqueFileName + extension;
-            string savepath = basePath + imgrelationpath;
+            string savepath = Path.Combine(basePath + imgrelationpath);
             bool IsSuccess = false;
             try
             {

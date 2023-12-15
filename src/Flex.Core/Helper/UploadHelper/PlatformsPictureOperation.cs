@@ -11,10 +11,6 @@ namespace Flex.Core.Helper.UploadHelper
     public class PlatformsPictureOperation
     {
         /// <summary>
-        /// 储存位置
-        /// </summary>
-        private static string path = PlatformServices.Default.Application.ApplicationBasePath + "upload/image/{0}/thumb";
-        /// <summary>
         /// 生成缩略图
         /// </summary>
         /// <param name="imgpath">待裁图片</param>
@@ -38,7 +34,7 @@ namespace Flex.Core.Helper.UploadHelper
                 }
                 string thumb_name = $"{filename.Remove(filename.Length - ext.Length - 1)}_{width}x{height}.{ext}";  //文件名，缩略图保存为png
                 string save_dir = $"{DateTime.Now.ToDefaultDateTimeStr()}";
-                string savepath = string.Format(path, save_dir);
+                string savepath = string.Format(imgpath.Replace(filename,""), save_dir);
                 if (!Directory.Exists(savepath))
                 {
                     Directory.CreateDirectory(savepath);

@@ -1,4 +1,5 @@
-﻿using Flex.Core.Helper;
+﻿using Flex.Core.JsonConvertExtension;
+using System.Text.Json;
 /// <summary>
 /// 返回信息
 /// </summary>
@@ -22,7 +23,12 @@ namespace Flex.Core
             messages.code = statecode;
             messages.content = data;
             messages.msg = message;
-            string str = JsonHelper.ToJson(messages);
+            var options = new JsonSerializerOptions
+            {
+                Converters = { new IdToStringConverter() },
+                // 其他选项...
+            };
+            string str = JsonSerializer.Serialize(messages, options);
             return str;
         }
     }

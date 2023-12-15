@@ -2,6 +2,7 @@
 using Flex.Application.Services;
 using Flex.Core.Attributes;
 using Flex.Core.Helper;
+using Flex.Domain.Dtos.Admin;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flex.Web.Areas.System.Controllers.APIController
@@ -47,15 +48,28 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// 上传账号头像
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
-
+        [HttpPost("OnloadUserAvatar")]
         [Descriper(Name = "上传账号头像")]
-        public string OnloadUserAvatar(IFormFileCollection input)
+        public string OnloadUserAvatar(IFormFileCollection file)
         {
-            var result = _pictureServices.UploadImgService(input);
+            var result = _pictureServices.UploadImgService(file);
             if (!result.IsSuccess)
-                return Fail(result);
-            return Success(result);
+                return Fail(result.Detail);
+            return Success(result.Detail);
+        }
+
+        /// <summary>
+        /// 编辑账号基本资料
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("UpdateUserAvatar")]
+        [Descriper(Name = "编辑账号基本资料")]
+        public async Task<string> UpdateUserAvatar([FromBody] SimpleAdminDto simpleEditAdmin)
+        {
+            var result =await _adminServices.SimpleEditAdminUpdate(simpleEditAdmin);
+            if(result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
         }
     }
 }
