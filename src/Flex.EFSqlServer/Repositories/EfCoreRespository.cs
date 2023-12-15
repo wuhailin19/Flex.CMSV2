@@ -46,10 +46,11 @@ namespace Flex.EFSqlServer.Repositories
                 return query;
         }
 
-        public IQueryable<TEntity> Get() {
-           return _dbSet.AsNoTracking();
+        public IQueryable<TEntity> Get()
+        {
+            return _dbSet.AsNoTracking();
         }
-        public IQueryable<TEntity> GetbyExpression(Expression<Func<TEntity,bool>> expression)
+        public IQueryable<TEntity> GetbyExpression(Expression<Func<TEntity, bool>> expression)
         {
             return _dbSet.AsNoTracking().Where(expression);
         }
@@ -363,10 +364,16 @@ namespace Flex.EFSqlServer.Repositories
         {
             _dbSet.Update(entity);
         }
+        public virtual Task<int> SaveChangesAsync()
+        {
+           return _dbContext.SaveChangesAsync();
+        }
+
         public virtual void UpdateAsync(TEntity entity)
         {
             _dbSet.Update(entity);
         }
+
         public virtual void Update(params TEntity[] entities) => _dbSet.UpdateRange(entities);
 
         public virtual void Update(IEnumerable<TEntity> entities) => _dbSet.UpdateRange(entities);

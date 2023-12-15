@@ -97,14 +97,15 @@ layui.config({
                         var formData = new FormData();
                         formData.append('file', blob, 'head.jpg');
                         formData.append('adminId', self.adminid);
-                        $.ajax({
-                            method: "post",
+                        ajaxHttp({
+                            type: "post",
                             url: url, //用于文件上传的服务器端请求地址
                             data: formData,
                             processData: false,
                             contentType: false,
-                            success: function (data) {
-                                var result = JSON.parse(data);
+                            setcontentType: true,
+                            dataType:'json',
+                            success: function (result) {
                                 if (result.code == 200) {
                                     //layer.msg("修改成功", { icon: 1 });
                                     layer.closeAll('page');

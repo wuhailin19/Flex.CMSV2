@@ -414,6 +414,7 @@ namespace Flex.EFSqlServer.Repositories
         /// </summary>
         /// <param name="entities">The entities.</param>
         void Delete(IEnumerable<TEntity> entities);
+        Task<int> SaveChangesAsync();
         #endregion
     }
 }

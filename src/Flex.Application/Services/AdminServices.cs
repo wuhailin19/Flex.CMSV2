@@ -29,7 +29,34 @@ namespace Flex.Application.Services
         /// <returns></returns>
         public async Task<UserData> GetAdminValidateInfoAsync(long id) =>
           _mapper.Map<UserData>(
-              await _unitOfWork.GetRepository<SysAdmin>().GetFirstOrDefaultAsync(m => m.Id == id, null, null, true, false));
+              await GetAdminById(id));
 
+        public async Task<SysAdmin> GetAdminById(long id) =>
+             await _unitOfWork.GetRepository<SysAdmin>().GetFirstOrDefaultAsync(m => m.Id == id, null, null, true, false);
+
+        /// <summary>
+        /// 获取当前Admin
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<SimpleAdminDto> GetCurrentAdminInfoAsync() =>
+          _mapper.Map<SimpleAdminDto>(
+              await _unitOfWork.GetRepository<SysAdmin>().GetFirstOrDefaultAsync(m => m.Id == _claims.UserId, null, null, true, false));
+
+        public async Task<ProblemDetails<string>> SimpleEditAdminUpdate(SimpleAdminDto simpleEditAdmin)
+        {
+            var model = await GetAdminById(simpleEditAdmin.Id);
+            if (model.Version == simpleEditAdmin.Version)
+            {
+                model = _mapper.Map<SysAdmin>(simpleEditAdmin);
+                model.LastEditDate = Clock.Now;
+                model.LastEditUser = _claims.UserId;
+                model.LastEditUserName = _claims.UserName;
+                model.Version += 1;
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+            }
+            return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改版本不一致");
+        }
     }
 }

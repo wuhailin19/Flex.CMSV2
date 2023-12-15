@@ -1,26 +1,32 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Flex.Core.JsonConvertExtension
 {
-    public class IdToStringConverter : JsonConverter
+    public class IdToStringConverter : JsonConverter<long>
     {
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override long Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            JToken jt = JValue.ReadFrom(reader);
+            // 从 JSON 中读取 long 值
+            if (reader.TryGetInt64(out long result))
+            {
+                return result;
+            }
 
-            return jt.Values();
+            // 如果无法成功读取，则尝试解析字符串并转换为 long
+            if (long.TryParse(reader.GetString(), out result))
+            {
+                return result;
+            }
+
+            // 如果无法成功解析，则抛出异常
+            throw new JsonException($"Unable to convert value '{reader.GetString()}' to {typeof(long)}.");
         }
 
-        public override bool CanConvert(Type objectType)
+        public override void Write(Utf8JsonWriter writer, long value, JsonSerializerOptions options)
         {
-            return typeof(System.Int64).Equals(objectType);
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            serializer.Serialize(writer, value.ToString());
+            // 将 long 值写入 JSON 中
+            writer.WriteNumberValue(value);
         }
     }
 }

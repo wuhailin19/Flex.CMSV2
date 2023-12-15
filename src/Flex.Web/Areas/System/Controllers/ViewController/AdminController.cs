@@ -3,9 +3,17 @@
 namespace Flex.Web.Areas.System.Controllers.ViewController
 {
     [Area("System")]
-    public class AdminViewController : Controller
+    public class AdminController : Controller
     {
         public IActionResult Edit()
+        {
+            return View();
+        }
+        public IActionResult SimpleEdit()
+        {
+            return View();
+        }
+        public IActionResult EditPassword()
         {
             return View();
         }

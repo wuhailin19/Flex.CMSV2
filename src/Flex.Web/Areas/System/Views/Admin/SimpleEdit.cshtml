@@ -23,11 +23,11 @@
     </style>
 </head>
 <body>
-    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
+    <form class="layui-form" style="padding: 2%;" lay-filter="formTest">
         <div class="layui-form-item" style="display:none;">
             <label class="layui-form-label">编号</label>
             <div class="layui-input-block">
-                <input type="text" name="AdminId" readonly="readonly" autocomplete="off" class="layui-input" value="">
+                <input type="text" name="Id" readonly="readonly" autocomplete="off" class="layui-input" value="">
             </div>
         </div>
         <div class="layui-form-item">
@@ -137,15 +137,14 @@
                 }
             }
             var parent_json;
-            $.ajax({
+            ajaxHttp({
                 url: api + 'Admin/getLoginInfo',
                 type: 'Get',
                 datatype: 'json',
                 async: false,
-                success: function (result) {
-                    let json = JSON.parse(result);
+                success: function (json) {
                     if (json.code == 200) {
-                        parent_json = json.data[0];
+                        parent_json = json.content;
                     } else {
                         layer.msg(json.msg, { icon: 5, time: 1000 });
                     }
@@ -158,21 +157,20 @@
                 , saveH: 150
                 , mark: 1 / 1    //选取比例
                 , area: '900px'  //弹窗宽度
-                , url: "OnloadUserAvatar"  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
+                , url: api + 'Admin/OnloadUserAvatar'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
                 , done: function (data) { //上传完毕回调
                     $("#inputimgurl").val(data);
-                    $("#srcimgurl").attr('src', "/" + data);
+                    $("#srcimgurl").attr('src',data);
                 }
             });
             function formRender() {
                 form.val("formTest", {
-                    'AdminId': parent_json.AdminId
+                    'Id': parent_json.Id
                     , 'UserName': parent_json.UserName
                     , 'UserSign': parent_json.UserSign
                     , 'UserAvatar': parent_json.UserAvatar
                     , 'AllowMultiLogin': parent_json.AllowMultiLogin
                     , 'FilterIp': parent_json.FilterIp
-                    , 'GroupId': parent_json.GroupId
                     , 'Islock': parent_json.Islock
                 });
                 $('#srcimgurl').attr('src', "/" + parent_json.UserAvatar);
@@ -184,7 +182,8 @@
             $('#editimg').attr('data-id', parent_json.AdminId);
             //监听提交
             form.on('submit(formDemo)', function (data) {
-                $.ajax({
+                data.field.Version = parent_json.Version;
+                ajaxHttp({
                     url: api + 'Admin/UpdateUserAvatar',
                     type: 'Post',
                     datatype: 'json',

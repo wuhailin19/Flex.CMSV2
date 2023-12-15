@@ -36,17 +36,6 @@ public abstract class ApiBaseController : ControllerBase
     }
 
     /// <summary>
-    /// 返回成功（带表头数据）
-    /// </summary>
-    /// <param name="msg">消息</param>
-    /// <param name="data">数据</param>
-    /// <returns></returns>
-    public static string Success<T>(List<ModelTools<T>> data, int code = ErrorCode.Success)
-    {
-        return Message<List<ModelTools<T>>>.Msg(code, data);
-    }
-
-    /// <summary>
     /// 返回失败
     /// </summary>
     /// <param name="msg">消息</param>
@@ -62,7 +51,7 @@ public abstract class ApiBaseController : ControllerBase
     /// <returns></returns>
     public static string Fail(string message)
     {
-        return Message<string>.Msg(ErrorCode.Fail, message);
+        return Message<string>.Msg(ErrorCode.Fail, null, message);
     }
     /// <summary>
     /// 返回未找到

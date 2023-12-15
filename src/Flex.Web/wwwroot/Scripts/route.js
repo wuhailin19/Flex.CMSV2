@@ -11,17 +11,21 @@ var HttpRequest = function (options) {
         cache: false,
         beforeSend: null,
         success: null,
-        complete: null
+        processData: true,
+        contentType: null,
+        complete: null,
+        setcontentType: true
     };
     var o = $.extend({}, defaults, options);
     $.ajax({
         url: o.url,
         type: o.type,
         headers: {
-            'Content-Type': o.contentType,
-            'Authorization':"Bearer "+ o.token,
+            'Authorization': "Bearer " + o.token,
             'Refresh_token': o.refreshtoken
         },
+        processData: o.processData,
+        contentType: o.contentType,
         data: o.data,
         dataType: o.dataType,
         async: o.async,
@@ -46,14 +50,21 @@ var loginHttp = function (options) {
     HttpRequest(options);
 }
 var ajaxHttp = function (options) {
-    if (options.type == 'post') {
-        options.contentType = 'application/x-www-form-urlencoded';
+    if (options.type != undefined) {
+        console.log(options.type)
+        if (options.type.toLowerCase() == 'post' && !options.setcontentType) {
+            options.contentType = 'application/json';
+            console.log(options.type)
+            console.log(options.contentType)
+        }
     }
+
     // 每次请求携带token
     options.token = localStorage.getItem('access_token');
     options.refreshtoken = localStorage.getItem('refresh_token');
     HttpRequest(options);
 }
+
 var httpTokenHeaders = {
     'Authorization': "Bearer " + localStorage.getItem('access_token'),
     'Refresh_token': "Bearer " + localStorage.getItem('refresh_token')

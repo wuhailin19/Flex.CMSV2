@@ -8,8 +8,7 @@ namespace Flex.Domain.Dtos.Menu
         public string title { get; set; }
         [JsonConverter(typeof(IdToStringConverter))]
         public long id { get; set; }
-        [JsonConverter(typeof(IdToStringConverter))]
-        public long parentid { get; set; }
+        public int parentid { get; set; }
         public string icode { get; set; }
         public bool spread { get; set; } = true;
         public string linkurl { get; set; }

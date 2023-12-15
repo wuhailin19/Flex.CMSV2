@@ -7,7 +7,7 @@ namespace Flex.Domain.Dtos.Role
 {
     public class RoleDto
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string UrlPermission { get; set; }
     }
 }
