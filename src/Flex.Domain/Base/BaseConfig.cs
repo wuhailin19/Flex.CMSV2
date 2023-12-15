@@ -17,6 +17,8 @@ namespace Flex.Domain.Base
             builder.Property(m => m.AddTime).HasDefaultValueSql("GETDATE()");
             builder.Property(m => m.AddUserName).HasMaxLength(200);
             builder.Property(m => m.LastEditUserName).HasMaxLength(200);
+            builder.Property(m => m.StatusCode).HasDefaultValue(StatusCode.Enable);
+            builder.Property(m => m.Version).HasDefaultValue(0);
             builder.HasKey(c => c.Id);
         }
         public virtual void ConfigureIntId<T>(EntityTypeBuilder<T> builder) where T : BaseIntEntity
@@ -24,6 +26,8 @@ namespace Flex.Domain.Base
             builder.Property(m => m.AddTime).HasDefaultValueSql("GETDATE()");
             builder.Property(m => m.AddUserName).HasMaxLength(200);
             builder.Property(m => m.LastEditUserName).HasMaxLength(200);
+            builder.Property(m => m.StatusCode).HasDefaultValue(StatusCode.Enable);
+            builder.Property(m => m.Version).HasDefaultValue(0);
             builder.HasKey(c => c.Id);
         }
     }

@@ -11,6 +11,8 @@ var HttpRequest = function (options) {
         cache: false,
         beforeSend: null,
         success: null,
+        processData: true,
+        contentType: null,
         complete: null
     };
     var o = $.extend({}, defaults, options);
@@ -22,6 +24,8 @@ var HttpRequest = function (options) {
             'Authorization':"Bearer "+ o.token,
             'Refresh_token': o.refreshtoken
         },
+        processData: o.processData,
+        contentType: o.contentType,
         data: o.data,
         dataType: o.dataType,
         async: o.async,

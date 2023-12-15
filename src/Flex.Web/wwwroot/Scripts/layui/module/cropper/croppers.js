@@ -97,7 +97,7 @@ layui.config({
                         var formData = new FormData();
                         formData.append('file', blob, 'head.jpg');
                         formData.append('adminId', self.adminid);
-                        $.ajax({
+                        ajaxHttp({
                             method: "post",
                             url: url, //用于文件上传的服务器端请求地址
                             data: formData,

@@ -31,5 +31,13 @@ namespace Flex.Application.Services
           _mapper.Map<UserData>(
               await _unitOfWork.GetRepository<SysAdmin>().GetFirstOrDefaultAsync(m => m.Id == id, null, null, true, false));
 
+        /// <summary>
+        /// 获取当前Admin
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<SimpleAdminDto> GetCurrentAdminInfoAsync() =>
+          _mapper.Map<SimpleAdminDto>(
+              await _unitOfWork.GetRepository<SysAdmin>().GetFirstOrDefaultAsync(m => m.Id == _claims.UserId, null, null, true, false));
     }
 }

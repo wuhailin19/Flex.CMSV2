@@ -2,7 +2,7 @@
 
 namespace Flex.Domain.Base
 {
-    public abstract class BaseEntity<T> : IEntity<T>
+    public abstract class BaseEntity : IEntity<string>
     {
         
     }

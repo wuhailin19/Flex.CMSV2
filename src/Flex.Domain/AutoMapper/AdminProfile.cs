@@ -12,6 +12,7 @@ namespace Flex.Domain.AutoMapper
         {
             CreateMap<SysAdmin, AdminDto>();
             CreateMap<SysAdmin, UserData>();
+            CreateMap<SysAdmin, SimpleAdminDto>();
             CreateMap<PagedList<SysAdmin>, PagedList<AdminDto>>();
         }
     }
