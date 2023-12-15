@@ -173,13 +173,13 @@
                     , 'FilterIp': parent_json.FilterIp
                     , 'Islock': parent_json.Islock
                 });
-                $('#srcimgurl').attr('src', "/" + parent_json.UserAvatar);
+                $('#srcimgurl').attr('src', parent_json.UserAvatar);
             }
             $('#LastLoginIP').html(parent_json.LastLoginIP);
             $('#LastLoginTime').html(parent_json.LastLoginTimeStr);
             $('#LastLogoutTime').html(parent_json.LastLogoutTimestr);
             formRender();
-            $('#editimg').attr('data-id', parent_json.AdminId);
+            $('#editimg').attr('data-id', parent_json.Id);
             //监听提交
             form.on('submit(formDemo)', function (data) {
                 data.field.Version = parent_json.Version;

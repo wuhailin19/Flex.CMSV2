@@ -1,6 +1,7 @@
 ﻿using Flex.Application.Contracts.Authorize;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 using System.Text.Json;
 
 [Authorize(AuthorizePolicy.Default)]
@@ -10,11 +11,11 @@ public abstract class ApiBaseController : ControllerBase
     /// 获取传递的Json并转换为T
     /// </summary>
     /// <returns></returns>
-    public T GetModel<T>()
+    public async Task<T> GetModel<T>()
     {
-        var sr = new StreamReader(Request.Body);
-        var stream = sr.ReadToEnd();
-        return JsonSerializer.Deserialize<T>(stream);
+        using StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
+        var stream =await reader.ReadToEndAsync();
+        return JsonHelper.Json<T>(stream);
     }
     /// <summary>
     /// 

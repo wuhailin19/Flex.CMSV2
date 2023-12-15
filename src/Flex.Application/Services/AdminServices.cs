@@ -1,4 +1,5 @@
-﻿using Flex.Domain.Dtos;
+﻿using AutoMapper;
+using Flex.Domain.Dtos;
 
 namespace Flex.Application.Services
 {
@@ -43,17 +44,18 @@ namespace Flex.Application.Services
           _mapper.Map<SimpleAdminDto>(
               await _unitOfWork.GetRepository<SysAdmin>().GetFirstOrDefaultAsync(m => m.Id == _claims.UserId, null, null, true, false));
 
-        public async Task<ProblemDetails<string>> SimpleEditAdminUpdate(SimpleAdminDto simpleEditAdmin)
+        public async Task<ProblemDetails<string>> SimpleEditAdminUpdate(SimpleEditAdminDto simpleEditAdmin)
         {
             var model = await GetAdminById(simpleEditAdmin.Id);
             if (model.Version == simpleEditAdmin.Version)
             {
-                model = _mapper.Map<SysAdmin>(simpleEditAdmin);
+                _mapper.Map(simpleEditAdmin, model);
                 model.LastEditDate = Clock.Now;
                 model.LastEditUser = _claims.UserId;
                 model.LastEditUserName = _claims.UserName;
                 model.Version += 1;
-                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.GetRepository<SysAdmin>().Update(model);
+                await  _unitOfWork.SaveChangesAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
             }
             return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改版本不一致");

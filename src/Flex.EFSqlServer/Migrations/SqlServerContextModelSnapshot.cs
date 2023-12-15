@@ -1656,7 +1656,7 @@ namespace Flex.EFSqlServer.Migrations
                         {
                             Id = 1560206066204151804L,
                             Account = "webmaster",
-                            AddTime = new DateTime(2023, 12, 15, 13, 56, 22, 463, DateTimeKind.Local).AddTicks(7759),
+                            AddTime = new DateTime(2023, 12, 15, 20, 13, 0, 951, DateTimeKind.Local).AddTicks(5621),
                             AddUser = 1560206066204151804L,
                             AddUserName = "webmaster",
                             AllowMultiLogin = true,
@@ -1665,7 +1665,7 @@ namespace Flex.EFSqlServer.Migrations
                             LastEditUser = 1560206066204151804L,
                             LastEditUserName = "webmaster",
                             LastLoginIP = "127.0.0.1",
-                            LastLoginTime = new DateTime(2023, 12, 15, 13, 56, 22, 463, DateTimeKind.Local).AddTicks(7759),
+                            LastLoginTime = new DateTime(2023, 12, 15, 20, 13, 0, 951, DateTimeKind.Local).AddTicks(5621),
                             LoginCount = 0,
                             MaxErrorCount = 0,
                             Mutiloginccode = "7675038.28325281",

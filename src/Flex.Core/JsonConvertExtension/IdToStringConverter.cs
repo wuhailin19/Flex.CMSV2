@@ -1,32 +1,34 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Flex.Core.JsonConvertExtension
 {
-    public class IdToStringConverter : JsonConverter<long>
+    public class IdToStringConverter : JsonConverter
     {
-        public override long Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            // 从 JSON 中读取 long 值
-            if (reader.TryGetInt64(out long result))
+            if (reader.TokenType == JsonToken.Null)
+                return null;
+
+            if (reader.TokenType == JsonToken.String)
             {
-                return result;
+                // 对于字符串类型，直接进行反序列化
+                return reader.Value.ToString();
             }
 
-            // 如果无法成功读取，则尝试解析字符串并转换为 long
-            if (long.TryParse(reader.GetString(), out result))
-            {
-                return result;
-            }
-
-            // 如果无法成功解析，则抛出异常
-            throw new JsonException($"Unable to convert value '{reader.GetString()}' to {typeof(long)}.");
+            throw new JsonSerializationException($"Unexpected token type: {reader.TokenType}");
         }
 
-        public override void Write(Utf8JsonWriter writer, long value, JsonSerializerOptions options)
+        public override bool CanConvert(Type objectType)
         {
-            // 将 long 值写入 JSON 中
-            writer.WriteNumberValue(value);
+            // 检查是否为整数类型
+            return objectType == typeof(int) || objectType == typeof(long) || objectType == typeof(short);
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            // 将值转换为字符串并序列化到 JSON 中
+            serializer.Serialize(writer, value.ToString());
         }
     }
+
 }

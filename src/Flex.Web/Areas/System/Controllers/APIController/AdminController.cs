@@ -4,6 +4,7 @@ using Flex.Core.Attributes;
 using Flex.Core.Helper;
 using Flex.Domain.Dtos.Admin;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace Flex.Web.Areas.System.Controllers.APIController
 {
@@ -14,7 +15,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         private IRoleServices _roleServices;
         private IAdminServices _adminServices;
         private IPictureServices _pictureServices;
-        public AdminController(IRoleServices roleServices,IAdminServices adminServices, IPictureServices pictureServices)
+        public AdminController(IRoleServices roleServices, IAdminServices adminServices, IPictureServices pictureServices)
         {
             _roleServices = roleServices;
             _adminServices = adminServices;
@@ -39,7 +40,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         [HttpGet("getLoginInfo")]
         public async Task<string> getLoginInfo()
         {
-            var model =await _adminServices.GetCurrentAdminInfoAsync();
+            var model = await _adminServices.GetCurrentAdminInfoAsync();
             if (model == null)
                 return Fail("没有登录");
             return Success(model);
@@ -64,10 +65,11 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// <returns></returns>
         [HttpPost("UpdateUserAvatar")]
         [Descriper(Name = "编辑账号基本资料")]
-        public async Task<string> UpdateUserAvatar([FromBody] SimpleAdminDto simpleEditAdmin)
+        public async Task<string> UpdateUserAvatar()
         {
-            var result =await _adminServices.SimpleEditAdminUpdate(simpleEditAdmin);
-            if(result.IsSuccess)
+            SimpleEditAdminDto simpleEditAdmin = await GetModel<SimpleEditAdminDto>();
+            var result = await _adminServices.SimpleEditAdminUpdate(simpleEditAdmin);
+            if (result.IsSuccess)
                 return Success(result.Detail);
             return Fail(result.Detail);
         }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Flex.EFSqlServer.Migrations
 {
     /// <inheritdoc />
-    public partial class tableU_init : Migration
+    public partial class FlexCmsDbInit20231215 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,7 +39,7 @@ namespace Flex.EFSqlServer.Migrations
                     MaxErrorCount = table.Column<int>(type: "int", nullable: false, defaultValue: 10),
                     AddUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     AddUser = table.Column<long>(type: "bigint", nullable: true),
-                    AddTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AddTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     LastEditUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     LastEditUser = table.Column<long>(type: "bigint", nullable: true),
                     LastEditDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -65,12 +65,12 @@ namespace Flex.EFSqlServer.Migrations
                     GroupDesc = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AddUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     AddUser = table.Column<long>(type: "bigint", nullable: true),
-                    AddTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AddTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     LastEditUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     LastEditUser = table.Column<long>(type: "bigint", nullable: true),
                     LastEditDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    StatusCode = table.Column<int>(type: "int", nullable: true),
-                    Version = table.Column<int>(type: "int", nullable: true)
+                    StatusCode = table.Column<int>(type: "int", nullable: true, defaultValue: 1),
+                    Version = table.Column<int>(type: "int", nullable: true, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -99,12 +99,59 @@ namespace Flex.EFSqlServer.Migrations
                     LastEditUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     LastEditUser = table.Column<long>(type: "bigint", nullable: true),
                     LastEditDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    StatusCode = table.Column<int>(type: "int", nullable: true),
+                    StatusCode = table.Column<int>(type: "int", nullable: true, defaultValue: 1),
                     Version = table.Column<int>(type: "int", nullable: true, defaultValue: 0)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tbl_core_menu", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tbl_core_picture",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Src = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    CategoryID = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    AddUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    AddUser = table.Column<long>(type: "bigint", nullable: true),
+                    AddTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    LastEditUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    LastEditUser = table.Column<long>(type: "bigint", nullable: true),
+                    LastEditDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    StatusCode = table.Column<int>(type: "int", nullable: true, defaultValue: 1),
+                    Version = table.Column<int>(type: "int", nullable: true, defaultValue: 0)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_core_picture", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tbl_core_pictureCategory",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    AddUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    AddUser = table.Column<long>(type: "bigint", nullable: true),
+                    AddTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    LastEditUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    LastEditUser = table.Column<long>(type: "bigint", nullable: true),
+                    LastEditDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    StatusCode = table.Column<int>(type: "int", nullable: true, defaultValue: 1),
+                    Version = table.Column<int>(type: "int", nullable: true, defaultValue: 0)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_core_pictureCategory", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -126,8 +173,8 @@ namespace Flex.EFSqlServer.Migrations
                     LastEditUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     LastEditUser = table.Column<long>(type: "bigint", nullable: true),
                     LastEditDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    StatusCode = table.Column<int>(type: "int", nullable: true),
-                    Version = table.Column<int>(type: "int", nullable: true)
+                    StatusCode = table.Column<int>(type: "int", nullable: true, defaultValue: 1),
+                    Version = table.Column<int>(type: "int", nullable: true, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -155,8 +202,8 @@ namespace Flex.EFSqlServer.Migrations
                     LastEditUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     LastEditUser = table.Column<long>(type: "bigint", nullable: true),
                     LastEditDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    StatusCode = table.Column<int>(type: "int", nullable: true),
-                    Version = table.Column<int>(type: "int", nullable: true)
+                    StatusCode = table.Column<int>(type: "int", nullable: true, defaultValue: 1),
+                    Version = table.Column<int>(type: "int", nullable: true, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -169,10 +216,10 @@ namespace Flex.EFSqlServer.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Index_System_Menu = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Index_Site_Menu = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Index_Shortcut = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Index_FileManage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Index_System_Menu = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Index_Site_Menu = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Index_Shortcut = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Index_FileManage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AdminId = table.Column<long>(type: "bigint", nullable: false),
                     AddUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     AddUser = table.Column<long>(type: "bigint", nullable: true),
@@ -180,8 +227,8 @@ namespace Flex.EFSqlServer.Migrations
                     LastEditUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     LastEditUser = table.Column<long>(type: "bigint", nullable: true),
                     LastEditDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    StatusCode = table.Column<int>(type: "int", nullable: true),
-                    Version = table.Column<int>(type: "int", nullable: true)
+                    StatusCode = table.Column<int>(type: "int", nullable: true, defaultValue: 1),
+                    Version = table.Column<int>(type: "int", nullable: true, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -205,7 +252,7 @@ namespace Flex.EFSqlServer.Migrations
             migrationBuilder.InsertData(
                 table: "tbl_core_admin",
                 columns: new[] { "Id", "Account", "AddTime", "AddUser", "AddUserName", "AllowMultiLogin", "ErrorCount", "FilterIp", "LastEditDate", "LastEditUser", "LastEditUserName", "LastLoginIP", "LastLoginTime", "LockTime", "Mutiloginccode", "Password", "RoleId", "RoleName", "SaltValue", "UserAvatar", "UserName", "UserSign", "Version" },
-                values: new object[] { 1560206066204151804L, "webmaster", new DateTime(2023, 12, 14, 16, 5, 32, 117, DateTimeKind.Local).AddTicks(6306), 1560206066204151804L, "webmaster", true, 0, null, null, 1560206066204151804L, "webmaster", "127.0.0.1", new DateTime(2023, 12, 14, 16, 5, 32, 117, DateTimeKind.Local).AddTicks(6306), null, "7675038.28325281", "5A72A8F355E9A88D03C30778C2770E27", 0, "超级管理员", "4ad9879fb285407f", null, "超级管理员", null, 0 });
+                values: new object[] { 1560206066204151804L, "webmaster", new DateTime(2023, 12, 15, 20, 13, 0, 951, DateTimeKind.Local).AddTicks(5621), 1560206066204151804L, "webmaster", true, 0, null, null, 1560206066204151804L, "webmaster", "127.0.0.1", new DateTime(2023, 12, 15, 20, 13, 0, 951, DateTimeKind.Local).AddTicks(5621), null, "7675038.28325281", "5A72A8F355E9A88D03C30778C2770E27", 0, "超级管理员", "4ad9879fb285407f", null, "超级管理员", null, 0 });
 
             migrationBuilder.InsertData(
                 table: "tbl_core_menu",
@@ -350,6 +397,12 @@ namespace Flex.EFSqlServer.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_core_menu");
+
+            migrationBuilder.DropTable(
+                name: "tbl_core_picture");
+
+            migrationBuilder.DropTable(
+                name: "tbl_core_pictureCategory");
 
             migrationBuilder.DropTable(
                 name: "tbl_core_role");

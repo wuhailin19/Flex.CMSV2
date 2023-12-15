@@ -15,7 +15,8 @@ namespace Flex.Core.Serialize
         {
             var setting = new JsonSerializerSettings
             {
-                ContractResolver = new JsonContractResolver(namingType)
+                ContractResolver = new JsonContractResolver(namingType),
+                Converters = { new StringToLongConverter() }
             };
             if (indented)
                 setting.Formatting = Formatting.Indented;
