@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/src/Flex.Web/appsettings.json
+/src/Flex.Web/wwwroot/upload/image/2023-12-15
