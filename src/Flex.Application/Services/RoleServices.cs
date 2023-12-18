@@ -1,4 +1,5 @@
-﻿using Flex.Domain.Dtos.Role;
+﻿using Consul;
+using Flex.Domain.Dtos.Role;
 
 namespace Flex.Application.Services
 {
@@ -13,7 +14,8 @@ namespace Flex.Application.Services
         /// 根据Token获取当前角色权限
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<RoleDto>> GetCurrentAdminRoleByTokenAsync() {
+        public async Task<IEnumerable<RoleDto>> GetCurrentAdminRoleByTokenAsync()
+        {
             if (_claims is null)
                 return default;
             return _mapper.Map<IEnumerable<RoleDto>>(await GetRoleByRoleIdAsync(_claims.UserRole));
@@ -27,7 +29,7 @@ namespace Flex.Application.Services
         public async Task<PagedList<RoleColumnDto>> GetRoleListAsync(int page, int pagesize)
         {
             var list = await _unitOfWork.GetRepository<SysRole>().GetPagedListAsync(null, null, null, page, pagesize);
-            PagedList<RoleColumnDto> trees =_mapper
+            PagedList<RoleColumnDto> trees = _mapper
                 .Map<PagedList<RoleColumnDto>>(list);
             return trees;
         }
@@ -44,9 +46,43 @@ namespace Flex.Application.Services
                 .GetAllAsync(m => rolelist.Contains(m.Id.ToString()), null, null, true, false);
         }
 
+        public async Task<ProblemDetails<string>> AddNewRole(InputRoleDto role)
+        {
+            var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.RolesName == role.RolesName);
+            if (model != null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "该角色已存在");
+            var result = await _unitOfWork.GetRepository<SysRole>().InsertAsync(_mapper.Map<SysRole>(role));
+            await _unitOfWork.SaveChangesAsync();
+            if (result.Entity.Id > 0)
+                return new ProblemDetails<string>(HttpStatusCode.OK, "添加成功");
+            return new ProblemDetails<string>(HttpStatusCode.BadRequest, "添加失败");
+        }
+
+        public async Task<ProblemDetails<string>> UpdateMenuPermission(InputRoleMenuDto role)
+        {
+            var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
+            if (model == null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "该角色不存在");
+            try
+            {
+                model.MenuPermissions = role.MenuPermissions;
+                model.LastEditUser = _claims.UserId;
+                model.LastEditUserName= _claims.UserName;
+                model.LastEditDate = Clock.Now;
+                model.Version += 1;
+                
+                _unitOfWork.GetRepository<SysRole>().Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+            }
+            catch
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改失败");
+            }
+        }
         public async Task<Dictionary<string, List<string>>> PermissionDtosAsync()
         {
-            
+
             var result = new Dictionary<string, List<string>>();
             var RoleList = await _unitOfWork.GetRepository<SysRole>().GetAllAsync();
 
@@ -62,7 +98,7 @@ namespace Flex.Application.Services
 
                     //var model = new PermissionDto();
 
-                    result.Add(item.Id.ToString(), 
+                    result.Add(item.Id.ToString(),
                         (from u in u_list
                          select u.Url.ToLower())
                          .ToList());

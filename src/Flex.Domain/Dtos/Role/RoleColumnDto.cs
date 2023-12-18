@@ -16,8 +16,12 @@ namespace Flex.Domain.Dtos.Role
         public string? RolesDesc { get; set; }
         [ToolAttr(NameAttr = "创建者", Width = "200")]
         public string? AddUserName { get; set; }
-        [ToolAttr(NameAttr = "创建时间", Width = "200")]
-        public DateTime AddTime { get; set; } 
+        [ToolAttr(NameAttr = "创建时间", Width = "150")]
+        public DateTime AddTime { get; set; }
+        [ToolAttr(NameAttr = "修改人", Width = "200")]
+        public string? LastEditUserName { get; set; }
+        [ToolAttr(NameAttr = "修改时间", Width = "150")]
+        public DateTime? LastEditDate { get; set; }
         [ToolAttr(NameAttr = "操作", Toolbar = "#barDemo", AlignAttr = AlignEnum.Center, Width = "400")]
         public controlType Operation { get; set; }
     }

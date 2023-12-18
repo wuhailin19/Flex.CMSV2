@@ -1,12 +1,12 @@
 ﻿var columnlist;
 var req_Data;
-$.ajax({
+ajaxHttp({
     url: routeLink + 'Column',
     type: 'Get',
     async: false,
     dataType: 'json',
     success: function (result) {
-        columnlist = result.data;
+        columnlist = result.content;
     },
     complete: function () { }
 })
@@ -15,8 +15,9 @@ layui.use('table', function () {
     //JS 调用：
     var insTb = table.render({
         elem: '#demo'
-        , url: routeLink + 'List'
+        , url: routeLink + 'ListAsync'
         , height: 'full-30'
+        , headers: httpTokenHeaders
         , toolbar: '#toolbarDemo'
         , limits: [1, 5, 10, 15, 20]
         , response: {
@@ -28,7 +29,15 @@ layui.use('table', function () {
         , limit: 15
         , page: true //开启分页
         , method: 'Get'
-        , cols: [columnlist]
+        , cols: [columnlist],
+        parseData: function (res) {
+            console.log(res);
+            return {
+                "code": res.code, //数据状态的字段名称，默认：code
+                "count": res.content.TotalCount, //状态信息的字段名称，默认：msg
+                "data": res.content.Items//数据总数的字段名称，默认：count
+            };
+        }
         ,done: function (res, curr, count) {
             if (curr > 1 && res.data.length === 0) {
                 insTb.page = curr - 1;

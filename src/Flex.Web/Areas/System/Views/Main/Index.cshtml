@@ -3,7 +3,7 @@
 <html>
 <head>
     <link href="/Scripts/layui/css/layui.css" rel="stylesheet" />
-    <link href="/Scripts/iconfont/iconfont.css" rel="stylesheet" />
+    <link href="~/scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
     <link href="/Scripts/layui/css/adminui.css" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
     <script src="/Scripts/jquery-1.8.2.min.js"></script>
@@ -21,7 +21,7 @@
         <div class="layui-header">
             <div class="layui-logo">
                 <img src="" class="layui-nav-img admin_useravatar" />
-                <span>后台管理系统</span>
+                <span id="sitename">后台管理系统</span>
             </div>
             <!-- Header -->
             <ul class="layui-nav layui-layout-left">
@@ -110,20 +110,22 @@
 
         })
         function InitAdmin() {
-            $.ajax({
+            ajaxHttp({
                 url: api + 'Admin/getLoginInfo',
                 type: 'Get',
                 async: false,
                 dataType: "json",
                 success: function (json) {
-                    var admin = json.data[0];
+                    var admin = json.content;
                     $('.admin_useravatar').each(function () {
-                        $(this).attr('src', '/' + admin.UserAvatar);
+                        $(this).attr('src', admin.UserAvatar);
                     })
+                    $('#sitename').text(admin.UserSign);
                     $('.admin_username').text(admin.UserName)
                 }
             })
         }
+        InitAdmin();
         function Init() {
             ajaxHttp({
                 url: api + 'Menu/getMainMenuStrAsync',

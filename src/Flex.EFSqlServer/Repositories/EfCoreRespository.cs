@@ -202,6 +202,19 @@ namespace Flex.EFSqlServer.Repositories
 
         #region GetFirstOrDefault 
 
+        public virtual async Task<TEntity> GetFirstOrDefaultAsync(
+            Expression<Func<TEntity, bool>> predicate)
+        {
+            return await GetFirstOrDefaultAsync(predicate, null, null, true, false);
+        }
+
+        public virtual async Task<TEntity> GetFirstOrDefaultAsync(
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null)
+        {
+            return await GetFirstOrDefaultAsync(predicate, orderBy, null, true, false);
+        }
+
         public virtual TEntity GetFirstOrDefault(
             Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
@@ -366,7 +379,7 @@ namespace Flex.EFSqlServer.Repositories
         }
         public virtual Task<int> SaveChangesAsync()
         {
-           return _dbContext.SaveChangesAsync();
+            return _dbContext.SaveChangesAsync();
         }
 
         public virtual void UpdateAsync(TEntity entity)

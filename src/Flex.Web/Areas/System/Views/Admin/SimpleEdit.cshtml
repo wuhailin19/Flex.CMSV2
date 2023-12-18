@@ -5,10 +5,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" /><link href="~/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
-    <script src="~/Scripts/layui/layui.js" type="text/javascript"></script><script src="~/Scripts/route.js" type="text/javascript"></script>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js" type="text/javascript"></script>
+    <script src="~/Scripts/route.js" type="text/javascript"></script>
     <script src="~/Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
-    <link href="~/Scripts/iconfont/iconfont.css" rel="stylesheet" />
     <style>
         .layui-form-item .layui-form-label { text-align: center; }
         .edui-editor.edui-default { width: 100% !important; }
@@ -23,7 +24,7 @@
     </style>
 </head>
 <body>
-    <form class="layui-form" style="padding: 2%;" lay-filter="formTest">
+    <form class="layui-form" style="padding: 2%;" onclick="return false" lay-filter="formTest">
         <div class="layui-form-item" style="display:none;">
             <label class="layui-form-label">编号</label>
             <div class="layui-input-block">
@@ -48,7 +49,7 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">用户签名</label>
+            <label class="layui-form-label">后台名称</label>
             <div class="layui-input-block">
                 <input type="text" name="UserSign" autocomplete="off" placeholder="" class="layui-input">
             </div>
@@ -76,20 +77,22 @@
         </div>
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">本次登录时间</label>
-            <div class="layui-input-inline" id="LastLoginTime" style="width:30%;margin-top:10px ">
-
+            <div class="layui-input-inline" id="CurrentLoginTime" style="width:30%;margin-top:10px ">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">本次登录IP</label>
-            <div class="layui-input-inline" id="LastLoginIP" style="width:30%;margin-top:10px ">
-
+            <div class="layui-input-inline" id="CurrentLoginIP" style="width:30%;margin-top:10px ">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">上次退出时间</label>
-            <div class="layui-input-inline" id="LastLogoutTime" style="width:30%;margin-top:10px ">
-
+            <label class="layui-form-label">上次登录时间</label>
+            <div class="layui-input-inline" id="LastLoginTime" style="width:30%;margin-top:10px ">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">上次登录IP</label>
+            <div class="layui-input-inline" id="LastLoginIP" style="width:30%;margin-top:10px ">
             </div>
         </div>
         <div class="layui-form-item">
@@ -137,19 +140,23 @@
                 }
             }
             var parent_json;
-            ajaxHttp({
-                url: api + 'Admin/getLoginInfo',
-                type: 'Get',
-                datatype: 'json',
-                async: false,
-                success: function (json) {
-                    if (json.code == 200) {
-                        parent_json = json.content;
-                    } else {
-                        layer.msg(json.msg, { icon: 5, time: 1000 });
+            function Init() {
+                ajaxHttp({
+                    url: api + 'Admin/getLoginInfo',
+                    type: 'Get',
+                    datatype: 'json',
+                    async: false,
+                    success: function (json) {
+                        if (json.code == 200) {
+                            parent_json = json.content;
+                        } else {
+                            layer.msg(json.msg, { icon: 5, time: 1000 });
+                        }
                     }
-                }
-            })
+                })
+                formRender();
+            }
+            Init();
             //创建一个头像上传组件
             croppers.render({
                 elem: '#editimg'
@@ -160,7 +167,7 @@
                 , url: api + 'Admin/OnloadUserAvatar'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
                 , done: function (data) { //上传完毕回调
                     $("#inputimgurl").val(data);
-                    $("#srcimgurl").attr('src',data);
+                    $("#srcimgurl").attr('src', data);
                 }
             });
             function formRender() {
@@ -175,10 +182,11 @@
                 });
                 $('#srcimgurl').attr('src', parent_json.UserAvatar);
             }
-            $('#LastLoginIP').html(parent_json.LastLoginIP);
-            $('#LastLoginTime').html(parent_json.LastLoginTimeStr);
-            $('#LastLogoutTime').html(parent_json.LastLogoutTimestr);
-            formRender();
+            $('#CurrentLoginTime').html(parent_json.adminLoginLog.CurrentLoginTime);
+            $('#CurrentLoginIP').html(parent_json.adminLoginLog.CurrentLoginIP);
+            $('#LastLoginIP').html(parent_json.adminLoginLog.LastLoginIP);
+            $('#LastLoginTime').html(parent_json.adminLoginLog.LastLoginTime);
+            
             $('#editimg').attr('data-id', parent_json.Id);
             //监听提交
             form.on('submit(formDemo)', function (data) {
@@ -189,11 +197,11 @@
                     datatype: 'json',
                     data: JSON.stringify(data.field),
                     async: false,
-                    success: function (result) {
-                        let json = JSON.parse(result);
+                    success: function (json) {
                         if (json.code == 200) {
                             layer.msg(json.msg, { icon: 6, time: 300 }, function () {
                                 parent.InitAdmin();
+                                Init();
                             });
                         } else {
                             layer.msg(json.msg, { icon: 5, time: 1000 });

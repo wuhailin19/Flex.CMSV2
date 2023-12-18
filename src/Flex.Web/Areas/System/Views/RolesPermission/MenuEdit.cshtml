@@ -17,7 +17,7 @@
     </style>
 </head>
 <body>
-    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
+    <form class="layui-form" action="" onclick="return false;" style="padding: 2%;" lay-filter="formTest">
         <div class="layui-form-item">菜单树</div>
         <div id="ParentID" class="demo-tree-more" style="height:500px;overflow-y:scroll;"></div>
         <div class="layui-form-item">
@@ -82,14 +82,17 @@
                 var json = data.field;
                 var checkData = tree.getChecked('id');
                 var list = getChecked_list(checkData);
-                $.ajax({
-                    url: api + 'RolesPermission/UpdateMenuPermission',
+                var model = {
+                    Id: parent_json.Id,
+                    MenuPermissions: list
+                }
+                ajaxHttp({
+                    url: api + 'RolePermission/UpdateMenuPermission',
                     type: 'Post',
                     datatype: 'json',
-                    data: { Id: parent_json.RolesID, chooseId: list},
+                    data: JSON.stringify(model),
                     async: false,
-                    success: function (result) {
-                        let json = JSON.parse(result);
+                    success: function (json) {
                         if (json.code == 200) {
                             layer.msg(json.msg, { icon: 6, time: 300 }, function () {
                                 var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引

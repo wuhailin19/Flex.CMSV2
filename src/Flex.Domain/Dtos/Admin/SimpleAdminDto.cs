@@ -15,6 +15,7 @@ namespace Flex.Domain.Dtos.Admin
         public bool Islock { get; set; }
         public DateTime? LastLoginTime { set; get; }
         public DateTime? LastLogoutTime { set; get; }
+        public AdminLoginLog adminLoginLog { set; get; }
         public int Version { set; get; }
     }
 }

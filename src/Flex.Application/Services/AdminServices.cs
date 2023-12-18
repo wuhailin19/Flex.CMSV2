@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Flex.Domain.Dtos;
+using Flex.Domain.Dtos.Role;
 
 namespace Flex.Application.Services
 {
@@ -22,6 +23,19 @@ namespace Flex.Application.Services
                 .GetRepository<SysAdmin>()
                 .GetPagedListAsync(null, orderby, null, 1, pagesize);
             return _mapper.Map<PagedList<AdminDto>>(admin_list);
+        }
+        /// <summary>
+        /// 获取账号列表
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public async Task<PagedList<AdminColumnDto>> GetAdminListAsync(int page, int pagesize)
+        {
+            var list = await _unitOfWork.GetRepository<SysAdmin>().GetPagedListAsync(null, null, null, page, pagesize);
+            PagedList<AdminColumnDto> model = _mapper
+                .Map<PagedList<AdminColumnDto>>(list);
+            return model;
         }
         /// <summary>
         /// 根据ID获取Admin
@@ -58,7 +72,7 @@ namespace Flex.Application.Services
                 await  _unitOfWork.SaveChangesAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
             }
-            return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改版本不一致");
+            return new ProblemDetails<string>(HttpStatusCode.BadRequest, "重复修改");
         }
     }
 }

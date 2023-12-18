@@ -30,4 +30,9 @@
     <Folder Include="Views\" />
     <Folder Include="wwwroot\Content\images\" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="wwwroot\js\Admin\js\index.js" />
+    <None Include="wwwroot\js\Admin\js\openPageOptions.js" />
+  </ItemGroup>
 </Project>

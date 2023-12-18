@@ -51,11 +51,10 @@ var loginHttp = function (options) {
 }
 var ajaxHttp = function (options) {
     if (options.type != undefined) {
-        console.log(options.type)
-        if (options.type.toLowerCase() == 'post' && !options.setcontentType) {
-            options.contentType = 'application/json';
-            console.log(options.type)
-            console.log(options.contentType)
+        if (!options.setcontentType) {
+            if (options.type.toLowerCase() == 'post' || options.type.toLowerCase() == 'put') {
+                options.contentType = 'application/json';
+            }
         }
     }
 

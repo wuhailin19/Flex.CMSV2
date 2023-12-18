@@ -106,13 +106,29 @@
                 return Problem<UserData>(HttpStatusCode.BadRequest, "用户名或密码错误");
             }
             var admin = await admin_unit.GetFirstOrDefaultAsync(m => m.Account == Account, null, null, true, false);
-            admin.LastLoginIP = AcbHttpContext.ClientIp;
+            
             result = await CheckPasswordAsync(admin, adminLoginDto.Password).ConfigureAwait(false);
             if (!result.IsSuccess)
             {
                 return result;
             }
+            AdminLoginLog loginLog = new AdminLoginLog();
+            loginLog.CurrentLoginTime = DateTime.Now;
+            loginLog.CurrentLoginIP = AcbHttpContext.ClientIp;
             //登录成功后的操作
+            if (admin.LoginLogString.IsNullOrEmpty())
+            {
+                loginLog.LastLoginTime = admin.LastLoginTime;
+                loginLog.LastLoginIP = admin.LastLoginIP;
+            }
+            else
+            {
+                var lastloginLog = JsonHelper.Json<AdminLoginLog>(admin.LoginLogString);
+                loginLog.LastLoginTime = lastloginLog.CurrentLoginTime;
+                loginLog.LastLoginIP = lastloginLog.CurrentLoginIP;
+            }
+            admin.LoginLogString = JsonHelper.ToJson(loginLog);
+            admin.LastLoginIP = AcbHttpContext.ClientIp;
             admin.LastLoginTime = DateTime.Now;
             admin.LoginCount += 1;
             admin.ErrorCount = 0;
@@ -121,7 +137,5 @@
             await _unitOfWork.SaveChangesTranAsync().ConfigureAwait(false);
             return Problem(HttpStatusCode.OK, _mapper.Map<UserData>(admin));
         }
-
-
     }
 }

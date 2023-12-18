@@ -21,6 +21,19 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             _adminServices = adminServices;
             _pictureServices = pictureServices;
         }
+        [HttpGet("Column")]
+        [Descriper(IsFilter = true)]
+        public string Column()
+        {
+            return Success(ModelTools<AdminColumnDto>.getColumnDescList());
+        }
+        [HttpGet("ListAsync")]
+        [Descriper(Name = "获取AdminList")]
+        public async Task<string> ListAsync(int page, int limit)
+        {
+            return Success(await _adminServices.GetAdminListAsync(page, limit));
+        }
+
         /// <summary>
         /// 根据Token获取当前角色权限
         /// </summary>
@@ -38,6 +51,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// </summary>
         /// <returns></returns>
         [HttpGet("getLoginInfo")]
+        [Descriper(Name = "获取当前登录信息")]
         public async Task<string> getLoginInfo()
         {
             var model = await _adminServices.GetCurrentAdminInfoAsync();

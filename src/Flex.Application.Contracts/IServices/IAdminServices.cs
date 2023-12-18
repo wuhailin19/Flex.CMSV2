@@ -7,6 +7,7 @@ namespace Flex.Application.Contracts.IServices
 {
     public interface IAdminServices:  IBaseService
     {
+        Task<PagedList<AdminColumnDto>> GetAdminListAsync(int page, int pagesize);
         Task<UserData> GetAdminValidateInfoAsync(long id);
         Task<IEnumerable<AdminDto>> GetAsync();
         Task<SimpleAdminDto> GetCurrentAdminInfoAsync();
