@@ -28,7 +28,7 @@
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: routeLink + url,
+            content: routePageLink + url,
             end: function () {
                 defaultOptions.callBack(insTb);
             }

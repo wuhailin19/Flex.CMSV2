@@ -182,11 +182,12 @@
                 });
                 $('#srcimgurl').attr('src', parent_json.UserAvatar);
             }
-            $('#CurrentLoginTime').html(parent_json.adminLoginLog.CurrentLoginTime);
-            $('#CurrentLoginIP').html(parent_json.adminLoginLog.CurrentLoginIP);
-            $('#LastLoginIP').html(parent_json.adminLoginLog.LastLoginIP);
-            $('#LastLoginTime').html(parent_json.adminLoginLog.LastLoginTime);
-            
+            $('#CurrentLoginTime').html(parent_json.CurrentLoginTime);
+            $('#CurrentLoginIP').html(parent_json.CurrentLoginIP);
+            if (parent_json.adminLoginLog!=undefined) {
+                $('#LastLoginIP').html(parent_json.adminLoginLog.LastLoginIP);
+                $('#LastLoginTime').html(parent_json.adminLoginLog.LastLoginTime);
+            }
             $('#editimg').attr('data-id', parent_json.Id);
             //监听提交
             form.on('submit(formDemo)', function (data) {

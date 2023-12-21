@@ -12,6 +12,7 @@ namespace Flex.Application.Contracts.IServices
         Task<IEnumerable<AdminDto>> GetAsync();
         Task<SimpleAdminDto> GetCurrentAdminInfoAsync();
         Task<PagedList<AdminDto>> GetPageListAsync(int pagesize = 10);
-        Task<ProblemDetails<string>> SimpleEditAdminUpdate(SimpleEditAdminDto simpleEditAdmin);
+		Task<ProblemDetails<string>> InsertAdmin(AdminEditDto insertAdmin);
+		Task<ProblemDetails<string>> SimpleEditAdminUpdate(SimpleEditAdminDto simpleEditAdmin);
     }
 }

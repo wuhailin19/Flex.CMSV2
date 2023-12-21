@@ -10,6 +10,7 @@ namespace Flex.Application.Contracts.IServices
         Task<IEnumerable<RoleDto>> GetCurrentAdminRoleByTokenAsync();
         Task<IEnumerable<SysRole>> GetRoleByRoleIdAsync(string roleId);
         Task<PagedList<RoleColumnDto>> GetRoleListAsync(int page, int pagesize);
+        Task<IEnumerable<RoleSelectDto>> GetRoleListAsync();
         Task<Dictionary<string, List<string>>> PermissionDtosAsync();
         Task<ProblemDetails<string>> UpdateMenuPermission(InputRoleMenuDto role);
     }

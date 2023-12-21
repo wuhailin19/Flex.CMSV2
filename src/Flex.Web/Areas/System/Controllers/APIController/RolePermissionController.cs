@@ -25,6 +25,11 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             return Success(await _roleServices.GetRoleListAsync(page, limit));
         }
+        [HttpGet("PermissionList")]
+        public async Task<string> PermissionList()
+        {
+            return Success(await _roleServices.GetRoleListAsync());
+        }
         /// <summary>
         /// 新增角色
         /// </summary>

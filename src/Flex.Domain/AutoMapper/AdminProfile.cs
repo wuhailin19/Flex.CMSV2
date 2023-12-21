@@ -16,6 +16,7 @@ namespace Flex.Domain.AutoMapper
             CreateMap<SysAdmin, SimpleAdminDto>().ForMember(dest => dest.adminLoginLog,opt=>opt.MapFrom(src=> DeserializeLoginLog(src.LoginLogString)));
             CreateMap<SimpleAdminDto, SysAdmin>();
             CreateMap<SysAdmin, AdminColumnDto>();
+            CreateMap<AdminEditDto, SysAdmin>();
             CreateMap<SimpleEditAdminDto, SysAdmin>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
             .ForMember(dest => dest.UserAvatar, opt => opt.MapFrom(src => src.UserAvatar))
@@ -23,7 +24,8 @@ namespace Flex.Domain.AutoMapper
             .ForMember(dest => dest.FilterIp, opt => opt.MapFrom(src => src.FilterIp))
             .ForMember(dest => dest.AllowMultiLogin, opt => opt.MapFrom(src => src.AllowMultiLogin))
             .ForMember(dest => dest.Islock, opt => opt.MapFrom(src => src.Islock));
-            CreateMap<PagedList<SysAdmin>, PagedList<AdminDto>>();
+
+			CreateMap<PagedList<SysAdmin>, PagedList<AdminDto>>();
             CreateMap<PagedList<SysAdmin>, PagedList<AdminColumnDto>>();
         }
         private AdminLoginLog DeserializeLoginLog(string loginLogString)

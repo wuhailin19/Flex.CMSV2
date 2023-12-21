@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flex.EFSqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    [Migration("20231215121301_FlexCmsDbInit2023-12-15")]
-    partial class FlexCmsDbInit20231215
+    [Migration("20231221091819_InitDataBase")]
+    partial class InitDataBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,10 +28,7 @@ namespace Flex.EFSqlServer.Migrations
             modelBuilder.Entity("Flex.Domain.Entities.SysGroup", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
@@ -1537,10 +1534,7 @@ namespace Flex.EFSqlServer.Migrations
             modelBuilder.Entity("Flex.Domain.Entities.System.SysAdmin", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Account")
                         .IsRequired()
@@ -1565,7 +1559,9 @@ namespace Flex.EFSqlServer.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<int>("ErrorCount")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("FilterIp")
                         .HasColumnType("nvarchar(max)");
@@ -1600,6 +1596,10 @@ namespace Flex.EFSqlServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
+
+                    b.Property<string>("LoginLogString")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("MaxErrorCount")
                         .ValueGeneratedOnAdd()
@@ -1659,7 +1659,7 @@ namespace Flex.EFSqlServer.Migrations
                         {
                             Id = 1560206066204151804L,
                             Account = "webmaster",
-                            AddTime = new DateTime(2023, 12, 15, 20, 13, 0, 951, DateTimeKind.Local).AddTicks(5621),
+                            AddTime = new DateTime(2023, 12, 21, 17, 18, 19, 399, DateTimeKind.Local).AddTicks(8755),
                             AddUser = 1560206066204151804L,
                             AddUserName = "webmaster",
                             AllowMultiLogin = true,
@@ -1668,7 +1668,7 @@ namespace Flex.EFSqlServer.Migrations
                             LastEditUser = 1560206066204151804L,
                             LastEditUserName = "webmaster",
                             LastLoginIP = "127.0.0.1",
-                            LastLoginTime = new DateTime(2023, 12, 15, 20, 13, 0, 951, DateTimeKind.Local).AddTicks(5621),
+                            LastLoginTime = new DateTime(2023, 12, 21, 17, 18, 19, 399, DateTimeKind.Local).AddTicks(8755),
                             LoginCount = 0,
                             MaxErrorCount = 0,
                             Mutiloginccode = "7675038.28325281",

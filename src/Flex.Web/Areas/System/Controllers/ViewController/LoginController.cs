@@ -17,5 +17,9 @@ namespace Flex.Web.Areas.System.Controllers.ViewController
         {
             return View();
         }
+        public IActionResult Logout()
+        {
+            return RedirectToAction("Index");
+        }
     }
 }

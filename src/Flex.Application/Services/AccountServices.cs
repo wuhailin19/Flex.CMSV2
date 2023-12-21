@@ -118,8 +118,8 @@
             //登录成功后的操作
             if (admin.LoginLogString.IsNullOrEmpty())
             {
-                loginLog.LastLoginTime = admin.LastLoginTime;
-                loginLog.LastLoginIP = admin.LastLoginIP;
+                loginLog.LastLoginTime = admin.CurrentLoginTime;
+                loginLog.LastLoginIP = admin.CurrentLoginIP;
             }
             else
             {
@@ -128,8 +128,8 @@
                 loginLog.LastLoginIP = lastloginLog.CurrentLoginIP;
             }
             admin.LoginLogString = JsonHelper.ToJson(loginLog);
-            admin.LastLoginIP = AcbHttpContext.ClientIp;
-            admin.LastLoginTime = DateTime.Now;
+            admin.CurrentLoginIP = AcbHttpContext.ClientIp;
+            admin.CurrentLoginTime = DateTime.Now;
             admin.LoginCount += 1;
             admin.ErrorCount = 0;
             _unitOfWork.SetTransaction();

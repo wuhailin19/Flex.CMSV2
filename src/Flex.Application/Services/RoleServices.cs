@@ -46,6 +46,19 @@ namespace Flex.Application.Services
                 .GetAllAsync(m => rolelist.Contains(m.Id.ToString()), null, null, true, false);
         }
 
+        /// <summary>
+        /// 获取角色列表
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<RoleSelectDto>> GetRoleListAsync()
+        {
+            var rolelist = await _unitOfWork
+                .GetRepository<SysRole>()
+                .GetAllAsync();
+            return _mapper.Map<IEnumerable<RoleSelectDto>>(rolelist);
+        }
+
         public async Task<ProblemDetails<string>> AddNewRole(InputRoleDto role)
         {
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.RolesName == role.RolesName);

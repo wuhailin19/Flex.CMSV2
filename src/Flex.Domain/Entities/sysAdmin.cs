@@ -4,15 +4,12 @@ namespace Flex.Domain.Entities.System
 {
     public class SysAdmin : BaseLongEntity, EntityContext
     {
-        [Display(Name ="账号")]
         public string Account { get; set; }
-        [Display(Name = "别名")]
         public string UserName { get; set; }
-        [Display(Name = "密码")]
         public string Password { get; set; }
         public string Mutiloginccode { get; set; }
-        public string LastLoginIP { get; set; }
-        public DateTime? LastLoginTime { get; set; }
+        public string? CurrentLoginIP { get; set; }
+        public DateTime? CurrentLoginTime { get; set; }
         public DateTime? LockTime { get; set; }
         public bool AllowMultiLogin { get; set; }
         public bool Islock { get; set; }

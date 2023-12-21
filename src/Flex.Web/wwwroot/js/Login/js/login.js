@@ -77,7 +77,7 @@ $(function () {
                         tips.showSuccess("登录成功")
                         setTimeout(function () { window.location = '/system/Main'; }, 1300);
                     } else {
-                        tips.showFail(json.content);
+                        tips.showFail(json.msg);
                         reloadcode();
                     }
                 },
@@ -116,7 +116,7 @@ $(function () {
                 tips.showProStatus(obj, "亲，请正确输入验证码！");
             }
         }
-    }).keyup(function () {
+    }).keyup(function (e) {
         var obj = jQuery(this);
         if (obj.val().length < 4) {
             return false;

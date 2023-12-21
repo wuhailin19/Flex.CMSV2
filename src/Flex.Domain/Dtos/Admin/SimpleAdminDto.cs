@@ -10,10 +10,10 @@ namespace Flex.Domain.Dtos.Admin
         public string UserAvatar { get; set; }
         public string UserSign { get; set; }
         public string FilterIp { get; set; }
-        public string? LastLoginIP { get; set; }
+        public string? CurrentLoginIP { get; set; }
         public bool AllowMultiLogin { get; set; }
         public bool Islock { get; set; }
-        public DateTime? LastLoginTime { set; get; }
+        public DateTime? CurrentLoginTime { set; get; }
         public DateTime? LastLogoutTime { set; get; }
         public AdminLoginLog adminLoginLog { set; get; }
         public int Version { set; get; }

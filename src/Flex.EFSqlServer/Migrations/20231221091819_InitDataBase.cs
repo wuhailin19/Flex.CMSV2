@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Flex.EFSqlServer.Migrations
 {
     /// <inheritdoc />
-    public partial class FlexCmsDbInit20231215 : Migration
+    public partial class InitDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,8 +17,7 @@ namespace Flex.EFSqlServer.Migrations
                 name: "tbl_core_admin",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     Account = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -35,7 +34,8 @@ namespace Flex.EFSqlServer.Migrations
                     UserAvatar = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     UserSign = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     SaltValue = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ErrorCount = table.Column<int>(type: "int", nullable: false),
+                    LoginLogString = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    ErrorCount = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     MaxErrorCount = table.Column<int>(type: "int", nullable: false, defaultValue: 10),
                     AddUserName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     AddUser = table.Column<long>(type: "bigint", nullable: true),
@@ -55,8 +55,7 @@ namespace Flex.EFSqlServer.Migrations
                 name: "tbl_core_group",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     GroupName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     WebsitePermissions = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MenuPermissions = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
@@ -251,8 +250,8 @@ namespace Flex.EFSqlServer.Migrations
 
             migrationBuilder.InsertData(
                 table: "tbl_core_admin",
-                columns: new[] { "Id", "Account", "AddTime", "AddUser", "AddUserName", "AllowMultiLogin", "ErrorCount", "FilterIp", "LastEditDate", "LastEditUser", "LastEditUserName", "LastLoginIP", "LastLoginTime", "LockTime", "Mutiloginccode", "Password", "RoleId", "RoleName", "SaltValue", "UserAvatar", "UserName", "UserSign", "Version" },
-                values: new object[] { 1560206066204151804L, "webmaster", new DateTime(2023, 12, 15, 20, 13, 0, 951, DateTimeKind.Local).AddTicks(5621), 1560206066204151804L, "webmaster", true, 0, null, null, 1560206066204151804L, "webmaster", "127.0.0.1", new DateTime(2023, 12, 15, 20, 13, 0, 951, DateTimeKind.Local).AddTicks(5621), null, "7675038.28325281", "5A72A8F355E9A88D03C30778C2770E27", 0, "超级管理员", "4ad9879fb285407f", null, "超级管理员", null, 0 });
+                columns: new[] { "Id", "Account", "AddTime", "AddUser", "AddUserName", "AllowMultiLogin", "FilterIp", "LastEditDate", "LastEditUser", "LastEditUserName", "LastLoginIP", "LastLoginTime", "LockTime", "LoginLogString", "Mutiloginccode", "Password", "RoleId", "RoleName", "SaltValue", "UserAvatar", "UserName", "UserSign", "Version" },
+                values: new object[] { 1560206066204151804L, "webmaster", new DateTime(2023, 12, 21, 17, 18, 19, 399, DateTimeKind.Local).AddTicks(8755), 1560206066204151804L, "webmaster", true, null, null, 1560206066204151804L, "webmaster", "127.0.0.1", new DateTime(2023, 12, 21, 17, 18, 19, 399, DateTimeKind.Local).AddTicks(8755), null, null, "7675038.28325281", "5A72A8F355E9A88D03C30778C2770E27", 0, "超级管理员", "4ad9879fb285407f", null, "超级管理员", null, 0 });
 
             migrationBuilder.InsertData(
                 table: "tbl_core_menu",
