@@ -82,6 +82,7 @@ layui.config({
                     }
                     , cancel: function (index) {
                         layer.close(index);
+                        content.hide();
                         image.cropper('destroy');
                     }
                 });
@@ -108,7 +109,8 @@ layui.config({
                             success: function (result) {
                                 if (result.code == 200) {
                                     //layer.msg("修改成功", { icon: 1 });
-                                    layer.closeAll('page');
+                                    layer.closeAll();
+                                    content.hide();
                                     return done(result.msg);
                                 } else {
                                     layer.alert(result.msg, { icon: 2 });
