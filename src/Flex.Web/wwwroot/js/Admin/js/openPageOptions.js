@@ -46,7 +46,7 @@
     editIframe: function (layer, insTb) {
         var self = this;
         let widthstr = '80%';
-        let heightstr = '80%';
+        let heightstr = '90%';
         let isreload = self.isEditReload;
         //iframe窗
         layer.open({
@@ -56,7 +56,7 @@
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: routeLink + 'Edit',
+            content: routePageLink + 'Edit',
             end: function () {
                 if (isreload) {
                     defaultOptions.callBack(insTb);

@@ -77,7 +77,7 @@ $(function () {
                         tips.showSuccess("登录成功")
                         setTimeout(function () { window.location = '/system/Main'; }, 1300);
                     } else {
-                        tips.showFail(json.msg);
+                        tips.showFail(json.content);
                         reloadcode();
                     }
                 },

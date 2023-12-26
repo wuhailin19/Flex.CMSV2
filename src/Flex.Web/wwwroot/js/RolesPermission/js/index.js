@@ -26,7 +26,6 @@ layui.use('table', function () {
             statusCode: 200
         },
         parseData: function (res) {
-            console.log(res);
             return {
                 "code": res.code, //数据状态的字段名称，默认：code
                 "count": res.content.TotalCount, //状态信息的字段名称，默认：msg
@@ -34,7 +33,6 @@ layui.use('table', function () {
             };
         }
         , done: function (res, curr, count){
-            console.log(res);
             //console.log(columnlist);
         }
         , method: 'Get'
