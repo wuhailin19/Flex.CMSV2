@@ -13,6 +13,10 @@ namespace Flex.Web.Areas.System.Controllers.ViewController
         {
             return View();
         }
+        public IActionResult AddPage()
+        {
+            return View();
+        }
         public ActionResult MenuEdit()
         {
             return View();

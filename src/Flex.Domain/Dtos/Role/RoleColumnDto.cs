@@ -7,18 +7,22 @@ namespace Flex.Domain.Dtos.Role
     {
         [ToolAttr(Fixed = AlignEnum.Left, Types = controlType.checkBox)]
         public controlType checkbox { get; set; }
-        [ToolAttr(NameAttr = "ID", Width = "80")]
+        [ToolAttr(NameAttr = "ID", maxWidth = "80")]
         [JsonConverter(typeof(IdToStringConverter))]
         public int Id { get; set; }
-        [ToolAttr(NameAttr = "角色名", Width = "200")]
+        [ToolAttr(NameAttr = "角色名", maxWidth = "80")]
         public string RolesName { get; set; }
-        [ToolAttr(NameAttr = "角色描述", Width = "200")]
+        [ToolAttr(NameAttr = "角色描述", maxWidth = "100")]
         public string? RolesDesc { get; set; }
-        [ToolAttr(NameAttr = "创建者", Width = "200")]
+        [ToolAttr(NameAttr = "创建者", maxWidth = "100")]
         public string? AddUserName { get; set; }
-        [ToolAttr(NameAttr = "创建时间", Width = "200")]
-        public DateTime AddTime { get; set; } 
-        [ToolAttr(NameAttr = "操作", Toolbar = "#barDemo", AlignAttr = AlignEnum.Center, Width = "400")]
+        [ToolAttr(NameAttr = "创建时间", maxWidth = "200")]
+        public DateTime AddTime { get; set; }
+        [ToolAttr(NameAttr = "修改人")]
+        public string? LastEditUserName { get; set; }
+        [ToolAttr(NameAttr = "修改时间", maxWidth = "200")]
+        public DateTime? LastEditDate { get; set; }
+        [ToolAttr(NameAttr = "操作", Toolbar = "#barDemo", AlignAttr = AlignEnum.Center, minWidth = "500")]
         public controlType Operation { get; set; }
     }
 }

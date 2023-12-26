@@ -3,12 +3,12 @@
 <html>
 <head>
     <link href="/Scripts/layui/css/layui.css" rel="stylesheet" />
-    <link href="/Scripts/iconfont/iconfont.css" rel="stylesheet" />
+    <link href="/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
     <link href="/Scripts/layui/css/adminui.css" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-    <script src="/Scripts/jquery-1.8.2.min.js"></script>
-	<title>网站后台管理系统</title>
-	<link href="~/css/system/main/style.css" rel="stylesheet" />
+    <script src="/Scripts/jquery-3.4.1.min.js"></script>
+    <title>网站后台管理系统</title>
+    <link href="~/system/css/main/style.css" rel="stylesheet" />
 </head>
 <body class="layui-layout-body">
     <div class="messagebox layui-anim layui-anim-scale" style="display:none;">
@@ -21,7 +21,7 @@
         <div class="layui-header">
             <div class="layui-logo">
                 <img src="" class="layui-nav-img admin_useravatar" />
-                <span>后台管理系统</span>
+                <span id="sitename">后台管理系统</span>
             </div>
             <!-- Header -->
             <ul class="layui-nav layui-layout-left">
@@ -70,7 +70,7 @@
                         @*<dd><a href="adminUpdatePassword.aspx">安全设置</a></dd>*@
                     </dl>
                 </li>
-                <li class="layui-nav-item"><a href="loginout.aspx">退出</a></li>
+                <li class="layui-nav-item"><a href="Login/Logout">退出</a></li>
             </ul>
         </div>
 
@@ -100,99 +100,7 @@
     </div>
     <script src="/Scripts/layui/layui.js"></script>
     <script src="/Scripts/route.js?v=0.1" type="text/javascript"></script>
-    <script type="text/javascript">
-        var elment;
-        var layer;
-        layui.use(['element', 'layer'], function () {
-            elment = layui.element;
-            layer = layui.layer;
-            Init();
-
-        })
-        function InitAdmin() {
-            $.ajax({
-                url: api + 'Admin/getLoginInfo',
-                type: 'Get',
-                async: false,
-                dataType: "json",
-                success: function (json) {
-                    var admin = json.data[0];
-                    $('.admin_useravatar').each(function () {
-                        $(this).attr('src', '/' + admin.UserAvatar);
-                    })
-                    $('.admin_username').text(admin.UserName)
-                }
-            })
-        }
-        function Init() {
-            ajaxHttp({
-                url: api + 'Menu/getMainMenuStrAsync',
-                type: 'Get',
-                //data: { _type: 'getMainMenuStr' },
-                async: false,
-                dataType: "json",
-                success: function (result) {
-                    let count = 0;
-                    var content = '';
-                    if (result.code != 200) { layer.msg(result.content, { icon: 5, time: 1000 }); return; }
-                    $.each(result.content[0].children, function (i, item) {
-                        if (!item.status) {
-                            return;
-                        }
-                        content += '<li class="layui-nav-item">';
-                        if (count == 0)
-                            content = '<li class="layui-nav-item layui-nav-itemed">';
-                        count++;
-                        content += '<a href="javascript:void(0);" data-linkstatus="' + item.isaspx + '" ' + (!item.ismenu ? "data-href=" + item.linkurl + " data-direction=" + item.parentid + "_" + item.id + "" : "") + '  lay-tips="' + item.title + '" lay-direction="' + item.parentid + "_" + item.id + '">' +
-                            '<i class="' + item.className + ' ' + item.icode + '"></i>' +
-                            '<cite>' + item.title + '</cite>' + (item.children != undefined && item.children.length > 0 ? '<span class="layui-nav-more"></span>' : "") +
-                            '</a>';
-
-                        //这里是添加所有的子菜单
-                        content += loadchild(item);
-                        content += '</li>';
-                    });
-                    $(".layui-nav-tree").html(content);
-                    elment.init();
-                },
-                complete: function () { }
-            })
-        }
-        //组装子菜单的方法
-        function loadchild(obj) {
-            if (obj == null) {
-                return;
-            }
-            var content = '';
-            if (obj.children != null && obj.children.length > 0) {
-                content += '<dl class="layui-nav-child">';
-            } else {
-                content += '<dl>';
-            }
-            if (obj.children != null && obj.children.length > 0) {
-                $.each(obj.children, function (i, note) {
-                    if (!note.status) {
-                        return;
-                    }
-                    if (i == 0)
-                        content += '<dd class="layui-nav-itemed">';
-                    else
-                        content += '<dd>';
-                    content += '<a href="javascript:void(0);" data-linkstatus="' + note.isaspx + '" ' + (!note.ismenu ? "data-href=" + note.linkurl + " data-direction=" + note.parentid + "_" + note.id + "" : "") + ' lay-tips="' + note.title + '" lay-direction="' + note.parentid + "_" + note.id + '">' +
-                        '<i class="' + note.className + ' ' + (note.icode == 'null' || note.icode == '' ? "layui-icon-file" : note.icode) + '"></i>' +
-                        '<cite>' + note.title + '</cite>' + (note.children != undefined && note.children.length > 0 ? '<span class="layui-nav-more"></span>' : "") +
-                        '</a>';
-                    if (note.children == null) {
-                        return;
-                    }
-                    content += loadchild(note);
-                    content += '</dd>';
-                });
-                content += '</dl>';
-            }
-            return content;
-        }
-    </script>
+    <script src="~/system/js/main/index.js"></script>
     <script src="/Scripts/layui/menujs.js?v=1.0"></script>
 </body>
 </html>

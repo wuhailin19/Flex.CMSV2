@@ -179,7 +179,7 @@
             {
                 var currentrole = await GetCurrentRoldDtoAsync();
                 if (currentrole is null)
-                    return default(IEnumerable<MenuDto>);
+                    return default;
                 var children = list.Where(m => currentrole.MenuPermissions.Split(',').Contains(m.Id.ToString()));
                 treelist.Add(list.Where(x => x.ParentID == 0).FirstOrDefault());
                 AddMenuTreeTable(list, children);
@@ -249,7 +249,7 @@
             {
                 var currentrole = await GetCurrentRoldDtoAsync();
                 if (currentrole is null)
-                    return default(IEnumerable<MenuDto>);
+                    return default;
                 var children = list.Where(m => currentrole.MenuPermissions.Split(',').Contains(m.Id.ToString()));
                 treelist.Add(list.Where(x => x.ParentID == 0).FirstOrDefault());
                 AddMenuTreeTable(list, children);

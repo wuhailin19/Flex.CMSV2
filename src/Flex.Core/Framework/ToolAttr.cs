@@ -41,6 +41,10 @@ public class ToolAttr : Attribute
     /// </summary>
     public string minWidth { get; set; }
     /// <summary>
+    /// 列最大宽度
+    /// </summary>
+    public string maxWidth { get; set; }
+    /// <summary>
     /// 控件类型
     /// </summary>
     public string Types { get; set; }
@@ -63,7 +67,7 @@ public class ToolAttr : Attribute
     /// <param name="_type">控件</param>
     public ToolAttr(
         string nameattr, bool isShow = false, bool sortattr = false,
-        string width = "0",string minWidth="80", string alignattr = AlignEnum.Center, string description = null,
+        string width = "0",string minWidth="80",string maxWidth = "80", string alignattr = AlignEnum.Center, string description = null,
         string toolbar = null, string _fixeds = null, string _type = null)
     {
         this.NameAttr = nameattr;
@@ -76,5 +80,6 @@ public class ToolAttr : Attribute
         this.Types = _type;
         this.HideFiled = isShow;
         this.minWidth = minWidth;
+        this.maxWidth = maxWidth;
     }
 }

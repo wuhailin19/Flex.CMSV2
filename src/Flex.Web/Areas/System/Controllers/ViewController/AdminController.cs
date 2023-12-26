@@ -5,6 +5,10 @@ namespace Flex.Web.Areas.System.Controllers.ViewController
     [Area("System")]
     public class AdminController : Controller
     {
+        public IActionResult Index()
+        {
+            return View();
+        }
         public IActionResult Edit()
         {
             return View();
@@ -14,6 +18,10 @@ namespace Flex.Web.Areas.System.Controllers.ViewController
             return View();
         }
         public IActionResult EditPassword()
+        {
+            return View();
+        }
+        public IActionResult AddPage()
         {
             return View();
         }

@@ -1,4 +1,5 @@
-﻿using Flex.Domain.Dtos.Role;
+﻿using Consul;
+using Flex.Domain.Dtos.Role;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,34 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             return Success(await _roleServices.GetRoleListAsync(page, limit));
         }
-        
+        [HttpGet("PermissionList")]
+        public async Task<string> PermissionList()
+        {
+            return Success(await _roleServices.GetRoleListAsync());
+        }
+        /// <summary>
+        /// 新增角色
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        [HttpPut]
+        public async Task<string> Insert(InputRoleDto role) {
+            var result = await _roleServices.AddNewRole(role);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+        /// <summary>
+        /// 修改菜单权限
+        /// </summary>
+        /// <param name="roleMenuDto"></param>
+        /// <returns></returns>
+        [HttpPost("UpdateMenuPermission")]
+        public async Task<string> UpdateMenuPermission(InputRoleMenuDto roleMenuDto) {
+            var result = await _roleServices.UpdateMenuPermission(roleMenuDto);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
     }
 }
