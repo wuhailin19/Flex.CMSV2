@@ -44,6 +44,44 @@ layui.use('table', function () {
             }
         }
     });
+    form.on('switch(loginstatus)', function (data) {
+        // 得到开关的value值，实际是需要修改的ID值。
+        var status = this.checked ? 'true' : 'false';
+        const model = { Id: data.value, AllowMultiLogin: status };
+        ajaxHttp({
+            url: routeLink + "QuickEdit",
+            data: JSON.stringify(model),
+            type: 'Post',
+            async: false,
+            success: function (json) {
+                if (json.code == 200) {
+                    layer.msg(json.msg, { icon: 6, time: 1000 });
+                } else {
+                    layer.msg(json.msg, { icon: 5, time: 1000 })
+                }
+            },
+            complete: function () { }
+        })
+    })
+    form.on('switch(lockstatus)', function (data) {
+        // 得到开关的value值，实际是需要修改的ID值。
+        var status = this.checked ? 'true' : 'false';
+        const model = { Id: data.value, Islock: status };
+        ajaxHttp({
+            url: routeLink + "QuickEdit",
+            data: JSON.stringify(model),
+            type: 'Post',
+            async: false,
+            success: function (json) {
+                if (json.code == 200) {
+                    layer.msg(json.msg, { icon: 6, time: 1000 });
+                } else {
+                    layer.msg(json.msg, { icon: 5, time: 1000 })
+                }
+            },
+            complete: function () { }
+        })
+    })
     var delete_index = [];
     //监听表格复选框选择
     table.on('checkbox(demo)', function (obj) { // layui 内置方法

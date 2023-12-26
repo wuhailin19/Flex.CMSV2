@@ -32,7 +32,18 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="wwwroot\js\Admin\js\index.js" />
-    <None Include="wwwroot\js\Admin\js\openPageOptions.js" />
+    <None Include="wwwroot\System\js\Admin\js\index.js" />
+    <None Include="wwwroot\System\js\Admin\js\openPageOptions.js" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Update="wwwroot\System\css\Main\style.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\System\css\Main\welcome.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 </Project>

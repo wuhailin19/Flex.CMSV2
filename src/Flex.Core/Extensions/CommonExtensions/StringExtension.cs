@@ -57,6 +57,20 @@ namespace Flex.Core.Extensions
                 return 0;
             }
         }
+        public static long ToLong(this object str)
+        {
+            try
+            {
+                if (str != null)
+                    return Convert.ToInt64(str);
+                else
+                    return 0;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
         /// <summary>
         /// 判断是否不为空
         /// </summary>

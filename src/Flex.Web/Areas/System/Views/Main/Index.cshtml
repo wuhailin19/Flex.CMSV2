@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
     <script src="/Scripts/jquery-1.8.2.min.js"></script>
 	<title>网站后台管理系统</title>
-	<link href="~/css/system/main/style.css" rel="stylesheet" />
+    <link href="~/system/css/main/style.css" rel="stylesheet" />
 </head>
 <body class="layui-layout-body">
     <div class="messagebox layui-anim layui-anim-scale" style="display:none;">
@@ -147,7 +147,7 @@
                         count++;
                         content += '<a href="javascript:void(0);" data-linkstatus="' + item.isaspx + '" ' + (!item.ismenu ? "data-href=" + item.linkurl + " data-direction=" + item.parentid + "_" + item.id + "" : "") + '  lay-tips="' + item.title + '" lay-direction="' + item.parentid + "_" + item.id + '">' +
                             '<i class="' + item.className + ' ' + item.icode + '"></i>' +
-                            '<cite>' + item.title + '</cite>' + (item.children != undefined && item.children.length > 0 ? '<span class="layui-nav-more"></span>' : "") +
+                            '<cite>' + item.title + '</cite>' + (item.children != undefined && item.children.length > 0 ? '<i class="layui-icon layui-icon-down layui-nav-more"></i>' : "") +
                             '</a>';
 
                         //这里是添加所有的子菜单
@@ -182,7 +182,7 @@
                         content += '<dd>';
                     content += '<a href="javascript:void(0);" data-linkstatus="' + note.isaspx + '" ' + (!note.ismenu ? "data-href=" + note.linkurl + " data-direction=" + note.parentid + "_" + note.id + "" : "") + ' lay-tips="' + note.title + '" lay-direction="' + note.parentid + "_" + note.id + '">' +
                         '<i class="' + note.className + ' ' + (note.icode == 'null' || note.icode == '' ? "layui-icon-file" : note.icode) + '"></i>' +
-                        '<cite>' + note.title + '</cite>' + (note.children != undefined && note.children.length > 0 ? '<span class="layui-nav-more"></span>' : "") +
+                        '<cite>' + note.title + '</cite>' + (note.children != undefined && note.children.length > 0 ? '<i class="layui-icon layui-icon-down layui-nav-more"></i>' : "") +
                         '</a>';
                     if (note.children == null) {
                         return;

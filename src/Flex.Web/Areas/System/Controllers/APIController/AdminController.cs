@@ -88,11 +88,14 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 				return Success(result.Detail);
 			return Fail(result.Detail);
 		}
-
+		/// <summary>
+		/// 新增账号
+		/// </summary>
+		/// <returns></returns>
 		[HttpPut]
 		public async Task<string> Add()
 		{
-			AdminEditDto adminEditDto = await GetModel<AdminEditDto>();
+            AdminAddDto adminEditDto = await GetModel<AdminAddDto>();
 			// 使用验证器验证实体
 			var validationContext = new ValidationContext(adminEditDto);
 			var validationResults = new List<ValidationResult>();
@@ -106,5 +109,78 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 				return Success(result.Detail);
 			return Fail(result.Detail);
 		}
-	}
+		/// <summary>
+		/// 通过账号Id获取账号信息
+		/// </summary>
+		/// <param name="Id"></param>
+		/// <returns></returns>
+		[HttpGet("GetEditDtoInfoById/{Id}")]
+		public async Task<string> GetEditDtoInfo(string Id) {
+            var model = await _adminServices.GetEditDtoInfoByIdAsync(Id.ToLong());
+            if (model == null)
+                return Fail("没有数据");
+            return Success(model);
+        }
+		/// <summary>
+		/// 修改账号信息
+		/// </summary>
+		/// <returns></returns>
+        [HttpPost]
+        public async Task<string> Update()
+        {
+            AdminEditDto adminEditDto = await GetModel<AdminEditDto>();
+            // 使用验证器验证实体
+            var validationContext = new ValidationContext(adminEditDto);
+            var validationResults = new List<ValidationResult>();
+            bool isValid = Validator.TryValidateObject(adminEditDto, validationContext, validationResults, true);
+            if (!isValid)
+            {
+                return Fail(validationResults[0]?.ErrorMessage ?? "验证未通过");
+            }
+            var result = await _adminServices.UpdateAdmin(adminEditDto);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+
+        /// <summary>
+        /// 修改账号密码
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("UpdatePassword")]
+        public async Task<string> UpdatePassword()
+        {
+            AccountAndPasswordDto accountmodel = await GetModel<AccountAndPasswordDto>();
+            // 使用验证器验证实体
+            var validationContext = new ValidationContext(accountmodel);
+            var validationResults = new List<ValidationResult>();
+            bool isValid = Validator.TryValidateObject(accountmodel, validationContext, validationResults, true);
+            if (!isValid)
+            {
+                return Fail(validationResults[0]?.ErrorMessage ?? "验证未通过");
+            }
+            var result = await _adminServices.UpdateCurrentAccountPassword(accountmodel);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+
+		[HttpDelete("{Id}")]
+		public async Task<string> Delete(string Id)
+		{
+            var result = await _adminServices.DeleteAccountListByIdArray(Id);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+		[HttpPost("QuickEdit")]
+        public async Task<string> QuickEdit()
+        {
+            AdminQuickEditDto adminQuickEdit= await GetModel<AdminQuickEditDto>();
+            var result = await _adminServices.QuickEditAdmin(adminQuickEdit);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+    }
 }

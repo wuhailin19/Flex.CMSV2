@@ -7,6 +7,7 @@ namespace Flex.Domain.Dtos.Admin
     {
         public long Id { get; set; }
         public string UserName { get; set; }
+        public string Account { get; set; }
         public string UserAvatar { get; set; }
         public string UserSign { get; set; }
         public string FilterIp { get; set; }

@@ -10,7 +10,7 @@ namespace Flex.Domain.Dtos.Admin
     {
         [ToolAttr(Fixed = AlignEnum.Left, Types = controlType.checkBox)]
         public controlType checkbox { get; set; }
-        [ToolAttr(NameAttr = "ID", AlignAttr = AlignEnum.Center, HideFiled = true)]
+        [ToolAttr(NameAttr = "ID", AlignAttr = AlignEnum.Center, HideFiled = true, maxWidth = "80")]
         public long Id
         {
             get; set;
@@ -69,7 +69,7 @@ namespace Flex.Domain.Dtos.Admin
         public int ErrorCount { set; get; }
         [ToolAttr(NameAttr = "最大登录错误次数", HideFiled = true)]
         public int MaxErrorCount { set; get; }
-        [ToolAttr(NameAttr = "操作", Toolbar = "#barDemo", AlignAttr = AlignEnum.Center, Fixed = AlignEnum.Right, minWidth = "200")]
+        [ToolAttr(NameAttr = "操作", Toolbar = "#barDemo", AlignAttr = AlignEnum.Center, Fixed = AlignEnum.Right)]
         public controlType Operation { get; set; }
     }
 }

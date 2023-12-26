@@ -1,0 +1,22 @@
+﻿.first-tab i.layui-tab-close { display: none !important; }
+.last-tab i.layui-tab-close { display: none !important; }
+.last-tab { position: fixed !important; right: 0; }
+.now_time { color: #fff; position: absolute; z-index: 1003; line-height: 50px; }
+.now_time { top: 0; left: 75%; }
+.layui-nav-item .iconfont { font-size: 16px; display: inline-block; width: 28px; }
+.changesite { left: -30px; }
+.changesite a { padding: 0 20px !important; }
+.changesite .layui-nav-more { display: none; }
+.email_extension { font-size: 22px !important; position: relative; }
+.email_extension .email_num { color: #fff !important; font-size: 10px; position: absolute; background-color: red; width: 20px; height: 20px; border-radius: 10px; right: -10px; top: -10px; line-height: 20px; text-align: center; }
+.messagebox { position: absolute; left: 50%; background: #fff; z-index: 10000; border: solid #f1f1f1; display: none; }
+.messagebox a.rabbit_email { padding: 5px 15px 5px 15px; display: block; font-size: 16px; color: #535353 }
+.messagebox .layui-icon { color: darkcyan }
+.layui_close_tab { position: fixed; right: 0px; top: 51px; height: 38px; width: 150px; text-align: center; cursor: pointer; z-index: 100003; }
+.layui-body.active { left: 0px; top: 50px; }
+.layui-layout-admin .layui-side.active { width: 0px; }
+.layui-tab-title active { left: 0px; height: 0px; }
+::-webkit-scrollbar { /*滚动条整体样式*/ width: 5px; /*高宽分别对应横竖滚动条的尺寸*/ height: 1px; }
+::-webkit-scrollbar-thumb { /*滚动条里面小方块*/ border-radius: 10px; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); background: #535353; }
+::-webkit-scrollbar-track { /*滚动条里面轨道*/ box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); border-radius: 10px; background: #ededed; }
+.layui_menu_tree i.layui-icon { font-size: 16px; display: inline-block; width: 28px; }

@@ -13,10 +13,15 @@ namespace Flex.Domain.AutoMapper
         {
             CreateMap<SysAdmin, AdminDto>();
             CreateMap<SysAdmin, UserData>();
-            CreateMap<SysAdmin, SimpleAdminDto>().ForMember(dest => dest.adminLoginLog,opt=>opt.MapFrom(src=> DeserializeLoginLog(src.LoginLogString)));
+            CreateMap<SysAdmin, SimpleAdminDto>()
+                .ForMember(dest => dest.adminLoginLog,opt=>opt.MapFrom(src=> DeserializeLoginLog(src.LoginLogString)));
             CreateMap<SimpleAdminDto, SysAdmin>();
+            CreateMap<AdminAddDto, SysAdmin>();
             CreateMap<SysAdmin, AdminColumnDto>();
-            CreateMap<AdminEditDto, SysAdmin>();
+            
+            CreateMap<SysAdmin, AdminEditInfoDto>()
+                .ForMember(dest => dest.adminLoginLog, opt => opt.MapFrom(src => DeserializeLoginLog(src.LoginLogString)));
+
             CreateMap<SimpleEditAdminDto, SysAdmin>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
             .ForMember(dest => dest.UserAvatar, opt => opt.MapFrom(src => src.UserAvatar))
@@ -25,7 +30,21 @@ namespace Flex.Domain.AutoMapper
             .ForMember(dest => dest.AllowMultiLogin, opt => opt.MapFrom(src => src.AllowMultiLogin))
             .ForMember(dest => dest.Islock, opt => opt.MapFrom(src => src.Islock));
 
-			CreateMap<PagedList<SysAdmin>, PagedList<AdminDto>>();
+            CreateMap<AdminEditDto, SysAdmin>()
+                        .ForMember(dest => dest.Password, opt => opt.Condition(src => !string.IsNullOrEmpty(src.Password)))
+                        .ForMember(dest => dest.Account, opt => opt.MapFrom(src => src.Account))
+                        .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
+                        .ForMember(dest => dest.UserAvatar, opt => opt.MapFrom(src => src.UserAvatar))
+                        .ForMember(dest => dest.RoleId, opt => opt.MapFrom(src => src.RoleId))
+                        .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.RoleName))
+                        .ForMember(dest => dest.UserSign, opt => opt.MapFrom(src => src.UserSign))
+                        .ForMember(dest => dest.FilterIp, opt => opt.MapFrom(src => src.FilterIp))
+                        .ForMember(dest => dest.ErrorCount, opt => opt.MapFrom(src => src.ErrorCount))
+                        .ForMember(dest => dest.MaxErrorCount, opt => opt.MapFrom(src => src.MaxErrorCount))
+                        .ForMember(dest => dest.AllowMultiLogin, opt => opt.MapFrom(src => src.AllowMultiLogin))
+                        .ForMember(dest => dest.Islock, opt => opt.MapFrom(src => src.Islock));
+
+            CreateMap<PagedList<SysAdmin>, PagedList<AdminDto>>();
             CreateMap<PagedList<SysAdmin>, PagedList<AdminColumnDto>>();
         }
         private AdminLoginLog DeserializeLoginLog(string loginLogString)

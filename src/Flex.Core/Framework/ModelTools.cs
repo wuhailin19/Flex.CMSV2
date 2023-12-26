@@ -20,26 +20,12 @@ public class ModelTools<T>
     public string @fixed { get; set; }
     public string width { get; set; }
     public string minWidth { get; set; }
+    public string maxWidth { get; set; }
     // 获取字段的属性
     private static ToolAttr getDescription(PropertyInfo field)
     {
-        ToolAttr ToolAttrs = new ToolAttr();
-
         var toolAttr = (ToolAttr)Attribute.GetCustomAttribute(field, typeof(ToolAttr));
-        if (toolAttr != null)
-        {
-            ToolAttrs.Description = toolAttr.Description;
-            ToolAttrs.NameAttr = toolAttr.NameAttr;
-            ToolAttrs.SortAttr = toolAttr.SortAttr;
-            ToolAttrs.Fixed = toolAttr.Fixed;
-            ToolAttrs.AlignAttr = toolAttr.AlignAttr;
-            ToolAttrs.Toolbar = toolAttr.Toolbar;
-            ToolAttrs.Types = toolAttr.Types;
-            ToolAttrs.Width = toolAttr.Width;
-            ToolAttrs.minWidth = toolAttr.minWidth;
-            ToolAttrs.HideFiled = toolAttr.HideFiled;
-        }
-        return ToolAttrs;
+        return toolAttr;
     }
     /// <summary>
     /// 生成对应表内容
@@ -70,6 +56,8 @@ public class ModelTools<T>
             modelTool.@fixed = ToolAttrs.Fixed;
             modelTool.width = ToolAttrs.Width;
             modelTool.minWidth = ToolAttrs.minWidth;
+            modelTool.maxWidth = ToolAttrs.maxWidth;
+
             modelTools.Add(modelTool);
         }
         return modelTools;
