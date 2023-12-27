@@ -26,7 +26,7 @@ namespace Flex.Domain.Dtos.Admin
             get; set;
         }
         [ToolAttr(NameAttr = "上次登录IP")]
-        public string? LastLoginIP
+        public string? CurrentLoginIP
         {
             get; set;
         }

@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Handlers\**" />
+    <EmbeddedResource Remove="Handlers\**" />
+    <None Remove="Handlers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="DotNetCore.CAP.RabbitMQ" Version="7.2.2" />
     <PackageReference Include="DotNetCore.CAP.Dashboard" Version="7.2.2" />
@@ -14,17 +20,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.24.0" />
+    <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Flex.Application.Contracts\Flex.Application.Contracts.csproj" />
     <ProjectReference Include="..\Flex.Core\Flex.Core.csproj" />
     <ProjectReference Include="..\Flex.EFSqlServer\Flex.EFSqlServer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="SetupExtensions\CAP\" />
-    <Folder Include="SetupExtensions\StartupExtension\" />
   </ItemGroup>
 
 </Project>

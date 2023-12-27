@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Flex.Application.Contracts.Exceptions;
 using Flex.Domain.Dtos;
 using Flex.Domain.Dtos.Role;
 using Org.BouncyCastle.Crypto;
@@ -66,7 +67,7 @@ namespace Flex.Application.Services
             var model = await GetAdminById(simpleEditAdmin.Id);
             if (model.Version != simpleEditAdmin.Version)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "当前数据已被修改");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataVersionError.Message<ErrorCodes>());
             }
             _mapper.Map(simpleEditAdmin, model);
             model.LastEditDate = Clock.Now;
@@ -75,7 +76,7 @@ namespace Flex.Application.Services
             model.Version += 1;
             _unitOfWork.GetRepository<SysAdmin>().Update(model);
             await _unitOfWork.SaveChangesAsync();
-            return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+            return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.Message<ErrorCodes>());
         }
 
         public async Task<ProblemDetails<string>> InsertAdmin(AdminAddDto insertAdmin)
@@ -99,7 +100,7 @@ namespace Flex.Application.Services
             if (result.Entity.Id > 0)
                 return new ProblemDetails<string>(HttpStatusCode.OK, "添加成功");
             else
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "添加失败");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.Message<ErrorCodes>());
         }
 
         public async Task<ProblemDetails<string>> UpdateAdmin(AdminEditDto editAdmin)
@@ -108,7 +109,7 @@ namespace Flex.Application.Services
             var model = await GetAdminById(editAdmin.Id);
             if (model.Version != editAdmin.Version)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "当前数据已被修改");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataVersionError.Message<ErrorCodes>());
             }
             if (model.Account != editAdmin.Account)
             {
@@ -131,11 +132,11 @@ namespace Flex.Application.Services
             {
                 adminRepository.Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.Message<ErrorCodes>());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改失败");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.Message<ErrorCodes>());
             }
         }
 
@@ -145,7 +146,7 @@ namespace Flex.Application.Services
             var model = await GetAdminById(_claims.UserId);
             if (model.Version != accountAndPasswordDto.Version)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "当前数据已被修改");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataVersionError.Message<ErrorCodes>());
             }
             if (accountAndPasswordDto.Account != model.Account)
             {
@@ -168,11 +169,11 @@ namespace Flex.Application.Services
             {
                 adminRepository.Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.Message<ErrorCodes>());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改失败");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.Message<ErrorCodes>());
             }
         }
 
@@ -209,11 +210,11 @@ namespace Flex.Application.Services
             {
                 adminRepository.Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.Message<ErrorCodes>());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改失败");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.Message<ErrorCodes>());
             }
         }
     }

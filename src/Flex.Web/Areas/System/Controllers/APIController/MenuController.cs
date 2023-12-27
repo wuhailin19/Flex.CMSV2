@@ -50,7 +50,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(await _menuServices.GetCurrentMenuDtoByRoleIdAsync());
         }
 
-        [HttpPost("Update")]
+        [HttpPost]
         public async Task<string> Update()
         {
             var model = await GetModel<MenuEditDto>();

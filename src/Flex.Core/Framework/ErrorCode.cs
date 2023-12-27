@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web;
 
@@ -11,6 +12,7 @@ public class ErrorCode
     /// <summary>
     /// 参数为空
     /// </summary>
+    [Description("参数为空")]
     public const int ParamEmpty = 402;
     /// <summary>
     /// 成功
