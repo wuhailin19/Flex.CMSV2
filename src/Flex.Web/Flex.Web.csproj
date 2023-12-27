@@ -7,15 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\**" />
     <Compile Remove="wwwroot\css\**" />
     <Compile Remove="wwwroot\img\**" />
     <Compile Remove="wwwroot\js\**" />
+    <Content Remove="Views\**" />
     <Content Remove="wwwroot\css\**" />
     <Content Remove="wwwroot\img\**" />
     <Content Remove="wwwroot\js\**" />
+    <EmbeddedResource Remove="Views\**" />
     <EmbeddedResource Remove="wwwroot\css\**" />
     <EmbeddedResource Remove="wwwroot\img\**" />
     <EmbeddedResource Remove="wwwroot\js\**" />
+    <None Remove="Views\**" />
     <None Remove="wwwroot\css\**" />
     <None Remove="wwwroot\img\**" />
     <None Remove="wwwroot\js\**" />
@@ -42,7 +46,6 @@
   <ItemGroup>
     <Folder Include="Areas\System\Data\" />
     <Folder Include="Areas\System\Models\" />
-    <Folder Include="Views\" />
     <Folder Include="wwwroot\Content\images\" />
   </ItemGroup>
   

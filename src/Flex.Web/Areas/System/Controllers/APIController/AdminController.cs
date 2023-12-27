@@ -118,7 +118,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 		public async Task<string> GetEditDtoInfo(string Id) {
             var model = await _adminServices.GetEditDtoInfoByIdAsync(Id.ToLong());
             if (model == null)
-                return Fail("没有数据");
+                return NotFound();
             return Success(model);
         }
 		/// <summary>

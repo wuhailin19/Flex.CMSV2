@@ -6,8 +6,7 @@ namespace Flex.Domain.Dtos.Menu
     public class MenuDto
     {
         public string title { get; set; }
-        [JsonConverter(typeof(IdToStringConverter))]
-        public long id { get; set; }
+        public int id { get; set; }
         public int parentid { get; set; }
         public string icode { get; set; }
         public bool spread { get; set; } = true;
