@@ -176,7 +176,7 @@ layui.config({
         }
         else if ("add" == obj.event) {
             //iframe窗
-            req_Data = obj.data.ID;
+            req_Data = obj.data.ParentId;
             var index = layer.open({
                 type: 2,
                 title: '添加',
@@ -195,6 +195,7 @@ layui.config({
             //});
         }
         else if (obj.event === 'edit') {
+            req_Data = obj.data;
             //iframe窗
             var index = layer.open({
                 type: 2,
