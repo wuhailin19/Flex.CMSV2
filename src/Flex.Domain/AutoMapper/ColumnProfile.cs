@@ -6,6 +6,7 @@ namespace Flex.Domain.AutoMapper
         public ColumnProfile()
         {
             CreateMap<SysColumn, TreeColumnListDto>();
+            CreateMap<AddColumnDto, SysColumn>();
         }
     }
 }

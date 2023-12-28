@@ -12,7 +12,11 @@ namespace Flex.Domain.Dtos.Column
         public int ParentId { set; get; }
         public string Name { set; get; }
         public bool IsShow { set; get; }
+        public string ColumnUrl { set; get; }
         public int OrderId { set; get; }
-        public List<TreeColumnListDto> children { set; get; }
+        public bool IsSelect { set; get; }
+        public bool IsAdd { set; get; }
+        public bool IsEdit { set; get; }
+        public bool IsDelete { set; get; }
     }
 }

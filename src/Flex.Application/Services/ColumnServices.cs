@@ -1,4 +1,5 @@
-﻿using Flex.Core.Attributes;
+﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Core.Attributes;
 using Flex.Domain.Dtos.Column;
 using System;
 using System.Collections;
@@ -15,39 +16,41 @@ namespace Flex.Application.Services
             : base(unitOfWork, mapper, idWorker, claims)
         {
         }
-        private void AddTreeColumn(List<SysColumn> fulllist, List<TreeColumnListDto> treeColumns)
-        {
-            List<SysColumn> childrens = new List<SysColumn>();
-            foreach (var item in treeColumns)
-            {
-                childrens = fulllist.Where(m => m.ParentId == item.Id).ToList();
-                if (childrens != null)
-                {
-                    item.children = _mapper.Map<List<TreeColumnListDto>>(childrens);
-                    AddTreeColumn(fulllist, treeColumns);
-                }
-            }
-        }
         public async Task<IEnumerable<TreeColumnListDto>> GetTreeColumnListDtos()
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
             var list = (await coreRespository.GetAllAsync()).OrderBy(m => m.OrderId).ToList();
-            if (!_claims.IsSystem)
-            {
-                //非超管情况
-            }
+          
             List<TreeColumnListDto> treeColumns = new List<TreeColumnListDto>();
-            treeColumns.AddRange(_mapper.Map<List<TreeColumnListDto>>(list.Where(m => m.ParentId == 0)));
+            treeColumns.AddRange(_mapper.Map<List<TreeColumnListDto>>(list));
+            if (_claims.IsSystem)
+            {
+                foreach (var item in treeColumns)
+                {
+                    item.IsDelete = true;
+                    item.IsEdit= true;
+                    item.IsSelect= true;
+                    item.IsAdd= true;
+                }
+            }
 
-            AddTreeColumn(list, treeColumns);
             return treeColumns;
         }
-        public async Task<ProblemDetails<string>> AddColumn() {
+        public async Task<ProblemDetails<string>> AddColumn(AddColumnDto addColumnDto)
+        {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
-
-            return null;
+            var model = _mapper.Map<SysColumn>(addColumnDto);
+            AddIntEntityBasicInfo(model);
+            try
+            {
+                coreRespository.Insert(model);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.Message<ErrorCodes>());
+            }
+            catch (Exception ex)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ex.Message);
+            }
         }
-
-
     }
 }

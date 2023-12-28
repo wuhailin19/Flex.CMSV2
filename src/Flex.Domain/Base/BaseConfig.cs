@@ -20,6 +20,7 @@ namespace Flex.Domain.Base
             builder.Property(m => m.StatusCode).HasDefaultValue(StatusCode.Enable);
             builder.Property(m => m.Version).HasDefaultValue(0);
             builder.Property(m => m.Id).ValueGeneratedNever(); // ID 不自增
+            builder.HasQueryFilter(m => m.StatusCode != StatusCode.Deleted);
             builder.HasKey(c => c.Id);
         }
         public virtual void ConfigureIntId<T>(EntityTypeBuilder<T> builder) where T : BaseIntEntity
@@ -29,6 +30,7 @@ namespace Flex.Domain.Base
             builder.Property(m => m.LastEditUserName).HasMaxLength(200);
             builder.Property(m => m.StatusCode).HasDefaultValue(StatusCode.Enable);
             builder.Property(m => m.Version).HasDefaultValue(0);
+            builder.HasQueryFilter(m => m.StatusCode != StatusCode.Deleted);
             builder.HasKey(c => c.Id);
         }
     }

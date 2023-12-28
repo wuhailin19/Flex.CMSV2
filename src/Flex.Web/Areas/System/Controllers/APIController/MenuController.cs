@@ -59,5 +59,15 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                 return Success(result.Detail);
             return Fail(result.Detail);
         }
+
+        [HttpPut]
+        public async Task<string> AddMenu()
+        {
+            var model = await GetModel<MenuAddDto>();
+            var result = await _menuServices.AddMenu(model);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
     }
 }

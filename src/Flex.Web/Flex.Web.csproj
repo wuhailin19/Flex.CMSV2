@@ -48,6 +48,7 @@
   <ItemGroup>
     <Folder Include="Areas\System\Data\" />
     <Folder Include="Areas\System\Models\" />
+    <Folder Include="MiddleWares\" />
     <Folder Include="wwwroot\Content\images\" />
   </ItemGroup>
   

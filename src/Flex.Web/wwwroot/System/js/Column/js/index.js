@@ -88,6 +88,23 @@ layui.config({
             case 'isAll':
                 layer.msg(checkStatus.isAll ? '全选' : '未全选')
                 break;
+            case 'addRole':
+                let widthstr = '80%';
+                let heightstr = '90%';
+                //iframe窗
+                layer.open({
+                    type: 2,
+                    title: "添加栏目",
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: [widthstr, heightstr],
+                    content: 'ColumnCategory/AddPage',
+                    end: function () {
+                        insTb.refresh();
+                    }
+                });
+                break;
             case 'deleteAll':
                 if (data.length == 0)
                     return;

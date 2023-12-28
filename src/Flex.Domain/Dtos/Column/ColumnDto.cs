@@ -26,13 +26,5 @@ namespace Flex.Domain.Dtos.Column
         public string IsShow { set; get; }
         [ToolAttr(NameAttr = "操作", Toolbar = "#barDemo", AlignAttr = AlignEnum.Center, Fixed = AlignEnum.Right)]
         public controlType Operation { get; set; }
-        [ToolAttr(HideFiled = true)]
-        public bool IsSelect { set; get; }
-        [ToolAttr(HideFiled = true)]
-        public bool IsAdd { set; get; }
-        [ToolAttr(HideFiled = true)]
-        public bool IsEdit { set; get; }
-        [ToolAttr(HideFiled = true)]
-        public bool IsDelete { set; get; }
     }
 }

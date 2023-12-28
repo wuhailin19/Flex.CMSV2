@@ -29,6 +29,7 @@ namespace Flex.Domain.AutoMapper
                          (c.Icode.IsNullOrEmpty() || c.FontSort == "fontClass" || c.FontSort.IsNullOrEmpty())
                          ? "layui-icon"
                          : c.FontSort));
+            CreateMap<MenuAddDto, SysMenu>();
         }
     }
 }

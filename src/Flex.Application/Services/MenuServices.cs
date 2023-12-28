@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Flex.Application.Contracts.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Flex.Application.Services
 {
@@ -246,19 +247,32 @@ namespace Flex.Application.Services
             menumodel.OrderId = model.OrderId;
             menumodel.ParentID = model.ParentID;
             menumodel.isMenu = model.isMenu;
-            menumodel.LastEditUser = _claims.UserId;
-            menumodel.LastEditUserName = _claims.UserName;
-            menumodel.LastEditDate = Clock.Now;
-            menumodel.Version += 1;
+            UpdateIntEntityBasicInfo(menumodel);
             try
             {
                 menuRepository.Update(menumodel);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.Message<ErrorCodes>());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改失败");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.Message<ErrorCodes>());
+            }
+        }
+        public async Task<ProblemDetails<string>> AddMenu(MenuAddDto model)
+        {
+            var menuRepository = _unitOfWork.GetRepository<SysMenu>();
+            var menumodel = _mapper.Map<SysMenu>(model);
+            AddIntEntityBasicInfo(menumodel);
+            try
+            {
+                menuRepository.Insert(menumodel);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.Message<ErrorCodes>());
+            }
+            catch (Exception ex)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.Message<ErrorCodes>());
             }
         }
     }

@@ -54,6 +54,22 @@ namespace Flex.Application.Contracts.Exceptions
         /// <summary> 数据不存在 </summary>
         [Description("数据不存在")]
         public const int DataNotFound = 10009;
+
+        /// <summary> 添加成功 </summary>
+        [Description("添加成功")]
+        public const int DataInsertSuccess = 10010;
+
+        /// <summary> 该账号已存在 </summary>
+        [Description("该账号已存在")]
+        public const int AccountExist = 10011;
+
+        /// <summary> 删除失败 </summary>
+        [Description("删除失败")]
+        public const int DataDeleteError = 10012;
+
+        /// <summary> 未选择删除数据 </summary>
+        [Description("未选择删除数据")]
+        public const int NotChooseData = 10013;
     }
 
     /// <summary> 错误码扩展 </summary>

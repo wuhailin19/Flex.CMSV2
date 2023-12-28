@@ -24,6 +24,15 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         public async Task<string> ListAsync() {
          return Success(await _columnServices.GetTreeColumnListDtos());
         }
-
+        [HttpPut]
+        public async Task<string> AddColumn() {
+            var validate = await ValidateModel<AddColumnDto>();
+            if (!validate.IsSuccess)
+                return Fail(validate.Detail);
+            var result =await  _columnServices.AddColumn(validate.Content);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
+        }
     }
 }

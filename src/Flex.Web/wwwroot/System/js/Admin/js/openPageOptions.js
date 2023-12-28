@@ -17,7 +17,7 @@
     setAddIframe: function (layer, insTb) {
         var self = this;
         let widthstr = '80%';
-        let heightstr = '80%';
+        let heightstr = '90%';
         let url = self.cateid == 1 ? "AddPage" : self.cateid == 2 ? "DataAddPage" :"AddPageApi";
         
         //iframe窗
