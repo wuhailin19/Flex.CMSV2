@@ -1,88 +1,68 @@
-﻿var parent_json = parent.req_Data;
-//Demo
-ajaxHttp({
-    url: api + 'Menu/GetTreeMenuAsync',
-    type: 'Get',
-    //data: { _type: 'getTreeColumnStr' },
-    async: false,
-    success: function (json) {
-        if (json.code == 200) {
-            for (var i = 0; i < json.content.length; i++) {
-                $('#chooseName').append('<option value="' + json.content[i].id + '" ' + (parent_json.ParentID == json.content[i].id ? "selected" : "") + '>' + json.content[i].title + '</option>');
-            }
-        }
-    },
-    complete: function () {
-
-    }
-})
+﻿
 layui.config({
     base: '/Scripts/layui/module/'
-}).extend({
-    iconHhysFa: 'iconHhysFa'
 }).use(['iconHhysFa', 'form', 'tree'], function () {
     var form = layui.form;
     var tree = layui.tree;
-    var iconHhysFa = layui.iconHhysFa;
-    var fonttype = parent_json.FontSort;
-    
-    form.on('select(FontSort)', function (data) {
-        iconHhysFa.remove();
-        fonttype = data.value;
-        icondom = iconHhysFa.render({
-            elem: '#iconHhysFa',
-            type: fonttype,
-            fonttype: fonttype,
-            search: true,
-            page: true,
-            limit: 12,
-            url: '/Scripts/layui/css/iconfont/iconfont.css'
-        });
-    });
-    $('#icon_click').delegate('#icon_clear', 'click', function () {
-        iconHhysFa.clearValue("iconHhysFa", fonttype);
-        $('#iconHhysFa').val('');
+    var Id = parent.req_Data.Id;
+    var parent_json;
+    ajaxHttp({
+        url: api + 'ColumnCategory/GetColumnById/' + Id,
+        type: 'Get',
+        datatype: 'json',
+        async: false,
+        success: function (json) {
+            if (json.code == 200) {
+                parent_json = json.content;
+            } else {
+                layer.msg(json.msg, { icon: 5, time: 1000 });
+            }
+        }
     })
     form.val("formTest", {
         'Name': parent_json.Name
-        , 'ID': parent_json.ID
-        , 'ParentID': parent_json.ParentID
-        , 'FontSort': parent_json.FontSort
-        , 'Icode': parent_json.Icode
-        , 'Status': parent_json.Status
-        , 'LinkUrl': parent_json.LinkUrl
-        , 'OrderId': parent_json.OrderId
-        , 'isMenu': parent_json.isMenu
-        , 'IsControllerUrl': parent_json.IsControllerUrl
+        , 'Id': parent_json.Id
+        , 'ParentID': parent_json.ParentId
+        , 'ColumnImage': parent_json.ColumnImage
+        , 'ColumnUrl': parent_json.ColumnUrl
+        , 'SeoTitle': parent_json.SeoTitle
+        , 'SeoKeyWord': parent_json.SeoKeyWord
+        , 'SeoDescription': parent_json.SeoDescription
     });
-    var icondom = iconHhysFa.render({
-        // 选择器，推荐使用input
-        elem: '#iconHhysFa',
-        // 数据类型：fontClass/awesome，推荐使用fontClass
-        type: fonttype,
-        fonttype: fonttype,
-        // 是否开启搜索：true/false，默认true
-        search: true,
-        // 是否开启分页：true/false，默认true
-        page: true,
-        // 每页显示数量，默认12
-        limit: 12,
-        url: '/Scripts/layui/css/iconfont/iconfont.css',
-        // 点击回调
-        click: function (data) {
+    //Demo
+    ajaxHttp({
+        url: api + 'ColumnCategory/GetTreeSelectListDtos',
+        type: 'Get',
+        //data: { _type: 'getTreeColumnStr' },
+        async: false,
+        success: function (json) {
+            if (json.code == 200) {
+
+                for (var i = 0; i < json.content.length; i++) {
+                    $('#chooseName').append('<option value="' + json.content[i].id + '" ' + (parent_json.ParentId == json.content[i].id ? "selected" : "") + '>' + json.content[i].title + '</option>');
+                }
+            }
         },
-        // 渲染成功后的回调
-        success: function (d) {
-
+        complete: function () {
         }
-    });
-    iconHhysFa.checkIcon("iconHhysFa", parent_json.Icode == undefined ? '' : parent_json.Icode, fonttype);
-
+    })
+    var columnlist;
+    ajaxHttp({
+        url: api + 'ColumnCategory/TreeListAsync',
+        type: 'Get',
+        //data: { _type: 'getTreeColumn' },
+        async: false,
+        success: function (json) {
+            if (json.code == 200) {
+                columnlist = json.content;
+            }
+        },
+        complete: function () { }
+    })
     //监听提交
     form.on('submit(formDemo)', function (data) {
-        console.log(parent_json)
         ajaxHttp({
-            url: api + 'Menu',
+            url: api + 'ColumnCategory',
             type: 'Post',
             datatype: 'json',
             data: JSON.stringify(data.field),
@@ -107,19 +87,7 @@ layui.config({
         return false;
     });
 
-    var columnlist;
-    ajaxHttp({
-        url: api + 'Menu/TreeListAsync',
-        type: 'Get',
-        //data: { _type: 'getTreeColumn' },
-        async: false,
-        success: function (json) {
-            if (json.code == 200) {
-                columnlist = json.content;
-            }
-        },
-        complete: function () { }
-    })
+    
 
     var tree = layui.tree;
     tree.render({

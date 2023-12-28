@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Flex.Domain.Dtos.Column
 {
-    public class TreeColumnListDto
+    public class ColumnListDto
     {
-        public int id { set; get; }
+        public int Id { set; get; }
         public int ParentId { set; get; }
-        public string title { set; get; }
+        public string Name { set; get; }
         public bool IsShow { set; get; }
         public string ColumnUrl { set; get; }
         public int OrderId { set; get; }
@@ -18,8 +18,5 @@ namespace Flex.Domain.Dtos.Column
         public bool IsAdd { set; get; }
         public bool IsEdit { set; get; }
         public bool IsDelete { set; get; }
-        public bool spread { set; get; } = true;
-
-        public List<TreeColumnListDto> children { set; get; }
     }
 }

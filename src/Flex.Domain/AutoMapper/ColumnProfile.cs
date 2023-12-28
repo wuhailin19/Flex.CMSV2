@@ -5,7 +5,10 @@ namespace Flex.Domain.AutoMapper
     {
         public ColumnProfile()
         {
-            CreateMap<SysColumn, TreeColumnListDto>();
+            CreateMap<SysColumn, TreeColumnListDto>()
+                .ForMember(a =>a.title, opt => opt.MapFrom(b => b.Name));
+            CreateMap<SysColumn, ColumnListDto>();
+            CreateMap<SysColumn, UpdateColumnDto>();
             CreateMap<AddColumnDto, SysColumn>();
         }
     }
