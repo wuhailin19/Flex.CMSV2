@@ -1,4 +1,7 @@
 ﻿using Flex.Application.Contracts.IServices;
+using Flex.Application.Services;
+using Flex.Core.Attributes;
+using Flex.Domain.Dtos.Admin;
 using Flex.Domain.Dtos.Menu;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +25,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                 return NotFound();
             return Success(list);
         }
-        
+
         [HttpGet("Column")]
         [AllowAnonymous]
         public string Column()
@@ -34,12 +37,37 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             return Success((await _menuServices.GetMenuListAsync()).Where(m => m.ParentID != 0));
         }
-
-        [HttpGet("TreeListAsync/{Id}")]
-        public async Task<string> TreeListAsync(long Id)
+        [HttpGet("GetTreeMenuAsync")]
+        public async Task<string> GetMenuListAsync()
         {
-            return Success(await _menuServices.GetTreeMenuDtoByRoleIdAsync(Id));
+            var result = await _menuServices.GetTreeMenuAsync();
+            return Success(result);
         }
 
+        [HttpGet("TreeListAsync")]
+        public async Task<string> TreeListAsync()
+        {
+            return Success(await _menuServices.GetCurrentMenuDtoByRoleIdAsync());
+        }
+
+        [HttpPost]
+        public async Task<string> Update()
+        {
+            var model = await GetModel<MenuEditDto>();
+            var result = await _menuServices.EditMenu(model);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+
+        [HttpPut]
+        public async Task<string> AddMenu()
+        {
+            var model = await GetModel<MenuAddDto>();
+            var result = await _menuServices.AddMenu(model);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
     }
 }

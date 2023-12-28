@@ -1755,3 +1755,14 @@ html #layuicss-layer { display: none; position: absolute; width: 1989px }
 ::-webkit-scrollbar-track { /*滚动条里面轨道*/ box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); border-radius: 10px; background: #ededed; }
 .layui-tab-title .layui-this { color: #000; background-color: rgb(102, 177, 255); color: #fff; }
 .layui-tab-title .layui-this .layui-tab-close { color: #fff; }
+.loadings { width: 100%; height: 100%; background-color: rgb(241, 241, 241); position: absolute; top: 0; left: 0; text-align: center; }
+.loadings i { font-size: 50px; color: #009688; top: 30%; position: absolute; animation: spin 1s linear infinite; }
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

@@ -1,15 +1,13 @@
-﻿using Flex.Application.Contracts.Authorize;
-using Flex.Application.Handlers;
+﻿using Flex.Application.Authorize;
+using Flex.Application.Contracts.Authorize;
 using Flex.Application.Jwt;
+using Flex.Web.Handlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Flex.Application.Extensions.Jwt
+namespace Flex.Web.Jwt
 {
     public static class JwtServiceExtensions
     {

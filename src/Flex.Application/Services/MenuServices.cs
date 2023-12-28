@@ -1,4 +1,7 @@
-﻿namespace Flex.Application.Services
+﻿using Flex.Application.Contracts.Exceptions;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Flex.Application.Services
 {
     public class MenuServices : BaseService, IMenuServices
     {
@@ -39,6 +42,11 @@
                 }
             }
         }
+        public async Task<IEnumerable<MenuDto>> GetTreeMenuAsync() {
+            IEnumerable<SysMenu> list = await _unitOfWork.GetRepository<SysMenu>().GetAllAsync();
+            var query = _mapper.Map<List<MenuDto>>(list.OrderBy(m => m.OrderId));
+            return query;
+        }
         /// <summary>
         /// 获取菜单管理页列表数据
         /// </summary>
@@ -69,52 +77,14 @@
             var list = await _unitOfWork.GetRepository<SysMenu>().GetAllAsync();
             return list;
         }
-        /// <summary>
-        /// 网关聚合测试获取快捷菜单
-        /// </summary>
-        /// <param name="mode"></param>
-        /// <returns></returns>
-        public async Task<IEnumerable<MenuColumnDto>> TestGateWaygetMenuShortcutAsync(string mode)
-        {
-            IEnumerable<SysMenu> list = await GetAllMenuList();
-            IEnumerable<SysMenu> menu_list = list.Where(m => m.isMenu == false && m.ShowStatus == true);
 
-            var systemindexset = await _systemIndexSetServices.GetSysIndexSetbyAdminIdAsync(1560206066204151804);
-            switch (mode)
-            {
-                case "1":
-                    if (systemindexset.SystemMenu.IsNullOrEmpty())
-                        return default(IEnumerable<MenuColumnDto>);
-                    return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.SystemMenu.ToList().Contains(m.Id.ToString())));
-                case "3":
-                    if (systemindexset.SystemMenu.IsNullOrEmpty())
-                        return _mapper.Map<List<MenuColumnDto>>(menu_list);
-                    return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.SystemMenu.ToList().Contains(m.Id.ToString()) == false));
-                case "2":
-                    if (systemindexset.SiteMenu.IsNullOrEmpty())
-                        return default(IEnumerable<MenuColumnDto>);
-                    return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.SiteMenu.ToList().Contains(m.Id.ToString())));
-                case "4":
-                    if (systemindexset.SiteMenu.IsNullOrEmpty())
-                        return _mapper.Map<List<MenuColumnDto>>(menu_list);
-                    return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.SiteMenu.ToList().Contains(m.Id.ToString()) == false));
-                case "7":
-                    if (systemindexset.FileManage.IsNullOrEmpty())
-                        return default(IEnumerable<MenuColumnDto>);
-                    return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.FileManage.ToList().Contains(m.Id.ToString())));
-                case "8":
-                    if (systemindexset.FileManage.IsNullOrEmpty())
-                        return _mapper.Map<List<MenuColumnDto>>(menu_list);
-                    return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.FileManage.ToList().Contains(m.Id.ToString()) == false));
-            }
-            return default(IEnumerable<MenuColumnDto>);
-        }
+
         /// <summary>
         /// 获取快捷菜单
         /// </summary>
         /// <param name="mode"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<MenuColumnDto>> getMenuShortcutAsync(string mode)
+        public async Task<IEnumerable<MenuColumnDto>?> getMenuShortcutAsync(string mode)
         {
             IEnumerable<SysMenu> list = await GetAllMenuList();
             IEnumerable<SysMenu> menu_list = null;
@@ -164,11 +134,11 @@
             return default(IEnumerable<MenuColumnDto>);
         }
         /// <summary>
-        /// 根据角色Id获取菜单树
+        /// 获取当前角色菜单树
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<MenuDto>> GetTreeMenuDtoByRoleIdAsync(long Id)
+        public async Task<IEnumerable<MenuDto>?> GetCurrentMenuDtoByRoleIdAsync()
         {
             IEnumerable<SysMenu> list =  await _unitOfWork.GetRepository<SysMenu>().GetAllAsync();
             //超管直接返回所有菜单
@@ -185,7 +155,7 @@
                 AddMenuTreeTable(list, children);
                 list = treelist;
             }
-            var model = await GetRoleByIdAsync(Id);
+            var model = await GetRoleByIdAsync(_claims.UserId);
             string[] menus = null;
             if (model != null)
             {
@@ -196,7 +166,7 @@
             }
 
             if (list.IsNullOrEmpty())
-                return default(IEnumerable<MenuDto>);
+                return default;
             var query = _mapper.Map<List<MenuDto>>(list.OrderBy(m => m.OrderId));
             query.Each(item =>
             {
@@ -262,6 +232,48 @@
             AddMenu(query, query.Where(x => x.parentid == 0).FirstOrDefault());
 
             return Main;
+        }
+
+        public async Task<ProblemDetails<string>> EditMenu(MenuEditDto model)
+        {
+            var menuRepository = _unitOfWork.GetRepository<SysMenu>();
+            var menumodel =await menuRepository.GetFirstOrDefaultAsync(m=>m.Id== model.Id);
+            menumodel.isMenu= model.isMenu;
+            menumodel.FontSort=model.FontSort;
+            menumodel.Icode=model.Icode;
+            menumodel.IsControllerUrl = model.IsControllerUrl;
+            menumodel.LinkUrl = model.LinkUrl;
+            menumodel.Name = model.Name;
+            menumodel.OrderId = model.OrderId;
+            menumodel.ParentID = model.ParentID;
+            menumodel.isMenu = model.isMenu;
+            UpdateIntEntityBasicInfo(menumodel);
+            try
+            {
+                menuRepository.Update(menumodel);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.Message<ErrorCodes>());
+            }
+            catch (Exception ex)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.Message<ErrorCodes>());
+            }
+        }
+        public async Task<ProblemDetails<string>> AddMenu(MenuAddDto model)
+        {
+            var menuRepository = _unitOfWork.GetRepository<SysMenu>();
+            var menumodel = _mapper.Map<SysMenu>(model);
+            AddIntEntityBasicInfo(menumodel);
+            try
+            {
+                menuRepository.Insert(menumodel);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.Message<ErrorCodes>());
+            }
+            catch (Exception ex)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.Message<ErrorCodes>());
+            }
         }
     }
 }

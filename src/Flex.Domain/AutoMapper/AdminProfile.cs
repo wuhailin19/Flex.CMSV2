@@ -1,9 +1,8 @@
-﻿using AutoMapper;
+﻿using Flex.Core.Helper;
+using Flex.Domain.Collections;
 using Flex.Domain.Dtos;
 using Flex.Domain.Dtos.Admin;
 using Flex.Domain.Entities.System;
-using Flex.Domain.Collections;
-using Flex.Core.Helper;
 
 namespace Flex.Domain.AutoMapper
 {

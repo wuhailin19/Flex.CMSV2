@@ -1,6 +1,9 @@
 ﻿using Flex.Application.Contracts.Authorize;
+using Flex.Domain.Dtos.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Json;
 
@@ -14,9 +17,26 @@ public abstract class ApiBaseController : ControllerBase
     public async Task<T> GetModel<T>()
     {
         using StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
-        var stream =await reader.ReadToEndAsync();
+        var stream = await reader.ReadToEndAsync();
+
         return JsonHelper.Json<T>(stream);
     }
+    public async Task<ProblemDetails<T>> ValidateModel<T>()
+    {
+        // 使用验证器验证实体
+        var model = await GetModel<T>();
+        if (model is null)
+            return new ProblemDetails<T>(HttpStatusCode.BadRequest, "验证未通过");
+        var validationContext = new ValidationContext(model);
+        var validationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(model, validationContext, validationResults, true);
+        if (!isValid)
+        {
+            return new ProblemDetails<T>(HttpStatusCode.BadRequest, validationResults[0]?.ErrorMessage ?? "验证未通过");
+        }
+        return new ProblemDetails<T>(HttpStatusCode.OK, model, "验证通过");
+    }
+
     /// <summary>
     /// 
     /// </summary>

@@ -59,8 +59,8 @@ layui.define(['laypage', 'form'], function (exports) {
         thistmp = TITLE_ID;
         var a = {
             init: function () {
-                if (type.indexOf("fontClass") > -1) {
-                    data = common.getfont[fonttype]();
+                if (type.indexOf("layui") > -1) {
+                    data = common.getfont["fontClass"]();
                 } else {
                     data = common.getfont[fonttype]();
                 }
@@ -480,7 +480,7 @@ layui.define(['laypage', 'form'], function (exports) {
                 //    success: (params) => { console.log(params); this.parseIcon(params); }
                 //})
                 // 远程获取文件
-                $.ajax({
+                ajaxHttp({
                     url: api + 'Common/getBufferArray',
                     type: 'get',
                     async: false,
@@ -583,7 +583,7 @@ layui.define(['laypage', 'form'], function (exports) {
 
     IconHhys.prototype.clearValue = function (filter, fonttype) {
         var className = 'layui-icon';
-        className = fonttype == 'fontClass' ? 'layui-icon' : fonttype;
+        className = fonttype == 'layui-icon' ? 'layui-icon' : fonttype;
         var el = $('*[lay-filter=' + filter + ']'),
             p = el.next().find('.layui-iconpicker-icon.layui-unselect .' + className);
         el.attr('value', '');
@@ -597,7 +597,7 @@ layui.define(['laypage', 'form'], function (exports) {
      */
     IconHhys.prototype.checkIcon = function (filter, iconName, fonttype) {
         var className = 'layui-icon';
-        className = fonttype == 'fontClass' ? 'layui-icon' : fonttype;
+        className = fonttype == 'layui-icon' ? 'layui-icon' : fonttype;
         var el = $('*[lay-filter=' + filter + ']'),
             p = el.next().find('.layui-iconpicker-item .' + className),
             c = iconName;

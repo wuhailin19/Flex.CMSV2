@@ -11,7 +11,7 @@ namespace Flex.Domain.Config
     {
 		public void Configure(EntityTypeBuilder<SysAdmin> builder)
         {
-            Console.WriteLine("Configuring SysAdmin entity...");
+            //Console.WriteLine("Configuring SysAdmin entity...");
             builder.ToTable("tbl_core_admin");
             builder.Ignore(m => m.IsSystem);
             

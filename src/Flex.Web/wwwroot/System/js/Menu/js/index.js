@@ -6,7 +6,7 @@ layui.config({
     var layer = layui.layer;
     var $ = layui.jquery;
     var columnlist;
-    $.ajax({
+    ajaxHttp({
         url: api + 'Menu/Column',
         type: 'Get',
         //data: { _type: 'getTableColumn' },
@@ -168,7 +168,7 @@ layui.config({
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
                 area: ['900px', '700px'],
-                content: api + 'Menu/AddPage',
+                content: 'AddPage',
                 success: function (layero, index) {
                 }, end: function () {
                     insTb.refresh();
@@ -187,7 +187,7 @@ layui.config({
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
                 area: ['900px', '700px'],
-                content: api + 'Menu/Edit',
+                content: 'Edit',
                 success: function (layero, index) {
                 }, end: function () {
                     insTb.refresh();

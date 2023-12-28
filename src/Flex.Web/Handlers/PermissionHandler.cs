@@ -1,36 +1,32 @@
 ﻿using Flex.Application.Authorize;
+using Flex.Core.Timing;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Flex.Application.Extensions;
-using Flex.Core.Timing;
-using Flex.Core.Extensions;
 
-namespace Flex.Application.Handlers
+namespace Flex.Web.Handlers
 {
     public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     {
         private readonly IHttpContextAccessor _Context;
         private readonly IClaimsAccessor _claims;
         private readonly IRoleServices _roleServices;
-        public PermissionHandler(IHttpContextAccessor Context, IClaimsAccessor claims, IRoleServices roleServices)
+        private readonly ILogger<PermissionHandler> _logger;
+        public PermissionHandler(IHttpContextAccessor Context, IClaimsAccessor claims, IRoleServices roleServices, ILogger<PermissionHandler> logger)
         {
             _Context = Context;
             _claims = claims;
             _roleServices = roleServices;
+            _logger = logger;
         }
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
             HttpContext httpContext = _Context.HttpContext;
             if (context.User.Identity.IsAuthenticated)
             {
+                //当前接口链接
+                var nowurl = httpContext.Request.Path.ToString().ToLower();
                 var authHeader = httpContext.Request.Headers["Authorization"].ToString();
                 if (authHeader != null && authHeader.StartsWith(JwtBearerDefaults.AuthenticationScheme, StringComparison.OrdinalIgnoreCase))
                 {
@@ -38,6 +34,7 @@ namespace Flex.Application.Handlers
                     var expirationtime = DateTime.Parse(context.User.Claims.First(m => m.Type == ClaimTypes.Expiration)?.Value);
                     if (expirationtime < Clock.Now)
                     {
+                        _logger.LogWarning("该用户{0}（{2}），登录已超时，链接{1}", _claims.UserName, nowurl,_claims.UserId);
                         Fail(context, httpContext, StatusCodes.Status419AuthenticationTimeout);
                         return;
                     }
@@ -49,8 +46,8 @@ namespace Flex.Application.Handlers
                     var userrole = _claims.UserRole;
                     if (userrole.IsNullOrEmpty())
                     {
+                        _logger.LogWarning("该用户{0}（{2}），没有角色信息，链接{1}", _claims.UserName, nowurl, _claims.UserId);
                         Fail(context, httpContext);
-
                         return;
                     }
 
@@ -58,8 +55,7 @@ namespace Flex.Application.Handlers
                     var RoleList = new Dictionary<string, List<string>>();
                     var role_items = userrole.Split(',');
                     RoleList = await GetRoleUrlDictByRedisOrDataServer(RoleList, role_items);
-                    //当前接口链接
-                    var nowurl = httpContext.Request.Path.ToString().ToLower();
+                    
                     var result = false;
                     foreach (var role in role_items)
                     {
@@ -76,6 +72,7 @@ namespace Flex.Application.Handlers
                     }
                     else
                     {
+                        _logger.LogWarning("该用户{0}（{2}），没有权限访问，链接{1}", _claims.UserName, nowurl, _claims.UserId);
                         Fail(context, httpContext);
                         return;
                     }

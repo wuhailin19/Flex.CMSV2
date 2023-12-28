@@ -24,15 +24,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                 return Fail("");
             return Success(result);
         }
-        [HttpGet("TestgetMenuShortcut")]
-        [AllowAnonymous]
-        public async Task<string> GatewayTestGetMenuShortcut(string mode = "1")
-        {
-            var result = await _menuServices.TestGateWaygetMenuShortcutAsync(mode);
-            if (result.IsNullOrEmpty())
-                return Fail("");
-            return Success(result);
-        }
+      
         [HttpPost("Update")]
         public async Task<string> Update([FromForm] ShortCutDtos shortCutDtos)
         {
