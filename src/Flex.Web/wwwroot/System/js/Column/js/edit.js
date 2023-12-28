@@ -1,24 +1,41 @@
-﻿
+﻿var Id = parent.req_Data.Id;
+var parent_json;
+ajaxHttp({
+    url: api + 'ColumnCategory/GetColumnById/' + Id,
+    type: 'Get',
+    datatype: 'json',
+    async: false,
+    success: function (json) {
+        if (json.code == 200) {
+            parent_json = json.content;
+        } else {
+            layer.msg(json.msg, { icon: 5, time: 1000 });
+        }
+    }
+})
+//Demo
+ajaxHttp({
+    url: api + 'ColumnCategory/GetTreeSelectListDtos',
+    type: 'Get',
+    //data: { _type: 'getTreeColumnStr' },
+    async: false,
+    success: function (json) {
+        if (json.code == 200) {
+
+            for (var i = 0; i < json.content.length; i++) {
+                $('#chooseName').append('<option value="' + json.content[i].id + '" ' + (parent_json.ParentId == json.content[i].id ? "selected" : "") + '>' + json.content[i].title + '</option>');
+            }
+        }
+    },
+    complete: function () {
+    }
+})
 layui.config({
     base: '/Scripts/layui/module/'
 }).use(['iconHhysFa', 'form', 'tree'], function () {
     var form = layui.form;
     var tree = layui.tree;
-    var Id = parent.req_Data.Id;
-    var parent_json;
-    ajaxHttp({
-        url: api + 'ColumnCategory/GetColumnById/' + Id,
-        type: 'Get',
-        datatype: 'json',
-        async: false,
-        success: function (json) {
-            if (json.code == 200) {
-                parent_json = json.content;
-            } else {
-                layer.msg(json.msg, { icon: 5, time: 1000 });
-            }
-        }
-    })
+    
     form.val("formTest", {
         'Name': parent_json.Name
         , 'Id': parent_json.Id
@@ -29,23 +46,7 @@ layui.config({
         , 'SeoKeyWord': parent_json.SeoKeyWord
         , 'SeoDescription': parent_json.SeoDescription
     });
-    //Demo
-    ajaxHttp({
-        url: api + 'ColumnCategory/GetTreeSelectListDtos',
-        type: 'Get',
-        //data: { _type: 'getTreeColumnStr' },
-        async: false,
-        success: function (json) {
-            if (json.code == 200) {
-
-                for (var i = 0; i < json.content.length; i++) {
-                    $('#chooseName').append('<option value="' + json.content[i].id + '" ' + (parent_json.ParentId == json.content[i].id ? "selected" : "") + '>' + json.content[i].title + '</option>');
-                }
-            }
-        },
-        complete: function () {
-        }
-    })
+    
     var columnlist;
     ajaxHttp({
         url: api + 'ColumnCategory/TreeListAsync',

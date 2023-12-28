@@ -17,10 +17,10 @@ layui.config({
     base: '/Scripts/layui/module/'
 }).use(['form', 'tree'], function () {
     var form = layui.form;
-    var parent_json = parent.req_Data;
+    var pId = parent.req_Data;
     var tree = layui.tree;
     form.val("formTest", {
-        'ParentID': parent_json,
+        'ParentID': pId,
         'Status': 'true'
     });
 
