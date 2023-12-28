@@ -367,3 +367,5 @@ FodyWeavers.xsd
 /src/Flex.EFSqlServer/Migrations/20231218034733_addAdminLoginLogString.cs
 /src/Flex.EFSqlServer/Migrations/20231218034733_addAdminLoginLogString.Designer.cs
 /src/Flex.EFSqlServer/Migrations/SqlServerContextModelSnapshot.cs
+/src/Flex.EFSqlServer/Migrations/20231228120703_FlexCmsDbInit.cs
+/src/Flex.EFSqlServer/Migrations/20231228120703_FlexCmsDbInit.Designer.cs
