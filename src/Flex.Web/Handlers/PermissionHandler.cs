@@ -72,7 +72,7 @@ namespace Flex.Web.Handlers
                     }
                     else
                     {
-                        _logger.LogWarning("该用户{0}（{2}），没有权限访问{1}", _claims.UserName, nowurl, _claims.UserId);
+                        _logger.LogWarning("该用户{0}（{2}），没有权限访问，链接{1}", _claims.UserName, nowurl, _claims.UserId);
                         Fail(context, httpContext);
                         return;
                     }

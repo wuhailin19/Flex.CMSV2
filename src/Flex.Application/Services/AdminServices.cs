@@ -201,7 +201,7 @@ namespace Flex.Application.Services
             var adminRepository = _unitOfWork.GetRepository<SysAdmin>();
             var model = await adminRepository.GetFirstOrDefaultAsync(m=>m.Id==adminQuickEditDto.Id);
             if(model is null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "数据不存在");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.Message<ErrorCodes>());
             if(adminQuickEditDto.AllowMultiLogin.IsNotNullOrEmpty())
                 model.AllowMultiLogin= adminQuickEditDto.AllowMultiLogin.CastTo<bool>();
             if (adminQuickEditDto.Islock.IsNotNullOrEmpty())

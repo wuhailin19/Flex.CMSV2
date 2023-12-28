@@ -38,15 +38,22 @@ namespace Flex.Application.Contracts.Exceptions
         /// <summary> 当前数据已被修改 </summary>
         [Description("当前数据已被修改")]
         public const int DataVersionError = 10005;
+
         /// <summary> 添加失败 </summary>
         [Description("添加失败")]
         public const int DataInsertError = 10006;
+
         /// <summary> 修改失败 </summary>
         [Description("修改失败")]
         public const int DataUpdateError = 10007;
-        /// <summary> 修改失败 </summary>
+
+        /// <summary> 修改成功 </summary>
         [Description("修改成功")]
         public const int DataUpdateSuccess = 10008;
+
+        /// <summary> 数据不存在 </summary>
+        [Description("数据不存在")]
+        public const int DataNotFound = 10009;
     }
 
     /// <summary> 错误码扩展 </summary>
