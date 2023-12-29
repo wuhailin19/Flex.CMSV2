@@ -50,6 +50,12 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(await _menuServices.GetCurrentMenuDtoByRoleIdAsync());
         }
 
+        [HttpGet("GetTreeListByIdAsync/{Id}")]
+        public async Task<string> GetTreeListByIdAsync(int Id)
+        {
+            return Success(await _menuServices.GetMenuDtoByRoleIdAsync(Id));
+        }
+
         [HttpPost]
         public async Task<string> Update()
         {

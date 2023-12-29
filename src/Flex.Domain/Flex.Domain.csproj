@@ -9,19 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Admin\**" />
-    <Compile Remove="Repository\**" />
-    <Compile Remove="RolePermission\**" />
-    <EmbeddedResource Remove="Admin\**" />
-    <EmbeddedResource Remove="Repository\**" />
-    <EmbeddedResource Remove="RolePermission\**" />
-    <None Remove="Admin\**" />
-    <None Remove="Repository\**" />
-    <None Remove="RolePermission\**" />
+    <ProjectReference Include="..\Flex.Core\Flex.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Flex.Core\Flex.Core.csproj" />
+    <Folder Include="Admin\" />
+    <Folder Include="Repository\" />
+    <Folder Include="RolePermission\" />
   </ItemGroup>
 
   <ItemGroup>
