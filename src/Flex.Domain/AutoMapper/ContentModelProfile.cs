@@ -7,7 +7,10 @@ namespace Flex.Domain.AutoMapper
         public ContentModelProfile()
         {
             CreateMap<SysContentModel, ContentModelColumnDto>();
-            CreateMap<AddContentModelDto, SysContentModel>();
+            CreateMap<AddContentModelDto, SysContentModel>()
+                .ForMember(a => a.TableName, b => b.MapFrom(c => 
+                "tbl_normal_" + c.TableName
+                .Replace("tbl_normal_", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase)));
         }
     }
 }

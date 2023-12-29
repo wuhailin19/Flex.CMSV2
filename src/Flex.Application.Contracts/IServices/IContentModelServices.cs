@@ -11,6 +11,9 @@ namespace Flex.Application.Contracts.IServices
     public interface IContentModelServices
     {
         Task<ProblemDetails<string>> Add(AddContentModelDto model);
+        Task<ProblemDetails<string>> Delete(string Id);
+        string GetFormHtml(params string[] names);
         Task<IEnumerable<ContentModelColumnDto>> ListAsync();
+        Task<ProblemDetails<string>> Update(UpdateContentModelDto model);
     }
 }

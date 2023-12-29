@@ -22,15 +22,21 @@
 <body>
     <form class="layui-form" action="" onclick="return false;" style="padding: 2%;" lay-filter="formTest">
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">角色名</label>
+            <label class="layui-form-label">模型名</label>
             <div class="layui-input-block">
-                <input type="text" name="RolesName" placeholder="请输入角色名" autocomplete="off" class="layui-input" lay-verify='required'>
+                <input type="text" name="Name" placeholder="请输入模型名" autocomplete="off" class="layui-input" lay-verify='required'>
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">角色描述</label>
+            <label class="layui-form-label">描述</label>
             <div class="layui-input-block">
-                <input type="text" name="RolesDesc" placeholder="请输入角色描述" autocomplete="off" class="layui-input">
+                <input type="text" name="Description" placeholder="请输入描述" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">表名</label>
+            <div class="layui-input-block">
+                <input type="text" name="TableName" placeholder="请输入表名" value="" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">

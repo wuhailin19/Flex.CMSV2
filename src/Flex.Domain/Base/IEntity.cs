@@ -26,7 +26,7 @@ namespace Flex.Domain.Base
         /// </summary>
         public DateTime? LastEditDate { set; get; }
         /// <summary>
-        /// 是否删除（软删除）
+        /// 数据状态
         /// </summary>
         public StatusCode? StatusCode { set; get; }
         /// <summary>

@@ -9,6 +9,14 @@ namespace Flex.Core
         [Description("生效")]
         Enable = 1,
         [Description("失效")]
-        Disable = 0//失效的还可以改为生效
+        Disable = 0,//失效的还可以改为生效
+        [Description("草稿")]
+        Draft = 2,
+        [Description("待发布")]
+        PendingRelease = 4,
+        [Description("待审核")]
+        PendingApproval = 4,
+
     }
+    
 }

@@ -99,7 +99,7 @@ layui.config({
                     shade: false,
                     maxmin: true, //开启最大化最小化按钮
                     area: [widthstr, heightstr],
-                    content: 'ColumnCategory/AddPage',
+                    content: 'AddPage',
                     end: function () {
                         insTb.refresh();
                     }
@@ -184,7 +184,7 @@ layui.config({
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
                 area: ['900px', '700px'],
-                content: 'ColumnCategory/AddPage',
+                content: 'AddPage',
                 success: function (layero, index) {
                 }, end: function () {
                     insTb.refresh();
@@ -204,7 +204,7 @@ layui.config({
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
                 area: ['900px', '700px'],
-                content: 'ColumnCategory/Edit',
+                content: 'Edit',
                 success: function (layero, index) {
                 }, end: function () {
                     insTb.refresh();

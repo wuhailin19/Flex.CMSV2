@@ -30,23 +30,6 @@
                 defaultOptions.callBack(insTb);
             }
         });
-    }, editIframe: function (layer, insTb) {
-        var self = this;
-        let widthstr = self.addwidths + 'px';
-        let heightstr = '300px';
-        //iframe窗
-        layer.open({
-            type: 2,
-            title: '编辑',
-            shadeClose: true,
-            shade: false,
-            maxmin: true, //开启最大化最小化按钮
-            area: [widthstr, heightstr],
-            content: routePageLink + 'Edit',
-            end: function () {
-                defaultOptions.callBack(insTb);
-            }
-        });
     },
     callBack: function (tableIns) {
         //第二次调用
@@ -58,10 +41,10 @@
         });
         console.log(tableIns)
     },
-    menuEditIframe: function (layer, insTb) {
+    editIframe: function (layer, insTb) {
         var self = this;
-        let widthstr = self.editwidths + 'px';
-        let heightstr = self.editheights + 'px';
+        let widthstr = '80%';
+        let heightstr = '80%';
         let isreload = self.isEditReload;
         //iframe窗
         layer.open({
@@ -71,26 +54,27 @@
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: routePageLink + 'MenuEdit',
+            content: routePageLink + 'Edit',
             end: function () {
                 if (isreload) {
+                    defaultOptions.callBack(insTb);
                 }
             }
         });
-    }, apiPermissionIframe: function (layer, insTb) {
+    }, filedsIframe: function (layer, insTb) {
         var self = this;
         let widthstr = self.datawidths + 'px';
-        let heightstr = '750px';
+        let heightstr = '80%';
         let isreload = self.isEditReload;
         //iframe窗
         layer.open({
             type: 2,
-            title: '接口权限',
+            title: '字段列表',
             shadeClose: true,
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: routePageLink + 'ApiPermission',
+            content: '/system/Filed/Index',
             end: function () {
                 if (isreload) {
                 }
