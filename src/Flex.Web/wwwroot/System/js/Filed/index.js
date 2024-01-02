@@ -1,4 +1,5 @@
 ﻿var columnlist;
+var parentdata = parent.req_Data;
 var req_Data;
 $.ajax({
     url: routeLink + 'Column',
@@ -15,7 +16,7 @@ layui.use('table', function () {
     //JS 调用：
     var insTb = table.render({
         elem: '#demo'
-        , url: routeLink + 'ListAsync'
+        , url: routeLink + 'ListAsync/' + parentdata.Id
         , height: 'full-30'
         , headers: httpTokenHeaders
         , toolbar: '#toolbarDemo'
@@ -101,6 +102,7 @@ layui.use('table', function () {
                                 layer.msg(json.msg, { icon: 6, time: 1000 });
                                 // 删除
                                 delete_index = [];
+                                defaultOptions.callBack(insTb);
                             } else {
                                 layer.msg(json.msg, { icon: 5, time: 1000 })
                                 delete_index = [];

@@ -24,6 +24,13 @@ namespace Flex.Application.Services
             var list = await responsity.GetAllAsync();
             return _mapper.Map<List<ContentModelColumnDto>>(list);
         }
+        
+        public async Task<IEnumerable<ContentSelectItemDto>> GetSelectItem()
+        {
+            var responsity = _unitOfWork.GetRepository<SysContentModel>();
+            var list = await responsity.GetAllAsync();
+            return _mapper.Map<List<ContentSelectItemDto>>(list);
+        }
 
         public async Task<ProblemDetails<string>> Add(AddContentModelDto model)
         {
@@ -32,7 +39,6 @@ namespace Flex.Application.Services
             AddIntEntityBasicInfo(contentmodel);
             try
             {
-
                 responsity.Insert(contentmodel);
                 await _unitOfWork.SaveChangesAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());

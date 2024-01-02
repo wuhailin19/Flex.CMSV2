@@ -51,6 +51,22 @@ namespace Flex.Application.Services
             };
             return finaltrees;
         }
+        
+        public async Task<IEnumerable<TreeColumnListDto>> GetManageTreeListAsync()
+        {
+            var coreRespository = _unitOfWork.GetRepository<SysColumn>();
+            var list = (await coreRespository.GetAllAsync()).OrderBy(m => m.OrderId).ToList();
+            if (!_claims.IsSystem)
+            {
+            }
+            List<TreeColumnListDto> treeColumns = new List<TreeColumnListDto>();
+            list.Where(m => m.ParentId == 0).Each(item =>
+            {
+                treeColumns.Add(_mapper.Map<TreeColumnListDto>(item));
+            });
+            AddChildrenToColumn(list, treeColumns);
+            return treeColumns;
+        }
 
         public async Task<IEnumerable<TreeColumnListDto>> GetTreeSelectListDtos()
         {

@@ -1,6 +1,7 @@
 ﻿using Flex.Core.Attributes;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ContentModel;
+using Flex.Domain.Dtos.Field;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +9,10 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class FiledController : ApiBaseController
+    public class FieldController : ApiBaseController
     {
-        private IContentModelServices _services;
-        public FiledController(IContentModelServices services) {
+        private IFieldServices _services;
+        public FieldController(IFieldServices services) {
             _services = services;
         }
         [HttpGet("Column")]
@@ -19,11 +20,11 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         [AllowAnonymous]
         public string Column()
         {
-            return Success(ModelTools<ContentModelColumnDto>.getColumnDescList());
+            return Success(ModelTools<FieldColumnDto>.getColumnDescList());
         }
-        [HttpGet("ListAsync")]
-        public async Task<string> ListAsync() {
-         return Success(await _services.ListAsync());
+        [HttpGet("ListAsync/{Id}")]
+        public async Task<string> ListAsync(int Id) {
+         return Success(await _services.ListAsync(Id));
         }
 
         //[HttpGet("GetFormHtml")]
@@ -31,9 +32,14 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         //    return Success(_services.GetFormHtml("用户名","Account", "required"));
         //}
 
+        [HttpGet("GetFiledInfoById/{Id}")]
+        public async Task<string> GetFiledInfoById(int Id) {
+            return Success(await _services.GetFiledInfoById(Id));
+        }
+
         [HttpPut]
         public async Task<string> Add() {
-            var validate = await ValidateModel<AddContentModelDto>();
+            var validate = await ValidateModel<AddFieldDto>();
             if (!validate.IsSuccess)
                 return Fail(validate.Detail);
             var result =await _services.Add(validate.Content);
@@ -54,7 +60,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         [HttpPost]
         public async Task<string> Update()
         {
-            var validate = await ValidateModel<UpdateContentModelDto>();
+            var validate = await ValidateModel<UpdateFieldDto>();
             if (!validate.IsSuccess)
                 return Fail(validate.Detail);
             var result = await _services.Update(validate.Content);

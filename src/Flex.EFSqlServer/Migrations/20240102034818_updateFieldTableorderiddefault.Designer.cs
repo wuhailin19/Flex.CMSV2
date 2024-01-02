@@ -4,6 +4,7 @@ using Flex.EFSqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flex.EFSqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20240102034818_updateFieldTableorderiddefault")]
+    partial class updateFieldTableorderiddefault
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1804,12 +1807,12 @@ namespace Flex.EFSqlServer.Migrations
                         {
                             Id = 1560206066204151804L,
                             Account = "webmaster",
-                            AddTime = new DateTime(2024, 1, 2, 15, 31, 7, 96, DateTimeKind.Local).AddTicks(8694),
+                            AddTime = new DateTime(2024, 1, 2, 11, 48, 18, 241, DateTimeKind.Local).AddTicks(2348),
                             AddUser = 1560206066204151804L,
                             AddUserName = "webmaster",
                             AllowMultiLogin = true,
                             CurrentLoginIP = "127.0.0.1",
-                            CurrentLoginTime = new DateTime(2024, 1, 2, 15, 31, 7, 96, DateTimeKind.Local).AddTicks(8694),
+                            CurrentLoginTime = new DateTime(2024, 1, 2, 11, 48, 18, 241, DateTimeKind.Local).AddTicks(2348),
                             ErrorCount = 0,
                             Islock = false,
                             LastEditUser = 1560206066204151804L,
@@ -1960,7 +1963,7 @@ namespace Flex.EFSqlServer.Migrations
                     b.Property<bool?>("IsApiField")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasDefaultValue(true);
 
                     b.Property<bool?>("IsSearch")
                         .ValueGeneratedOnAdd()
@@ -1976,11 +1979,6 @@ namespace Flex.EFSqlServer.Migrations
                     b.Property<string>("LastEditUserName")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("ModelId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
 
                     b.Property<string>("Name")
                         .IsRequired()

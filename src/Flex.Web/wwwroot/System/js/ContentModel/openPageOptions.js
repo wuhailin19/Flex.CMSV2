@@ -39,12 +39,14 @@
                 curr: tableIns.page //重新从第 1 页开始
             }
         });
-        console.log(tableIns)
+        //console.log(tableIns)
     },
     editIframe: function (layer, insTb) {
         var self = this;
-        let widthstr = '80%';
-        let heightstr = '80%';
+        let widthstr = self.editwidths+"px";
+        let heightstr = self.editheights + "px";
+        console.log(widthstr)
+        console.log(heightstr)
         let isreload = self.isEditReload;
         //iframe窗
         layer.open({
@@ -63,8 +65,8 @@
         });
     }, filedsIframe: function (layer, insTb) {
         var self = this;
-        let widthstr = self.datawidths + 'px';
-        let heightstr = '80%';
+        let widthstr = '80%';
+        let heightstr = '90%';
         let isreload = self.isEditReload;
         //iframe窗
         layer.open({
@@ -74,7 +76,7 @@
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: '/system/Filed/Index',
+            content: '/system/Field/Index',
             end: function () {
                 if (isreload) {
                 }

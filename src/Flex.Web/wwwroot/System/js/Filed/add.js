@@ -1,4 +1,5 @@
 ﻿// 获取选中节点的id
+var routeLink = api + 'Field/';
 function getChecked_list(data, type) {
     var id = "";
     $.each(data, function (index, item) {
@@ -24,12 +25,17 @@ layui.config({
     var form = layui.form;
     //监听提交
     form.on('submit(formDemo)', function (data) {
-        var json = data.field;
+        //let validationstr = '';
+        //$.each($('.Validation'), function (index, item) {
+        //    validationstr += " " + $(item).val();
+        //})
+        //data.field.Validation = validationstr;
+        data.field.ModelId = parent.parentdata.Id;
         ajaxHttp({
-            url: api + 'ContentModel',
+            url: routeLink,
             type: 'Put',
             datatype: 'json',
-            data: JSON.stringify(json),
+            data: JSON.stringify(data.field),
             async: false,
             success: function (json) {
                 if (json.code == 200) {

@@ -39,7 +39,7 @@
                 curr: tableIns.page //重新从第 1 页开始
             }
         });
-        console.log(tableIns)
+        //console.log(tableIns)
     },
     editIframe: function (layer, insTb) {
         var self = this;
@@ -63,7 +63,7 @@
         });
     }, filedsIframe: function (layer, insTb) {
         var self = this;
-        let widthstr = self.datawidths + 'px';
+        let widthstr = '80%';
         let heightstr = '80%';
         let isreload = self.isEditReload;
         //iframe窗
@@ -74,7 +74,7 @@
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: '/system/Filed/Index',
+            content: '/system/Field/Index',
             end: function () {
                 if (isreload) {
                 }

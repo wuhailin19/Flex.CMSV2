@@ -7,6 +7,7 @@ namespace Flex.Domain.AutoMapper
         public ContentModelProfile()
         {
             CreateMap<SysContentModel, ContentModelColumnDto>();
+            CreateMap<SysContentModel, ContentSelectItemDto>();
             CreateMap<AddContentModelDto, SysContentModel>()
                 .ForMember(a => a.TableName, b => b.MapFrom(c => 
                 "tbl_normal_" + c.TableName

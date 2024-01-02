@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -17,72 +21,63 @@
 </head>
 <body>
     <form class="layui-form" action="" onclick="return false;" style="padding: 2%;" lay-filter="formTest">
-        <div class="layui-form-item">
-            <label class="layui-form-label">编号</label>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">字段含义</label>
             <div class="layui-input-block">
-                <input type="text" name="Id" readonly="readonly" autocomplete="off" class="layui-input">
+                <input type="text" name="Name" placeholder="请输入字段含义" autocomplete="off" value="" class="layui-input" lay-verify='required'>
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">栏目名</label>
+            <label class="layui-form-label">字段名称</label>
             <div class="layui-input-block">
-                <input type="text" name="Name" placeholder="请输入栏目名" autocomplete="off" class="layui-input" lay-verify='required'>
+                <input type="text" name="FieldName" placeholder="请输入字段名称" autocomplete="off" value="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">栏目图片</label>
+            <label class="layui-form-label">字段描述</label>
             <div class="layui-input-block">
-                <input type="text" name="ColumnImage" placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="FieldDescription" placeholder="请输入字段描述" value="" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">父级栏目</label>
+            <label class="layui-form-label">字段类型</label>
             <div class="layui-input-block">
-                <div class="layui-form-select downpanel">
-                    <div class="layui-select-title">
-                        <select name="ParentID" id="chooseName">
-                            <option value="-1">无</option>
-                        </select>
-                    </div>
-                    <dl class="layui-anim layui-anim-upbit">
-                        <dd>
-                            <div id="ParentID" class="demo-tree-more"></div>
-                        </dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">模型选择</label>
-            <div class="layui-input-block">
-                <select name="ModelId" lay-search="" id="ModelId" required lay-verify="required">
-                    <option value="">直接选择或搜索</option>
-
+                <select name="FieldType" lay-search="" id="FieldType" required lay-verify="required">
+                    <option value="TextBox">文本框</option>
+                    <option value="Editor">编辑器</option>
                 </select>
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">栏目链接</label>
+            <label class="layui-form-label">字段验证</label>
             <div class="layui-input-block">
-                <input type="text" name="ColumnUrl" placeholder="" autocomplete="off" class="layui-input">
+                <input type="checkbox" class="Validation" name="ValidateNumber" title="数字" value="lay-verify='number'">
+                <input type="checkbox" class="Validation" name="ValidateEmpty" title="非空" value="lay-verify='required'">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">Seo标题</label>
+            <label class="layui-form-label">宽度</label>
             <div class="layui-input-block">
-                <input type="text" name="SeoTitle" placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="Width" placeholder="请输入宽度" value="" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">Seo关键字</label>
+            <label class="layui-form-label">高度</label>
             <div class="layui-input-block">
-                <input type="text" name="SeoKeyWord" placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="Height" placeholder="请输入高度" value="" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">Seo描述</label>
+            <label class="layui-form-label">接口字段名</label>
             <div class="layui-input-block">
-                <textarea placeholder="请输入内容" name="SeoDescription" class="layui-textarea"></textarea>
+                <input type="text" name="ApiName" placeholder="请输入接口字段名" value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">属性选择</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="IsApiField" title="接口显示" value="true" checked>
+                <input type="checkbox" name="IsSearch" title="用于搜索" value="true">
             </div>
         </div>
         <div class="layui-form-item">
@@ -92,6 +87,6 @@
             </div>
         </div>
     </form>
-    <script src="~/system/js/column/js/edit.js"></script>
+    <script src="~/system/js/filed/add.js"></script>
 </body>
 </html>

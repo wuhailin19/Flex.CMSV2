@@ -101,6 +101,7 @@ layui.use('table', function () {
                                 layer.msg(json.msg, { icon: 6, time: 1000 });
                                 // 删除
                                 delete_index = [];
+                                defaultOptions.callBack(insTb);
                             } else {
                                 layer.msg(json.msg, { icon: 5, time: 1000 })
                                 delete_index = [];

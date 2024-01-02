@@ -1,4 +1,5 @@
 ﻿// 获取选中节点的id
+var routeLink = api + 'Field/';
 function getChecked_list(data, type) {
     var id = "";
     $.each(data, function (index, item) {
@@ -18,6 +19,7 @@ function getChecked_list(data, type) {
     return id;
 }
 
+
 layui.config({
     base: '/Scripts/layui/module/'
 }).use(['form', 'tree'], function () {
@@ -25,30 +27,40 @@ layui.config({
     var parent_json = parent.req_Data;
     var laytpl = layui.laytpl;
     var elemView = document.getElementById('view'); // 视图对象
+    var currentinfo;
+    ajaxHttp({
+        url: routeLink + 'GetFiledInfoById/' + parent_json.Id ,
+        type: 'Get',
+        datatype: 'json',
+        async: false,
+        success: function (json) {
+            if (json.code == 200) {
+                currentinfo = json.content;
+            } else {
+                layer.msg(json.msg, { icon: 5, time: 1000 });
+            }
+        }
+    })
+
     var model = {
         Name: parent_json.Name,
-        Description: parent_json.Description,
-        TableName: parent_json.TableName,
+        FieldName: parent_json.FieldName,
+        FieldDescription: parent_json.FieldDescription,
+        FieldType: parent_json.FieldType,
+        Width: currentinfo.Width,
+        Height: currentinfo.Height,
+        ApiName: parent_json.ApiName,
+        IsApiField: parent_json.IsApiField,
+        ValidateNumber: currentinfo.ValidateNumber,
+        ValidateEmpty: currentinfo.ValidateEmpty,
+        IsSearch: parent_json.IsSearch,
         Id: parent_json.Id
     }
-    // ajaxHttp({
-    //     url: api + 'ContentModel/GetFormHtml',
-    //     type: 'Get',
-    //     async: false,
-    //     dataType: 'json',
-    //     success: function (result) {
-    //         // 渲染并输出结果
-    //         laytpl(result.msg).render(model, function (str) {
-    //             elemView.innerHTML = str;
-    //         });
-    //     },
-    //     complete: function () { }
-    // })
     //监听提交
     form.on('submit(formDemo)', function (data) {
         var json = data.field;
         ajaxHttp({
-            url: api + 'ContentModel',
+            url: routeLink,
             type: 'Post',
             datatype: 'json',
             data: JSON.stringify(json),

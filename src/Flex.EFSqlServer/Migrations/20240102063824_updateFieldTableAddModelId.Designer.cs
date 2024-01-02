@@ -4,6 +4,7 @@ using Flex.EFSqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flex.EFSqlServer.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    partial class SqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20240102063824_updateFieldTableAddModelId")]
+    partial class updateFieldTableAddModelId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1804,12 +1807,12 @@ namespace Flex.EFSqlServer.Migrations
                         {
                             Id = 1560206066204151804L,
                             Account = "webmaster",
-                            AddTime = new DateTime(2024, 1, 2, 15, 31, 7, 96, DateTimeKind.Local).AddTicks(8694),
+                            AddTime = new DateTime(2024, 1, 2, 14, 38, 24, 648, DateTimeKind.Local).AddTicks(7024),
                             AddUser = 1560206066204151804L,
                             AddUserName = "webmaster",
                             AllowMultiLogin = true,
                             CurrentLoginIP = "127.0.0.1",
-                            CurrentLoginTime = new DateTime(2024, 1, 2, 15, 31, 7, 96, DateTimeKind.Local).AddTicks(8694),
+                            CurrentLoginTime = new DateTime(2024, 1, 2, 14, 38, 24, 648, DateTimeKind.Local).AddTicks(7024),
                             ErrorCount = 0,
                             Islock = false,
                             LastEditUser = 1560206066204151804L,

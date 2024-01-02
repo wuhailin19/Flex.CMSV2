@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Flex.Web.Areas.System.Controllers.ViewController
 {
     [Area("System")]
-    public class FiledController : Controller
+    public class FieldController : Controller
     {
         public IActionResult Index()
         {
