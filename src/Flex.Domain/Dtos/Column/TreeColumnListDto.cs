@@ -13,6 +13,7 @@ namespace Flex.Domain.Dtos.Column
         public string title { set; get; }
         public bool IsShow { set; get; }
         public string ColumnUrl { set; get; }
+        public string href { set; get; }
         public int OrderId { set; get; }
         public bool IsSelect { set; get; }
         public bool IsAdd { set; get; }

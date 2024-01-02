@@ -51,6 +51,22 @@ namespace Flex.Application.Services
             };
             return finaltrees;
         }
+        
+        public async Task<IEnumerable<TreeColumnListDto>> GetManageTreeListAsync()
+        {
+            var coreRespository = _unitOfWork.GetRepository<SysColumn>();
+            var list = (await coreRespository.GetAllAsync()).OrderBy(m => m.OrderId).ToList();
+            if (!_claims.IsSystem)
+            {
+            }
+            List<TreeColumnListDto> treeColumns = new List<TreeColumnListDto>();
+            list.Where(m => m.ParentId == 0).Each(item =>
+            {
+                treeColumns.Add(_mapper.Map<TreeColumnListDto>(item));
+            });
+            AddChildrenToColumn(list, treeColumns);
+            return treeColumns;
+        }
 
         public async Task<IEnumerable<TreeColumnListDto>> GetTreeSelectListDtos()
         {
@@ -97,11 +113,11 @@ namespace Flex.Application.Services
             {
                 coreRespository.Insert(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
             }
         }
 
@@ -126,11 +142,11 @@ namespace Flex.Application.Services
             {
                 coreRespository.Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             }
         }
 

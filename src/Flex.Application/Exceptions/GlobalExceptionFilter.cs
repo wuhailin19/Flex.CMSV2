@@ -28,23 +28,16 @@ namespace Flex.Application.Exceptions
             var type = string.Concat("https://httpstatuses.com/", status);
             string title;
             string detial;
-            if (exception is BusiException)
+
+            title = _env.IsDevelopment() ? exception.Message : $"系统异常";
+            detial = _env.IsDevelopment() ? exception.Format() : $"系统异常,请联系管理员({requestId})";
+            var exlog = new ExceptionLog()
             {
-                title = "参数错误";
-                detial = exception.Message;
-            }
-            else
-            {
-                title = _env.IsDevelopment() ? exception.Message : $"系统异常";
-                detial = _env.IsDevelopment() ? exception.Format() : $"系统异常,请联系管理员({requestId})";
-                var exlog = new ExceptionLog()
-                {
-                    RequestUrl = requestUrl,
-                    EventId = requestId,
-                    Exception = exception
-                };
-                _logger.Log(LogLevel.Error, JsonHelper.ToJson(exlog));
-            }
+                RequestUrl = requestUrl,
+                EventId = requestId,
+                Exception = exception
+            };
+            _logger.Log(LogLevel.Error, JsonHelper.ToJson(exlog));
             var problemDetails = new ExceptionMsg
             {
                 code = status,

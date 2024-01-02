@@ -99,7 +99,7 @@ layui.config({
                     shade: false,
                     maxmin: true, //开启最大化最小化按钮
                     area: [widthstr, heightstr],
-                    content: 'ColumnCategory/AddPage',
+                    content: routePageLink + 'AddPage',
                     end: function () {
                         insTb.refresh();
                     }
@@ -176,7 +176,7 @@ layui.config({
         }
         else if ("add" == obj.event) {
             //iframe窗
-            req_Data = obj.data.ParentId;
+            req_Data = obj.data.Id;
             var index = layer.open({
                 type: 2,
                 title: '添加',
@@ -184,7 +184,7 @@ layui.config({
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
                 area: ['900px', '700px'],
-                content: 'ColumnCategory/AddPage',
+                content: routePageLink + 'AddPage',
                 success: function (layero, index) {
                 }, end: function () {
                     insTb.refresh();
@@ -204,7 +204,7 @@ layui.config({
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
                 area: ['900px', '700px'],
-                content: 'ColumnCategory/Edit',
+                content: routePageLink + 'Edit',
                 success: function (layero, index) {
                 }, end: function () {
                     insTb.refresh();

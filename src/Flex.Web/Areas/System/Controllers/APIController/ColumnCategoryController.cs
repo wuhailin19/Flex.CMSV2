@@ -30,6 +30,13 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             return Success(await _columnServices.GetTreeColumnListDtos());
         }
+
+        [HttpGet("GetManageTreeListAsync")]
+        public async Task<string> ManageTreeListAsync()
+        {
+            return Success(await _columnServices.GetManageTreeListAsync());
+        }
+
         [HttpGet("GetTreeSelectListDtos")]
         public async Task<string> GetTreeSelectListDtos()
         {

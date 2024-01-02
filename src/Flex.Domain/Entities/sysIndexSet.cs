@@ -11,22 +11,22 @@ namespace Flex.Domain.Entities
         /// 网站菜单
         /// </summary>
         [Column("Index_System_Menu")]
-        public string SystemMenu { set; get; }
+        public string? SystemMenu { set; get; }
         /// <summary>
         /// 系统设置
         /// </summary>
         [Column("Index_Site_Menu")]
-        public string SiteMenu { set; get; }
+        public string? SiteMenu { set; get; }
         /// <summary>
         /// 快捷栏目
         /// </summary>
         [Column("Index_Shortcut")]
-        public string Shortcut { set; get; }
+        public string? Shortcut { set; get; }
         /// <summary>
         /// 文件管理菜单
         /// </summary>
         [Column("Index_FileManage")]
-        public string FileManage { set; get; }
+        public string? FileManage { set; get; }
         [JsonConverter(typeof(IdToStringConverter))]
         public long AdminId { set; get; }
     }

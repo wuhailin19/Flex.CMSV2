@@ -13,6 +13,21 @@ ajaxHttp({
         }
     }
 })
+ajaxHttp({
+    url: api + 'ContentModel/GetSelectItem',
+    type: 'Get',
+    datatype: 'json',
+    async: false,
+    success: function (json) {
+        if (json.code == 200) {
+            for (var i = 0; i < json.content.length; i++) {
+                $('#ModelId').append('<option value="' + json.content[i].Id + '" ' + (parent_json.ModelId == json.content[i].Id ? "selected" : "") + '>' + json.content[i].Name + '</option>');
+            }
+        } else {
+            layer.msg(json.msg, { icon: 5, time: 1000 });
+        }
+    }
+})
 //Demo
 ajaxHttp({
     url: api + 'ColumnCategory/GetTreeSelectListDtos',

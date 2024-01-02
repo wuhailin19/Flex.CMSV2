@@ -113,6 +113,68 @@ namespace Flex.EFSqlServer.Migrations
                     b.ToTable("tbl_core_column", (string)null);
                 });
 
+            modelBuilder.Entity("Flex.Domain.Entities.SysContentModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AddTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<long?>("AddUser")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("AddUserName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FormHtmlString")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastEditDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastEditUser")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("LastEditUserName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("StatusCode")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("TableName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("Version")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_core_contentmodel", (string)null);
+                });
+
             modelBuilder.Entity("Flex.Domain.Entities.SysGroup", b =>
                 {
                     b.Property<long>("Id")
@@ -205,7 +267,6 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("FileManage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Index_FileManage");
 
@@ -220,12 +281,10 @@ namespace Flex.EFSqlServer.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Shortcut")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Index_Shortcut");
 
                     b.Property<string>("SiteMenu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Index_Site_Menu");
 
@@ -235,7 +294,6 @@ namespace Flex.EFSqlServer.Migrations
                         .HasDefaultValue(1);
 
                     b.Property<string>("SystemMenu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Index_System_Menu");
 
@@ -431,7 +489,7 @@ namespace Flex.EFSqlServer.Migrations
                             LastEditUser = 1560206066204151804L,
                             LastEditUserName = "webmaster",
                             Level = 0,
-                            LinkUrl = "columnCategoryContent.aspx?SystemID=1",
+                            LinkUrl = "columnCategory",
                             Name = "内容管理",
                             OrderId = 2,
                             ParentID = 153,
@@ -475,7 +533,7 @@ namespace Flex.EFSqlServer.Migrations
                             LastEditUser = 1560206066204151804L,
                             LastEditUserName = "webmaster",
                             Level = 0,
-                            LinkUrl = "contentModel.aspx",
+                            LinkUrl = "ContentModel",
                             Name = "内容模型",
                             OrderId = 2,
                             ParentID = 1,
@@ -1746,12 +1804,12 @@ namespace Flex.EFSqlServer.Migrations
                         {
                             Id = 1560206066204151804L,
                             Account = "webmaster",
-                            AddTime = new DateTime(2023, 12, 28, 20, 7, 3, 770, DateTimeKind.Local).AddTicks(4624),
+                            AddTime = new DateTime(2024, 1, 2, 15, 31, 7, 96, DateTimeKind.Local).AddTicks(8694),
                             AddUser = 1560206066204151804L,
                             AddUserName = "webmaster",
                             AllowMultiLogin = true,
                             CurrentLoginIP = "127.0.0.1",
-                            CurrentLoginTime = new DateTime(2023, 12, 28, 20, 7, 3, 770, DateTimeKind.Local).AddTicks(4624),
+                            CurrentLoginTime = new DateTime(2024, 1, 2, 15, 31, 7, 96, DateTimeKind.Local).AddTicks(8694),
                             ErrorCount = 0,
                             Islock = false,
                             LastEditUser = 1560206066204151804L,
@@ -1855,6 +1913,102 @@ namespace Flex.EFSqlServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tbl_core_testTransaction", (string)null);
+                });
+
+            modelBuilder.Entity("Flex.Domain.Entities.sysField", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AddTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<long?>("AddUser")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("AddUserName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ApiName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("FieldAttritude")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("FieldDescription")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("FieldType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool?>("IsApiField")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool?>("IsSearch")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("LastEditDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastEditUser")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("LastEditUserName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("ModelId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<int?>("StatusCode")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("Validation")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int?>("Version")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_core_field", (string)null);
                 });
 
             modelBuilder.Entity("Flex.Domain.Entities.sysPicture", b =>
