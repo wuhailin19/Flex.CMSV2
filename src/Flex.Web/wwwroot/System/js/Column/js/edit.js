@@ -89,7 +89,7 @@ layui.config({
                     layer.msg(json.msg, { icon: 6, time: 300 }, function () {
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭
-                        parent.parent.Init();
+                        //parent.parent.Init();
                     });
                 } else {
                     layer.msg(json.msg, { icon: 5, time: 1000 });
