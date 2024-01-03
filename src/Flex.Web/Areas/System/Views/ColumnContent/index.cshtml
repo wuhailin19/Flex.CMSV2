@@ -81,6 +81,9 @@
                 , response: {
                     statusCode: 200
                 },
+                where: {
+                    ParentId: 1
+                },
                 parseData: function (res) {
                     return {
                         "code": res.code, //数据状态的字段名称，默认：code

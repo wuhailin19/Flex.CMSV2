@@ -5,29 +5,29 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Flex.Dapper
+namespace Flex.Domain
 {
     public class Page
     {
         /// <summary>
         /// The current page number contained in this page of result set 
         /// </summary>
-        public long CurrentPage { get; set; }
+        public int PageIndex { get; set; }
 
         /// <summary>
         /// The total number of pages in the full result set
         /// </summary>
-        public long TotalPages { get; set; }
+        public int TotalPages { get; set; }
 
         /// <summary>
         /// The total number of records in the full result set
         /// </summary>
-        public long TotalItems { get; set; }
+        public int TotalCount { get; set; }
 
         /// <summary>
         /// The number of items per page
         /// </summary>
-        public long ItemsPerPage { get; set; }
+        public int PageSize { get; set; }
 
         /// <summary>
         /// The actual records on this page

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Flex.Domain;
 
 namespace Flex.Application.Contracts.IServices
 {
     public interface IColumnContentServices
     {
+        Task<Page> ListAsync(int pageindex, int pagesize, int ParentId);
     }
 }

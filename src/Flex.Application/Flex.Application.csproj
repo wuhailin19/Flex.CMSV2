@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Flex.Application.Contracts\Flex.Application.Contracts.csproj" />
     <ProjectReference Include="..\Flex.Core\Flex.Core.csproj" />
+    <ProjectReference Include="..\Flex.Dapper\Flex.Dapper.csproj" />
     <ProjectReference Include="..\Flex.EFSqlServer\Flex.EFSqlServer.csproj" />
   </ItemGroup>
 

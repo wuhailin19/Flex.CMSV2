@@ -17,7 +17,6 @@ using Flex.Web.Jwt;
 using Microsoft.EntityFrameworkCore;
 using NLog.Web;
 using System.Reflection;
-using Dapper.EntityFramework;
 
 var builder = WebApplication.CreateBuilder(args);
 var AssemblyName = Assembly.GetExecutingAssembly().GetName().Name;

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Dapper;
+using Dapper.Contrib.Extensions;
+using Flex.Domain;
+using Microsoft.Extensions.Options;
 using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using Dapper;
-using Dapper.Contrib;
-using System.Data.SqlClient;
-using Dapper.Contrib.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace Flex.Dapper.Context
 {
@@ -115,19 +110,19 @@ namespace Flex.Dapper.Context
         }
 
 
-        public async Task<Page> PageAsync(long pageIndex, long pageSize, string sql, object param = null)
+        public async Task<Page> PageAsync(int pageIndex, int pageSize, string sql, object param = null)
         {
             DapperPage.BuildPageQueries((pageIndex - 1) * pageSize, pageSize, sql, out string sqlCount, out string sqlPage);
 
             var result = new Page
             {
-                CurrentPage = pageIndex,
-                ItemsPerPage = pageSize,
-                TotalItems = await _connection.ExecuteScalarAsync<long>(sqlCount, param)
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                TotalCount = await _connection.ExecuteScalarAsync<int>(sqlCount, param)
             };
-            result.TotalPages = result.TotalItems / pageSize;
+            result.TotalPages = result.TotalCount / pageSize;
 
-            if ((result.TotalItems % pageSize) != 0)
+            if ((result.TotalCount % pageSize) != 0)
                 result.TotalPages++;
 
             result.Items = await _connection.QueryAsync(sqlPage, param);

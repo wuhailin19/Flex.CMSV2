@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Flex.Core\Flex.Core.csproj" />
+    <ProjectReference Include="..\Flex.Domain\Flex.Domain.csproj" />
   </ItemGroup>
 
 </Project>
