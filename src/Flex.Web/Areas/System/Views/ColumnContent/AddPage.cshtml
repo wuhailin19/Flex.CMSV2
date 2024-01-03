@@ -22,31 +22,14 @@
     </style>
 </head>
 <body>
-    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
+    <form class="layui-form" action="" onclick="return false;" style="padding: 2%;" lay-filter="formTest">
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">编号</label>
+            <label class="layui-form-label">标题</label>
             <div class="layui-input-block">
-                <input type="text" name="Id" readonly="readonly" autocomplete="off" class="layui-input layui-disabled" lay-verify='required'>
+                <input type="text" name="Title" placeholder="请输入标题" autocomplete="off" class="layui-input" lay-verify='required'>
             </div>
         </div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">模型名</label>
-            <div class="layui-input-block">
-                <input type="text" name="Name" placeholder="请输入模型名" autocomplete="off" class="layui-input" lay-verify='required'>
-            </div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">描述</label>
-            <div class="layui-input-block">
-                <input type="text" name="Description" placeholder="请输入描述" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">表名</label>
-            <div class="layui-input-block">
-                <input type="text" name="TableName" placeholder="请输入表名" value="" autocomplete="off" class="layui-input">
-            </div>
-        </div>
+        <div id="view"></div>
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
@@ -54,6 +37,6 @@
             </div>
         </div>
     </form>
-    <script src="~/system/js/contentmodel/edit.js"></script>
+    <script src="~/system/js/columncontent/add.js"></script>
 </body>
 </html>

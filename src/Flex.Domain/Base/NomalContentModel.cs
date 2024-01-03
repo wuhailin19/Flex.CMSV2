@@ -1,6 +1,6 @@
 ﻿namespace Flex.Domain.Base
 {
-    public class NomalContentModel : BaseIntEntity
+    public class NormalContentModel : BaseIntEntity
     {
         public int ParentId { set; get; }
         public int SiteId { set; get; }

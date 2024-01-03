@@ -22,11 +22,12 @@ layui.config({
     base: '/Scripts/layui/module/'
 }).use(['form', 'tree'], function () {
     var form = layui.form;
+    
     //监听提交
     form.on('submit(formDemo)', function (data) {
         var json = data.field;
         ajaxHttp({
-            url: api + 'ContentModel',
+            url: api + 'ColumnContent',
             type: 'Put',
             datatype: 'json',
             data: JSON.stringify(json),

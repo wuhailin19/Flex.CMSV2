@@ -25,6 +25,12 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         public async Task<string> ListAsync(int page, int limit, int ParentId) {
          return Success(await _columnServices.ListAsync(page, limit, ParentId));
         }
+        
+        [HttpGet("GetFormHtml/{ParentId}")]
+        public async Task<string> GetFormHtml(int ParentId) {
+         return Success(await _columnServices.GetFormHtml(ParentId));
+        }
+
 
         //[HttpPut]
         //public async Task<string> AddColumn() {

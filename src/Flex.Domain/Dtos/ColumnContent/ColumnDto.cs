@@ -16,8 +16,12 @@ namespace Flex.Domain.Dtos.Column
         public string Title { set; get; }
         [ToolAttr(NameAttr = "发布时间")]
         public string AddTime { set; get; }
+        [ToolAttr(NameAttr = "添加人")]
+        public string AddUserName { set; get; }
+        [ToolAttr(NameAttr = "最后编辑人")]
+        public string LastEditUserName { set; get; }
         [ToolAttr(NameAttr = "状态", Toolbar = "#statusPxy", AlignAttr = AlignEnum.Center, maxWidth = "100")]
-        public StatusCode statusCode { set; get; }
+        public string StatusCode { set; get; }
         [ToolAttr(NameAttr = "操作", Toolbar = "#barDemo", AlignAttr = AlignEnum.Center, Fixed = AlignEnum.Right)]
         public controlType Operation { get; set; }
     }

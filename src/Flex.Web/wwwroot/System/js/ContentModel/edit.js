@@ -23,27 +23,12 @@ layui.config({
 }).use(['form', 'tree'], function () {
     var form = layui.form;
     var parent_json = parent.req_Data;
-    var laytpl = layui.laytpl;
-    var elemView = document.getElementById('view'); // 视图对象
     var model = {
         Name: parent_json.Name,
         Description: parent_json.Description,
         TableName: parent_json.TableName,
         Id: parent_json.Id
     }
-    // ajaxHttp({
-    //     url: api + 'ContentModel/GetFormHtml',
-    //     type: 'Get',
-    //     async: false,
-    //     dataType: 'json',
-    //     success: function (result) {
-    //         // 渲染并输出结果
-    //         laytpl(result.msg).render(model, function (str) {
-    //             elemView.innerHTML = str;
-    //         });
-    //     },
-    //     complete: function () { }
-    // })
     //监听提交
     form.on('submit(formDemo)', function (data) {
         var json = data.field;

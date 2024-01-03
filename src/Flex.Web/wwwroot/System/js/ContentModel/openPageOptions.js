@@ -43,10 +43,8 @@
     },
     editIframe: function (layer, insTb) {
         var self = this;
-        let widthstr = self.editwidths+"px";
+        let widthstr = self.editwidths + "px";
         let heightstr = self.editheights + "px";
-        console.log(widthstr)
-        console.log(heightstr)
         let isreload = self.isEditReload;
         //iframe窗
         layer.open({

@@ -77,7 +77,7 @@ namespace Flex.Domain.Config
                     Name = "栏目管理",
                     Icode = "layui-icon-slider",
                     ParentID = 153,
-                    LinkUrl = "columnCategory.aspx?SystemID=1",
+                    LinkUrl = "columnCategory/Index",
                     Level = 0,
                     OrderId = 1,
                     ShowStatus = true,

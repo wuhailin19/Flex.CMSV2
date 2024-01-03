@@ -15,8 +15,8 @@
     IdName: 'Id',
     setAddIframe: function (layer, insTb) {
         var self = this;
-        let widthstr = self.addwidths + 'px';
-        let heightstr = self.addheights + 'px';
+        let widthstr = '80%';
+        let heightstr = '80%';
         //iframe窗
         layer.open({
             type: 2,
@@ -34,7 +34,7 @@
     callBack: function (tableIns) {
         //第二次调用
         tableIns.reload({
-            where: { 'username': "user-0" } // 设定异步数据接口的额外参数，任意设
+            where: { 'ParentId': 1 } // 设定异步数据接口的额外参数，任意设
             , page: {
                 curr: tableIns.page //重新从第 1 页开始
             }
@@ -43,8 +43,8 @@
     },
     editIframe: function (layer, insTb) {
         var self = this;
-        let widthstr = self.editwidths+"px";
-        let heightstr = self.editheights + "px";
+        let widthstr = '80%';
+        let heightstr = '80%';
         let isreload = self.isEditReload;
         //iframe窗
         layer.open({

@@ -38,6 +38,9 @@
     <div class="layui-tab-content">
         <table id="demo_tree" lay-filter="test"></table>
     </div>
+    <script type="text/html" id="statusPxy">
+        <span name="StatusCode" style="color:{{d.StatusColor}}">{{d.StatusCode}}</span>
+    </script>
     <script type="text/html" id="toolbarDemo">
         <div class="layui-btn-container">
             <button class="layui-btn layui-btn-sm" lay-event="addRole">添加</button>
@@ -49,6 +52,8 @@
         var routeLink = api + 'ColumnContent/';
         var routePageLink = '/system/ColumnContent/';
         var columnlist;
+        var req_Data;
+
         $.ajax({
             url: routeLink + 'Column',
             type: 'Get',

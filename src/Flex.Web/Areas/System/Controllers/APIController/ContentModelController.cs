@@ -30,10 +30,6 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         public async Task<string> GetSelectItem() {
             return Success(await _services.GetSelectItem());
         }
-        //[HttpGet("GetFormHtml")]
-        //public string GetFormHtml() {
-        //    return Success(_services.GetFormHtml("用户名","Account", "required"));
-        //}
 
         [HttpPut]
         public async Task<string> Add() {
