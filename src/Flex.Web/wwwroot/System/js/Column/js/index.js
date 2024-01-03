@@ -77,7 +77,6 @@ layui.config({
     //监听事件
     treeTable.on('toolbar(demo_tree)', function (obj) {
         var data = insTb.checkStatus(false);
-
         switch (obj.event) {
             case 'getCheckData':
                 layer.alert(JSON.stringify(data));
@@ -89,6 +88,7 @@ layui.config({
                 layer.msg(checkStatus.isAll ? '全选' : '未全选')
                 break;
             case 'addRole':
+                req_Data = null
                 let widthstr = '80%';
                 let heightstr = '90%';
                 //iframe窗
@@ -128,7 +128,7 @@ layui.config({
                                 insTb.refresh();
                                 delete_index = [];
                                 //insTb.reload();
-                                parent.Init();
+                                //parent.Init();
                             } else {
                                 layer.msg(json.msg, { icon: 5, time: 1000 })
                                 delete_index = [];
@@ -161,7 +161,7 @@ layui.config({
                             layer.msg(json.msg, { icon: 6, time: 1000 });
                             // 删除
                             insTb.refresh();
-                            parent.Init();
+                            //parent.Init();
                             delete_index = [];
                             //insTb.reload();
                         } else {
@@ -176,7 +176,7 @@ layui.config({
         }
         else if ("add" == obj.event) {
             //iframe窗
-            req_Data = obj.data.Id;
+            req_Data = obj.data;
             var index = layer.open({
                 type: 2,
                 title: '添加',

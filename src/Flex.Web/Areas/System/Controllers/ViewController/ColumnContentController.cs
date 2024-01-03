@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Flex.Web.Areas.System.Controllers.ViewController
 {
     [Area("System")]
-    public class ColumnCategoryController : Controller
+    public class ColumnContentController : Controller
     {
         public IActionResult Index()
         {
@@ -18,10 +18,6 @@ namespace Flex.Web.Areas.System.Controllers.ViewController
             return View();
         }
         public IActionResult Edit()
-        {
-            return View();
-        }
-        public IActionResult Manage()
         {
             return View();
         }
