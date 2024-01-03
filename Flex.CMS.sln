@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "src\UnitTest\Un
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.Web", "src\Flex.Web\Flex.Web.csproj", "{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flex.Dapper", "src\Flex.Dapper\Flex.Dapper.csproj", "{9FD30C87-D642-4EDE-AA48-5F521B5DE157}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FD30C87-D642-4EDE-AA48-5F521B5DE157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FD30C87-D642-4EDE-AA48-5F521B5DE157}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FD30C87-D642-4EDE-AA48-5F521B5DE157}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FD30C87-D642-4EDE-AA48-5F521B5DE157}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Flex.Domain.Base
+﻿namespace Flex.Domain.Base
 {
-    public class BaseContentModel : IEntity<int>
+    public class NomalContentModel : BaseIntEntity
     {
-        public int SystemId { set; get; }
+        public int ParentId { set; get; }
+        public int SiteId { set; get; }
         public string Title { set; get; }
         public string? KeyWord { set; get; }
         public string? Description { set; get; }
@@ -23,6 +18,9 @@ namespace Flex.Domain.Base
         public bool IsHot { set; get; } = false;
         public bool IsSlide { set; get; } = false;
         public bool IsShow { set; get; } = false;
-
+        /// <summary>
+        /// 动态字段
+        /// </summary>
+        public string DynamicField { set; get; }
     }
 }

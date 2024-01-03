@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Flex.Application.Contracts.IServices
 {
-    public interface IFiledServices
+    public interface IColumnContentServices
     {
     }
 }

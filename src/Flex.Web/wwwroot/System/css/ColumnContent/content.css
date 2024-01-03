@@ -1,0 +1,6 @@
+﻿html, body { height: 100%; width: 100%; background-color: #fff; padding-top: 10px; overflow-y:hidden;}
+.summary-search { width: 100%; }
+.search-box { position: fixed; top: 0; height: 80px; background-color: #fff; z-index: 999; width: 100%;overflow-y:hidden; padding-top:10px;}
+.layui-tab-content{padding:0px;padding-top:80px;overflow:hidden;}
+.layui-form-item .layui-inline{margin-bottom:0px;margin-right:0px;}
+.layui-btn-sm{padding:0 18px;}

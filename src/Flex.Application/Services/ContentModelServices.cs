@@ -1,4 +1,5 @@
 ﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Application.SqlServerSQLString;
 using Flex.Core.Extensions;
 using Flex.Domain.Base;
 using Flex.Domain.Dtos.ContentModel;
@@ -14,9 +15,11 @@ namespace Flex.Application.Services
 {
     public class ContentModelServices : BaseService, IContentModelServices
     {
-        public ContentModelServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims)
+        ISqlTableServices _sqlServerServices;
+        public ContentModelServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims,ISqlTableServices sqlServerServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
+            _sqlServerServices = sqlServerServices;
         }
         public async Task<IEnumerable<ContentModelColumnDto>> ListAsync()
         {
@@ -37,14 +40,17 @@ namespace Flex.Application.Services
             var responsity = _unitOfWork.GetRepository<SysContentModel>();
             var contentmodel = _mapper.Map<SysContentModel>(model);
             AddIntEntityBasicInfo(contentmodel);
+            _unitOfWork.SetTransaction();
             try
             {
                 responsity.Insert(contentmodel);
-                await _unitOfWork.SaveChangesAsync();
+                _unitOfWork.ExecuteSqlCommand(_sqlServerServices.CreateContentTableSql(contentmodel.TableName));
+                await _unitOfWork.SaveChangesTranAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
+                await _unitOfWork.RollbackAsync();
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
             }
         }
@@ -69,12 +75,6 @@ namespace Flex.Application.Services
             {
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             }
-        }
-
-        public string GetFormHtml(params string[] names)
-        {
-            string htmltemplete = "<div class=\"layui-form-item layui-form-text\">\r\n            <label class=\"layui-form-label\">{0}</label>\r\n            <div class=\"layui-input-block\">\r\n                <input type=\"text\" name=\"{1}\" placeholder=\"请输入{0}\" autocomplete=\"off\" class=\"layui-input\" lay-verify='{2}'>\r\n            </div>\r\n        </div>";
-            return string.Format(htmltemplete, names);
         }
 
         public async Task<ProblemDetails<string>> Delete(string Id)

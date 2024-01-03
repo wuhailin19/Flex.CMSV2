@@ -7,7 +7,7 @@ namespace Flex.Domain.Dtos.Role
     {
         [ToolAttr(Fixed = AlignEnum.Left, Types = controlType.checkBox)]
         public controlType checkbox { get; set; }
-        [ToolAttr(NameAttr = "ID", maxWidth = "80")]
+        [ToolAttr(NameAttr = "编号", maxWidth = "80")]
         [JsonConverter(typeof(IdToStringConverter))]
         public int Id { get; set; }
         [ToolAttr(NameAttr = "角色名", maxWidth = "80")]

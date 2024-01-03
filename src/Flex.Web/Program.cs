@@ -1,4 +1,5 @@
 using Autofac;
+using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
 using Flex.Application.Aop;
@@ -8,11 +9,15 @@ using Flex.Application.Extensions.Register.AutoMapper;
 using Flex.Application.Extensions.Register.MemoryCacheExtension;
 using Flex.Application.Extensions.Register.WebCoreExtensions;
 using Flex.Application.Extensions.Swagger;
+using Flex.Application.SetupExtensions;
+using Flex.Dapper;
 using Flex.EFSqlServer;
 using Flex.EFSqlServer.Register;
 using Flex.Web.Jwt;
+using Microsoft.EntityFrameworkCore;
 using NLog.Web;
 using System.Reflection;
+using Dapper.EntityFramework;
 
 var builder = WebApplication.CreateBuilder(args);
 var AssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
@@ -27,12 +32,14 @@ builder.Services.AddControllersWithViews();
 //◊¢≤·EFcoreSqlserver
 builder.Services.AddUnitOfWorkService<SqlServerContext>(item => item.UseSqlServer("DataConfig:Sqlserver:ConnectionString".Config(string.Empty)));
 
+builder.Services.AddSingleton<MyDBContext>();
+
 //◊¢≤·Automapper
 builder.Services.AddAutomapperService();
 //øÁ”Ú≈‰÷√
 builder.Services.AddCorsPolicy(builder.Configuration);
 
-
+builder.Services.HtmlTemplateDictInit();
 //◊¢≤·autofac
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
     ConfigureContainer<ContainerBuilder>(builder =>
