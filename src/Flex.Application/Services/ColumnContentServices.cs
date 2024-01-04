@@ -155,7 +155,7 @@ namespace Flex.Application.Services
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, , ErrorCodes.DataInsertError.GetEnumDescription());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
             }
         }
         public async Task<ProblemDetails<string>> Update(Hashtable table)
