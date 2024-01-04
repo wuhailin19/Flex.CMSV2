@@ -40,6 +40,7 @@ namespace Flex.Application.Services
                 Height = model.Height
             };
             fieldmodel.FieldAttritude = JsonHelper.ToJson(fieldattritudemodel);
+            fieldmodel.ShowInTable = model.ShowInTable;
             AddIntEntityBasicInfo(fieldmodel);
             var contentresponsity = _unitOfWork.GetRepository<SysContentModel>();
             var contentmodel = await contentresponsity.GetFirstOrDefaultAsync(m => m.Id == fieldmodel.ModelId);
@@ -96,6 +97,7 @@ namespace Flex.Application.Services
             model.ApiName = updateFieldDto.ApiName;
             model.IsApiField = updateFieldDto.IsApiField;
             model.IsSearch = updateFieldDto.IsSearch;
+            model.ShowInTable = updateFieldDto.ShowInTable;
             UpdateIntEntityBasicInfo(model);
             try
             {

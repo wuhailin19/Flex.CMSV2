@@ -1,5 +1,18 @@
-﻿//var parent_json = parent.req_Data == null ? { Id: 0, ModelId: 0 } : parent.req_Data;
+﻿var parent_json = parent.req_Data;
 //Demo
+var model = {};
+ajaxHttp({
+    url: api + 'ColumnContent/GetContentById/' + parent_json.ParentId + "/" + parent_json.Id,
+    type: 'Get',
+    async: false,
+    dataType: 'json',
+    success: function (result) {
+        $.each(result.content, function (key, value) {
+            model[key] = value;
+        })
+    },
+    complete: function () { }
+})
 
 layui.config({
     base: '/Scripts/layui/module/'
@@ -7,15 +20,8 @@ layui.config({
     var form = layui.form;
     var laytpl = layui.laytpl;
     var elemView = document.getElementById('view'); // 视图对象
-    //var model = {
-    //    Name: parent_json.Name,
-    //    Description: parent_json.Description,
-    //    TableName: parent_json.TableName,
-    //    ArticleContent: parent_json.ArticleContent,
-    //    Id: parent_json.Id
-    //}
     ajaxHttp({
-        url: api + 'ColumnContent/GetFormHtml/1',
+        url: api + 'ColumnContent/GetFormHtml/' + parent_json.ParentId,
         type: 'Get',
         async: false,
         dataType: 'json',
@@ -27,9 +33,34 @@ layui.config({
         },
         complete: function () { }
     })
+    if (editorarray.length > 0) {
+        for (var i = 0; i < editorarray.length; i++) {
+            (function (index) {
+                let editor = UE.getEditor(editorarray[index]);
+                editor.ready(function () {
+                    if (model[editorarray[index]] == null)
+                        return false;
+                    editor.setContent(model[editorarray[index]]);
+                });
+            })(i);
+        }
+    }
+    function formRender() {
+        var formData = form.val("formTest");
+        //console.log(model)
+        
+        for (var key in model) {
+            if (model.hasOwnProperty(key)) {
+                formData[key] = model[key];
+            }
+        }
+        form.val("formTest", formData);
+    }
+    formRender();
     //监听提交
     form.on('submit(formDemo)', function (data) {
-        data.field.ParentId = 1;
+        data.field.ParentId = parent_json.ParentId;
+        data.field.Id = parent_json.Id;
         if (editorarray.length > 0) {
             for (var i = 0; i < editorarray.length; i++) {
                 data.field[editorarray[i]] = UE.getEditor(editorarray[i]).getContent();
@@ -37,7 +68,7 @@ layui.config({
         }
         ajaxHttp({
             url: api + 'ColumnContent',
-            type: 'Put',
+            type: 'Post',
             data: JSON.stringify(data.field),
             async: false,
             success: function (json) {

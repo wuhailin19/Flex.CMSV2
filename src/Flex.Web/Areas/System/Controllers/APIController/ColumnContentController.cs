@@ -3,6 +3,7 @@ using Flex.Domain.Dtos.Column;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Flex.Dapper;
+using System.Collections;
 
 namespace Flex.Web.Areas.System.Controllers.APIController
 {
@@ -14,12 +15,12 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         public ColumnContentController(IColumnContentServices columnServices) {
             _columnServices = columnServices;
         }
-        [HttpGet("Column")]
+        [HttpGet("Column/{ParentId}")]
         [Descriper(IsFilter = true)]
         [AllowAnonymous]
-        public string Column()
+        public async Task<string> Column(int ParentId)
         {
-            return Success(ModelTools<ColumnContentDto>.getColumnDescList());
+            return Success(await _columnServices.GetTableThs(ParentId));
         }
         [HttpGet("ListAsync")]
         public async Task<string> ListAsync(int page, int limit, int ParentId) {
@@ -31,27 +32,28 @@ namespace Flex.Web.Areas.System.Controllers.APIController
          return Success(await _columnServices.GetFormHtml(ParentId));
         }
 
+        [HttpGet("GetContentById/{ParentId}/{Id}")]
+        public async Task<string> GetContentById(int ParentId, int Id)
+        {
+            return Success(await _columnServices.GetContentById(ParentId,Id));
+        }
 
-        //[HttpPut]
-        //public async Task<string> AddColumn() {
-        //    var validate = await ValidateModel<AddColumnDto>();
-        //    if (!validate.IsSuccess)
-        //        return Fail(validate.Detail);
-        //    var result =await  _columnServices.AddColumn(validate.Content);
-        //    if (!result.IsSuccess)
-        //        return Fail(result.Detail);
-        //    return Success(result.Detail);
-        //}
+        [HttpPut]
+        public async Task<string> Add() {
+            var model = await GetModel<Hashtable>();
+            var result =await  _columnServices.Add(model);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
+        }
         
-        //[HttpPost]
-        //public async Task<string> UpdateColumn() {
-        //    var validate = await ValidateModel<UpdateColumnDto>();
-        //    if (!validate.IsSuccess)
-        //        return Fail(validate.Detail);
-        //    var result =await  _columnServices.UpdateColumn(validate.Content);
-        //    if (!result.IsSuccess)
-        //        return Fail(result.Detail);
-        //    return Success(result.Detail);
-        //}
+        [HttpPost]
+        public async Task<string> Update() {
+            var model = await GetModel<Hashtable>();
+            var result =await  _columnServices.Update(model);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
+        }
     }
 }

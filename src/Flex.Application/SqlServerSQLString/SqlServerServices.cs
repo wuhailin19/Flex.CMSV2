@@ -13,7 +13,7 @@ namespace Flex.Application.SqlServerSQLString
                                      "(" +
                                       "[Id] [int] IDENTITY (1, 1) PRIMARY Key NOT NULL," +
                                       "[ParentId] [int] NOT NULL," +
-                                      "[SiteId] [int] NOT NULL," +
+                                      "[SiteId] [int] NOT NULL default 1," +
                                       "[Title] [nvarchar](255) NOT NULL," +
                                       "[SimpleTitle] [nvarchar](255)  NULL," +
                                       "[Hits] [int] NOT NULL default 1," +

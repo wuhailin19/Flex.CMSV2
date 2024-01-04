@@ -54,6 +54,7 @@ layui.config({
         ValidateNumber: currentinfo.ValidateNumber,
         ValidateEmpty: currentinfo.ValidateEmpty,
         IsSearch: parent_json.IsSearch,
+        ShowInTable: currentinfo.ShowInTable,
         Id: parent_json.Id
     }
     //监听提交

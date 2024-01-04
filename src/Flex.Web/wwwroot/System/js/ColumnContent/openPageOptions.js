@@ -15,8 +15,8 @@
     IdName: 'Id',
     setAddIframe: function (layer, insTb) {
         var self = this;
-        let widthstr = '80%';
-        let heightstr = '80%';
+        let widthstr = '90%';
+        let heightstr = '90%';
         //iframe窗
         layer.open({
             type: 2,
@@ -41,10 +41,10 @@
         });
         //console.log(tableIns)
     },
-    editIframe: function (layer, insTb) {
+    editIframe: function (layer, insTb, pId) {
         var self = this;
-        let widthstr = '80%';
-        let heightstr = '80%';
+        let widthstr = '90%';
+        let heightstr = '90%';
         let isreload = self.isEditReload;
         //iframe窗
         layer.open({

@@ -16,6 +16,7 @@ namespace Flex.Domain.Dtos.Field
         public string Width { set; get; }
         public string Height { set; get; }
         public bool IsApiField { set; get; }
+        public bool ShowInTable { set; get; }
         public int ModelId { set; get; }
         public bool IsSearch { set; get; }
         public string? ValidateNumber { set; get; }

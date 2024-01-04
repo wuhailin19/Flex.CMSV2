@@ -47,6 +47,7 @@ namespace Flex.Domain.Entities
         /// 是否用于搜索
         /// </summary>
         public bool? IsSearch { set; get; }
+        public bool? ShowInTable { set; get; }
         public int ModelId { set; get; }
     }
 }

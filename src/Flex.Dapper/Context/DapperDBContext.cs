@@ -71,9 +71,9 @@ namespace Flex.Dapper.Context
         #endregion Transaction
 
         #region Dapper.Contrib.Extensions
-        public IEnumerable<dynamic> GetDynamic(string sql)
+        public async Task<IEnumerable<dynamic>> GetDynamicAsync(string sql)
         {
-            return _connection.Query<dynamic>(sql);
+            return await _connection.QueryAsync<dynamic>(sql);
         }
         public async Task<T> GetAsync<T>(int id) where T : class, new()
         {

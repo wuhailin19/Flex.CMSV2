@@ -10,10 +10,12 @@
     
     <style>
         html, body { height: 100%; }
-        .treeContainer { width: 250px; background: rgb(233, 233, 235); overflow-y: scroll; height: 100%; }
-        .layui-tab .layui-tab-title { top: 5px; left: 250px; }
+        .treeContainer { width: 220px; background: #fff; overflow-y: scroll; height: 100%; }
+        .layui-tab .layui-tab-title { top: 5px; left: 220px; }
         .layadmin-iframe { position: absolute; width: 100%; height: 100%; left: 0; top: 0; right: 0; bottom: 0; }
-        .layui-layout-admin .layui-body { top: 45px; left: 250px; }
+        .layui-layout-admin .layui-body { top: 45px; left: 220px; }
+        i.layui-icon.layui-icon-file { display: none; }
+        .layui-tree-entry{height:30px;}
     </style>
 </head>
 <body>
@@ -88,6 +90,7 @@
             , icon: 'layui-icon layui-icon-file'
             , isJump: true //是否允许点击节点时弹出新窗口跳转
             , onlyIconControl: true
+            ,showLine: false
             , click: function (obj) {
                 //var data = obj.data;  //获取当前点击的节点数据
                 //layer.msg('状态：' + obj.state + '<br>节点数据：' + JSON.stringify(data));
