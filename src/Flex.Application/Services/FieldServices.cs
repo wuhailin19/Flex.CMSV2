@@ -13,12 +13,14 @@ namespace Flex.Application.Services
     public class FieldServices : BaseService, IFieldServices
     {
         IEfCoreRespository<sysField> responsity;
+        IEfCoreRespository<SysContentModel> contentresponsity;
         ISqlTableServices _sqlServerServices;
         public FieldServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, ISqlTableServices sqlServerServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             responsity = _unitOfWork.GetRepository<sysField>();
             _sqlServerServices = sqlServerServices;
+            contentresponsity = _unitOfWork.GetRepository<SysContentModel>();
         }
         public async Task<IEnumerable<FieldColumnDto>> ListAsync(int Id)
         {
@@ -42,30 +44,29 @@ namespace Flex.Application.Services
             fieldmodel.FieldAttritude = JsonHelper.ToJson(fieldattritudemodel);
             fieldmodel.ShowInTable = model.ShowInTable;
             AddIntEntityBasicInfo(fieldmodel);
-            
-            
+
+            var contentmodel = await contentresponsity.GetFirstOrDefaultAsync(m => m.Id == fieldmodel.ModelId);
             _unitOfWork.SetTransaction();
             try
             {
-               _unitOfWork.ExecuteSqlCommand(_sqlServerServices.InsertTableField(contentmodel.TableName, fieldmodel));
-
-                
+                _unitOfWork.ExecuteSqlCommand(_sqlServerServices.InsertTableField(contentmodel.TableName, fieldmodel));
                 responsity.Insert(fieldmodel);
                 await _unitOfWork.SaveChangesTranAsync();
+
+                await CreateModelHtmlString(contentmodel);
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackAsync();
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+                throw;
             }
         }
-        private async void CreateModelHtmlString(sysField currentField) {
-            var field = (await responsity.GetAllAsync(m => m.ModelId == currentField.ModelId)).ToList();
-            var contentresponsity = _unitOfWork.GetRepository<SysContentModel>();
-            var contentmodel = await contentresponsity.GetFirstOrDefaultAsync(m => m.Id == currentField.ModelId);
-            if (!field.Contains(currentField))
-                field.Add(currentField);
+        private async Task CreateModelHtmlString(SysContentModel contentModel)
+        {
+            var field = new List<sysField>();
+            field = (await responsity.GetAllAsync(m => m.ModelId == contentModel.Id)).ToList();
+        
             string htmlstring = string.Empty;
             BaseFieldType baseFieldType;
             foreach (var item in field)
@@ -77,8 +78,16 @@ namespace Flex.Application.Services
                     continue;
                 htmlstring += baseFieldType.ToHtmlString(item, itemValidateModel, itemAttritudeModel);
             }
-            contentmodel.FormHtmlString = htmlstring;
-            contentresponsity.Update(contentmodel);
+            contentModel.FormHtmlString = htmlstring;
+            try
+            {
+                _unitOfWork.GetRepository<SysContentModel>().Update(contentModel);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
         public async Task<ProblemDetails<string>> Update(UpdateFieldDto updateFieldDto)
         {
@@ -104,15 +113,18 @@ namespace Flex.Application.Services
             model.IsSearch = updateFieldDto.IsSearch;
             model.ShowInTable = updateFieldDto.ShowInTable;
             UpdateIntEntityBasicInfo(model);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == model.ModelId);
             try
             {
                 responsity.Update(model);
                 await _unitOfWork.SaveChangesAsync();
+
+                await CreateModelHtmlString(contentmodel);
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                throw;
             }
         }
         public async Task<UpdateFieldDto> GetFiledInfoById(int Id)
@@ -126,7 +138,6 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
             var Ids = Id.ToList("-");
             var delete_list = responsity.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
-            var contentresponsity = _unitOfWork.GetRepository<SysContentModel>();
             var softdels = new List<sysField>();
             if (delete_list.Count == 0)
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
@@ -138,11 +149,11 @@ namespace Flex.Application.Services
             }
             int modelId = 0;
             string tableName = string.Empty;
-            if (softdels.Count > 0)
-            {
-                modelId = softdels[0].ModelId;
-                tableName = (await contentresponsity.GetFirstOrDefaultAsync(m => m.Id == modelId)).TableName;
-            }
+
+            modelId = softdels[0].ModelId;
+            var contentmodel = await contentresponsity.GetFirstOrDefaultAsync(m => m.Id == modelId);
+            tableName = contentmodel.TableName;
+
             _unitOfWork.SetTransaction();
             try
             {
@@ -151,13 +162,17 @@ namespace Flex.Application.Services
                     _unitOfWork.ExecuteSqlCommand(_sqlServerServices.DeleteTableField(tableName, softdels));
                 }
                 responsity.Update(softdels);
+
                 await _unitOfWork.SaveChangesTranAsync();
+
+                await CreateModelHtmlString(contentmodel);
+
                 return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
             }
             catch
             {
                 await _unitOfWork.RollbackAsync();
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                throw;
             }
         }
     }
