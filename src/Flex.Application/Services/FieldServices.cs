@@ -42,29 +42,14 @@ namespace Flex.Application.Services
             fieldmodel.FieldAttritude = JsonHelper.ToJson(fieldattritudemodel);
             fieldmodel.ShowInTable = model.ShowInTable;
             AddIntEntityBasicInfo(fieldmodel);
-            var contentresponsity = _unitOfWork.GetRepository<SysContentModel>();
-            var contentmodel = await contentresponsity.GetFirstOrDefaultAsync(m => m.Id == fieldmodel.ModelId);
+            
+            
             _unitOfWork.SetTransaction();
             try
             {
                _unitOfWork.ExecuteSqlCommand(_sqlServerServices.InsertTableField(contentmodel.TableName, fieldmodel));
 
-                var field = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == fieldmodel.ModelId)).ToList();
-                field.Add(fieldmodel);
-                string htmlstring = string.Empty;
-                BaseFieldType baseFieldType;
-                foreach (var item in field)
-                {
-                    var itemValidateModel = JsonHelper.Json<FiledValidateModel>(item.Validation);
-                    var itemAttritudeModel = JsonHelper.Json<FieldAttritudeModel>(item.FieldAttritude);
-                    HtmlTemplateDictInitExtension.fielddict.TryGetValue(item.FieldType, out baseFieldType);
-                    if (baseFieldType == null)
-                        continue;
-                    htmlstring += baseFieldType.ToHtmlString(item, itemValidateModel, itemAttritudeModel);
-                }
-                contentmodel.FormHtmlString = htmlstring;
-                contentresponsity.Update(contentmodel);
-
+                
                 responsity.Insert(fieldmodel);
                 await _unitOfWork.SaveChangesTranAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
@@ -74,6 +59,26 @@ namespace Flex.Application.Services
                 await _unitOfWork.RollbackAsync();
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
             }
+        }
+        private async void CreateModelHtmlString(sysField currentField) {
+            var field = (await responsity.GetAllAsync(m => m.ModelId == currentField.ModelId)).ToList();
+            var contentresponsity = _unitOfWork.GetRepository<SysContentModel>();
+            var contentmodel = await contentresponsity.GetFirstOrDefaultAsync(m => m.Id == currentField.ModelId);
+            if (!field.Contains(currentField))
+                field.Add(currentField);
+            string htmlstring = string.Empty;
+            BaseFieldType baseFieldType;
+            foreach (var item in field)
+            {
+                var itemValidateModel = JsonHelper.Json<FiledValidateModel>(item.Validation);
+                var itemAttritudeModel = JsonHelper.Json<FieldAttritudeModel>(item.FieldAttritude);
+                HtmlTemplateDictInitExtension.fielddict.TryGetValue(item.FieldType, out baseFieldType);
+                if (baseFieldType == null)
+                    continue;
+                htmlstring += baseFieldType.ToHtmlString(item, itemValidateModel, itemAttritudeModel);
+            }
+            contentmodel.FormHtmlString = htmlstring;
+            contentresponsity.Update(contentmodel);
         }
         public async Task<ProblemDetails<string>> Update(UpdateFieldDto updateFieldDto)
         {
