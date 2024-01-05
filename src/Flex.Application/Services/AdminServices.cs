@@ -161,9 +161,9 @@ namespace Flex.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
-            catch (Exception ex)
+            catch
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                throw;
             }
         }
 
@@ -174,6 +174,8 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
             var Ids = Id.ToList("-");
             var delete_list = adminRepository.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
+            if (delete_list.Count == 0)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             try
             {
                 var softdels = new List<SysAdmin>();
@@ -190,7 +192,7 @@ namespace Flex.Application.Services
             }
             catch
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                throw;
             }
         }
 
@@ -211,9 +213,9 @@ namespace Flex.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
-            catch (Exception ex)
+            catch
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                throw;
             }
         }
     }

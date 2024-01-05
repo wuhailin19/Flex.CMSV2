@@ -11,6 +11,8 @@ using System.Text;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.HtmlHelper;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Flex.Application.Contracts.IServices;
+using Org.BouncyCastle.Crypto;
 
 namespace Flex.Application.Services
 {
@@ -21,10 +23,12 @@ namespace Flex.Application.Services
         //默认加载字段
         private const string defaultFields = "IsTop,IsRecommend,IsHot,IsShow,IsColor" +
             ",Title,Id,AddTime,StatusCode,AddUserName,LastEditUserName,OrderId,ParentId,";
-        public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext)
+        ISqlTableServices _sqlTableServices;
+        public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext, ISqlTableServices sqlTableServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _dapperDBContext = dapperDBContext;
+            _sqlTableServices = sqlTableServices;
         }
         public async Task<IEnumerable<ModelTools<ColumnContentDto>>> GetTableThs(int ParentId)
         {
@@ -48,7 +52,7 @@ namespace Flex.Application.Services
         {
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
-            if(contentmodel==null)
+            if (contentmodel == null)
                 return new Page();
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             string filed = defaultFields;
@@ -57,7 +61,7 @@ namespace Flex.Application.Services
                 filed += item.FieldName + ",";
             }
             filed = filed.TrimEnd(',');
-            var result = await _dapperDBContext.PageAsync(pageindex, pagesize, "select " + filed + " from " + contentmodel.TableName + "");
+            var result = await _dapperDBContext.PageAsync(pageindex, pagesize, "select " + filed + " from " + contentmodel.TableName + " where StatusCode<>0");
             result.Items.Each(item =>
             {
                 item.StatusColor = ((StatusCode)item.StatusCode).GetEnumColorDescription();
@@ -82,7 +86,10 @@ namespace Flex.Application.Services
                     editors.Add(item.FieldName);
             }
             filed = filed.TrimEnd(',');
-            var result = await _dapperDBContext.GetDynamicAsync("select " + filed + " from " + contentmodel.TableName + " where Id=" + Id);
+            SqlParameter[] parameters = new SqlParameter[] {
+                new SqlParameter("@Id",Id)
+            };
+            var result = await _dapperDBContext.GetDynamicAsync("select " + filed + " from " + contentmodel.TableName + " where Id=@Id", parameters);
 
             #region 废弃
             //UpdateContentDto updateContentDto = new UpdateContentDto();
@@ -130,24 +137,11 @@ namespace Flex.Application.Services
             InitTable(table);
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            if (contentmodel == null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             StringBuilder builder = new StringBuilder();
-            builder.Append("insert into " + contentmodel.TableName + " (");
-            string key = "";
-            string keyvar = "";
-            foreach (DictionaryEntry myDE in table)
-            {
-                key += "[" + myDE.Key.ToString() + "],";
-                keyvar += "@" + myDE.Key.ToString() + ",";
-
-            }
-            builder.Append(key.Substring(0, key.Length - 1) + " ) values(" + keyvar.Substring(0, keyvar.Length - 1) + " )");
-            SqlParameter[] commandParameters = new SqlParameter[table.Count];
-            int num = 0;
-            foreach (DictionaryEntry myDE in table)
-            {
-                commandParameters[num] = new SqlParameter("@" + myDE.Key.ToString(), myDE.Value);
-                num++;
-            }
+            SqlParameter[] commandParameters = new SqlParameter[] { };
+            builder = _sqlTableServices.CreateInsertSqlString(table, contentmodel.TableName, out commandParameters);
             try
             {
                 var result = _unitOfWork.ExecuteSqlCommand(builder.ToString(), commandParameters);
@@ -159,35 +153,23 @@ namespace Flex.Application.Services
                 }
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
             }
-            catch (Exception ex)
+            catch
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+                throw;
             }
         }
         public async Task<ProblemDetails<string>> Update(Hashtable table)
         {
             InitTable(table);
-            int Id = table["Id"].ToInt();
-            table.Remove("Id");
+
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
-            StringBuilder builder = new StringBuilder();
-            builder.Append("Update " + contentmodel.TableName + " set ");
-            string keyvar = "";
-            foreach (DictionaryEntry myDE in table)
-            {
-                keyvar += "[" + myDE.Key.ToString() + "]" + "=" + "@" + myDE.Key.ToString() + ",";
+            if (contentmodel == null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
 
-            }
-            builder.Append(keyvar.Substring(0, keyvar.Length - 1));
-            SqlParameter[] commandParameters = new SqlParameter[table.Count];
-            int num = 0;
-            foreach (DictionaryEntry myDE in table)
-            {
-                commandParameters[num] = new SqlParameter("@" + myDE.Key.ToString(), myDE.Value);
-                num++;
-            }
-            builder.Append(" where Id=" + Id);
+            StringBuilder builder = new StringBuilder();
+            SqlParameter[] commandParameters = new SqlParameter[] { };
+            builder = _sqlTableServices.CreateUpdateSqlString(table, contentmodel.TableName, out commandParameters);
             try
             {
                 var result = _unitOfWork.ExecuteSqlCommand(builder.ToString(), commandParameters);
@@ -199,9 +181,28 @@ namespace Flex.Application.Services
                 }
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             }
-            catch (Exception ex)
+            catch
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                throw;
+            }
+        }
+
+        public async Task<ProblemDetails<string>> Delete(int ParentId, string Id)
+        {
+            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            if (contentmodel == null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+            string Ids = Id.Replace("-", ",");
+            try
+            {
+                _unitOfWork.ExecuteSqlCommand(_sqlTableServices.DeleteContentTableData(contentmodel.TableName, Ids));
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Split(',').Count()}条数据");
+            }
+            catch
+            {
+                throw;
             }
         }
     }

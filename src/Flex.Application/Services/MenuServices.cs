@@ -321,6 +321,8 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
             var Ids = Id.ToList("-");
             var delete_list = adminRepository.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
+            if (delete_list.Count == 0)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             try
             {
                 var softdels = new List<SysMenu>();
@@ -336,7 +338,7 @@ namespace Flex.Application.Services
             }
             catch
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                throw;
             }
         }
     }

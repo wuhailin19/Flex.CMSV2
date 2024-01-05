@@ -1,5 +1,9 @@
 ﻿using Flex.Domain.Dtos.Field;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Org.BouncyCastle.Crypto;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,16 +39,60 @@ namespace Flex.Application.SqlServerSQLString
                                       "[Version] [int] NOT NULL default 0 " +
                                       " )";
         public string InsertTableField(string TableName, sysField model) => "ALTER TABLE [" + TableName + "]  ADD [" + model.FieldName + "]  " + ConvertDataType(model);
-        public string DeleteTableField(string TableName, List<sysField> Fields) 
-         {
+        public string DeleteTableField(string TableName, List<sysField> Fields)
+        {
             string sql = string.Empty;
             foreach (var item in Fields)
             {
-                sql+="ALTER TABLE [" + TableName + "]  DROP COLUMN [" + item.FieldName + "];";
+                sql += "ALTER TABLE [" + TableName + "]  DROP COLUMN [" + item.FieldName + "];";
             }
             return sql;
         }
-            
+        public string DeleteContentTableData(string TableName,string Ids) => "update " + TableName + " set StatusCode=0 where Id in(" + Ids + ")";
+        public StringBuilder CreateInsertSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters) {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("insert into " + TableName + " (");
+            string key = "";
+            string keyvar = "";
+            foreach (DictionaryEntry myDE in table)
+            {
+                key += "[" + myDE.Key.ToString() + "],";
+                keyvar += "@" + myDE.Key.ToString() + ",";
+
+            }
+            builder.Append(key.Substring(0, key.Length - 1) + " ) values(" + keyvar.Substring(0, keyvar.Length - 1) + " )");
+            commandParameters = new SqlParameter[table.Count];
+            int num = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                commandParameters[num] = new SqlParameter("@" + myDE.Key.ToString(), myDE.Value);
+                num++;
+            }
+            return builder;
+        }
+        public StringBuilder CreateUpdateSqlString(Hashtable table, string TableName,out SqlParameter[] commandParameters)
+        {
+            StringBuilder builder = new StringBuilder();
+            int Id = table["Id"].ToInt();
+            table.Remove("Id");
+            builder.Append("Update " + TableName + " set ");
+            string keyvar = "";
+            foreach (DictionaryEntry myDE in table)
+            {
+                keyvar += "[" + myDE.Key.ToString() + "]" + "=" + "@" + myDE.Key.ToString() + ",";
+
+            }
+            builder.Append(keyvar.Substring(0, keyvar.Length - 1));
+            commandParameters = new SqlParameter[table.Count];
+            int num = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                commandParameters[num] = new SqlParameter("@" + myDE.Key.ToString(), myDE.Value);
+                num++;
+            }
+            builder.Append(" where Id=" + Id);
+            return builder;
+        }
 
         /// <summary>
         /// 转换数据类型(数据库数据类型)

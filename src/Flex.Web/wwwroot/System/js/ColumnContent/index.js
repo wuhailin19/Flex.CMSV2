@@ -92,7 +92,7 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
                 var nodeIds = defaultOptions.getCheckedId(data);
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
                     ajaxHttp({
-                        url: routeLink + nodeIds,
+                        url: routeLink + currentparentId+"/"+ nodeIds,
                         type: 'Delete',
                         async: false,
                         success: function (json) {

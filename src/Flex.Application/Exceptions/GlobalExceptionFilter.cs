@@ -19,7 +19,7 @@ namespace Flex.Application.Exceptions
         }
         public override void OnException(ExceptionContext context)
         {
-            var status = 500;
+            var status = 206;
             var exception = context.Exception;
             var requestId = System.Diagnostics.Activity.Current?.Id ?? context.HttpContext.TraceIdentifier;
             //var eventId = new Microsoft.Extensions.Logging.EventId(exception.HResult, requestId);
@@ -47,7 +47,7 @@ namespace Flex.Application.Exceptions
                 Type = type,
                 Instance = requestUrl
             };
-            context.Result = new ObjectResult(new Message<ExceptionMsg> { code = status, content = problemDetails }) { StatusCode = status };
+            context.Result = new ObjectResult(new Message<ExceptionMsg> { code = status, content = problemDetails,msg= detial }) { StatusCode = status };
             context.ExceptionHandled = true;
         }
         public override Task OnExceptionAsync(ExceptionContext context)

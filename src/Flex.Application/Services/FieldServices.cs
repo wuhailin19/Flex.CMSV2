@@ -123,6 +123,8 @@ namespace Flex.Application.Services
             var delete_list = responsity.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
             var contentresponsity = _unitOfWork.GetRepository<SysContentModel>();
             var softdels = new List<sysField>();
+            if (delete_list.Count == 0)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             foreach (var item in delete_list)
             {
                 item.StatusCode = StatusCode.Deleted;

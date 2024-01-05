@@ -63,5 +63,14 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                 return Fail(result.Detail);
             return Success(result.Detail);
         }
+
+        [HttpDelete("{ParentId}/{Id}")]
+        public async Task<string> Delete(int ParentId,string Id)
+        {
+            var result = await _columnServices.Delete(ParentId,Id);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
     }
 }

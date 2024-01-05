@@ -112,16 +112,12 @@ layui.config({
                 var nodeIds = getCheckedId(data);
 
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
-                    $.ajax({
-                        url: api + 'Menu/Delete',
-                        data: { Id: nodeIds },
-                        type: 'Post',
+                    ajaxHttp({
+                        url: api + 'ColumnCategory/' + nodeIds,
+                        type: 'Delete',
                         //data: { Ids: nodeIds },
                         async: false,
-                        success: function (result) {
-                            if (result == undefined || result == '')
-                                return;
-                            let json = JSON.parse(result);
+                        success: function (json) {
                             if (json.code == 200) {
                                 layer.msg(json.msg, { icon: 6, time: 1000 });
                                 // 删除
@@ -146,17 +142,14 @@ layui.config({
         req_Data = data;
         //console.log(obj)
         if (obj.event === 'del') {
-            let indexid = obj.data.ID;
+            let indexid = obj.data.Id;
             layer.confirm('确定删除本行么', function (index) {
-                $.ajax({
-                    url: api + 'Menu/Delete/' + indexid,
-                    type: 'Post',
+                ajaxHttp({
+                    url: api + 'ColumnCategory/' + indexid,
+                    type: 'Delete',
                     //data: { Ids: indexid },
                     async: false,
-                    success: function (result) {
-                        if (result == undefined || result == '')
-                            return;
-                        let json = JSON.parse(result);
+                    success: function (json) {
                         if (json.code == 200) {
                             layer.msg(json.msg, { icon: 6, time: 1000 });
                             // 删除
@@ -220,8 +213,8 @@ layui.config({
         var delete_index = [];
         var id = "";
         $.each(data, function (index, item) {
-            if (item.ID != "") {
-                delete_index.push(item.ID)
+            if (item.Id != "") {
+                delete_index.push(item.Id)
             }
         });
         if (delete_index.length > 0) {

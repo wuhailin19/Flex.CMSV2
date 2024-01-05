@@ -9,6 +9,7 @@ namespace Flex.Application.Contracts.IServices
     public interface IColumnContentServices
     {
         Task<ProblemDetails<string>> Add(Hashtable hashtable);
+        Task<ProblemDetails<string>> Delete(int ParentId, string Id);
         Task<dynamic> GetContentById(int ParentId, int Id);
         Task<ProblemDetails<string>> GetFormHtml(int ParentId);
         Task<IEnumerable<ModelTools<ColumnContentDto>>> GetTableThs(int ParentId);

@@ -3,6 +3,7 @@ using Dapper.Contrib.Extensions;
 using Flex.Domain;
 using Microsoft.Extensions.Options;
 using System.Data;
+using Microsoft.Data.SqlClient;
 using System.Diagnostics;
 
 namespace Flex.Dapper.Context
@@ -74,6 +75,10 @@ namespace Flex.Dapper.Context
         public async Task<IEnumerable<dynamic>> GetDynamicAsync(string sql)
         {
             return await _connection.QueryAsync<dynamic>(sql);
+        }
+        public async Task<IEnumerable<dynamic>> GetDynamicAsync(string sql, SqlParameter[] parameters)
+        {
+            return await _connection.QueryAsync<dynamic>(sql, parameters);
         }
         public async Task<T> GetAsync<T>(int id) where T : class, new()
         {
