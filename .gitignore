@@ -387,3 +387,4 @@ FodyWeavers.xsd
 /src/Flex.EFSqlServer/Migrations/20231228120703_FlexCmsDbInit.cs
 /src/Flex.EFSqlServer/Migrations/20240103121345_FlexCmsDbInit.cs
 /src/Flex.EFSqlServer/Migrations/SqlServerContextModelSnapshot.cs
+/src/Flex.Web/appsettings.json
