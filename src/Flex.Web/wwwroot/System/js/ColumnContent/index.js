@@ -2,9 +2,21 @@
 var routePageLink = '/system/ColumnContent/';
 var columnlist;
 var req_Data;
+var currentparentId = getParameterFromUrl();
+function getParameterFromUrl() {
+    var url = window.location.href.toLowerCase();
+    var match = url.match(/\/system\/columncontent\/index\/(\d+)/);
+
+    if (match && match[1]) {
+        var parameterValue = match[1];
+        return parameterValue;
+    } else {
+        return null;
+    }
+}
 
 $.ajax({
-    url: routeLink + 'Column/1',
+    url: routeLink + 'Column/' + currentparentId,
     type: 'Get',
     async: false,
     dataType: 'json',
@@ -36,7 +48,7 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
             statusCode: 200
         },
         where: {
-            ParentId: 1
+            ParentId: currentparentId
         },
         parseData: function (res) {
             return {

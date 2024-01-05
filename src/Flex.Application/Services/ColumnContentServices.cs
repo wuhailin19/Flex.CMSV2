@@ -48,6 +48,8 @@ namespace Flex.Application.Services
         {
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            if(contentmodel==null)
+                return new Page();
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             string filed = defaultFields;
             foreach (var item in fieldmodel)
@@ -68,6 +70,8 @@ namespace Flex.Application.Services
         {
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            if (contentmodel == null)
+                return default;
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             string filed = defaultFields;
             List<string> editors = new List<string>();
@@ -104,11 +108,13 @@ namespace Flex.Application.Services
             return result.FirstOrDefault();
         }
 
-        public async Task<string> GetFormHtml(int ParentId)
+        public async Task<ProblemDetails<string>> GetFormHtml(int ParentId)
         {
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
-            return contentmodel.FormHtmlString;
+            if (contentmodel == null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "没有选择有效模型");
+            return new ProblemDetails<string>(HttpStatusCode.OK, contentmodel.FormHtmlString);
         }
         private void InitTable(Hashtable table)
         {

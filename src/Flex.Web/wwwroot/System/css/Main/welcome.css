@@ -12,7 +12,7 @@
 .grid-demo-bg2 { background-color: #b6ff00 }
 .grid-demo-bg3 { background-color: #4ab89d }
 .grid-demo { padding: 10px; height: 100px; line-height: 50px; text-align: center; background-color: #79C48C; color: #fff; }
-.leftbox { width: 75% !important; float: left; padding-right: 0; }
+.leftbox { width: 75% !important; float: left; }
 .rightbox { width: 25% !important; float: left; }
 .newsbox { width: 100%; display: flex; height: 10%; margin-top: 0; padding-left: 10px; background-color: #fff; line-height: 30px; box-sizing: border-box; cursor: pointer; border: 2px solid #f1f1f1; }
 .newsbox p.titles { width: 65%; float: left; font-size: 12px; }

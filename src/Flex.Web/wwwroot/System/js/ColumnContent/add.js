@@ -15,11 +15,15 @@ layui.config({
     //    Id: parent_json.Id
     //}
     ajaxHttp({
-        url: api + 'ColumnContent/GetFormHtml/1',
+        url: api + 'ColumnContent/GetFormHtml/' + parent.currentparentId,
         type: 'Get',
         async: false,
         dataType: 'json',
         success: function (result) {
+            if (result.code != 200) {
+                layer.msg(result.msg, { icon: 5, time: 1000 });
+                return;
+            }
             // 渲染并输出结果
             laytpl(result.msg).render("", function (str) {
                 elemView.innerHTML = str;
