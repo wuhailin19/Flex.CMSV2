@@ -27,7 +27,7 @@ layui.config({
     form.on('submit(formDemo)', function (data) {
         var json = data.field;
         ajaxHttp({
-            url: api + 'ColumnContent',
+            url: api + 'ContentModel',
             type: 'Put',
             datatype: 'json',
             data: JSON.stringify(json),

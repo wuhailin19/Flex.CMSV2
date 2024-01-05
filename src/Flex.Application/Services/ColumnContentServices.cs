@@ -42,7 +42,7 @@ namespace Flex.Application.Services
                     title = item.Name,
                     sort = false,
                     align = "center",
-                    maxWidth = "100",
+                    maxWidth = "200",
                     field = item.FieldName
                 });
             }

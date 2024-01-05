@@ -33,7 +33,7 @@ layui.config({
     })
     //监听提交
     form.on('submit(formDemo)', function (data) {
-        data.field.ParentId = 1;
+        data.field.ParentId = parent.currentparentId;
         if (editorarray.length > 0) {
             for (var i = 0; i < editorarray.length; i++) {
                 data.field[editorarray[i]] = UE.getEditor(editorarray[i]).getContent();
