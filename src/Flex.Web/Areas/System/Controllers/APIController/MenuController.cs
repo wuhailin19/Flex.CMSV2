@@ -75,5 +75,14 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                 return Success(result.Detail);
             return Fail(result.Detail);
         }
+
+        [HttpDelete("{Id}")]
+        public async Task<string> Delete(string Id)
+        {
+            var result = await _menuServices.Delete(Id);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
     }
 }

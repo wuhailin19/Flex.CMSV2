@@ -35,9 +35,6 @@
         //第二次调用
         tableIns.reload({
             where: { 'ParentId': currentparentId } // 设定异步数据接口的额外参数，任意设
-            , page: {
-                curr: tableIns.page //重新从第 1 页开始
-            }
         });
         //console.log(tableIns)
     },

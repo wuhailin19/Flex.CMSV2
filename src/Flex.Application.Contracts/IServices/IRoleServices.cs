@@ -7,6 +7,7 @@ namespace Flex.Application.Contracts.IServices
     public interface IRoleServices
     {
         Task<ProblemDetails<string>> AddNewRole(InputRoleDto role);
+        Task<ProblemDetails<string>> Delete(string Id);
         Task<IEnumerable<RoleDto>> GetCurrentAdminRoleByTokenAsync();
         Task<IEnumerable<SysRole>> GetRoleByRoleIdAsync(string roleId);
         Task<PagedList<RoleColumnDto>> GetRoleListAsync(int page, int pagesize);

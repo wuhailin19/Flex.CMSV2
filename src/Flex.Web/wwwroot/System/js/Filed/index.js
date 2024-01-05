@@ -32,8 +32,14 @@ layui.use('table', function () {
                 "data": res.content//数据总数的字段名称，默认：count
             };
         }
-        , done: function (res, curr, count){
-            //console.log(columnlist);
+        , done: function (res, pageindex, count) {
+            if (pageindex > 1 && res.data.length === 0) {
+                insTb.reload({
+                    page: {
+                        curr: pageindex - 1
+                    },
+                });
+            }
         }
         , method: 'Get'
         , cols: [columnlist]

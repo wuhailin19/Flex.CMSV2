@@ -13,5 +13,6 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<string>> EditMenu(MenuEditDto model);
         Task<ProblemDetails<string>> AddMenu(MenuAddDto model);
         Task<IEnumerable<MenuDto>> GetMenuDtoByRoleIdAsync(int Id);
+        Task<ProblemDetails<string>> Delete(string Id);
     }
 }
