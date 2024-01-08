@@ -140,7 +140,7 @@ namespace Flex.Domain.Config
                     Name = "内容模型",
                     Icode = "layui-icon-template-1",
                     ParentID = 1,
-                    LinkUrl = "ContentModel",
+                    LinkUrl = "",
                     Level = 0,
                     OrderId = 2,
                     ShowStatus = true,
@@ -1082,10 +1082,10 @@ namespace Flex.Domain.Config
                 }, new SysMenu
                 {
                     Id = 171,
-                    Name = "模型测试",
+                    Name = "模型管理",
                     Icode = "",
                     ParentID = 67,
-                    LinkUrl = "testModel.aspx",
+                    LinkUrl = "ContentModel/Index",
                     Level = 0,
                     OrderId = 0,
                     ShowStatus = true,
