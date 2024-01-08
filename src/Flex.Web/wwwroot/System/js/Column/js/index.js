@@ -176,7 +176,7 @@ layui.config({
                 shadeClose: true,
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
-                area: ['900px', '700px'],
+                area: ['80%', '90%'],
                 content: routePageLink + 'AddPage',
                 success: function (layero, index) {
                 }, end: function () {
@@ -196,7 +196,7 @@ layui.config({
                 shadeClose: true,
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
-                area: ['900px', '700px'],
+                area: ['80%', '90%'],
                 content: routePageLink + 'Edit',
                 success: function (layero, index) {
                 }, end: function () {

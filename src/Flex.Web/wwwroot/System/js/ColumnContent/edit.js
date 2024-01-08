@@ -61,6 +61,12 @@ layui.config({
     form.on('submit(formDemo)', function (data) {
         data.field.ParentId = parent_json.ParentId;
         data.field.Id = parent_json.Id;
+        $('input[type=checkbox]').each(function () {
+            if ($(this)[0].checked)
+                data.field[$(this).attr('name')] = true;
+            else
+                data.field[$(this).attr('name')] = false;
+        });
         if (editorarray.length > 0) {
             for (var i = 0; i < editorarray.length; i++) {
                 data.field[editorarray[i]] = UE.getEditor(editorarray[i]).getContent();

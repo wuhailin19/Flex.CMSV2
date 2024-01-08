@@ -1,18 +1,12 @@
-﻿using Flex.Application.Contracts.Exceptions;
+﻿using Dapper;
+using Flex.Application.Contracts.Exceptions;
 using Flex.Dapper;
-using Flex.Dapper.Context;
 using Flex.Domain;
-using Flex.Domain.Base;
 using Flex.Domain.Dtos.Column;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Collections;
-using Microsoft.Data.SqlClient;
-using System.Text;
-using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.HtmlHelper;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Flex.Application.Contracts.IServices;
-using Org.BouncyCastle.Crypto;
+using Microsoft.Data.SqlClient;
+using System.Collections;
+using System.Text;
 
 namespace Flex.Application.Services
 {
@@ -21,7 +15,7 @@ namespace Flex.Application.Services
         MyDBContext _dapperDBContext;
 
         //默认加载字段
-        private const string defaultFields = "IsTop,IsRecommend,IsHot,IsShow,IsColor" +
+        private const string defaultFields = "IsTop,IsRecommend,IsHot,IsShow,IsSilde,SeoTitle,KeyWord,Description" +
             ",Title,Id,AddTime,StatusCode,AddUserName,LastEditUserName,OrderId,ParentId,";
         ISqlTableServices _sqlTableServices;
         public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext, ISqlTableServices sqlTableServices)
@@ -86,10 +80,11 @@ namespace Flex.Application.Services
                     editors.Add(item.FieldName);
             }
             filed = filed.TrimEnd(',');
-            SqlParameter[] parameters = new SqlParameter[] {
-                new SqlParameter("@Id",Id)
-            };
-            var result = await _dapperDBContext.GetDynamicAsync("select " + filed + " from " + contentmodel.TableName + " where Id=@Id", parameters);
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@Id", Id);
+            parameters.Add("@ParentId", ParentId);
+
+            var result = await _dapperDBContext.GetDynamicAsync("select " + filed + " from " + contentmodel.TableName + " where ParentId=@ParentId and Id=@Id", parameters);
 
             #region 废弃
             //UpdateContentDto updateContentDto = new UpdateContentDto();

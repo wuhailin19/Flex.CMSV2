@@ -46,11 +46,30 @@ ajaxHttp({
     }
 })
 layui.config({
+    base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
+}).use('croppers', function () {
+    var croppers = layui.croppers;
+
+    //创建一个头像上传组件
+    croppers.render({
+        elem: '#cropper-btn'
+        , saveW: 1920     //保存宽度
+        , saveH: 650
+        , mark: 1 / 1    //选取比例
+        , area: ['90%', '95%']  //弹窗宽度
+        , url: api + 'Admin/OnloadUserAvatar'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
+        , done: function (data) { //上传完毕回调
+            $("input[name=ColumnImage]").val(data);
+            //$("#srcimgurl").attr('src', data);
+        }
+    });
+})
+layui.config({
     base: '/Scripts/layui/module/'
 }).use(['iconHhysFa', 'form', 'tree'], function () {
     var form = layui.form;
     var tree = layui.tree;
-    
+
     form.val("formTest", {
         'Name': parent_json.Name
         , 'Id': parent_json.Id
@@ -61,7 +80,8 @@ layui.config({
         , 'SeoKeyWord': parent_json.SeoKeyWord
         , 'SeoDescription': parent_json.SeoDescription
     });
-    
+
+
     var columnlist;
     ajaxHttp({
         url: api + 'ColumnCategory/TreeListAsync',
@@ -103,7 +123,7 @@ layui.config({
         return false;
     });
 
-    
+
 
     var tree = layui.tree;
     tree.render({

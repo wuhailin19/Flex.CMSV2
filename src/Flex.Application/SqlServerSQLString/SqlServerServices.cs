@@ -21,14 +21,15 @@ namespace Flex.Application.SqlServerSQLString
                                       "[Title] [nvarchar](255) NOT NULL," +
                                       "[SimpleTitle] [nvarchar](255)  NULL," +
                                       "[Hits] [int] NOT NULL default 1," +
-                                      "[KeyWord] [nvarchar](255)  NULL," +
-                                      "[Description] [nvarchar](255)  NULL," +
+                                      "[SeoTitle] [nvarchar](255)  NULL," +
+                                      "[KeyWord] [nvarchar](500)  NULL," +
+                                      "[Description] [nvarchar](1000)  NULL," +
                                       "[AddTime] [datetime] NOT NULL default getdate()," +
                                       "[IsTop] [bit] NOT NULL default 0," +
                                       "[IsRecommend] [bit] NOT NULL default 0," +
                                       "[IsHot] [bit] NOT NULL default 0," +
                                       "[IsShow] [bit] NOT NULL default 0," +
-                                      "[IsColor] [bit] NOT NULL default 0," +
+                                      "[IsSilde] [bit] NOT NULL default 0," +
                                       "[OrderId] [int] NOT NULL," +
                                       "[StatusCode] [int] NOT NULL default 1," +
                                       "[AddUser] [bigint] NULL," +

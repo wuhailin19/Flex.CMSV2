@@ -36,7 +36,6 @@
     <Folder Include="Areas\System\Data\" />
     <Folder Include="Areas\System\Models\" />
     <Folder Include="Views\" />
-    <Folder Include="wwwroot\Content\images\" />
     <Folder Include="wwwroot\System\htmlEditor\ewebeditor\uploadfile\" />
   </ItemGroup>
 </Project>

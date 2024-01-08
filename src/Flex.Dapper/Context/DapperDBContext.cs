@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Diagnostics;
+using System.Reflection.Emit;
 
 namespace Flex.Dapper.Context
 {
@@ -76,7 +77,7 @@ namespace Flex.Dapper.Context
         {
             return await _connection.QueryAsync<dynamic>(sql);
         }
-        public async Task<IEnumerable<dynamic>> GetDynamicAsync(string sql, SqlParameter[] parameters)
+        public async Task<IEnumerable<dynamic>> GetDynamicAsync(string sql, DynamicParameters parameters)
         {
             return await _connection.QueryAsync<dynamic>(sql, parameters);
         }

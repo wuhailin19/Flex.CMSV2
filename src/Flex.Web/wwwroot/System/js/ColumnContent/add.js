@@ -39,6 +39,12 @@ layui.config({
                 data.field[editorarray[i]] = UE.getEditor(editorarray[i]).getContent();
             }
         }
+        $('input[type=checkbox]').each(function () {
+            if ($(this)[0].checked)
+                data.field[$(this).attr('name')] = true;
+            else
+                data.field[$(this).attr('name')] = false;
+        });
         ajaxHttp({
             url: api + 'ColumnContent',
             type: 'Put',
