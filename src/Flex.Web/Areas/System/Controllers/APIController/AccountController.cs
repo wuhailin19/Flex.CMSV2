@@ -19,13 +19,13 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         private ICaching _caching;
         private IAccountServices _accountservices;
         private IHttpContextAccessor _Context;
-        public AccountController(IHttpContextAccessor Context,IAdminServices services, IAccountServices accountservices, JwtService jwtservice, ICaching caching)
+        public AccountController(IHttpContextAccessor Context, IAdminServices services, IAccountServices accountservices, JwtService jwtservice, ICaching caching)
         {
             _services = services;
             _jwtservice = jwtservice;
             _accountservices = accountservices;
             _caching = caching;
-            _Context= Context;
+            _Context = Context;
         }
         /// <summary>
         /// 验证码判断
@@ -121,7 +121,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                 CodeId = adminLoginDto.CodeId,
                 Codenum = adminLoginDto.Codenum
             }))
-                return Fail("验证码错误，请重新输入！");
+                return Fail("验证码错误，请重新输入！", 405);
             var result = await _accountservices.LoginAuthorAsync(adminLoginDto);
             if (result is null)
                 return Fail("登录错误", 405);

@@ -1176,7 +1176,7 @@ body .layui-util-face .layui-layer-content { padding: 0; background-color: #fff;
 .layui-tree-entry { position: relative; padding: 3px 0; height: 26px; white-space: nowrap }
 .layui-tree-entry:hover { background-color: #eee }
 .layui-tree-line .layui-tree-entry:hover { background-color: rgba(0,0,0,0) }
-.layui-tree-line .layui-tree-entry .layui-tree-txt:hover { color: rgb(102, 177, 255); transition: .3s;padding:0 10px; border:1px dashed #bbb;width:fit-content; box-sizing:border-box; }
+.layui-tree-line .layui-tree-entry .layui-tree-txt:hover { color: rgb(102, 177, 255); transition: .3s;padding:0 10px;width:fit-content; box-sizing:border-box; }
 .layui-tree-main { display: inline-block; vertical-align: middle; cursor: pointer; padding-right: 10px ;width:80%;}
 .layui-tree-line .layui-tree-set:before { content: ""; position: absolute; top: 0; left: -9px; width: 0; height: 100%; border-left: 1px dotted #c0c4cc }
 .layui-tree-line .layui-tree-set.layui-tree-setLineShort:before { height: 13px }

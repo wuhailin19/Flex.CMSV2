@@ -131,6 +131,10 @@ layui.config({
         data: columnlist
         , onlyIconControl: true
         , click: function (obj) {
+            if (obj.data.id == parent_json.Id) {
+                layer.msg("不能选择自身", { icon: 5, time: 1000 });
+                return;
+            }
             $("#chooseName").val(obj.data.id);
             form.render();
         }

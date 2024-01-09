@@ -58,7 +58,7 @@ namespace Flex.Application.Services
             finally
             {
                 if (IsSuccess)
-                    PlatformsPictureOperation.MakeThumb(savepath, 200, 300, ImageThumbEnum.Cut);
+                    PlatformsPictureOperation.MakeThumb(savepath, 200, 200, ImageThumbEnum.Cut);
             }
         }
     }
