@@ -1,5 +1,4 @@
-﻿/// <reference path="jquery-1.4.3.min.js"/>
-var codeid = "";
+﻿var codeid = "";
 var publickey = "";
 $(function () {
     $(".login .row4 .rmb").click(function () {

@@ -1,5 +1,15 @@
 ﻿var Id = parent.req_Data.Id;
 var parent_json;
+var click_count = 0;
+$('#uploader-show').on('click', function () {
+    if ($('.uploader-box').hasClass('active')) {
+        $('.uploader-box').removeClass('active');
+    }
+    else {
+        $('.uploader-box').addClass('active');
+        if (click_count == 0) { ___initUpload(); click_count++; }
+    }
+})
 ajaxHttp({
     url: api + 'ColumnCategory/GetColumnById/' + Id,
     type: 'Get',
@@ -70,17 +80,20 @@ layui.config({
     var form = layui.form;
     var tree = layui.tree;
 
-    form.val("formTest", {
-        'Name': parent_json.Name
-        , 'Id': parent_json.Id
-        , 'ParentID': parent_json.ParentId
-        , 'ColumnImage': parent_json.ColumnImage
-        , 'ColumnUrl': parent_json.ColumnUrl
-        , 'SeoTitle': parent_json.SeoTitle
-        , 'SeoKeyWord': parent_json.SeoKeyWord
-        , 'SeoDescription': parent_json.SeoDescription
-    });
-
+    function formRender() {
+        form.val("formTest", {
+            'Name': parent_json.Name
+            , 'Id': parent_json.Id
+            , 'ParentID': parent_json.ParentId
+            , 'ModelId': parent_json.ModelId
+            , 'ColumnImage': parent_json.ColumnImage
+            , 'ColumnUrl': parent_json.ColumnUrl
+            , 'SeoTitle': parent_json.SeoTitle
+            , 'SeoKeyWord': parent_json.SeoKeyWord
+            , 'SeoDescription': parent_json.SeoDescription
+        });
+    }
+    formRender();
 
     var columnlist;
     ajaxHttp({
@@ -123,7 +136,10 @@ layui.config({
         return false;
     });
 
-
+    $('#reset').click(function () {
+        formRender();
+        return false;
+    })
 
     var tree = layui.tree;
     tree.render({

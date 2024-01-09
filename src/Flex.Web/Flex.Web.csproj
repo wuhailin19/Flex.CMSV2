@@ -38,4 +38,9 @@
     <Folder Include="Views\" />
     <Folder Include="wwwroot\System\htmlEditor\ewebeditor\uploadfile\" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="wwwroot\System\js\uploader\upload.js" />
+    <None Include="wwwroot\System\js\uploader\webuploader.min.js" />
+  </ItemGroup>
 </Project>

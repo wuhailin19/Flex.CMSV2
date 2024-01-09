@@ -34,25 +34,25 @@
 /*.layui-bg-black.active .layui-nav-child a i { background-color: rgba(0,0,0,.3); }*/
 
 .layui-bg-black.active .layui-nav.layui-nav-tree { width:50px;overflow:unset; }
-.layui-bg-black.active .layui-side-scroll { width:50px;overflow-x:unset; }
-.layui-layout-admin .layui-side.active a cite { position: absolute;width:fit-content; height:20px; padding: 10px;color:#fff; background: #000;border-radius:5px; line-height: 20px; display:none; left: 51px; top: 5px; animation:slideIn 0.35s ease-out; }
+.layui-bg-black.active .layui-side-scroll { width:50px;overflow-x:hidden;overflow-y:scroll; }
+/*.layui-layout-admin .layui-side.active a cite { position: absolute;width:fit-content; height:20px; padding: 10px;color:#fff; background: #000;border-radius:5px; line-height: 20px; display:none; left: 51px; top: 5px; animation:slideIn 0.35s ease-out; }*/
 .layui-layout-admin .layui-side.active a .layui-nav-more { display: none; }
 
 .layui-layout-admin .layui-side.active .layui-nav-tree .layui-nav-item a { overflow:unset; }
 
-.layui-layout-admin .layui-side.active .layui-nav-item a i:hover + cite{display:block;}
+/*.layui-layout-admin .layui-side.active .layui-nav-item a i:hover + cite{display:block;}*/
 .layui-tab-title.active { left: 50px; }
 ::-webkit-scrollbar { /*滚动条整体样式*/ width: 0; /*高宽分别对应横竖滚动条的尺寸*/ height: 1px; }
 ::-webkit-scrollbar-thumb { /*滚动条里面小方块*/ border-radius: 10px; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); /* background: #535353; */ }
 ::-webkit-scrollbar-track { /*滚动条里面轨道*/ box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); border-radius: 10px; background: #ededed; }
 .layui_menu_tree i.layui-icon { font-size: 16px; display: inline-block; width: 28px; }
 .layui-layout-admin .layui-logo { text-align: left; }
-@keyframes slideIn {
+/*@keyframes slideIn {
   from {
-    transform: translateX(30%); /* 从下面移入 */
-  }
+    transform: translateX(30%);*/ /* 从下面移入 */
+  /*}
   to {
-    transform: translateX(0%); /* 移动到正常位置 */
-  }
-}
+    transform: translateX(0%);*/ /* 移动到正常位置 */
+  /*}
+}*/
 

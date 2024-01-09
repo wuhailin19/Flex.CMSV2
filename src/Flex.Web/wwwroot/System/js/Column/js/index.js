@@ -196,7 +196,7 @@ layui.config({
                 shadeClose: true,
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
-                area: ['80%', '90%'],
+                area: ['80%', '95%'],
                 content: routePageLink + 'Edit',
                 success: function (layero, index) {
                 }, end: function () {

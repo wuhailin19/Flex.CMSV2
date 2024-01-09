@@ -3,6 +3,15 @@
     $(this).find('i').toggleClass('layui-icon-spread-left');
 
 })
+
+var tips_index;
+$('.layui-layout-admin').on('mouseenter', '.layui-side.active .layui-nav-item i', function () {
+    var name = $(this).siblings('cite').text();
+    tips_index = layer.tips(name, $(this), { time: 50000 });
+})
+$('.layui-layout-admin').on('mouseleave', '.layui-side.active .layui-nav-item i', function () {
+    layer.close(tips_index);
+})
 function removeArray(arr, val) {
     for (var i = 0; i < arr.length; i++) {
         if (arr[i] == val) {
