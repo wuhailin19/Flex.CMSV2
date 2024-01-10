@@ -35,12 +35,15 @@
   <ItemGroup>
     <Folder Include="Areas\System\Data\" />
     <Folder Include="Areas\System\Models\" />
+    <Folder Include="Controllers\" />
     <Folder Include="Views\" />
     <Folder Include="wwwroot\System\htmlEditor\ewebeditor\uploadfile\" />
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="wwwroot\System\js\uploader\upload.js" />
+    <None Include="wwwroot\Scripts\layui\module\notice\.DS_Store" />
+    <None Include="wwwroot\Scripts\layui\module\notice\notice.js" />
+    <None Include="wwwroot\System\js\uploader\uploadsingle.js" />
     <None Include="wwwroot\System\js\uploader\webuploader.min.js" />
   </ItemGroup>
 </Project>

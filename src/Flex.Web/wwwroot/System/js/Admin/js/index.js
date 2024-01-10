@@ -71,9 +71,9 @@ layui.use(['table', 'form'], function () {
             async: false,
             success: function (json) {
                 if (json.code == 200) {
-                    layer.msg(json.msg, { icon: 6, time: 1000 });
+                    tips.showSuccess(json.msg);
                 } else {
-                    layer.msg(json.msg, { icon: 5, time: 1000 })
+                   tips.showFail(json.msg);
                 }
             },
             complete: function () { }
@@ -90,9 +90,9 @@ layui.use(['table', 'form'], function () {
             async: false,
             success: function (json) {
                 if (json.code == 200) {
-                    layer.msg(json.msg, { icon: 6, time: 1000 });
+                    tips.showSuccess(json.msg);
                 } else {
-                    layer.msg(json.msg, { icon: 5, time: 1000 })
+                   tips.showFail(json.msg);
                 }
             },
             complete: function () { }
@@ -117,12 +117,12 @@ layui.use(['table', 'form'], function () {
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {
-                                layer.msg(json.msg, { icon: 6, time: 1000 });
+                                tips.showSuccess(json.msg);
                                 // 删除
                                 delete_index = [];
                                 defaultOptions.callBack(insTb);
                             } else {
-                                layer.msg(json.msg, { icon: 5, time: 1000 })
+                               tips.showFail(json.msg);
                                 delete_index = [];
                             }
                         },
@@ -148,11 +148,11 @@ layui.use(['table', 'form'], function () {
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {
-                                layer.msg(json.msg, { icon: 6, time: 1000 });
+                                tips.showSuccess(json.msg);
                                 defaultOptions.callBack(insTb);
                                 // 删除
                             } else {
-                                layer.msg(json.msg, { icon: 5, time: 1000 })
+                               tips.showFail(json.msg);
                             }
                         },
                         complete: function () { }

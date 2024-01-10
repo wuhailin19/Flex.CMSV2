@@ -19,7 +19,7 @@ ajaxHttp({
         if (json.code == 200) {
             parent_json = json.content;
         } else {
-            layer.msg(json.msg, { icon: 5, time: 1000 });
+            tips.showFail(json.msg);
         }
     }
 })
@@ -34,7 +34,7 @@ ajaxHttp({
                 $('#ModelId').append('<option value="' + json.content[i].Id + '" ' + (parent_json.ModelId == json.content[i].Id ? "selected" : "") + '>' + json.content[i].Name + '</option>');
             }
         } else {
-            layer.msg(json.msg, { icon: 5, time: 1000 });
+            tips.showFail(json.msg);
         }
     }
 })
@@ -55,6 +55,7 @@ ajaxHttp({
     complete: function () {
     }
 })
+
 layui.config({
     base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
 }).use('croppers', function () {
@@ -64,8 +65,8 @@ layui.config({
     croppers.render({
         elem: '#cropper-btn'
         , saveW: 1920     //保存宽度
-        , saveH: 650
-        , mark: 1 / 1    //选取比例
+        , saveH: 450
+        , mark: NaN    //选取比例
         , area: ['90%', '95%']  //弹窗宽度
         , url: api + 'Admin/OnloadUserAvatar'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
         , done: function (data) { //上传完毕回调
@@ -119,13 +120,13 @@ layui.config({
             async: false,
             success: function (json) {
                 if (json.code == 200) {
-                    layer.msg(json.msg, { icon: 6, time: 300 }, function () {
+                    tips.showSuccess(json.msg);
+                    setTimeout(function () {
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭
-                        //parent.parent.Init();
-                    });
+                    }, 300)
                 } else {
-                    layer.msg(json.msg, { icon: 5, time: 1000 });
+                    tips.showFail(json.msg);
                 }
 
             },

@@ -1,7 +1,7 @@
 /*!
  * Cropper v3.0.0
  */
-
+var testimg;
 layui.config({
     base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
 }).define(['jquery', 'layer', 'cropper'], function (exports) {
@@ -27,6 +27,7 @@ layui.config({
         "        <div class=\"layui-col-xs3\">\n" +
         "            <div class=\"img-preview\" style=\"width:200px;height:200px;overflow:hidden\">\n" +
         "            </div>\n" +
+
         "        </div>\n" +
         "    </div>\n" +
         "    <div class=\"layui-row layui-col-space15\">\n" +
@@ -35,6 +36,7 @@ layui.config({
         "                <div class=\"layui-col-xs6\">\n" +
         "                    <button type=\"button\" class=\"layui-btn layui-icon layui-icon-left\" cropper-event=\"rotate\" data-option=\"-15\" title=\"Rotate -90 degrees\">左旋转</button>\n" +
         "                    <button type=\"button\" class=\"layui-btn layui-icon layui-icon-right\" cropper-event=\"rotate\" data-option=\"15\" title=\"Rotate 90 degrees\">右旋转</button>\n" +
+        "                    <label style=\"padding-left:10px;\">当前尺寸：</label><input value=\"\" class=\"layui-input\" style=\"width:100px;display:inline-block;\" id=\"currentsize\">" +
         "                </div>\n" +
         "                <div class=\"layui-col-xs5\" style=\"text-align: right;\">\n" +
         "                    <button type=\"button\" class=\"layui-btn layui-icon layui-icon-refresh\" cropper-event=\"reset\" title=\"重置图片\"></button>\n" +
@@ -48,7 +50,7 @@ layui.config({
         "\n" +
         "</div>";
 
-    //"                    <button type=\"button\" class=\"layui-btn\" title=\"移动\"></button>\n" +
+    //"                    <button type=\"button\" class=\"layui-btn layui-icon\" title=\"移动\"></button>\n" +
     //    "                    <button type=\"button\" class=\"layui-btn\" title=\"放大图片\"></button>\n" +
     //    "                    <button type=\"button\" class=\"layui-btn\" title=\"缩小图片\"></button>\n" +
     var obj = {
@@ -60,6 +62,7 @@ layui.config({
                 saveH = e.saveH,
                 mark = e.mark,
                 area = e.area,
+                readyimgurl = e.readyimgurl,
                 url = e.url,
                 done = e.done,
                 adminid = undefined,
@@ -67,9 +70,20 @@ layui.config({
 
             var content = $('.showImgEdit')
                 , image = $(".showImgEdit .readyimg img")
+                , currentsize = $('#currentsize')
                 , preview = '.showImgEdit .img-preview'
                 , file = $(".showImgEdit input[name='file']")
-                , options = { aspectRatio: mark, preview: preview, viewMode: 1, dragMode: 'move' };
+                , options = {
+                    aspectRatio: mark, preview: preview, viewMode: 1, toggleDragModeOnDblclick: false, dragMode: 'move'
+                    , ready: function () {
+                        var data = image.cropper('getData');
+                        currentsize.val(Math.round(data.width) + "x" + Math.round(data.height));
+                    }
+                    , cropmove: function (e) {
+                        var data = image.cropper('getData');
+                        currentsize.val(Math.round(data.width) + "x" + Math.round(data.height));
+                    }
+                };
 
             $(elem).on('click', function () {
                 self.adminid = $(this).attr('data-id')
@@ -78,6 +92,8 @@ layui.config({
                     , content: content
                     , area: area
                     , success: function () {
+                        if (readyimgurl != undefined)
+                            image.attr("src", readyimgurl); //图片链接
                         image.cropper(options);
                     }
                     , cancel: function (index) {
@@ -105,7 +121,7 @@ layui.config({
                             processData: false,
                             contentType: false,
                             setcontentType: true,
-                            dataType:'json',
+                            dataType: 'json',
                             success: function (result) {
                                 if (result.code == 200) {
                                     //layer.msg("修改成功", { icon: 1 });

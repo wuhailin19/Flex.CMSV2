@@ -102,14 +102,14 @@ layui.config({
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {
-                                layer.msg(json.msg, { icon: 6, time: 1000 });
+                                tips.showSuccess(json.msg);
                                 // 删除
                                 insTb.refresh();
                                 delete_index = [];
                                 //insTb.reload();
                                 parent.Init();
                             } else {
-                                layer.msg(json.msg, { icon: 5, time: 1000 })
+                                tips.showFail(json.msg);
                                 delete_index = [];
                             }
                         },
@@ -134,14 +134,14 @@ layui.config({
                     async: false,
                     success: function (json) {
                         if (json.code == 200) {
-                            layer.msg(json.msg, { icon: 6, time: 1000 });
+                            tips.showSuccess(json.msg);
                             // 删除
                             insTb.refresh();
                             parent.Init();
                             delete_index = [];
                             //insTb.reload();
                         } else {
-                            layer.msg(json.msg, { icon: 5, time: 1000 })
+                            tips.showFail(json.msg);
                             delete_index = [];
                         }
                     },
