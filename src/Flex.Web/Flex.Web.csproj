@@ -43,6 +43,8 @@
   <ItemGroup>
     <None Include="wwwroot\Scripts\layui\module\notice\.DS_Store" />
     <None Include="wwwroot\Scripts\layui\module\notice\notice.js" />
+    <None Include="wwwroot\Scripts\layui\module\Sortable\Sortable.js" />
+    <None Include="wwwroot\Scripts\layui\module\Sortable\Sortable.min.js" />
     <None Include="wwwroot\System\js\uploader\uploadsingle.js" />
     <None Include="wwwroot\System\js\uploader\webuploader.min.js" />
   </ItemGroup>

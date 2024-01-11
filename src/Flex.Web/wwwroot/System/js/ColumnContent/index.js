@@ -108,8 +108,8 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
                         },
                         complete: function () { }
                     })
+                    layer.close(index)
                 })
-                layer.close(index)
                 break;
 
         };

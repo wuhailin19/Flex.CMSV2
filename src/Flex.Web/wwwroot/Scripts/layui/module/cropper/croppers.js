@@ -16,7 +16,7 @@ layui.config({
         "            </label>\n" +
         "            <input class=\"layui-upload-file\" id=\"cropper_avatarImgUpload\" type=\"file\" value=\"选择图片\" name=\"file\">\n" +
         "        </div>\n" +
-        "        <div class=\"layui-form-mid layui-word-aux\">头像的尺寸限定150x150px,大小在50kb以内，鼠标放于非图片区域即可移动图片位置</div>\n" +
+        "        <div class=\"layui-form-mid layui-word-aux\">头像的尺寸限定150x150px,大小在50kb以内，鼠标放于非选框区域即可移动图片位置</div>\n" +
         "    </div>\n" +
         "    <div class=\"layui-row layui-col-space15\">\n" +
         "        <div class=\"layui-col-xs9\">\n" +
@@ -33,12 +33,12 @@ layui.config({
         "    <div class=\"layui-row layui-col-space15\">\n" +
         "        <div class=\"layui-col-xs9\">\n" +
         "            <div class=\"layui-row\">\n" +
-        "                <div class=\"layui-col-xs6\">\n" +
+        "                <div class=\"layui-col-xs10\">\n" +
         "                    <button type=\"button\" class=\"layui-btn layui-icon layui-icon-left\" cropper-event=\"rotate\" data-option=\"-15\" title=\"Rotate -90 degrees\">左旋转</button>\n" +
         "                    <button type=\"button\" class=\"layui-btn layui-icon layui-icon-right\" cropper-event=\"rotate\" data-option=\"15\" title=\"Rotate 90 degrees\">右旋转</button>\n" +
         "                    <label style=\"padding-left:10px;\">当前尺寸：</label><input value=\"\" class=\"layui-input\" style=\"width:100px;display:inline-block;\" id=\"currentsize\">" +
         "                </div>\n" +
-        "                <div class=\"layui-col-xs5\" style=\"text-align: right;\">\n" +
+        "                <div class=\"layui-col-xs2\" style=\"text-align: right;\">\n" +
         "                    <button type=\"button\" class=\"layui-btn layui-icon layui-icon-refresh\" cropper-event=\"reset\" title=\"重置图片\"></button>\n" +
         "                </div>\n" +
         "            </div>\n" +
@@ -80,6 +80,9 @@ layui.config({
                         currentsize.val(Math.round(data.width) + "x" + Math.round(data.height));
                     }
                     , cropmove: function (e) {
+                        var data = image.cropper('getData');
+                        currentsize.val(Math.round(data.width) + "x" + Math.round(data.height));
+                    }, zoom: function (e) {
                         var data = image.cropper('getData');
                         currentsize.val(Math.round(data.width) + "x" + Math.round(data.height));
                     }

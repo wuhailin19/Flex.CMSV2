@@ -128,8 +128,8 @@ layui.use(['table', 'form'], function () {
                         },
                         complete: function () { }
                     })
+                    layer.close(index)
                 })
-                layer.close(index)
                 break;
 
         };
@@ -158,6 +158,7 @@ layui.use(['table', 'form'], function () {
                         },
                         complete: function () { }
                     })
+                    layer.close(index)
                 })
                 break;
             case 'update':

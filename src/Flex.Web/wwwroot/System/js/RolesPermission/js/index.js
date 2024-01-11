@@ -87,8 +87,8 @@ layui.use('table', function () {
                         },
                         complete: function () { }
                     })
+                    layer.close(index)
                 })
-                layer.close(index)
                 break;
 
         };

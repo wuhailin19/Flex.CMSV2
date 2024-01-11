@@ -1,4 +1,6 @@
-﻿namespace Flex.Application.Services
+﻿using Flex.EFSqlServer.UnitOfWork;
+
+namespace Flex.Application.Services
 {
     public class AccountServices : BaseService, IAccountServices
     {

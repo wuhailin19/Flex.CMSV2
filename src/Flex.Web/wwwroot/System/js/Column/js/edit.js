@@ -64,10 +64,8 @@ layui.config({
     //创建一个头像上传组件
     croppers.render({
         elem: '#cropper-btn'
-        , saveW: 1920     //保存宽度
-        , saveH: 450
         , mark: NaN    //选取比例
-        , area: ['90%', '95%']  //弹窗宽度
+        , area: '90%'  //弹窗宽度
         , url: api + 'Admin/OnloadUserAvatar'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
         , done: function (data) { //上传完毕回调
             $("input[name=ColumnImage]").val(data);

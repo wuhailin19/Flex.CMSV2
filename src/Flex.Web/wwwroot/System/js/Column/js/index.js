@@ -132,8 +132,8 @@ layui.config({
                         },
                         complete: function () { }
                     })
+                    layer.close(index);
                 })
-                layer.close(index);
                 break;
         };
     });
