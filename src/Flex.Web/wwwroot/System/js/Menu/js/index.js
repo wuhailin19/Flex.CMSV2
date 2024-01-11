@@ -116,6 +116,7 @@ layui.config({
                         complete: function () { }
                     })
                 })
+                layer.close(index)
                 break;
         };
     });
