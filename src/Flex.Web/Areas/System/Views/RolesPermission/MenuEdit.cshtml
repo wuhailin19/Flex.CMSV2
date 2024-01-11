@@ -55,7 +55,7 @@
             var parent_json = parent.req_Data;
             console.log(parent_json)
             ajaxHttp({
-                url: api + 'Menu/TreeListAsync/' + parent_json.Id,
+                url: api + 'Menu/GetTreeListByIdAsync/' + parent_json.Id,
                 type: 'Get',
                 async: false,
                 dataType:'json',

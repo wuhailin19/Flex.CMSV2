@@ -38,9 +38,13 @@ layui.use(['table', 'form'], function () {
                 "data": res.content.Items//数据总数的字段名称，默认：count
             };
         }
-        , done: function (res, curr, count) {
-            if (curr > 1 && res.data.length === 0) {
-                insTb.page = curr - 1;
+        , done: function (res, pageindex, count) {
+            if (pageindex > 1 && res.data.length === 0) {
+                insTb.reload({
+                    page: {
+                        curr: pageindex - 1
+                    },
+                });
             }
         }
     });
@@ -67,9 +71,9 @@ layui.use(['table', 'form'], function () {
             async: false,
             success: function (json) {
                 if (json.code == 200) {
-                    layer.msg(json.msg, { icon: 6, time: 1000 });
+                    tips.showSuccess(json.msg);
                 } else {
-                    layer.msg(json.msg, { icon: 5, time: 1000 })
+                   tips.showFail(json.msg);
                 }
             },
             complete: function () { }
@@ -86,9 +90,9 @@ layui.use(['table', 'form'], function () {
             async: false,
             success: function (json) {
                 if (json.code == 200) {
-                    layer.msg(json.msg, { icon: 6, time: 1000 });
+                    tips.showSuccess(json.msg);
                 } else {
-                    layer.msg(json.msg, { icon: 5, time: 1000 })
+                   tips.showFail(json.msg);
                 }
             },
             complete: function () { }
@@ -113,18 +117,19 @@ layui.use(['table', 'form'], function () {
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {
-                                layer.msg(json.msg, { icon: 6, time: 1000 });
+                                tips.showSuccess(json.msg);
                                 // 删除
                                 delete_index = [];
                                 defaultOptions.callBack(insTb);
                             } else {
-                                layer.msg(json.msg, { icon: 5, time: 1000 })
+                               tips.showFail(json.msg);
                                 delete_index = [];
                             }
                         },
                         complete: function () { }
                     })
                 })
+                layer.close(index)
                 break;
 
         };
@@ -144,11 +149,11 @@ layui.use(['table', 'form'], function () {
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {
-                                layer.msg(json.msg, { icon: 6, time: 1000 });
+                                tips.showSuccess(json.msg);
                                 defaultOptions.callBack(insTb);
                                 // 删除
                             } else {
-                                layer.msg(json.msg, { icon: 5, time: 1000 })
+                               tips.showFail(json.msg);
                             }
                         },
                         complete: function () { }

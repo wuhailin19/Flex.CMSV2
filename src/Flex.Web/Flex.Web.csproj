@@ -7,22 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Views\**" />
-    <Compile Remove="wwwroot\css\**" />
-    <Compile Remove="wwwroot\img\**" />
-    <Compile Remove="wwwroot\js\**" />
-    <Content Remove="Views\**" />
-    <Content Remove="wwwroot\css\**" />
-    <Content Remove="wwwroot\img\**" />
-    <Content Remove="wwwroot\js\**" />
-    <EmbeddedResource Remove="Views\**" />
-    <EmbeddedResource Remove="wwwroot\css\**" />
-    <EmbeddedResource Remove="wwwroot\img\**" />
-    <EmbeddedResource Remove="wwwroot\js\**" />
-    <None Remove="Views\**" />
-    <None Remove="wwwroot\css\**" />
-    <None Remove="wwwroot\img\**" />
-    <None Remove="wwwroot\js\**" />
+    <Content Remove="appsettings.Development_初始.json" />
+    <Content Remove="appsettings_初始.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,24 +28,22 @@
   <ItemGroup>
     <ProjectReference Include="..\Flex.Application\Flex.Application.csproj" />
     <ProjectReference Include="..\Flex.Core\Flex.Core.csproj" />
+    <ProjectReference Include="..\Flex.Dapper\Flex.Dapper.csproj" />
     <ProjectReference Include="..\Flex.Domain\Flex.Domain.csproj" />
   </ItemGroup>
   
   <ItemGroup>
     <Folder Include="Areas\System\Data\" />
     <Folder Include="Areas\System\Models\" />
-    <Folder Include="MiddleWares\" />
-    <Folder Include="wwwroot\Content\images\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Views\" />
+    <Folder Include="wwwroot\System\htmlEditor\ewebeditor\uploadfile\" />
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="wwwroot\Scripts\layui\css\iconfont\iconfont.js" />
-    <None Include="wwwroot\Scripts\layui\css\iconfont\iconfont.svg" />
-    <None Include="wwwroot\Scripts\layui\css\iconfont\iconfont.woff2" />
-    <None Include="wwwroot\Scripts\layui\css\modules\layim\layims.js" />
-    <None Include="wwwroot\Scripts\layui\font\iconfont.svg" />
-    <None Include="wwwroot\Scripts\layui\font\iconfont.woff2" />
-    <None Include="wwwroot\System\js\Admin\js\index.js" />
-    <None Include="wwwroot\System\js\Admin\js\openPageOptions.js" />
+    <None Include="wwwroot\Scripts\layui\module\notice\.DS_Store" />
+    <None Include="wwwroot\Scripts\layui\module\notice\notice.js" />
+    <None Include="wwwroot\System\js\uploader\uploadsingle.js" />
+    <None Include="wwwroot\System\js\uploader\webuploader.min.js" />
   </ItemGroup>
 </Project>

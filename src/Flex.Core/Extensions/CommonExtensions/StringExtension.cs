@@ -30,6 +30,18 @@ namespace Flex.Core.Extensions
             string[] ids = strs.Split(new string[] { splitstr }, StringSplitOptions.RemoveEmptyEntries);
             return ids.ToList();
         }
+        public static string ListToString(this List<object> strs, string splitstr = ",")
+        {
+            string result = string.Empty;
+            foreach (var item in strs)
+            {
+                if (result.IsNullOrEmpty())
+                    result += item.ToString();
+                else
+                    result += splitstr + item.ToString();
+            }
+            return result;
+        }
         /// <summary>
         /// 倒置字符串，输入"abcd123"，返回"321dcba"
         /// </summary>

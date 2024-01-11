@@ -50,6 +50,12 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(await _menuServices.GetCurrentMenuDtoByRoleIdAsync());
         }
 
+        [HttpGet("GetTreeListByIdAsync/{Id}")]
+        public async Task<string> GetTreeListByIdAsync(int Id)
+        {
+            return Success(await _menuServices.GetMenuDtoByRoleIdAsync(Id));
+        }
+
         [HttpPost]
         public async Task<string> Update()
         {
@@ -65,6 +71,15 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             var model = await GetModel<MenuAddDto>();
             var result = await _menuServices.AddMenu(model);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+
+        [HttpDelete("{Id}")]
+        public async Task<string> Delete(string Id)
+        {
+            var result = await _menuServices.Delete(Id);
             if (result.IsSuccess)
                 return Success(result.Detail);
             return Fail(result.Detail);

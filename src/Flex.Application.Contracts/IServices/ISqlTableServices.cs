@@ -1,0 +1,21 @@
+﻿using Flex.Domain.Entities;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Flex.Application.Contracts.IServices
+{
+    public interface ISqlTableServices
+    {
+        string CreateContentTableSql(string TableName);
+        StringBuilder CreateInsertSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters);
+        StringBuilder CreateUpdateSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters);
+        string DeleteContentTableData(string TableName, string Ids);
+        string DeleteTableField(string TableName, List<sysField> model);
+        string InsertTableField(string TableName, sysField model);
+    }
+}

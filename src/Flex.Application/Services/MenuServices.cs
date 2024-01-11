@@ -1,5 +1,6 @@
 ﻿using Flex.Application.Contracts.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Flex.Application.Services
 {
@@ -42,7 +43,8 @@ namespace Flex.Application.Services
                 }
             }
         }
-        public async Task<IEnumerable<MenuDto>> GetTreeMenuAsync() {
+        public async Task<IEnumerable<MenuDto>> GetTreeMenuAsync()
+        {
             IEnumerable<SysMenu> list = await _unitOfWork.GetRepository<SysMenu>().GetAllAsync();
             var query = _mapper.Map<List<MenuDto>>(list.OrderBy(m => m.OrderId));
             return query;
@@ -138,9 +140,10 @@ namespace Flex.Application.Services
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<MenuDto>?> GetCurrentMenuDtoByRoleIdAsync()
+        public async Task<IEnumerable<MenuDto>> GetCurrentMenuDtoByRoleIdAsync()
         {
-            IEnumerable<SysMenu> list =  await _unitOfWork.GetRepository<SysMenu>().GetAllAsync();
+            IEnumerable<SysMenu> list = await _unitOfWork.GetRepository<SysMenu>().GetAllAsync();
+            string[] menus = null;
             //超管直接返回所有菜单
             if (_claims.IsSystem)
             {
@@ -150,21 +153,56 @@ namespace Flex.Application.Services
                 var currentrole = await GetCurrentRoldDtoAsync();
                 if (currentrole is null)
                     return default;
+                if (!string.IsNullOrEmpty(currentrole.MenuPermissions))
+                    menus = currentrole.MenuPermissions.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                else
+                    menus = new string[] { };
                 var children = list.Where(m => currentrole.MenuPermissions.Split(',').Contains(m.Id.ToString()));
                 treelist.Add(list.Where(x => x.ParentID == 0).FirstOrDefault());
                 AddMenuTreeTable(list, children);
                 list = treelist;
             }
-            var model = await GetRoleByIdAsync(_claims.UserId);
-            string[] menus = null;
-            if (model != null)
+            if (list.IsNullOrEmpty())
+                return default;
+            var query = _mapper.Map<List<MenuDto>>(list.OrderBy(m => m.OrderId));
+            query.Each(item =>
             {
-                if (!string.IsNullOrEmpty(model.MenuPermissions))
-                    menus = model.MenuPermissions.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                item.@checked =
+                        menus != null ?
+                        menus.Contains(item.id.ToString()) &&
+                        item.parentid != 0 ? true : false : false;
+            });
+            Main.Add(query.Where(m => m.parentid == 0).FirstOrDefault());//根节点
+            AddMenu(query, query.Where(x => x.parentid == 0).FirstOrDefault());
+            return Main;
+        }
+        /// <summary>
+        /// 获取当前角色菜单树
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<MenuDto>> GetMenuDtoByRoleIdAsync(int Id)
+        {
+            IEnumerable<SysMenu> list = await _unitOfWork.GetRepository<SysMenu>().GetAllAsync();
+            string[] menus = null;
+            //超管直接返回所有菜单
+            if (_claims.IsSystem)
+            {
+            }
+            else
+            {
+                var currentrole = await GetRoleByIdAsync(Id);
+                if (currentrole is null)
+                    return default;
+                if (!string.IsNullOrEmpty(currentrole.MenuPermissions))
+                    menus = currentrole.MenuPermissions.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
                 else
                     menus = new string[] { };
+                var children = list.Where(m => currentrole.MenuPermissions.Split(',').Contains(m.Id.ToString()));
+                treelist.Add(list.Where(x => x.ParentID == 0).FirstOrDefault());
+                AddMenuTreeTable(list, children);
+                list = treelist;
             }
-
             if (list.IsNullOrEmpty())
                 return default;
             var query = _mapper.Map<List<MenuDto>>(list.OrderBy(m => m.OrderId));
@@ -209,8 +247,8 @@ namespace Flex.Application.Services
         /// <returns></returns>
         public async Task<IEnumerable<MenuDto>> GetMainMenuDtoAsync()
         {
-            IEnumerable<SysMenu>  list = await _unitOfWork.GetRepository<SysMenu>().GetAllAsync();
-        
+            IEnumerable<SysMenu> list = await _unitOfWork.GetRepository<SysMenu>().GetAllAsync();
+
             //超管直接返回所有菜单
             if (_claims.IsSystem)
             {
@@ -237,10 +275,10 @@ namespace Flex.Application.Services
         public async Task<ProblemDetails<string>> EditMenu(MenuEditDto model)
         {
             var menuRepository = _unitOfWork.GetRepository<SysMenu>();
-            var menumodel =await menuRepository.GetFirstOrDefaultAsync(m=>m.Id== model.Id);
-            menumodel.isMenu= model.isMenu;
-            menumodel.FontSort=model.FontSort;
-            menumodel.Icode=model.Icode;
+            var menumodel = await menuRepository.GetFirstOrDefaultAsync(m => m.Id == model.Id);
+            menumodel.isMenu = model.isMenu;
+            menumodel.FontSort = model.FontSort;
+            menumodel.Icode = model.Icode;
             menumodel.IsControllerUrl = model.IsControllerUrl;
             menumodel.LinkUrl = model.LinkUrl;
             menumodel.Name = model.Name;
@@ -252,11 +290,11 @@ namespace Flex.Application.Services
             {
                 menuRepository.Update(menumodel);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             }
         }
         public async Task<ProblemDetails<string>> AddMenu(MenuAddDto model)
@@ -268,11 +306,39 @@ namespace Flex.Application.Services
             {
                 menuRepository.Insert(menumodel);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+            }
+        }
+
+        public async Task<ProblemDetails<string>> Delete(string Id)
+        {
+            var adminRepository = _unitOfWork.GetRepository<SysMenu>();
+            if (Id.IsNullOrEmpty())
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
+            var Ids = Id.ToList("-");
+            var delete_list = adminRepository.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
+            if (delete_list.Count == 0)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+            try
+            {
+                var softdels = new List<SysMenu>();
+                foreach (var item in delete_list)
+                {
+                    item.StatusCode = StatusCode.Deleted;
+                    UpdateIntEntityBasicInfo(item);
+                    softdels.Add(item);
+                }
+                adminRepository.Update(softdels);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
+            }
+            catch
+            {
+                throw;
             }
         }
     }

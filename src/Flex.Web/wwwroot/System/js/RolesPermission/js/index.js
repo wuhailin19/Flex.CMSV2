@@ -32,7 +32,14 @@ layui.use('table', function () {
                 "data": res.content.Items//数据总数的字段名称，默认：count
             };
         }
-        , done: function (res, curr, count){
+        , done: function (res, pageindex, count) {
+            if (pageindex > 1 && res.data.length === 0) {
+                insTb.reload({
+                    page: {
+                        curr: pageindex - 1
+                    },
+                });
+            }
             //console.log(columnlist);
         }
         , method: 'Get'
@@ -63,28 +70,25 @@ layui.use('table', function () {
                 //获取所有选中节点id数组
                 var nodeIds = defaultOptions.getCheckedId(data);
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
-                    $.ajax({
-                        url: routeLink + 'Delete',
-                        data: { Id: nodeIds},
-                        type: 'Post',
+                    ajaxHttp({
+                        url: routeLink+nodeIds,
+                        type: 'Delete',
                         async: false,
-                        success: function (result) {
-                            if (result == undefined || result == '')
-                                return;
-                            let json = JSON.parse(result);
+                        success: function (json) {
                             if (json.code == 200) {
-                                layer.msg(json.msg, { icon: 6, time: 1000 });
+                                tips.showSuccess(json.msg);
                                 // 删除
                                 delete_index = [];
                                 defaultOptions.callBack(insTb);
                             } else {
-                                layer.msg(json.msg, { icon: 5, time: 1000 })
+                               tips.showFail(json.msg);
                                 delete_index = [];
                             }
                         },
                         complete: function () { }
                     })
                 })
+                layer.close(index)
                 break;
 
         };
@@ -97,20 +101,18 @@ layui.use('table', function () {
             case 'del':
                 let indexid = obj.data[defaultOptions.IdName];
                 layer.confirm('确定删除本行么', function (index) {
-                    $.ajax({
-                        url: routeLink + 'Delete/' + indexid,
-                        type: 'Post',
+                    ajaxHttp({
+                        url: routeLink+ indexid,
+                        type: 'Delete',
                         async: false,
-                        success: function (result) {
-                            if (result == undefined || result == '')
-                                return;
-                            let json = JSON.parse(result);
+                        success: function (json) {
                             if (json.code == 200) {
-                                layer.msg(json.msg, { icon: 6, time: 1000 });
+                                tips.showSuccess(json.msg);
                                 // 删除
                                 delete_index = [];
+                                defaultOptions.callBack(insTb);
                             } else {
-                                layer.msg(json.msg, { icon: 5, time: 1000 })
+                               tips.showFail(json.msg);
                                 delete_index = [];
                             }
                         },

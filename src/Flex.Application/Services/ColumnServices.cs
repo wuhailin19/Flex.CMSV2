@@ -51,6 +51,22 @@ namespace Flex.Application.Services
             };
             return finaltrees;
         }
+        
+        public async Task<IEnumerable<TreeColumnListDto>> GetManageTreeListAsync()
+        {
+            var coreRespository = _unitOfWork.GetRepository<SysColumn>();
+            var list = (await coreRespository.GetAllAsync()).OrderBy(m => m.OrderId).ToList();
+            if (!_claims.IsSystem)
+            {
+            }
+            List<TreeColumnListDto> treeColumns = new List<TreeColumnListDto>();
+            list.Where(m => m.ParentId == 0).Each(item =>
+            {
+                treeColumns.Add(_mapper.Map<TreeColumnListDto>(item));
+            });
+            AddChildrenToColumn(list, treeColumns);
+            return treeColumns;
+        }
 
         public async Task<IEnumerable<TreeColumnListDto>> GetTreeSelectListDtos()
         {
@@ -97,14 +113,40 @@ namespace Flex.Application.Services
             {
                 coreRespository.Insert(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
             }
         }
-
+        public async Task<ProblemDetails<string>> Delete(string Id)
+        {
+            var adminRepository = _unitOfWork.GetRepository<SysColumn>();
+            if (Id.IsNullOrEmpty())
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
+            var Ids = Id.ToList("-");
+            var delete_list = adminRepository.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
+            if(delete_list.Count == 0)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+            try
+            {
+                var softdels = new List<SysColumn>();
+                foreach (var item in delete_list)
+                {
+                    item.StatusCode = StatusCode.Deleted;
+                    UpdateIntEntityBasicInfo(item);
+                    softdels.Add(item);
+                }
+                adminRepository.Update(softdels);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
+            }
+            catch
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+            }
+        }
         public async Task<ProblemDetails<string>> UpdateColumn(UpdateColumnDto updateColumnDto)
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
@@ -126,11 +168,11 @@ namespace Flex.Application.Services
             {
                 coreRespository.Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             }
         }
 

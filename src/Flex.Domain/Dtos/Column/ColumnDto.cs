@@ -10,7 +10,7 @@ namespace Flex.Domain.Dtos.Column
     {
         [ToolAttr(Fixed = AlignEnum.Left, Types = controlType.checkBox)]
         public controlType checkbox { get; set; }
-        [ToolAttr(NameAttr = "ID", AlignAttr = AlignEnum.Center,Width ="80")]
+        [ToolAttr(NameAttr = "编号", AlignAttr = AlignEnum.Center,Width ="80")]
         public int Id { set; get; }
         [ToolAttr(HideFiled = true)]
         public int SiteId { set; get; }

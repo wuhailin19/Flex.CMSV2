@@ -1,0 +1,74 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js" type="text/javascript"></script>
+    <script src="~/Scripts/route.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <script src="~/system/htmleditor/_ueditor/editor_config.js"></script>
+    <script src="~/system/htmleditor/_ueditor/editor_all.js"></script>
+    <style>
+        .layui-form-item .layui-form-label { text-align: center; }
+        .edui-editor.edui-default { width: 100% !important; }
+        .layui-input-block > .edui-default { width: 100% !important; }
+        .layui-select-title .layui-anim.layui-anim-upbit { display: none; }
+        .iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
+    </style>
+    <script>
+        var editorarray = new Array();
+    </script>
+</head>
+<body>
+    <form class="layui-form" action="" onclick="return false;" style="padding: 2%;" lay-filter="formTest">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">标题</label>
+            <div class="layui-input-block">
+                <input type="text" name="Title" placeholder="请输入标题" autocomplete="off" class="layui-input" lay-verify='required'>
+            </div>
+        </div>
+        <div id="view"></div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="IsTop" title="置顶">
+                <input type="checkbox" name="IsRecommend" title="推荐">
+                <input type="checkbox" name="IsHot" title="热门">
+                <input type="checkbox" name="IsSilde" title="焦点">
+                <input type="checkbox" name="IsShow" title="隐藏">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">Seo标题</label>
+            <div class="layui-input-block">
+                <input type="text" name="SeoTitle" placeholder="请输入Seo标题" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">Seo关键字</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入关键字" name="KeyWord" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">Seo描述</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入描述" name="Description" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
+            </div>
+        </div>
+    </form>
+
+    <script src="~/system/js/columncontent/edit.js"></script>
+</body>
+</html>

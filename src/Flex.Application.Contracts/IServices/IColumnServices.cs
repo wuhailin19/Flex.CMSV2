@@ -11,7 +11,9 @@ namespace Flex.Application.Contracts.IServices
     public interface IColumnServices
     {
         Task<ProblemDetails<string>> AddColumn(AddColumnDto addColumnDto);
+        Task<ProblemDetails<string>> Delete(string Id);
         Task<UpdateColumnDto> GetColumnById(int Id);
+        Task<IEnumerable<TreeColumnListDto>> GetManageTreeListAsync();
         Task<IEnumerable<TreeColumnListDto>> GetTreeColumnListDtos();
         Task<IEnumerable<TreeColumnListDto>> GetTreeSelectListDtos();
         Task<IEnumerable<ColumnListDto>> ListAsync();

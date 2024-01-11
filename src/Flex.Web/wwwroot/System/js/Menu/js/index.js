@@ -57,7 +57,6 @@ layui.config({
     //监听表格复选框选择
     treeTable.on('checkbox(demo_tree)', function (obj) { // layui 内置方法
         var data = insTb.checkStatus();
-        console.log(data)
         // 自己做处理， 如果是选中
         if (obj.checked == true) {
             if (obj.type == 'all') {
@@ -96,31 +95,28 @@ layui.config({
                 var nodeIds = getCheckedId(data);
 
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
-                    $.ajax({
-                        url: api + 'Menu/Delete',
-                        data: { Id: nodeIds },
-                        type: 'Post',
+                    ajaxHttp({
+                        url: api + 'Menu/' + nodeIds,
+                        type: 'Delete',
                         //data: { Ids: nodeIds },
                         async: false,
-                        success: function (result) {
-                            if (result == undefined || result == '')
-                                return;
-                            let json = JSON.parse(result);
+                        success: function (json) {
                             if (json.code == 200) {
-                                layer.msg(json.msg, { icon: 6, time: 1000 });
+                                tips.showSuccess(json.msg);
                                 // 删除
                                 insTb.refresh();
                                 delete_index = [];
                                 //insTb.reload();
                                 parent.Init();
                             } else {
-                                layer.msg(json.msg, { icon: 5, time: 1000 })
+                                tips.showFail(json.msg);
                                 delete_index = [];
                             }
                         },
                         complete: function () { }
                     })
                 })
+                layer.close(index)
                 break;
         };
     });
@@ -132,24 +128,21 @@ layui.config({
         if (obj.event === 'del') {
             let indexid = obj.data.ID;
             layer.confirm('确定删除本行么', function (index) {
-                $.ajax({
-                    url: api + 'Menu/Delete/' + indexid,
-                    type: 'Post',
+                ajaxHttp({
+                    url: api + 'Menu/' + indexid,
+                    type: 'Delete',
                     //data: { Ids: indexid },
                     async: false,
-                    success: function (result) {
-                        if (result == undefined || result == '')
-                            return;
-                        let json = JSON.parse(result);
+                    success: function (json) {
                         if (json.code == 200) {
-                            layer.msg(json.msg, { icon: 6, time: 1000 });
+                            tips.showSuccess(json.msg);
                             // 删除
                             insTb.refresh();
                             parent.Init();
                             delete_index = [];
                             //insTb.reload();
                         } else {
-                            layer.msg(json.msg, { icon: 5, time: 1000 })
+                            tips.showFail(json.msg);
                             delete_index = [];
                         }
                     },

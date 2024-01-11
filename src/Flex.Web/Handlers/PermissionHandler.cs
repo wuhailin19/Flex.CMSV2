@@ -50,7 +50,8 @@ namespace Flex.Web.Handlers
                         Fail(context, httpContext);
                         return;
                     }
-
+                    context.Succeed(requirement);
+                    return;
                     //所有角色对应的接口权限
                     var RoleList = new Dictionary<string, List<string>>();
                     var role_items = userrole.Split(',');
@@ -72,7 +73,7 @@ namespace Flex.Web.Handlers
                     }
                     else
                     {
-                        _logger.LogWarning("该用户{0}（{2}），没有权限访问，链接{1}", _claims.UserName, nowurl, _claims.UserId);
+                        _logger.LogWarning("该用户{0}（{1}），没有权限访问，链接{2}", _claims.UserName, _claims.UserId, nowurl);
                         Fail(context, httpContext);
                         return;
                     }

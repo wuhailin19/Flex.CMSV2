@@ -33,7 +33,7 @@ function Init() {
         success: function (result) {
             let count = 0;
             var content = '';
-            if (result.code != 200) { layer.msg(result.content, { icon: 5, time: 1000 }); return; }
+            if (result.code != 200) { tips.showFail(json.msg); return; }
             $.each(result.content[0].children, function (i, item) {
                 if (!item.status) {
                     return;

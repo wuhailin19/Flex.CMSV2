@@ -80,7 +80,6 @@ layui.config({
 
     //监听提交
     form.on('submit(formDemo)', function (data) {
-        console.log(parent_json)
         ajaxHttp({
             url: api + 'Menu',
             type: 'Post',
@@ -90,13 +89,14 @@ layui.config({
             async: false,
             success: function (json) {
                 if (json.code == 200) {
-                    layer.msg(json.msg, { icon: 6, time: 300 }, function () {
+                    tips.showSuccess(json.msg);
+                    setTimeout(function () {
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭
                         parent.parent.Init();
-                    });
+                    }, 300)
                 } else {
-                    layer.msg(json.msg, { icon: 5, time: 1000 });
+                    tips.showFail(json.msg);
                 }
 
             },

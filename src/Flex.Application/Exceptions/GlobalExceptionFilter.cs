@@ -19,7 +19,7 @@ namespace Flex.Application.Exceptions
         }
         public override void OnException(ExceptionContext context)
         {
-            var status = 500;
+            var status = 206;
             var exception = context.Exception;
             var requestId = System.Diagnostics.Activity.Current?.Id ?? context.HttpContext.TraceIdentifier;
             //var eventId = new Microsoft.Extensions.Logging.EventId(exception.HResult, requestId);
@@ -28,23 +28,16 @@ namespace Flex.Application.Exceptions
             var type = string.Concat("https://httpstatuses.com/", status);
             string title;
             string detial;
-            if (exception is BusiException)
+
+            title = _env.IsDevelopment() ? exception.Message : $"系统异常";
+            detial = _env.IsDevelopment() ? exception.Format() : $"系统异常,请联系管理员({requestId})";
+            var exlog = new ExceptionLog()
             {
-                title = "参数错误";
-                detial = exception.Message;
-            }
-            else
-            {
-                title = _env.IsDevelopment() ? exception.Message : $"系统异常";
-                detial = _env.IsDevelopment() ? exception.Format() : $"系统异常,请联系管理员({requestId})";
-                var exlog = new ExceptionLog()
-                {
-                    RequestUrl = requestUrl,
-                    EventId = requestId,
-                    Exception = exception
-                };
-                _logger.Log(LogLevel.Error, JsonHelper.ToJson(exlog));
-            }
+                RequestUrl = requestUrl,
+                EventId = requestId,
+                Exception = exception
+            };
+            _logger.Log(LogLevel.Error, JsonHelper.ToJson(exlog));
             var problemDetails = new ExceptionMsg
             {
                 code = status,
@@ -54,7 +47,7 @@ namespace Flex.Application.Exceptions
                 Type = type,
                 Instance = requestUrl
             };
-            context.Result = new ObjectResult(new Message<ExceptionMsg> { code = status, content = problemDetails }) { StatusCode = status };
+            context.Result = new ObjectResult(new Message<ExceptionMsg> { code = status, content = problemDetails,msg= detial }) { StatusCode = status };
             context.ExceptionHandled = true;
         }
         public override Task OnExceptionAsync(ExceptionContext context)

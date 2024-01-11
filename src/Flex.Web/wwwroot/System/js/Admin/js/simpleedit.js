@@ -14,26 +14,6 @@ layui.config({
     base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
 }).use(['form', 'croppers'], function () {
     var form = layui.form, croppers = layui.croppers, layer = layui.layer;
-    var tips = {
-        timeout: 2000,
-        msgboxtime: 1000,
-        index: undefined,
-        showProStatus: function ($emlemt, msg) {
-            tips.index = layer.tips(msg, $emlemt, {
-                tips: 2,
-                time: tips.timeout     // 3秒消失
-            })
-        },
-        showSuccess: function (msg) {
-            layer.msg(msg, { icon: 6, time: tips.msgboxtime }, function () { });
-        },
-        showFail: function (msg) {
-            layer.msg(msg, { icon: 5, time: tips.msgboxtime }, function () { });
-        },
-        closeTips: function () {
-            layer.close(tips.index);
-        }
-    }
     var parent_json;
     function Init() {
         ajaxHttp({
@@ -45,7 +25,7 @@ layui.config({
                 if (json.code == 200) {
                     parent_json = json.content;
                 } else {
-                    layer.msg(json.msg, { icon: 5, time: 1000 });
+                    tips.showFail(json.msg);
                 }
             }
         })
@@ -58,7 +38,7 @@ layui.config({
         , saveW: 150     //保存宽度
         , saveH: 150
         , mark: 1 / 1    //选取比例
-        , area: '900px'  //弹窗宽度
+        , area: ['80%', '80%']  //弹窗宽度
         , url: api + 'Admin/OnloadUserAvatar'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
         , done: function (data) { //上传完毕回调
             $("#inputimgurl").val(data);
@@ -95,12 +75,13 @@ layui.config({
             async: false,
             success: function (json) {
                 if (json.code == 200) {
-                    layer.msg(json.msg, { icon: 6, time: 300 }, function () {
+                    tips.showSuccess(json.msg);
+                    setTimeout(function () {
                         parent.InitAdmin();
                         Init();
-                    });
+                    }, 300)
                 } else {
-                    layer.msg(json.msg, { icon: 5, time: 1000 });
+                    tips.showFail(json.msg);
                 }
             },
             complete: function () {

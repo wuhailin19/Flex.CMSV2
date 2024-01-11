@@ -216,16 +216,17 @@ function chooseShortCut(that) {
         type: 'post',
         success: function (json) {
             if (json.code == 200) {
-                layer.msg(json.msg, { icon: 6, time: 300 }, function () {
+                tips.showSuccess(json.msg);
+                setTimeout(function () {
                     add_more.close();
                     if (mode != "6") {
                         Init();
                     } else {
                         InitCoumnShortcut();
                     }
-                });
+                }, 300)
             } else {
-                layer.msg(json.msg, { icon: 5, time: 1000 });
+                tips.showFail(json.msg);
             }
         }
     })
@@ -278,11 +279,12 @@ $('.operation').on('click', 'span', function () {
             type: 'post',
             success: function (json) {
                 if (json.code == 200) {
-                    layer.msg(json.msg, { icon: 6, time: 300 }, function () {
+                    tips.showSuccess(json.msg);
+                    setTimeout(function () {
                         add_more.cancel();
-                    });
+                    }, 300)
                 } else {
-                    layer.msg(json.msg, { icon: 5, time: 1000 });
+                    tips.showFail(json.msg);
                 }
             }
         })

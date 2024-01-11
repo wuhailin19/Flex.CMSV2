@@ -67,13 +67,13 @@ namespace Flex.Application.Services
             var model = await GetAdminById(simpleEditAdmin.Id);
             if (model.Version != simpleEditAdmin.Version)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataVersionError.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataVersionError.GetEnumDescription());
             }
             _mapper.Map(simpleEditAdmin, model);
             UpdateLongEntityBasicInfo(model);
             _unitOfWork.GetRepository<SysAdmin>().Update(model);
             await _unitOfWork.SaveChangesAsync();
-            return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.Message<ErrorCodes>());
+            return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
         }
 
         public async Task<ProblemDetails<string>> InsertAdmin(AdminAddDto insertAdmin)
@@ -82,7 +82,7 @@ namespace Flex.Application.Services
 
             var model = await adminRepository.GetFirstOrDefaultAsync(m => m.Account == insertAdmin.Account, null, null, true, false);
             if (model != null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.AccountExist.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.AccountExist.GetEnumDescription());
 
             var saltvalue = SaltStringHelper.getSaltStr();
             model = _mapper.Map<SysAdmin>(insertAdmin);
@@ -94,9 +94,9 @@ namespace Flex.Application.Services
             var result = await adminRepository.InsertAsync(model);
             await _unitOfWork.SaveChangesAsync();
             if (result.Entity.Id > 0)
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             else
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
         }
 
         public async Task<ProblemDetails<string>> UpdateAdmin(AdminEditDto editAdmin)
@@ -105,13 +105,13 @@ namespace Flex.Application.Services
             var model = await GetAdminById(editAdmin.Id);
             if (model.Version != editAdmin.Version)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataVersionError.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataVersionError.GetEnumDescription());
             }
             if (model.Account != editAdmin.Account)
             {
                 var checkmodel = await adminRepository.GetFirstOrDefaultAsync(m => m.Account == editAdmin.Account);
                 if (checkmodel != null)
-                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.AccountExist.Message<ErrorCodes>());
+                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.AccountExist.GetEnumDescription());
             }
             var saltvalue = SaltStringHelper.getSaltStr();
             _mapper.Map(editAdmin, model);
@@ -125,11 +125,11 @@ namespace Flex.Application.Services
             {
                 adminRepository.Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             }
         }
 
@@ -139,13 +139,13 @@ namespace Flex.Application.Services
             var model = await GetAdminById(_claims.UserId);
             if (model.Version != accountAndPasswordDto.Version)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataVersionError.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataVersionError.GetEnumDescription());
             }
             if (accountAndPasswordDto.Account != model.Account)
             {
                 var checkmodel = await adminRepository.GetFirstOrDefaultAsync(m => m.Account == accountAndPasswordDto.Account);
                 if (checkmodel != null)
-                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.AccountExist.Message<ErrorCodes>());
+                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.AccountExist.GetEnumDescription());
             }
             model.Account = accountAndPasswordDto.Account;
             var saltvalue = SaltStringHelper.getSaltStr();
@@ -159,11 +159,11 @@ namespace Flex.Application.Services
             {
                 adminRepository.Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
-            catch (Exception ex)
+            catch
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.Message<ErrorCodes>());
+                throw;
             }
         }
 
@@ -171,9 +171,11 @@ namespace Flex.Application.Services
         {
             var adminRepository = _unitOfWork.GetRepository<SysAdmin>();
             if (Id.IsNullOrEmpty())
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
             var Ids = Id.ToList("-");
             var delete_list = adminRepository.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
+            if (delete_list.Count == 0)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             try
             {
                 var softdels = new List<SysAdmin>();
@@ -190,7 +192,7 @@ namespace Flex.Application.Services
             }
             catch
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.Message<ErrorCodes>());
+                throw;
             }
         }
 
@@ -199,7 +201,7 @@ namespace Flex.Application.Services
             var adminRepository = _unitOfWork.GetRepository<SysAdmin>();
             var model = await adminRepository.GetFirstOrDefaultAsync(m => m.Id == adminQuickEditDto.Id);
             if (model is null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             if (adminQuickEditDto.AllowMultiLogin.IsNotNullOrEmpty())
                 model.AllowMultiLogin = adminQuickEditDto.AllowMultiLogin.CastTo<bool>();
             if (adminQuickEditDto.Islock.IsNotNullOrEmpty())
@@ -209,11 +211,11 @@ namespace Flex.Application.Services
                 UpdateLongEntityBasicInfo(model);
                 adminRepository.Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.Message<ErrorCodes>());
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
-            catch (Exception ex)
+            catch
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.Message<ErrorCodes>());
+                throw;
             }
         }
     }

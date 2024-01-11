@@ -77,7 +77,6 @@ layui.config({
     //监听事件
     treeTable.on('toolbar(demo_tree)', function (obj) {
         var data = insTb.checkStatus(false);
-
         switch (obj.event) {
             case 'getCheckData':
                 layer.alert(JSON.stringify(data));
@@ -89,6 +88,7 @@ layui.config({
                 layer.msg(checkStatus.isAll ? '全选' : '未全选')
                 break;
             case 'addRole':
+                req_Data = null
                 let widthstr = '80%';
                 let heightstr = '90%';
                 //iframe窗
@@ -99,7 +99,7 @@ layui.config({
                     shade: false,
                     maxmin: true, //开启最大化最小化按钮
                     area: [widthstr, heightstr],
-                    content: 'ColumnCategory/AddPage',
+                    content: routePageLink + 'AddPage',
                     end: function () {
                         insTb.refresh();
                     }
@@ -112,31 +112,28 @@ layui.config({
                 var nodeIds = getCheckedId(data);
 
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
-                    $.ajax({
-                        url: api + 'Menu/Delete',
-                        data: { Id: nodeIds },
-                        type: 'Post',
+                    ajaxHttp({
+                        url: api + 'ColumnCategory/' + nodeIds,
+                        type: 'Delete',
                         //data: { Ids: nodeIds },
                         async: false,
-                        success: function (result) {
-                            if (result == undefined || result == '')
-                                return;
-                            let json = JSON.parse(result);
+                        success: function (json) {
                             if (json.code == 200) {
-                                layer.msg(json.msg, { icon: 6, time: 1000 });
+                                tips.showSuccess(json.msg);
                                 // 删除
                                 insTb.refresh();
                                 delete_index = [];
                                 //insTb.reload();
-                                parent.Init();
+                                //parent.Init();
                             } else {
-                                layer.msg(json.msg, { icon: 5, time: 1000 })
+                                tips.showFail(json.msg);
                                 delete_index = [];
                             }
                         },
                         complete: function () { }
                     })
                 })
+                layer.close(index);
                 break;
         };
     });
@@ -146,26 +143,23 @@ layui.config({
         req_Data = data;
         //console.log(obj)
         if (obj.event === 'del') {
-            let indexid = obj.data.ID;
+            let indexid = obj.data.Id;
             layer.confirm('确定删除本行么', function (index) {
-                $.ajax({
-                    url: api + 'Menu/Delete/' + indexid,
-                    type: 'Post',
+                ajaxHttp({
+                    url: api + 'ColumnCategory/' + indexid,
+                    type: 'Delete',
                     //data: { Ids: indexid },
                     async: false,
-                    success: function (result) {
-                        if (result == undefined || result == '')
-                            return;
-                        let json = JSON.parse(result);
+                    success: function (json) {
                         if (json.code == 200) {
-                            layer.msg(json.msg, { icon: 6, time: 1000 });
+                            tips.showSuccess(json.msg);
                             // 删除
                             insTb.refresh();
-                            parent.Init();
+                            //parent.Init();
                             delete_index = [];
                             //insTb.reload();
                         } else {
-                            layer.msg(json.msg, { icon: 5, time: 1000 })
+                            tips.showFail(json.msg);
                             delete_index = [];
                         }
                     },
@@ -176,15 +170,15 @@ layui.config({
         }
         else if ("add" == obj.event) {
             //iframe窗
-            req_Data = obj.data.ParentId;
+            req_Data = obj.data;
             var index = layer.open({
                 type: 2,
                 title: '添加',
                 shadeClose: true,
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
-                area: ['900px', '700px'],
-                content: 'ColumnCategory/AddPage',
+                area: ['80%', '90%'],
+                content: routePageLink + 'AddPage',
                 success: function (layero, index) {
                 }, end: function () {
                     insTb.refresh();
@@ -203,8 +197,8 @@ layui.config({
                 shadeClose: true,
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
-                area: ['900px', '700px'],
-                content: 'ColumnCategory/Edit',
+                area: ['80%', '95%'],
+                content: routePageLink + 'Edit',
                 success: function (layero, index) {
                 }, end: function () {
                     insTb.refresh();
@@ -220,8 +214,8 @@ layui.config({
         var delete_index = [];
         var id = "";
         $.each(data, function (index, item) {
-            if (item.ID != "") {
-                delete_index.push(item.ID)
+            if (item.Id != "") {
+                delete_index.push(item.Id)
             }
         });
         if (delete_index.length > 0) {

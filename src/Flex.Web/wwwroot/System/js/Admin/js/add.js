@@ -18,7 +18,7 @@ ajaxHttp({
                 $('#RoleId').append('<option value="' + item.Id + '">' + item.RolesName + '</option>');
             })
         } else {
-            layer.msg(json.msg, { icon: 5, time: 1000 });
+            tips.showFail(json.msg);
         }
     }
 })
@@ -29,26 +29,7 @@ layui.config({
     base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
 }).use(['form', 'croppers'], function () {
     var form = layui.form, croppers = layui.croppers, layer = layui.layer;
-    var tips = {
-        timeout: 2000,
-        msgboxtime: 1000,
-        index: undefined,
-        showProStatus: function ($emlemt, msg) {
-            tips.index = layer.tips(msg, $emlemt, {
-                tips: 2,
-                time: tips.timeout     // 3秒消失
-            })
-        },
-        showSuccess: function (msg) {
-            layer.msg(msg, { icon: 6, time: tips.msgboxtime }, function () { });
-        },
-        showFail: function (msg) {
-            layer.msg(msg, { icon: 5, time: tips.msgboxtime }, function () { });
-        },
-        closeTips: function () {
-            layer.close(tips.index);
-        }
-    }
+    
     //创建一个头像上传组件
     croppers.render({
         elem: '#editimg'
@@ -174,7 +155,7 @@ layui.config({
                         parent.layer.close(index); //再执行关闭
                     });
                 } else {
-                    layer.msg(json.msg, { icon: 5, time: 1000 });
+                    tips.showFail(json.msg);
                 }
             },
             complete: function () {

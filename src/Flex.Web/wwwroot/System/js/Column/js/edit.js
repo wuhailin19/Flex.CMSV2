@@ -1,5 +1,15 @@
 ﻿var Id = parent.req_Data.Id;
 var parent_json;
+var click_count = 0;
+$('#uploader-show').on('click', function () {
+    if ($('.uploader-box').hasClass('active')) {
+        $('.uploader-box').removeClass('active');
+    }
+    else {
+        $('.uploader-box').addClass('active');
+        if (click_count == 0) { ___initUpload(); click_count++; }
+    }
+})
 ajaxHttp({
     url: api + 'ColumnCategory/GetColumnById/' + Id,
     type: 'Get',
@@ -9,7 +19,22 @@ ajaxHttp({
         if (json.code == 200) {
             parent_json = json.content;
         } else {
-            layer.msg(json.msg, { icon: 5, time: 1000 });
+            tips.showFail(json.msg);
+        }
+    }
+})
+ajaxHttp({
+    url: api + 'ContentModel/GetSelectItem',
+    type: 'Get',
+    datatype: 'json',
+    async: false,
+    success: function (json) {
+        if (json.code == 200) {
+            for (var i = 0; i < json.content.length; i++) {
+                $('#ModelId').append('<option value="' + json.content[i].Id + '" ' + (parent_json.ModelId == json.content[i].Id ? "selected" : "") + '>' + json.content[i].Name + '</option>');
+            }
+        } else {
+            tips.showFail(json.msg);
         }
     }
 })
@@ -30,23 +55,47 @@ ajaxHttp({
     complete: function () {
     }
 })
+
+layui.config({
+    base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
+}).use('croppers', function () {
+    var croppers = layui.croppers;
+
+    //创建一个头像上传组件
+    croppers.render({
+        elem: '#cropper-btn'
+        , saveW: 1920     //保存宽度
+        , saveH: 450
+        , mark: NaN    //选取比例
+        , area: ['90%', '95%']  //弹窗宽度
+        , url: api + 'Admin/OnloadUserAvatar'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
+        , done: function (data) { //上传完毕回调
+            $("input[name=ColumnImage]").val(data);
+            //$("#srcimgurl").attr('src', data);
+        }
+    });
+})
 layui.config({
     base: '/Scripts/layui/module/'
 }).use(['iconHhysFa', 'form', 'tree'], function () {
     var form = layui.form;
     var tree = layui.tree;
-    
-    form.val("formTest", {
-        'Name': parent_json.Name
-        , 'Id': parent_json.Id
-        , 'ParentID': parent_json.ParentId
-        , 'ColumnImage': parent_json.ColumnImage
-        , 'ColumnUrl': parent_json.ColumnUrl
-        , 'SeoTitle': parent_json.SeoTitle
-        , 'SeoKeyWord': parent_json.SeoKeyWord
-        , 'SeoDescription': parent_json.SeoDescription
-    });
-    
+
+    function formRender() {
+        form.val("formTest", {
+            'Name': parent_json.Name
+            , 'Id': parent_json.Id
+            , 'ParentID': parent_json.ParentId
+            , 'ModelId': parent_json.ModelId
+            , 'ColumnImage': parent_json.ColumnImage
+            , 'ColumnUrl': parent_json.ColumnUrl
+            , 'SeoTitle': parent_json.SeoTitle
+            , 'SeoKeyWord': parent_json.SeoKeyWord
+            , 'SeoDescription': parent_json.SeoDescription
+        });
+    }
+    formRender();
+
     var columnlist;
     ajaxHttp({
         url: api + 'ColumnCategory/TreeListAsync',
@@ -71,13 +120,13 @@ layui.config({
             async: false,
             success: function (json) {
                 if (json.code == 200) {
-                    layer.msg(json.msg, { icon: 6, time: 300 }, function () {
+                    tips.showSuccess(json.msg);
+                    setTimeout(function () {
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭
-                        parent.parent.Init();
-                    });
+                    }, 300)
                 } else {
-                    layer.msg(json.msg, { icon: 5, time: 1000 });
+                    tips.showFail(json.msg);
                 }
 
             },
@@ -88,7 +137,10 @@ layui.config({
         return false;
     });
 
-    
+    $('#reset').click(function () {
+        formRender();
+        return false;
+    })
 
     var tree = layui.tree;
     tree.render({
@@ -96,6 +148,10 @@ layui.config({
         data: columnlist
         , onlyIconControl: true
         , click: function (obj) {
+            if (obj.data.id == parent_json.Id) {
+                layer.msg("不能选择自身", { icon: 5, time: 1000 });
+                return;
+            }
             $("#chooseName").val(obj.data.id);
             form.render();
         }

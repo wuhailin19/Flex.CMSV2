@@ -16,26 +16,6 @@ layui.config({
     base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
 }).use(['form', 'croppers'], function () {
     var form = layui.form, croppers = layui.croppers, layer = layui.layer;
-    var tips = {
-        timeout: 2000,
-        msgboxtime: 1000,
-        index: undefined,
-        showProStatus: function ($emlemt, msg) {
-            tips.index = layer.tips(msg, $emlemt, {
-                tips: 2,
-                time: tips.timeout     // 3秒消失
-            })
-        },
-        showSuccess: function (msg) {
-            layer.msg(msg, { icon: 6, time: tips.msgboxtime }, function () { });
-        },
-        showFail: function (msg) {
-            layer.msg(msg, { icon: 5, time: tips.msgboxtime }, function () { });
-        },
-        closeTips: function () {
-            layer.close(tips.index);
-        }
-    }
     var parent_json;
     ajaxHttp({
         url: api + 'Admin/getLoginInfo',
@@ -162,13 +142,14 @@ layui.config({
             async: false,
             success: function (json) {
                 if (json.code == 200) {
-                    layer.msg(json.msg, { icon: 6, time: 300 }, function () {
-                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                        parent.layer.close(index); //再执行关闭
+                    tips.showSuccess(json.msg);
+                    //var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    //parent.layer.close(index); //再执行关闭
+                    setTimeout(function () {
                         top.location.href = "/system/Login/Logout";
-                    });
+                    }, 300);
                 } else {
-                    layer.msg(json.msg, { icon: 5, time: 3000 });
+                    tips.showFail(json.msg);
                 }
             },
             complete: function () {

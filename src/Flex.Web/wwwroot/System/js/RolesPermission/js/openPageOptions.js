@@ -51,12 +51,10 @@
     callBack: function (tableIns) {
         //第二次调用
         tableIns.reload({
-            where: { 'username': "user-0" } // 设定异步数据接口的额外参数，任意设
-            , page: {
-                curr: tableIns.page //重新从第 1 页开始
+            where: {
+
             }
         });
-        console.log(tableIns)
     },
     menuEditIframe: function (layer, insTb) {
         var self = this;

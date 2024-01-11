@@ -45,7 +45,7 @@ namespace Flex.Domain.Config
                     Id = 1560206066204151804,
                     Account = "webmaster",
                     UserName = "超级管理员",
-                    Password = "5A72A8F355E9A88D03C30778C2770E27",
+                    Password = "4539390B11E07C307C7A2C4224DF3109",
                     CurrentLoginIP = "127.0.0.1",
                     CurrentLoginTime = dateTime,
                     AllowMultiLogin = true,

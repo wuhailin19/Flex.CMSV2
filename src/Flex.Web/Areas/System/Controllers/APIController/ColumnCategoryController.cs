@@ -30,6 +30,13 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             return Success(await _columnServices.GetTreeColumnListDtos());
         }
+
+        [HttpGet("GetManageTreeListAsync")]
+        public async Task<string> ManageTreeListAsync()
+        {
+            return Success(await _columnServices.GetManageTreeListAsync());
+        }
+
         [HttpGet("GetTreeSelectListDtos")]
         public async Task<string> GetTreeSelectListDtos()
         {
@@ -61,6 +68,15 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             if (!result.IsSuccess)
                 return Fail(result.Detail);
             return Success(result.Detail);
+        }
+
+        [HttpDelete("{Id}")]
+        public async Task<string> Delete(string Id)
+        {
+            var result = await _columnServices.Delete(Id);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
         }
     }
 }
