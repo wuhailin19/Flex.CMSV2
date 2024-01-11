@@ -16,14 +16,14 @@
     <div style="height: 100%; width: 100%;" id="formdesigner">
     </div>
     <script src="~/scripts/layui/layui.js"></script>
-    <script src="~/scripts/layui/module/sortable/sortable.js"></script>
+    <script src="~/scripts/layui/module/formdesigner/sortable.js"></script>
     <!--htmlformat 为js-beautify代码-->
     <script src="~/scripts/layui/module/formdesigner/formfield.js"></script>
     <script src="~/scripts/layui/module/formdesigner/jsformat.js"></script>
 
     <script>
         layui.config(
-            { base: '~/Scripts/layui/module/FormDesigner' }).use(['layer', 'formDesigner'], function () {
+            { base: '/Scripts/layui/module/FormDesigner/' }).use(['layer', 'formDesigner'], function () {
                 var formDesigner = layui.formDesigner;
                 var data = [];
                 var render = formDesigner.render({

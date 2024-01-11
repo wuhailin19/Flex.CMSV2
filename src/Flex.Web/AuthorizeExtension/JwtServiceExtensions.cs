@@ -1,6 +1,7 @@
 ﻿using Flex.Application.Authorize;
 using Flex.Application.Contracts.Authorize;
 using Flex.Application.Jwt;
+using Flex.Core.Helper;
 using Flex.Web.Handlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -43,12 +44,13 @@ namespace Flex.Web.Jwt
                               }
                               return Task.CompletedTask;
                           },
-                        OnChallenge = context => {
-                            //context.HandleResponse();
-                            //context.Response.StatusCode = StatusCodes.Status200OK;
-                            //context.Response.ContentType = "application/json";
+                        OnChallenge = context =>
+                        {
+                            context.HandleResponse();
+                            context.Response.StatusCode = StatusCodes.Status200OK;
+                            context.Response.ContentType = "application/json";
                             //无授权返回自定义信息
-                            //context.Response.WriteAsync(JsonHelper.ToJson(new UnAuthorizativeResponse()));
+                            context.Response.WriteAsync(JsonHelper.ToJson(new Message<string> { code = 401, msg = "无权限" }));
                             return Task.CompletedTask;
                         }
                     };

@@ -57,7 +57,7 @@ namespace Flex.Application.Jwt
                 new Claim(UserClaimType.Account,userData.Account),//account
                 new Claim(UserClaimType.Name,userData.UserName),//name
                 new Claim(UserClaimType.RoleId,userData.RoleId),//rolename
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()),
                 //这个就是过期时间，可自定义，注意JWT有自己的缓冲过期时间
                 new Claim (ClaimTypes.Expiration,DateTime.Now.Add(_tokenLifeTime).ToString()),
             };

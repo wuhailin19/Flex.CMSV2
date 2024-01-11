@@ -121,10 +121,10 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                 CodeId = adminLoginDto.CodeId,
                 Codenum = adminLoginDto.Codenum
             }))
-                return Fail("验证码错误，请重新输入！", 405);
+                return Fail("验证码错误，请重新输入！");
             var result = await _accountservices.LoginAuthorAsync(adminLoginDto);
             if (result is null)
-                return Fail("登录错误", 405);
+                return Fail("登录错误");
             if (result.IsSuccess)
             {
                 return Success(
@@ -134,7 +134,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                         RefreshToken = _jwtservice.CreateRefreshToken(result.Content)
                     });
             }
-            return Fail(result.Detail, result.Status);
+            return Fail(result.Detail);
         }
     }
 }

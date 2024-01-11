@@ -71,6 +71,9 @@ layui.use(['tree', 'util'], function () {
 })
 var items = new Array();
 var index = 0;
+function isMobile() {
+    return window.matchMedia('(max-width: 767px)').matches;
+}
 layui.use('element', function () {
     var element = layui.element;
     $('.demo-tree-more').on('click', '.layui-tree-txt', function (e) {
@@ -79,6 +82,22 @@ layui.use('element', function () {
         let ids = getTailParameterFromUrl(linkurl);
         //console.log(ids)
         if (linkurl.indexOf('javascript:;') != -1 || ids == null) {
+            return;
+        }
+        if (isMobile()) {
+            //iframe窗
+            layer.open({
+                type: 2,
+                title: $(this).text(),
+                shadeClose: true,
+                shade: false,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['80%','90%'],
+                content: linkurl,
+                end: function () {
+                    
+                }
+            });
             return;
         }
         if (items.indexOf(ids) == -1) {

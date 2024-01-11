@@ -17,7 +17,7 @@
  + 4.表单数据的获取与回显,禁用全表单
  +------------------------------------------------------------------------------------+
  */
-layui.config({base: './ayq/modules/'}).define(["layer",'flow', "laytpl", "element", "form", "slider", "laydate", "rate", "colorpicker", "layedit", "carousel", "upload", "formField","staticField", "numberInput", "iconPicker", "cron", "labelGeneration"]
+layui.config({ base: '/Scripts/layui/module/formdesigner/'}).define(["layer",'flow', "laytpl", "element", "form", "slider", "laydate", "rate", "colorpicker", "carousel", "upload", "formField","staticField", "numberInput", "iconPicker", "cron", "labelGeneration"]
     , function (exports) {
         var $ = layui.jquery
             , layer = layui.layer
@@ -31,7 +31,6 @@ layui.config({base: './ayq/modules/'}).define(["layer",'flow', "laytpl", "elemen
             , carousel = layui.carousel
             , form = layui.form
             , upload = layui.upload
-            , layedit = layui.layedit
             , flow = layui.flow
             , formField = layui.formField
             , staticField = layui.staticField
@@ -4604,13 +4603,13 @@ layui.config({base: './ayq/modules/'}).define(["layer",'flow', "laytpl", "elemen
                         area: ['100%', '100%'],
                         offset: 'auto', //右下角弹出
                         anim: 2,
-                        content: ['./preview.html', 'yes'], //iframe的url，no代表不显示滚动条
+                        content: ['/system/FormDesigner/preview', 'yes'], //iframe的url，no代表不显示滚动条
                         end: function () { //此处用于演示
                             //加载结束
                         }
                     });
                 }, function(){
-                    window.open("./preview.html");
+                    window.open("/system/FormDesigner/preview");
                 });
 
             });

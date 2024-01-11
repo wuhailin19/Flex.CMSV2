@@ -5,3 +5,9 @@
 .layui-layout-admin .layui-body { top: 39px; left: 196px; background: #fff; }
 i.layui-icon.layui-icon-file { display: none; }
 .layui-tree-entry { height: 30px; }
+
+@media screen and (max-width:800px) {
+    .treeContainer { width: 100%; }
+    .layui-layout.layui-layout-admin{display:none;}
+   ::-webkit-scrollbar { /*滚动条整体样式*/ width: 0px; }
+}

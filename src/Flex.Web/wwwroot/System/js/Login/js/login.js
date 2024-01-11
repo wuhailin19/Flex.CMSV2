@@ -69,14 +69,14 @@ $(function () {
                     jQuery(this).val("登录..").attr("disabled", "disabled");
                 },
                 success: function (json) {
-                    if (json.code == "200") {
+                    if (json.code == 200) {
                         jQuery(".loadings").fadeIn();
-                        localStorage.setItem('access_token', json.content['AccessToken']);
-                        localStorage.setItem('refresh_token', json.content['RefreshToken']);
+                        localStorage.setItem('access_token', json.content.AccessToken);
+                        localStorage.setItem('refresh_token', json.content.RefreshToken);
                         tips.showSuccess("登录成功")
                         setTimeout(function () { window.location = '/system/Main'; }, 1300);
                     } else {
-                        tips.showFail(json.content);
+                        tips.showFail(json.msg);
                         reloadcode();
                     }
                 },
