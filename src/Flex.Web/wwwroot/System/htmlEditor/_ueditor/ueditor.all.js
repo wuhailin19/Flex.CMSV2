@@ -6876,7 +6876,7 @@
             me.setOpt(Editor.defaultOptions(me));
 
             /* 尝试异步加载后台配置 */
-            me.loadServerConfig();
+            //me.loadServerConfig();
 
             if (!utils.isEmptyObject(UE.I18N)) {
                 //修改默认的语言类型
@@ -6974,18 +6974,18 @@
                 var me = this;
                 me.fireEvent('destroy');
                 var container = me.container.parentNode;
-                var textarea = me.textarea;
-                if (!textarea) {
-                    textarea = document.createElement('textarea');
-                    container.parentNode.insertBefore(textarea, container);
-                } else {
-                    textarea.style.display = ''
-                }
+                //var textarea = me.textarea;
+                //if (!textarea) {
+                //    textarea = document.createElement('textarea');
+                //    container.parentNode.insertBefore(textarea, container);
+                //} else {
+                //    textarea.style.display = 'none'
+                //}
 
-                textarea.style.width = me.iframe.offsetWidth + 'px';
-                textarea.style.height = me.iframe.offsetHeight + 'px';
-                textarea.value = me.getContent();
-                textarea.id = me.key;
+                //textarea.style.width = me.iframe.offsetWidth + 'px';
+                //textarea.style.height = me.iframe.offsetHeight + 'px';
+                //textarea.value = me.getContent();
+                //textarea.id = me.key;
                 container.innerHTML = '';
                 domUtils.remove(container);
                 var key = me.key;
@@ -17608,7 +17608,8 @@
             if (isFullscreen) return;
             if (!me.queryCommandState || me.queryCommandState && me.queryCommandState('source') != 1) {
                 timer = setTimeout(function () {
-
+                    if (!me.body.lastChild)
+                        return;
                     var node = me.body.lastChild;
                     while (node && node.nodeType != 1) {
                         node = node.previousSibling;

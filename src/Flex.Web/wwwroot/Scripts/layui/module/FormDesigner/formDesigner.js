@@ -126,6 +126,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/'}).define(["layer",'fl
                     if (selected === undefined) {
                         selected = false;
                     }
+                    
                     var _selected = selected ? 'active' : '';
                     var _disabled = json.disabled ? 'disabled=""' : '';
                     var _disabledClass = json.disabled ? ' layui-disabled' : '';
@@ -1078,6 +1079,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/'}).define(["layer",'fl
                     var _json = JSON.parse(JSON.stringify(formField.components.checkbox));
                     _json.id = id;
                     _json.index = index;
+
                     return _json;
 
                 },
@@ -3138,6 +3140,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/'}).define(["layer",'fl
                     if (selected === undefined) {
                         selected = false;
                     }
+
                     var _hideLabel = json.hideLabel ? 'display: none;' : '';
                     var _html = '<div id="{0}" class="layui-form-item layui-form-text {2}" style="width: {4}"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index,json.width);
                     _html += '<label class="layui-form-label" style="width: {1}px;{2}">{0}:</label>'.format(json.label,json.width,_hideLabel);
@@ -3148,6 +3151,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/'}).define(["layer",'fl
                     elem.append(_html);
                     let tagid = json.tag + json.id;
                     
+                    UE.delEditor(tagid);
                     let editorOption = {
                         initialFrameWidth: json.width,
                         initialFrameHeight: json.height.replace('px',''),
@@ -3210,6 +3214,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/'}).define(["layer",'fl
                     var _json = JSON.parse(JSON.stringify(formField.components.editor));
                     _json.id = id;
                     _json.index = index;
+
                     return _json;
 
                 },
@@ -3257,7 +3262,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/'}).define(["layer",'fl
                         , "};"
                         , "let ue = UE.getEditor(tagid, editorOption);"
                         , "ue.ready(function () {"
-                        , "ue.setContent(json.defaultValue"
+                        , "ue.setContent(" + json.defaultValue +");"
                         , "})"].join("");
                     return scriptHtmlCode;
                 }
@@ -3326,6 +3331,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/'}).define(["layer",'fl
                     var _json = JSON.parse(JSON.stringify(formField.components.grid));
                     _json.id = id;
                     _json.index = index;
+
                     return _json;
 
                 },
