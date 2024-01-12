@@ -3146,17 +3146,21 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/'}).define(["layer",'fl
                     _html += '</div>';
                     _html += '</div>';
                     elem.append(_html);
-                    var e = new ice.editor(json.tag + json.id);
-                    e.width=json.width;   //宽度
-                    e.height=json.height;  //高度
-                    e.uploadUrl=json.uploadUrl; //上传文件路径
-                    e.disabled=json.disabled;
-                    e.menu = json.menu;
-                    e.create();
-                    e.setValue(json.defaultValue);
+                    let tagid = json.tag + json.id;
+                    
+                    let editorOption = {
+                        initialFrameWidth: json.width,
+                        initialFrameHeight: json.height.replace('px',''),
+                        imageUrl: json.uploadUrl
+                    };
+                    let ue = UE.getEditor(tagid, editorOption);
                     if (that.config.viewOrDesign) {
-                        iceEditorObjects[json.id] = e;
+                        iceEditorObjects[json.id] = ue;
                     }
+                    ue.ready(function () {
+                        ue.setContent(json.defaultValue);
+                    })
+                    
                 },
                 /**
                  * 根据json对象更新html对象
@@ -3175,20 +3179,24 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/'}).define(["layer",'fl
                     }
                     if (that.config.viewOrDesign) {
                         var e = iceEditorObjects[json.id];
-                        e.setValue(json.defaultValue);
+                        e.setContent(json.defaultValue);
                     } else {
+                        let tagid = json.tag + json.id;
+                        UE.delEditor(tagid);
                         var $block = $('#' + json.id + ' .layui-input-block');
                         $block.empty();
-                        var _html = '<div id="{0}"></div>'.format(json.tag + json.id);
+                        var _html = '<div id="{0}"></div>'.format(tagid);
                         $block.append(_html);
-                        var e = new ice.editor(json.tag + json.id);
-                        e.width=json.width;   //宽度
-                        e.height=json.height;  //高度
-                        e.uploadUrl=json.uploadUrl; //上传文件路径
-                        e.disabled=json.disabled;
-                        e.menu = json.menu;
-                        e.create();
-                        e.setValue(json.defaultValue);
+                        let editorOption = {
+                            initialFrameWidth: json.width,
+                            initialFrameHeight: json.height.replace('px',''),
+                            imageUrl: json.uploadUrl
+                        };
+                        
+                        let ue = UE.getEditor(tagid, editorOption);
+                        ue.ready(function () {
+                            ue.setContent(json.defaultValue);
+                        })
                     }
                 },
                 /**
@@ -3240,13 +3248,17 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/'}).define(["layer",'fl
                  * */
                 generateScript:function (json,that) {
                     var scriptHtmlCode = '';
-                    scriptHtmlCode += ['var e = new ice.editor('+  json.tag + json.id +');'
-                        ,'e.width=' + json.width + ';   //宽度'
-                        ,'e.height=' + json.height + ';  //高度'
-                        ,'e.uploadUrl=' + json.uploadUrl + '; //上传文件路径'
-                        ,'e.disabled=' + json.disabled + ';'
-                        ,'e.menu = ' + json.menu + ';'
-                        ,'e.create();'].join('');
+                    
+                    scriptHtmlCode += ["let tagid = "+  json.tag + json.id +";"
+                        , "let editorOption = {"
+                        , "initialFrameWidth: " + json.width + ","
+                        , "initialFrameHeight: " + json.height +","
+                        , "imageUrl: " + json.uploadUrl +""
+                        , "};"
+                        , "let ue = UE.getEditor(tagid, editorOption);"
+                        , "ue.ready(function () {"
+                        , "ue.setContent(json.defaultValue"
+                        , "})"].join("");
                     return scriptHtmlCode;
                 }
             },
@@ -4840,8 +4852,9 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/'}).define(["layer",'fl
                 options = that.config;
             //获取表单区域所有值
             var json = form.val(that.config.formId);
-            for(let key  in iceEditorObjects){
-                json[key] = iceEditorObjects[key].getHTML();
+            console.log(iceEditorObjects)
+            for (let key in iceEditorObjects) {
+                json[key] = iceEditorObjects[key].getContent();
             }
             for(let key  in labelGenerationObjects){
                 json[key] = labelGenerationObjects[key].getData();

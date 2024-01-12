@@ -83,9 +83,9 @@
                 'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
                 'directionalityltr', 'directionalityrtl', 'indent', '|',
                 'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
-                'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft','imageright', 'imagecenter', '|',
-                'insertimage', 'insertserverimages', 'insertserverfile','insertservervideo', 'emotion', 'insertvideo', 'music', 'map', 'gmap', 'insertframe', 'highlightcode', 'pagebreak', 'template', 'background', '|',
-                'horizontal', 'date', 'time', 'spechars','wordimage', '|',
+                'link', 'unlink', '|', 'imagenone', 'imageleft','imageright', 'imagecenter', '|',
+                'insertimage', 'insertserverimages', 'insertserverfile','insertservervideo',  'insertvideo', '|',
+                'horizontal', 'spechars', '|',
                 'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|',
                 'print', 'preview', 'searchreplace']
         ]
@@ -104,8 +104,8 @@
 
         //主题配置项,默认是default。有需要的话也可以使用如下这样的方式来自动多主题切换，当然，前提条件是themes文件夹下存在对应的主题文件：
         //现有如下皮肤:default,modern,gorgeous
-        //,theme:'default'
-        ,themePath:URL +"themes/"
+        , theme:'default'
+        , themePath: URL + "themes/"
 
         //若实例化编辑器的页面手动修改的domain，此处需要设置为true
         //,customDomain:false

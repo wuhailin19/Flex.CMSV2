@@ -7,8 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\System\htmlEditor\ueditor\**" />
+    <Content Remove="wwwroot\System\htmlEditor\ueditor\**" />
+    <EmbeddedResource Remove="wwwroot\System\htmlEditor\ueditor\**" />
+    <None Remove="wwwroot\System\htmlEditor\ueditor\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="appsettings.Development_初始.json" />
     <Content Remove="appsettings_初始.json" />
+    <Content Remove="wwwroot\System\htmlEditor\_ueditor\themes\default\fonts\iconfont.js" />
+    <Content Remove="wwwroot\System\htmlEditor\_ueditor\themes\default\fonts\iconfont.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,7 +46,6 @@
     <Folder Include="Areas\System\Models\" />
     <Folder Include="Controllers\" />
     <Folder Include="Views\" />
-    <Folder Include="wwwroot\System\htmlEditor\ewebeditor\uploadfile\" />
   </ItemGroup>
   
   <ItemGroup>
@@ -45,7 +53,16 @@
     <None Include="wwwroot\Scripts\layui\module\notice\notice.js" />
     <None Include="wwwroot\Scripts\layui\module\FormDesigner\Sortable.js" />
     <None Include="wwwroot\Scripts\layui\module\FormDesigner\Sortable.min.js" />
+    <None Include="wwwroot\System\htmlEditor\_ueditor\themes\default\fonts\iconfont.js" />
+    <None Include="wwwroot\System\htmlEditor\_ueditor\themes\default\fonts\iconfont.svg" />
     <None Include="wwwroot\System\js\uploader\uploadsingle.js" />
     <None Include="wwwroot\System\js\uploader\webuploader.min.js" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Update="wwwroot\System\htmlEditor\_ueditor\lang\zh-cn\zh-cn.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 </Project>

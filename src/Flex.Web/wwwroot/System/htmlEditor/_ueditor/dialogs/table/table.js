@@ -88,7 +88,7 @@
         cellPadding = setMax(cellPadding,5);
         cellSpacing = setMax(cellSpacing,5);
 
-        var html = ["<table "];
+        var html = ["<table"];
         if(cellSpacing>0){
             html.push(' style="border-collapse:separate;" ')
         }else{
@@ -100,6 +100,7 @@
         html.push(' ><tr><td colspan="3"><var id="lang_forPreview">'+lang.static.lang_forPreview+'</var></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></table>');
         var preview = $G("preview");
         preview.innerHTML = html.join("");
+
         //如果针对每个单元格
         var table = preview.firstChild;
         if(borderType=="1"){

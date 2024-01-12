@@ -995,9 +995,9 @@
         usemap: "useMap",
         frameborder: "frameBorder"
     } : {
-            tabindex: "tabIndex",
-            readonly: "readOnly"
-        },
+        tabindex: "tabIndex",
+        readonly: "readOnly"
+    },
         styleBlock = utils.listToMap(["-webkit-box", "-moz-box", "block", "list-item", "table", "table-row-group", "table-header-group", "table-footer-group", "table-row", "table-column-group", "table-column", "table-cell", "table-caption"]);
     var domUtils = dom.domUtils = {
         NODE_ELEMENT: 1,
@@ -1050,7 +1050,7 @@
                 return 1
             }
             var i = -1;
-            while (i++ , parentsA[i] === parentsB[i]) { }
+            while (i++, parentsA[i] === parentsB[i]) { }
             nodeA = parentsA[i];
             nodeB = parentsB[i];
             while (nodeA = nodeA.nextSibling) {
@@ -1148,7 +1148,7 @@
             }
             parentsA.reverse();
             parentsB.reverse();
-            while (i++ , parentsA[i] === parentsB[i]) { }
+            while (i++, parentsA[i] === parentsB[i]) { }
             return i == 0 ? null : parentsA[i - 1]
         },
         clearEmptySibling: function (node, ignoreNext, ignorePre) {
@@ -2588,9 +2588,9 @@
                     container: parent,
                     offset: getIndex(child) + (position > 0 ? 0 : 1)
                 } : {
-                        container: child,
-                        offset: position > 0 ? 0 : child.childNodes.length
-                    }
+                    container: child,
+                    offset: position > 0 ? 0 : child.childNodes.length
+                }
             }
             while (distance > 0) {
                 try {
@@ -8167,7 +8167,7 @@
                             }
                         }
                         node.attributes.word_img = node.attributes.src;
-                        node.attributes.src = me.options.UEDITOR_HOME_URL + "themes/default/images/spacer.gif";
+                        node.attributes.src = themePath + "/images/spacer.gif";
                         var flag = parseInt(node.attributes.width) < 128 || parseInt(node.attributes.height) < 43;
                         node.attributes.style = "background:url(" + (flag ? me.options.themePath + me.options.theme + "/images/word.gif" : me.options.langPath + me.options.lang + "/images/localimage.png") + ") no-repeat center center;border:1px solid #ddd";
                         word_img_flag && (word_img_flag.flag = 1)
@@ -8191,13 +8191,13 @@
                             data: domUtils.fillChar,
                             parent: tmpPNode
                         } : {
-                                type: "element",
-                                tag: "br",
-                                attributes: {},
-                                closed: true,
-                                children: [],
-                                parent: tmpPNode
-                            }];
+                            type: "element",
+                            tag: "br",
+                            attributes: {},
+                            closed: true,
+                            children: [],
+                            parent: tmpPNode
+                        }];
                         node.children = [tmpPNode]
                     }
                     break;
@@ -8653,8 +8653,12 @@
                     }
                     html.push("</tr>")
                 }
-                me.execCommand("insertHtml", html.join("") + "</tbody></table>");
+                html = html.join("") + "</tbody></table>";
+ 
+                me.execCommand("insertHtml", html);
+
                 reset();
+                
                 if (opt.align) {
                     var range = me.selection.getRange(),
                         bk = range.createBookmark(),
@@ -10464,12 +10468,12 @@
                     title: node.title,
                     logo: node.style.backgroundImage.replace("url(", "").replace(")", "")
                 } : {
-                        url: node.getAttribute("src", 2),
-                        title: node.title,
-                        width: node.width,
-                        height: node.height,
-                        logo: node.getAttribute("logo_url")
-                    }, img2frame ? true : false, false);
+                    url: node.getAttribute("src", 2),
+                    title: node.title,
+                    width: node.width,
+                    height: node.height,
+                    logo: node.getAttribute("logo_url")
+                }, img2frame ? true : false, false);
                 node.parentNode.replaceChild(tmpdiv.firstChild, node)
             }
         }
@@ -11368,7 +11372,9 @@
                 this.Stateful_init()
             },
             getHtmlTpl: function () {
-                return '<div id="##" class="edui-box %%"><div id="##_state" stateful><div class="%%-wrap"><div id="##_body" unselectable="on" ' + (this.title ? 'title="' + this.title + '"' : "") + ' class="%%-body" onmousedown="return false;" onclick="return $$._onClick();">' + (this.showIcon ? '<div class="edui-box edui-icon"></div>' : "") + (this.showText ? '<div class="edui-box edui-label">' + this.label + "</div>" : "") + "</div></div></div></div>"
+                return '<div id="##" class="edui-box %%">' +
+                    '<div id="##_state" stateful><div class="%%-wrap">'
+                    + '<div id="##_body" unselectable="on" ' + (this.title ? 'title="' + this.title + '"' : "") + ' class="%%-body" onmousedown="return false;" onclick="return $$._onClick();">' + (this.showIcon ? '<div class="edui-box edui-icon"></div>' : "") + (this.showText ? '<div class="edui-box edui-label">' + this.label + "</div>" : "") + "</div></div></div></div>"
             },
             postRender: function () {
                 this.Stateful_postRender();
@@ -12266,6 +12272,8 @@
         };
         utils.inherits(MenuButton, SplitButton)
     })();
+
+
     (function () {
         var utils = baidu.editor.utils;
         var editorui = baidu.editor.ui;
@@ -12313,7 +12321,7 @@
             "template": "~/dialogs/template/template.html",
             "background": "~/dialogs/background/background.html"
         };
-        var btnCmds = ["undo", "redo", "formatmatch", "bold", "italic", "underline", "touppercase", "tolowercase", "strikethrough", "subscript", "superscript", "source", "indent", "outdent", "blockquote", "pasteplain", "pagebreak", "selectall", "print", "preview", "horizontal", "removeformat", "time", "date", "unlink", "insertparagraphbeforetable", "insertrow", "insertcol", "mergeright", "mergedown", "deleterow", "deletecol", "splittorows", "splittocols", "splittocells", "mergecells", "deletetable", "insertserverimages", "insertserverfile",'insertservervideo'];
+        var btnCmds = ["undo", "redo", "formatmatch", "bold", "italic", "underline", "touppercase", "tolowercase", "strikethrough", "subscript", "superscript", "source", "indent", "outdent", "blockquote", "pasteplain", "pagebreak", "selectall", "print", "preview", "horizontal", "removeformat", "time", "date", "unlink", "insertparagraphbeforetable", "insertrow", "insertcol", "mergeright", "mergedown", "deleterow", "deletecol", "splittorows", "splittocols", "splittocells", "mergecells", "deletetable", "insertserverimages", "insertserverfile", 'insertservervideo'];
         for (var i = 0, ci; ci = btnCmds[i++];) {
             ci = ci.toLowerCase();
             editorui[ci] = function (cmd) {
@@ -13561,7 +13569,7 @@
                         editor.ui.render(holder);
                         var iframeholder = editor.ui.getDom("iframeholder");
                         editor.container = editor.ui.getDom();
-                        editor.container.style.cssText = "z-index:" + editor.options.zIndex + ";width:" + editor.options.initialFrameWidth + "px";
+                        editor.container.style.cssText = "z-index:" + editor.options.zIndex + ";width:" + editor.options.initialFrameWidth;
                         oldRender.call(editor, iframeholder)
                     }
                 })

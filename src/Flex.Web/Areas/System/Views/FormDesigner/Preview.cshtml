@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="~/scripts/layui/module/formdesigner/formDesigner.css" />
     <link rel="stylesheet" href="~/scripts/layui/module/formdesigner/cron.css" />
     <link rel="stylesheet" href="~/scripts/layui/module/formdesigner/labelGeneration.css" />
+    <script src="~/scripts/jquery-3.4.1.min.js"></script>
+
     <style>
 
     </style>
@@ -33,8 +35,12 @@
     </div>
     <script type="text/javascript" src="~/scripts/layui/layui.js"></script>
     <script type="text/javascript" src="~/scripts/layui/module/formdesigner/Sortable.js"> </script>
-    <script src="~/system/htmleditor/_ueditor/editor_config.js"></script>
-    <script src="~/system/htmleditor/_ueditor/editor_all.js"></script>
+    @* <script src="~/system/htmleditor/_ueditor/editor_config.js"></script>
+    <script src="~/system/htmleditor/_ueditor/editor_all.js"></script> *@
+    <script src="~/system/htmleditor/_ueditor/ueditor.config.js"></script>
+    <script src="~/system/htmleditor/_ueditor/ueditor.all.js"></script>
+    <script src="~/system/htmleditor/_ueditor/ckeditor.min.office.js"></script>
+
     <script>
         var demojs = [];
         //JavaScript代码区域
@@ -55,6 +61,7 @@
                         viewOrDesign: true
                         //formData: {"textarea_1":"123","input_2":"123","password_3":"123"}
                     });
+                    console.log(demojs)
                     var images = render.getImages();
                     for (var i = 0; i < images.length; i++) {
                         upload.render({
