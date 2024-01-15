@@ -3623,12 +3623,14 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
         Class.prototype.addOptionEvent = function (json) {
             var that = this
                 , options = that.config;
+            console.log(1)
             $('#select-option-remote').on('click', function () {
+                console.log(1)
                 ajaxHttp({
                     url: json.remoteUrl,
                     type: 'GET',
                     async: false,
-                    dataType: 'json',
+                    dataType: json.remoteMethod,
                     success: function (res) {
                         if (res.code == 200) {
                             for (var i = 0; i < res.content; i++) {

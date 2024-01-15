@@ -123,7 +123,7 @@ layui.define(['layer'], function (exports) {
                 document: '',
                 LocalSource: false, //本地数据或者接口数据
                 remoteUrl: 'http://',
-                remoteMethod: 'post',
+                remoteMethod: 'get',
                 remoteOptionText:'options.data.dictName',//映射到text
                 remoteOptionValue:'options.data.dictId',//映射到value text和value可以是一样的
                 options: [
