@@ -36,7 +36,7 @@ layui.config({
         "                <div class=\"layui-col-xs10\">\n" +
         "                    <button type=\"button\" class=\"layui-btn layui-icon layui-icon-left\" cropper-event=\"rotate\" data-option=\"-15\" title=\"Rotate -90 degrees\">左旋转</button>\n" +
         "                    <button type=\"button\" class=\"layui-btn layui-icon layui-icon-right\" cropper-event=\"rotate\" data-option=\"15\" title=\"Rotate 90 degrees\">右旋转</button>\n" +
-        "                    <label style=\"padding-left:10px;\">当前尺寸：</label><input value=\"\" class=\"layui-input size_box\" style=\"width:100px;display:inline-block;\" id=\"currentsize\">" +
+        "                    <label style=\"padding-left:10px;\">当前尺寸：</label><input value=\"\" class=\"layui-input size_box layui-disabled\" style=\"width:100px;display:inline-block;color: #aaa !important;\" id=\"currentsize\">" +
         "                </div>\n" +
         "                <div class=\"layui-col-xs2\" style=\"text-align: right;\">\n" +
         "                    <button type=\"button\" class=\"layui-btn layui-icon layui-icon-refresh refresh_btn_image\" cropper-event=\"reset\" title=\"重置图片\"></button>\n" +

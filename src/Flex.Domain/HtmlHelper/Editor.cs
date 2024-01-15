@@ -12,7 +12,7 @@ namespace Flex.Domain.HtmlHelper
             "            <div class=\"layui-input-block\">" +
             $"                <script id=\"{sysField.FieldName}\" type=\"text/plain\" style=\"\"></script>" +
             "                <script type=\"text/javascript\">" +
-            $"                    {{{{#         editorarray.push('{sysField.FieldName}'); var {sysField.FieldName}_editorOption = {{ initialFrameWidth: {(attritude.Width.IsNullOrEmpty()?"700":attritude.Width)}, initialFrameHeight: {(attritude.Height.IsNullOrEmpty() ? "420" : attritude.Height)} }}; " +
+            $"                    {{{{#         editorarray.push('{sysField.FieldName}'); var {sysField.FieldName}_editorOption = {{  }}; " +
             $"                    var {sysField.FieldName}_ue = new UE.ui.Editor({sysField.FieldName}_editorOption); " +
             $"                    {sysField.FieldName}_ue.render(\"{sysField.FieldName}\"); }}}}" +
             "               </script>" +

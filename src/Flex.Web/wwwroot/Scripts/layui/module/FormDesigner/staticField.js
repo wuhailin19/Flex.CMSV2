@@ -36,6 +36,8 @@ layui.define(['layer'], function (exports) {
             dateFormat: "日期格式",
             half: "显示半星",
             theme: "皮肤",
+            LocalSource: "数据来源",
+            remoteUrl: "接口地址",
             rateLength: "星星个数",
             interval: "间隔毫秒",
             startIndex: "开始位置",

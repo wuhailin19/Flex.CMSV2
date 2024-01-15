@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\System\htmlEditor\ueditor\**" />
+    <Compile Remove="wwwroot\System\htmlEditor\_ueditor\dialogs111\**" />
     <Content Remove="wwwroot\System\htmlEditor\ueditor\**" />
+    <Content Remove="wwwroot\System\htmlEditor\_ueditor\dialogs111\**" />
     <EmbeddedResource Remove="wwwroot\System\htmlEditor\ueditor\**" />
+    <EmbeddedResource Remove="wwwroot\System\htmlEditor\_ueditor\dialogs111\**" />
     <None Remove="wwwroot\System\htmlEditor\ueditor\**" />
+    <None Remove="wwwroot\System\htmlEditor\_ueditor\dialogs111\**" />
   </ItemGroup>
 
   <ItemGroup>

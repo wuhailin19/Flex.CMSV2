@@ -6876,7 +6876,7 @@
             me.setOpt(Editor.defaultOptions(me));
 
             /* 尝试异步加载后台配置 */
-            //me.loadServerConfig();
+            me.loadServerConfig();
 
             if (!utils.isEmptyObject(UE.I18N)) {
                 //修改默认的语言类型
@@ -8212,9 +8212,8 @@
 
                     /* 发出ajax请求 */
                     me._serverConfigLoaded = false;
-
                     configUrl && UE.ajax.request(configUrl, {
-                        'method': 'GET',
+                        'method': 'Get',
                         'dataType': isJsonp ? 'jsonp' : '',
                         'onsuccess': function (r) {
                             try {
@@ -8222,6 +8221,7 @@
                                 utils.extend(me.options, config);
                                 me.fireEvent('serverConfigLoaded');
                                 me._serverConfigLoaded = true;
+
                             } catch (e) {
                                 showErrorMsg(me.getLang('loadconfigFormatError'));
                             }
@@ -25291,6 +25291,7 @@
                         errorHandler(me.getLang('autoupload.errorLoadConfig'));
                         return;
                     }
+
                     // 判断文件格式是否错误
                     var filename = input.value,
                         fileext = filename ? filename.substr(filename.lastIndexOf('.')) : '';

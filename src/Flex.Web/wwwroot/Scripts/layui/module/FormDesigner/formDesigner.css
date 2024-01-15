@@ -238,3 +238,8 @@ body .cool-black .layui-layer-btn a { background: #333; }
 
 .layui-tab .layui-tab-title { left: 0; top: 0px;position:relative; }
 .layui-tab-brief > .layui-tab-title .layui-this { color: #fff; }
+@media (max-width:800px){
+    .layui-form-label{width:100%  !important;text-align:left !important;}
+    .layui-input-block{margin-left:0px !important;}
+
+}

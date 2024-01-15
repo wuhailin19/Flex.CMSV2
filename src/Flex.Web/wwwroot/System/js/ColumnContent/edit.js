@@ -61,6 +61,9 @@ layui.config({
     form.on('submit(formDemo)', function (data) {
         data.field.ParentId = parent_json.ParentId;
         data.field.Id = parent_json.Id;
+
+        delete data.field["editorValue_forUeditor"];
+
         $('input[type=checkbox]').each(function () {
             if ($(this)[0].checked)
                 data.field[$(this).attr('name')] = true;
