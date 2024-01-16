@@ -72,12 +72,12 @@ namespace Flex.Application.Services
                 return default;
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             string filed = defaultFields;
-            List<string> editors = new List<string>();
+            //List<string> editors = new List<string>();
             foreach (var item in fieldmodel)
             {
                 filed += item.FieldName + ",";
-                if (item.FieldType == nameof(Editor))
-                    editors.Add(item.FieldName);
+                //if (item.FieldType == nameof(Editor))
+                //    editors.Add(item.FieldName);
             }
             filed = filed.TrimEnd(',');
             DynamicParameters parameters = new DynamicParameters();
