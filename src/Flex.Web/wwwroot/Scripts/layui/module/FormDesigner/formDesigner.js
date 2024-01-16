@@ -1045,6 +1045,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     $block.empty();
                     $label.empty();
                     var _html = '';
+                    console.log(json.options)
                     //重绘设计区改id下的所有元素
                     for (var i = 0; i < json.options.length; i++) {
                         if (json.options[i].checked) {
@@ -3623,24 +3624,23 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
         Class.prototype.addOptionEvent = function (json) {
             var that = this
                 , options = that.config;
-            console.log(1)
             $('#select-option-remote').on('click', function () {
-                console.log(1)
                 ajaxHttp({
                     url: json.remoteUrl,
-                    type: 'GET',
+                    type: json.remoteMethod,
                     async: false,
-                    dataType: json.remoteMethod,
+                    dataType: 'json',
                     success: function (res) {
                         if (res.code == 200) {
-                            for (var i = 0; i < res.content; i++) {
-                                _json.options[res.content.Id].text = res.content.Title;
-                            }
+                            json.options = res.content;
                         } else {
                             tips.showFail('cs');
                         }
+                    },
+                    complete: function (res) {
                     }
                 })
+           
                 //更新设计区节点
                 that.components[json.tag].update(json, that);
             })
