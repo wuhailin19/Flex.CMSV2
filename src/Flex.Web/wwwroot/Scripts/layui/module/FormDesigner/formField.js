@@ -121,7 +121,7 @@ layui.define(['layer'], function (exports) {
                 required: true,
                 hideLabel:false,
                 document: '',
-                LocalSource: false, //本地数据或者接口数据
+                LocalSource: true, //本地数据或者接口数据
                 remoteUrl: '/api/Upload/TestOptions',
                 remoteMethod: 'get',
                 remoteOptionText:'options.data.dictName',//映射到text

@@ -1045,7 +1045,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     $block.empty();
                     $label.empty();
                     var _html = '';
-                    console.log(json.options)
+                    //console.log(json)
                     //重绘设计区改id下的所有元素
                     for (var i = 0; i < json.options.length; i++) {
                         if (json.options[i].checked) {
@@ -3446,13 +3446,16 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                         });
                         break;
                     case 'options':
+                       
                         if (json.tag == "checkbox") {
                             if (!json.LocalSource) {
+
                                 form.render('checkbox');
                                 that.addOptionEvent(json);
                                 break;
                             }
                         }
+
                         var sortable = Sortable.create(document.getElementById(options.selectItem.tag), {
                             group: {
                                 name: 'propertygroup',
@@ -3971,7 +3974,6 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                         _html += '</div>';
                         break;
                     case 'options':
-
                         if (json.tag == 'checkbox') {
                             if (!json.LocalSource) {
                                 _html += '<div class="layui-form-item" >';
@@ -4027,7 +4029,6 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                             //向 .option .layui-inline 添加drag事件并且必须设在 select-option-drag 中才能拖动
                         }
                         _html += '</div>';
-
                         break;
                     case 'anim':
                         //处理
@@ -4426,6 +4427,12 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     case 'isEnter':
                     case 'isLabel':
                     case 'autoplay':
+                    case 'LocalSource':
+                        _json[_key] = _value;
+                        that.components[_json.tag].update(_json, that);
+                        that.components[_json.tag].property(_json, that);
+                        form.render();
+                        break;
                     case 'hideLabel':
                         _json[_key] = _value;
                         that.components[_json.tag].update(_json, that);
