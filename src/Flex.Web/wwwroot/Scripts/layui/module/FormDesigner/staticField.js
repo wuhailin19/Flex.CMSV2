@@ -50,7 +50,7 @@ layui.define(['layer'], function (exports) {
             checkbox: "多选组",
             radio: "单选组",
             date: "日期",
-            editor: "iceEditor编辑器",
+            editor: "百度编辑器",
             slider: "滑块",
             image: "图片",
             grid: "一行多列",

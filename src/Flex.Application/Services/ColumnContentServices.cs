@@ -3,6 +3,7 @@ using Flex.Application.Contracts.Exceptions;
 using Flex.Dapper;
 using Flex.Domain;
 using Flex.Domain.Dtos.Column;
+using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.HtmlHelper;
 using Microsoft.Data.SqlClient;
 using System.Collections;
@@ -41,6 +42,25 @@ namespace Flex.Application.Services
                 });
             }
             return tableths;
+        }
+        public async Task<IEnumerable<ContentOptions>> GetContentOptions(int ParentId)
+        {
+            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
+            string filed = "Title,Id";
+            var options = new List<ContentOptions>();
+            var result = await _dapperDBContext.GetDynamicAsync("select " + filed + " from " + contentmodel.TableName + " where ParentId=" + ParentId + " and StatusCode<>0");
+            result.Each(item =>
+            {
+                options.Add(new ContentOptions()
+                {
+                    text = item.Title,
+                    value = item.Id.ToString(),
+                    @checked = false
+                });
+            });
+            return options;
         }
         public async Task<Page> ListAsync(int pageindex, int pagesize, int ParentId)
         {

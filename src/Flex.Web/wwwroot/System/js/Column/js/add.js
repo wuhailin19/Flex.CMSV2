@@ -1,5 +1,4 @@
 ﻿var parent_json = parent.req_Data == null ? { Id: 0, ModelId: 0 } : parent.req_Data;
-console.log(parent.req_Data)
 //Demo
 ajaxHttp({
     url: api + 'ColumnCategory/GetTreeSelectListDtos',

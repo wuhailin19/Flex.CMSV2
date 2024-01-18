@@ -1954,8 +1954,10 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     _html += '</div>';
                     elem.append(_html);
                     if (that.config.viewOrDesign) {
-                        var data = { "select": json.tag + json.id, "uploadUrl": json.uploadUrl };
-                        images.push(data);
+                        var data = { "select":  json.id, "uploadUrl": "/api/upload/OnLoad" };
+                        var exists = images.some(item => item.select === data.select && item.uploadUrl === data.uploadUrl);
+                        if (!exists)
+                            images.push(data);
                     }
                 },
                 /**
@@ -2075,8 +2077,10 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     _html += '</div>';
                     elem.append(_html);
                     if (that.config.viewOrDesign) {
-                        var data = { "select": json.tag + json.id, "uploadUrl": json.uploadUrl };
-                        files.push(data);
+                        var data = { "select":  json.id, "uploadUrl": json.uploadUrl };
+                        var exists = files.some(item => item.select === data.select && item.uploadUrl === data.uploadUrl);
+                        if (!exists)
+                            files.push(data);
                     }
                 },
                 /**
@@ -3151,8 +3155,8 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     _html += '</div>';
                     elem.append(_html);
                     let tagid = json.tag + json.id;
-
-                    UE.delEditor(tagid);
+                    if (!that.config.viewOrDesign)
+                        UE.delEditor(tagid);
                     let editorOption = {
                         initialFrameWidth: json.width,
                         initialFrameHeight: json.height.replace('px', ''),
@@ -3446,7 +3450,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                         });
                         break;
                     case 'options':
-                       
+
                         if (json.tag == "checkbox") {
                             if (!json.LocalSource) {
 
@@ -3637,13 +3641,13 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                         if (res.code == 200) {
                             json.options = res.content;
                         } else {
-                            tips.showFail('cs');
+                            tips.showFail(res.msg);
                         }
                     },
                     complete: function (res) {
                     }
                 })
-           
+
                 //更新设计区节点
                 that.components[json.tag].update(json, that);
             })
@@ -5105,7 +5109,13 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 //获取当前组件的组件id
                 var _id = document.elementFromPoint(e.pageX, e.pageY).parentElement.parentElement.dataset.id;
                 if (_id !== undefined) {
+                    if (_id.indexOf('file') == 0)
+                         files.filter(item => item.id !== _id);
+                    if (_id.indexOf('image') == 0)
+                        images.filter(item => item.id !== _id);
                     options.selectItem = that.deleteJsonItem(options.data, _id);
+                    console.log(files)
+                    console.log(images)
                 }
                 that.renderForm();
             });

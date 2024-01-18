@@ -4,7 +4,6 @@
 ; function ___initUpload() {
     // 当domReady的时候开始初始化
     //$(window).on('load', function () {
-    console.log('初始化upload')
     var $wrap = $('#uploader'),
 
         // 图片容器

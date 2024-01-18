@@ -23,6 +23,14 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             return Success(await _columnServices.GetTableThs(ParentId));
         }
+
+        [HttpGet("ContentOptions/{ParentId}")]
+        [Descriper(IsFilter = true)]
+        public async Task<string> GetContentOptions(int ParentId)
+        {
+            return Success(await _columnServices.GetContentOptions(ParentId));
+        }
+
         [HttpGet("ListAsync")]
         public async Task<string> ListAsync(int page, int limit, int ParentId)
         {

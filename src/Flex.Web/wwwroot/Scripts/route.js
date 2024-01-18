@@ -103,11 +103,14 @@ var tips = {
             time: tips.timeout     // 3秒消失
         })
     },
+    message: function (msg,cate) {
+        global_notice[cate](msg);
+    },
     showSuccess: function (msg) {
-        global_notice.success(msg);
+        top.tips.message(msg,'success');
     },
     showFail: function (msg) {
-        global_notice.error(msg);
+        top.tips.message(msg, 'error');
     },
     closeTips: function () {
         layer.close(tips.index);

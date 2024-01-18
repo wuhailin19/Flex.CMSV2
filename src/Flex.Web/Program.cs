@@ -14,7 +14,9 @@ using Flex.Dapper;
 using Flex.EFSqlServer;
 using Flex.EFSqlServer.Register;
 using Flex.Web.Jwt;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using NLog.Web;
 using System.Reflection;
 
@@ -77,6 +79,39 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
+////配置新的文件夹白名单
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "filemanage")),
+//    RequestPath = "/filemanage"
+//});
+
+//FileExtensionContentTypeProvider provider = new FileExtensionContentTypeProvider();
+//// add new mapping.
+//provider.Mappings[".myapp"] = "application/x-msdownload";
+//provider.Mappings[".htm3"] = "text/html";
+//provider.Mappings[".gitignore"] = "text/html";
+//provider.Mappings[".yml"] = "text/html";
+//provider.Mappings[".config"] = "text/html";
+//provider.Mappings[".image"] = "image/png";
+//provider.Mappings[".png"] = "image/png";
+
+//app.UseStaticFiles(new StaticFileOptions()
+//{
+//    FileProvider = new PhysicalFileProvider(@"E:\"),  // 指定静态文件目录
+//    RequestPath = "/server",
+//    ServeUnknownFileTypes = true,
+//    ContentTypeProvider = provider,
+//    DefaultContentType = "application/x-msdownload", // 设置未识别的MIME类型一个默认z值
+//});
+//// replace an existing mepping.
+
+//app.UseDirectoryBrowser();
+//app.UseDirectoryBrowser(new DirectoryBrowserOptions
+//{
+//    FileProvider = new PhysicalFileProvider(@"E:\"),
+//    RequestPath = "/server"
+//});
 
 app.UseRouting();
 app.UseAuthentication();

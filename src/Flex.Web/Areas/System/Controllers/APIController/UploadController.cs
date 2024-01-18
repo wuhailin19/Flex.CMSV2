@@ -1,4 +1,5 @@
-﻿using Flex.Domain.Dtos.IndexShortCut;
+﻿using Flex.Core.Attributes;
+using Flex.Domain.Dtos.IndexShortCut;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +11,11 @@ namespace Flex.Web.Areas.System.Controllers.APIController
     public class UploadController : ApiBaseController
     {
         IUploadServices uploadServices;
-        public UploadController(IUploadServices uploadServices)
+        private IPictureServices _pictureServices;
+        public UploadController(IUploadServices uploadServices, IPictureServices pictureServices)
         {
             this.uploadServices = uploadServices;
+            _pictureServices = pictureServices;
         }
         [HttpGet("Config")]
         [AllowAnonymous]
@@ -36,6 +39,16 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                 }
             };
             return Success(options);
+        }
+       
+        [HttpPost("OnLoad")]
+        [Descriper(Name = "上传图片")]
+        public string OnLoad(IFormFileCollection file)
+        {
+            var result = _pictureServices.UploadImgService(file);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
         }
     }
 
