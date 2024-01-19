@@ -62,7 +62,7 @@ layui.config({
                 saveH = e.saveH,
                 mark = e.mark,
                 area = e.area,
-                readyimgurl = e.readyimgurl,
+                readyimgelement = e.readyimgelement,
                 url = e.url,
                 done = e.done,
                 adminid = undefined,
@@ -95,8 +95,8 @@ layui.config({
                     , content: content
                     , area: area
                     , success: function () {
-                        if (readyimgurl != undefined)
-                            image.attr("src", readyimgurl); //图片链接
+                        if (readyimgelement != undefined)
+                            image.attr("src", $(readyimgelement).val()); //图片链接
                         image.cropper(options);
                     }
                     , cancel: function (index) {
@@ -144,6 +144,8 @@ layui.config({
                     //重设图片
                 } else if (event === 'reset') {
                     image.cropper('reset');
+                    var data = image.cropper('getData');
+                    currentsize.val(Math.round(data.width) + "x" + Math.round(data.height));
                 } else if (event === 'move') {
                     var option = $(this).attr('data-option');
                     if (option == 'left') {

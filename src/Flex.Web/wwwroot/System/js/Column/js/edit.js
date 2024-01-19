@@ -1,15 +1,13 @@
 ﻿var Id = parent.req_Data.Id;
 var parent_json;
-var click_count = 0;
-$('#uploader-show').on('click', function () {
-    if ($('.uploader-box').hasClass('active')) {
-        $('.uploader-box').removeClass('active');
-    }
-    else {
-        $('.uploader-box').addClass('active');
-        if (click_count == 0) { ___initUpload(); click_count++; }
-    }
-})
+
+//初始化上传工具
+var options = {
+    single: true,
+    autoupload: true,
+    valueElement: 'input[name=ColumnImage]'
+};
+___initUpload("#uploader-show", options);
 ajaxHttp({
     url: api + 'ColumnCategory/GetColumnById/' + Id,
     type: 'Get',
@@ -66,7 +64,8 @@ layui.config({
         elem: '#cropper-btn'
         , mark: NaN    //选取比例
         , area: '90%'  //弹窗宽度
-        , url: api + 'Admin/OnloadUserAvatar'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
+        , readyimgelement: "input[name=ColumnImage]"
+        , url: api + 'Upload/Onload'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
         , done: function (data) { //上传完毕回调
             $("input[name=ColumnImage]").val(data);
             //$("#srcimgurl").attr('src', data);
@@ -147,7 +146,7 @@ layui.config({
         , onlyIconControl: true
         , click: function (obj) {
             if (obj.data.id == parent_json.Id) {
-                layer.msg("不能选择自身", { icon: 5, time: 1000 });
+                tips.showFail("不能选择自身");
                 return;
             }
             $("#chooseName").val(obj.data.id);

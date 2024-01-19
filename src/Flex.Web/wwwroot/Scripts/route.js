@@ -81,7 +81,7 @@ layui.config({
         positionClass: "toast-top-right",//弹出的位置,
         showDuration: "300",//显示的时间
         hideDuration: "1000",//消失的时间
-        timeOut: "2000",//停留的时间
+        timeOut: "3000",//停留的时间
         extendedTimeOut: "1000",//控制时间
         showMethod: "slideDown",//控制时间
         showEasing: "swing",//显示时的动画缓冲方式

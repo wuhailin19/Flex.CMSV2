@@ -1139,3 +1139,14 @@ body .layui-util-face .layui-layer-content { padding: 0; background-color: #fff;
 }
 
 .layui-anim-fadeout { -webkit-animation-name: layui-fadeout; animation-name: layui-fadeout }
+
+@media screen and (max-width:767.98px) {
+    .layui-container { padding: 0 5px }
+    .welcome_box { padding:5px 0; }
+    .layui-hide-xs { display: none !important }
+    .layui-show-xs-block { display: block !important }
+    .layui-show-xs-inline { display: inline !important }
+    .layui-show-xs-inline-block { display: inline-block !important }
+    .layui-layer{width: 100% !important;height:100% !important;top:0 !important;left:0 !important;}
+    .layui-inline .layui-col-xs6{width:100%;}
+}

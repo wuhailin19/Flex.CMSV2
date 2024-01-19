@@ -20,8 +20,8 @@
     </style>
 </head>
 <body>
-    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
-        <div class="layui-form-item">
+    <form class="layui-form layui-form-pane" action="" style="padding: 2%;" lay-filter="formTest">
+        <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">编号</label>
             <div class="layui-input-block">
                 <input type="text" name="Id" readonly="readonly" autocomplete="off" class="layui-input">
@@ -36,42 +36,16 @@
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">栏目图片</label>
             <div class="layui-input-block">
-                <div class="layui-inline layui-col-xs6">
-                    <input type="text" name="ColumnImage" placeholder="" autocomplete="off" class="layui-input">
-                </div>
-                <div class="layui-inline">
-                    <button type="button" class="layui-btn " id="uploader-show">
-                        <i class="layui-icon  layui-icon-upload"></i>上传
-                    </button>
-                    
-                    <button type="button" class="layui-btn " id="cropper-btn">
-                        <i class="layui-icon  layui-icon-set"></i> 裁剪
-                    </button>
-                </div>
+                <input type="text" name="ColumnImage" placeholder="" autocomplete="off" class="layui-input">
             </div>
-            <div class="layui-input-block uploader-box">
-                <input type="hidden" name="fujian" id="fujian" value="" />
-                <!--百度上传组件-->
-                <div id="uploader">
-                    <div class="statusBar" style="display: none;">
-                        <div class="progress">
-                            <span class="text">0%</span>
-                            <span class="percentage"></span>
-                        </div>
-                        <div class="info"></div>
-                        <div class="btns">
-                            <div id="filePicker2"></div>
-                            <div class="uploadBtn message-btn">开始上传</div>
-                        </div>
-                    </div>
-                    <div class="queueList">
-                        <div id="dndArea" class="placeholder">
-                            <div id="filePicker"></div>
-                            <p>或将文件拖到这里</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="layui-input-block" style="margin-top:10px;">
+                <button type="button" class="layui-btn " id="uploader-show">
+                    <i class="layui-icon  layui-icon-upload"></i>上传
+                </button>
 
+                <button type="button" class="layui-btn " id="cropper-btn">
+                    <i class="layui-icon  layui-icon-set"></i> 裁剪
+                </button>
             </div>
         </div>
         <div class="layui-form-item layui-form-text">

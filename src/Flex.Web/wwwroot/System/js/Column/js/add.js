@@ -1,4 +1,12 @@
-﻿var parent_json = parent.req_Data == null ? { Id: 0, ModelId: 0 } : parent.req_Data;
+﻿//初始化上传工具
+var options = {
+    single: true,
+    autoupload: true,
+    valueElement: 'input[name=ColumnImage]'
+};
+___initUpload("#uploader-show", options);
+var parent_json = parent.req_Data == null ? { Id: 0, ModelId: 0 } : parent.req_Data;
+
 //Demo
 ajaxHttp({
     url: api + 'ColumnCategory/GetTreeSelectListDtos',
@@ -14,6 +22,7 @@ ajaxHttp({
     },
     complete: function () { }
 })
+
 ajaxHttp({
     url: api + 'ContentModel/GetSelectItem',
     type: 'Get',
@@ -28,6 +37,25 @@ ajaxHttp({
             tips.showFail(json.msg);
         }
     }
+})
+
+layui.config({
+    base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
+}).use('croppers', function () {
+    var croppers = layui.croppers;
+
+    //创建一个头像上传组件
+    croppers.render({
+        elem: '#cropper-btn'
+        , mark: NaN    //选取比例
+        , area: '90%'  //弹窗宽度
+        , readyimgelement: "input[name=ColumnImage]"
+        , url: api + 'Upload/Onload'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
+        , done: function (data) { //上传完毕回调
+            $("input[name=ColumnImage]").val(data);
+            //$("#srcimgurl").attr('src', data);
+        }
+    });
 })
 layui.config({
     base: '/Scripts/layui/module/'
