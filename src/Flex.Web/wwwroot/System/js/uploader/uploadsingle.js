@@ -15,7 +15,7 @@
         FileExtensions: 'txt,doc,docx,xls,xlsx,mp4,zip',
         valueElement: undefined
     }, options)
-
+    
     init();
     var $queue = $('<ul class="filelist"></ul>').appendTo($wrap.find('.queueList')),// 图片容器
         $statusBar = $wrap.find('.statusBar'),// 状态栏，包括进度和控制按钮

@@ -1940,21 +1940,25 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     if (selected === undefined) {
                         selected = false;
                     }
+                    var input_id = json.id;
                     var _html = '<div id="{0}" class="layui-form-item {2}"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index);
                     _html += '<label class="layui-form-label {0}">{1}:</label>'.format(json.required ? 'layui-form-required' : '', json.label);
                     _html += '<div class="layui-input-block">';
-                    _html += '<div class="layui-upload">';
-                    _html += '<button type="button" class="layui-btn" id="{0}">多图片上传</button>'.format(json.tag + json.id);
-                    _html += '<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;width: 88%">预览图：';
-                    _html += '<div class="layui-upload-list uploader-list" style="overflow: auto;" id="uploader-list-{0}">'.format(json.id);
+                    _html += '<input type="text" name="' + input_id + '" placeholder="" autocomplete="off" class="layui-input">';
                     _html += '</div>';
-                    _html += '</blockquote>';
+                    _html += '<div class="layui-input-block" style="margin-top:10px;">';
+                    _html += '<button type="button" class="layui-btn " id="uploader-show_' + input_id + '">';
+                    _html += '<i class="layui-icon  layui-icon-upload"></i>上传';
+                    _html += '</button>';
+                    _html += '<button type="button" class="layui-btn" id="cropper-btn_' + input_id + '">';
+                    _html += '<i class="layui-icon  layui-icon-set"></i> 裁剪';
+                    _html += '</button>';
                     _html += '</div>';
-                    _html += '</div>';
+
                     _html += '</div>';
                     elem.append(_html);
                     if (that.config.viewOrDesign) {
-                        var data = { "select":  json.id, "uploadUrl": "/api/upload/OnLoad" };
+                        var data = { "select": input_id, "uploadUrl": "/api/upload/OnLoad" };
                         var exists = images.some(item => item.select === data.select && item.uploadUrl === data.uploadUrl);
                         if (!exists)
                             images.push(data);
@@ -1979,9 +1983,110 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     var _json = JSON.parse(JSON.stringify(formField.components.image));
                     _json.id = id;
                     _json.index = index;
-                    layer.msg('上传组件请在组件内部自行编写代码，或者根据demo在外部编写代码', {
-                        time: 2000
-                    })
+                    //layer.msg('上传组件请在组件内部自行编写代码，或者根据demo在外部编写代码', {
+                    //    time: 2000
+                    //})
+                    return _json;
+
+                },
+                /**
+                 * 根据 json 对象显示对应的属性
+                 * @param {object} json 当前组件的json属性
+                 * @param {object} that 实例对象
+                 * */
+                property: function (json, that) {
+                    that.renderCommonProperty(json); //根据 json 对象获取对应的属性的html
+                    that.initCommonProperty(json); //初始化 json 对象获取对应的属性
+                },
+                /**
+                 * 根据json对象生成html文本
+                 * @param {object} json 当前组件的json属性
+                 * @param {boolean} selected 是否被选中
+                 * @param {object} that 实例对象
+                 * */
+                generateHtml: function (json, selected, that) {
+                    if (selected === undefined) {
+                        selected = false;
+                    }
+                    var _html = '<div id="{0}" class="layui-form-item {2}"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index);
+                    _html += '<label class="layui-form-label {0}">{1}:</label>'.format(json.required ? 'layui-form-required' : '', json.label);
+                    _html += '<div class="layui-input-block">';
+                    _html += '<div class="layui-upload">';
+                    _html += '<button type="button" class="layui-btn" id="{0}">多图片上传</button>'.format(json.tag + json.id);
+                    _html += '<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;width: 88%">预览图：';
+                    _html += '<div class="layui-upload-list uploader-list" style="overflow: auto;" id="uploader-list-{0}">'.format(json.id);
+                    _html += '</div>';
+                    _html += '</blockquote>';
+                    _html += '</div>';
+                    _html += '</div>';
+                    _html += '</div>';
+                    return _html;
+                },
+                /**
+                 * 根据json对象生成js文本
+                 * @param {object} json 变更后的json属性
+                 * @param {object} that 实例对象
+                 * */
+                generateScript: function (json, that) {
+                    var scriptHtmlCode = '';
+                    //初始化上传工具
+                    scriptHtmlCode += 'var options = {single: true,autoupload: true, valueElement: input[name=' + json.tag + json.id + ']};';
+                    scriptHtmlCode += '___initUpload("#uploader-show_" + input_id, options);';
+                    return scriptHtmlCode;
+                }
+            },
+            multiimage: {
+                /**
+                 * 根据json对象生成html对象
+                 * @param {object} json 当前组件的json属性
+                 * @param {boolean} selected 是否被选中
+                 * @param {object} elem 表单面板jquery对象
+                 * @param {object} that 实例对象
+                 * */
+                render: function (json, selected, elem, that) {
+                    if (selected === undefined) {
+                        selected = false;
+                    }
+                    var _html = '<div id="{0}" class="layui-form-item {2}"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index);
+                    _html += '<label class="layui-form-label {0}">{1}:</label>'.format(json.required ? 'layui-form-required' : '', json.label);
+                    _html += '<div class="layui-input-block">';
+
+                    _html += '<button type="button" class="layui-btn" id="{0}">多图片上传</button>'.format(json.tag + json.id);
+
+                    _html += '<div class="layui-upload-list uploader-list" style="overflow: auto;" id="uploader-list-{0}">'.format(json.id);
+                    _html += '</div>';
+                    _html += '</div>';
+                    _html += '</div>';
+                    elem.append(_html);
+                    if (that.config.viewOrDesign) {
+                        var data = { "select": json.id, "uploadUrl": "/api/upload/OnLoad" };
+                        var exists = images.some(item => item.select === data.select && item.uploadUrl === data.uploadUrl);
+                        if (!exists)
+                            images.push(data);
+                    }
+                },
+                /**
+                 * 根据json对象更新html对象
+                 * @param {object} json 变更后的json属性
+                 * @param {object} that 实例对象
+                 * */
+                update: function (json, that) {
+
+                },
+                /**
+                 * 根据components组件对象获取组件属性
+                 * @param {object} id 所属组件id
+                 * @param {object} index 所属对象组件索引
+                 * @param {object} that 实例对象
+                 * */
+                jsonData: function (id, index, that) {
+                    //分配一个新的ID
+                    var _json = JSON.parse(JSON.stringify(formField.components.image));
+                    _json.id = id;
+                    _json.index = index;
+                    //layer.msg('上传组件请在组件内部自行编写代码，或者根据demo在外部编写代码', {
+                    //    time: 2000
+                    //})
                     return _json;
 
                 },
@@ -2077,7 +2182,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     _html += '</div>';
                     elem.append(_html);
                     if (that.config.viewOrDesign) {
-                        var data = { "select":  json.id, "uploadUrl": json.uploadUrl };
+                        var data = { "select": json.id, "uploadUrl": json.uploadUrl };
                         var exists = files.some(item => item.select === data.select && item.uploadUrl === data.uploadUrl);
                         if (!exists)
                             files.push(data);
@@ -5110,7 +5215,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 var _id = document.elementFromPoint(e.pageX, e.pageY).parentElement.parentElement.dataset.id;
                 if (_id !== undefined) {
                     if (_id.indexOf('file') == 0)
-                         files.filter(item => item.id !== _id);
+                        files.filter(item => item.id !== _id);
                     if (_id.indexOf('image') == 0)
                         images.filter(item => item.id !== _id);
                     options.selectItem = that.deleteJsonItem(options.data, _id);

@@ -1,7 +1,11 @@
 ﻿var demojs = [];
 //JavaScript代码区域
 layui.config(
-    { base: '/scripts/layui/module/formDesigner/' }).use(['formDesigner', 'form', 'layer', 'upload'], function () {
+    { base: '/scripts/layui/module/formDesigner/' })
+    .extend({
+        croppers:'../../../layui/module/cropper/croppers'
+    })
+    .use(['formDesigner', 'form', 'layer', 'upload','croppers'], function () {
         var layer = layui.layer;
         var $ = layui.jquery;
         var upload = layui.upload;
@@ -9,6 +13,7 @@ layui.config(
         var formDesigner = layui.formDesigner;
         var form = layui.form;
         var element = layui.element;
+        var croppers = layui.croppers;
         var render;
         if (window.localStorage.getItem('layui_form_json') !== undefined) {
             demojs = JSON.parse(window.localStorage.getItem('layui_form_json'));
@@ -21,28 +26,21 @@ layui.config(
             var images = render.getImages();
             for (var i = 0; i < images.length; i++) {
                 let id = images[i].select;
-                upload.render({
-                    elem: '#' + id
-                    , url: '' + images[i].uploadUrl + ''
-                    , multiple: true
-                    , headers: httpTokenHeaders
-                    , before: function (obj) {
-                        layer.msg('图片上传中...', {
-                            icon: 16,
-                            shade: 0.01,
-                            time: 0
-                        })
-                    }
-                    , done: function (res) {
-                        layer.close(layer.msg());//关闭上传提示窗口
-                        //上传完毕
-                        $('#uploader-list-' + id).append(
-                            '<div id="" class="file-iteme">' +
-                            '<div class="handle"><i class="layui-icon layui-icon-delete"></i></div>' +
-                            '<img style="width: 100px;height: 100px;" src=' + res.msg + '>' +
-                            '<div class="info">' + res.msg + '</div>' +
-                            '</div>'
-                        );
+                let imageinput = "input[name=" + id + "]";
+                //初始化上传工具
+                var options = { single: true, autoupload: true, valueElement: imageinput };
+                
+                ___initUpload("#uploader-show_" + id, options);
+
+                //创建一个裁剪组件
+                croppers.render({
+                    elem: '#cropper-btn_' + id
+                    , mark: NaN    //选取比例
+                    , area: '90%'  //弹窗宽度
+                    , readyimgelement: imageinput
+                    , url: api + 'Upload/Onload'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
+                    , done: function (data) { //上传完毕回调
+                        $(imageinput).val(data);
                     }
                 });
             }
