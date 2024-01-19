@@ -90,13 +90,17 @@ layui.config({
 
             $(elem).on('click', function () {
                 self.adminid = $(this).attr('data-id')
+                let readyimg = $(readyimgelement).val();
+                
                 boxIndex = layer.open({
                     type: 1
                     , content: content
                     , area: area
                     , success: function () {
-                        if (readyimgelement != undefined)
-                            image.attr("src", $(readyimgelement).val()); //图片链接
+                        if (readyimgelement != undefined) {
+                            image.cropper('destroy');
+                            image.attr("src", readyimg); //图片链接
+                        }
                         image.cropper(options);
                     }
                     , cancel: function (index) {
