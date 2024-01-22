@@ -1,70 +1,97 @@
-﻿//var parent_json = parent.req_Data == null ? { Id: 0, ModelId: 0 } : parent.req_Data;
-//Demo
-
-layui.config({
-    base: '/Scripts/layui/module/'
-}).use(['form', 'tree', 'laytpl'], function () {
-    var form = layui.form;
-    var laytpl = layui.laytpl;
-    var elemView = document.getElementById('view'); // 视图对象
-    //var model = {
-    //    Name: parent_json.Name,
-    //    Description: parent_json.Description,
-    //    TableName: parent_json.TableName,
-    //    ArticleContent: parent_json.ArticleContent,
-    //    Id: parent_json.Id
-    //}
-    ajaxHttp({
-        url: api + 'ColumnContent/GetFormHtml/' + parent.currentparentId,
-        type: 'Get',
-        async: false,
-        dataType: 'json',
-        success: function (result) {
-            if (result.code != 200) {
-                tips.showFail(json.msg);
-                return;
-            }
-            // 渲染并输出结果
-            laytpl(result.msg).render("", function (str) {
-                elemView.innerHTML = str;
-            });
-        },
-        complete: function () { }
+﻿var demojs = [];
+var parent_json = parent.req_Data;
+//JavaScript代码区域
+layui.config(
+    { base: '/scripts/layui/module/formDesigner/' })
+    .extend({
+        croppers: '../../../layui/module/cropper/croppers'
     })
-    //监听提交
-    form.on('submit(formDemo)', function (data) {
-        data.field.ParentId = parent.currentparentId;
-        if (editorarray.length > 0) {
-            for (var i = 0; i < editorarray.length; i++) {
-                data.field[editorarray[i]] = UE.getEditor(editorarray[i]).getContent();
-            }
-        }
-        $('input[type=checkbox]').each(function () {
-            if ($(this)[0].checked)
-                data.field[$(this).attr('name')] = true;
-            else
-                data.field[$(this).attr('name')] = false;
-        });
-        ajaxHttp({
-            url: api + 'ColumnContent',
-            type: 'Put',
-            data: JSON.stringify(data.field),
-            async: false,
-            success: function (json) {
-                if (json.code == 200) {
-                    tips.showSuccess(json.msg);
-                    setTimeout(function () {
-                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                        parent.layer.close(index); //再执行关闭
-                    }, 300)
-                } else {
-                    tips.showFail(json.msg);
-                }
-            },
-            complete: function () {
+    .use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        var upload = layui.upload;
+        var index = layui.index;
+        var formDesigner = layui.formDesigner;
+        var form = layui.form;
+        var element = layui.element;
+        var croppers = layui.croppers;
+        var render;
 
-            }
+        ajaxHttp({
+            url: api + 'ColumnContent/GetFormHtml/' + parent.currentparentId,
+            type: 'Get',
+            async: false,
+            dataType: 'json',
+            success: function (result) {
+                demojs = JSON.parse(result.msg);
+            },
+            complete: function () { }
         })
-        return false;
+
+        render = formDesigner.render({
+            elem: '#view',
+            data: demojs,
+            formId: 'view',
+            dataFormId: 'formTest',
+            formDefaultButton: false,
+            viewOrDesign: true
+            //formData: {"textarea_1":"123","input_2":"123","password_3":"123"}
+        });
+        var images = render.getImages();
+        for (var i = 0; i < images.length; i++) {
+            let id = images[i].select;
+            let imageinput = "input[name=" + id + "]";
+            //初始化上传工具
+            var options = { single: true, autoupload: true, valueElement: imageinput };
+
+            ___initUpload("#uploader-show_" + id, options);
+
+            //创建一个裁剪组件
+            croppers.render({
+                elem: '#cropper-btn_' + id
+                , mark: NaN    //选取比例
+                , area: '90%'  //弹窗宽度
+                , readyimgelement: imageinput
+                , url: images[i].uploadUrl  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
+                , done: function (data) { //上传完毕回调
+                    $(imageinput).val(data);
+                }
+            });
+        }
+
+        var filesData = render.getFiles();
+
+        for (var i = 0; i < filesData.length; i++) {
+            let id = filesData[i].select;
+            let imageinput = "input[name=" + id + "]";
+            //初始化上传工具
+            var options = { single: true, autoupload: true, isImage: false, serverUrl: filesData[i].uploadUrl, valueElement: imageinput };
+
+            ___initUpload("#uploader-show_" + id, options);
+        }
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            var json = render.getFormData();
+            $('input[type=checkbox]').each(function () {
+                if ($(this)[0].checked)
+                    data.field[$(this).attr('name')] = true;
+                else
+                    data.field[$(this).attr('name')] = false;
+            });
+            layer.msg(JSON.stringify(data.field), { icon: 6 });
+            console.log()
+            return false;
+        });
+        $('#globalDisable').on('click', function () {
+            render.globalDisable();
+        });
+        $('#globalNoDisable').on('click', function () {
+            render.globalNoDisable();
+        });
     });
-});
+
+
+function getSubmitData() {
+    var data = $('#view').form[0].serialize();
+    return data;
+}

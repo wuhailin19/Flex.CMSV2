@@ -5035,8 +5035,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
             var that = this,
                 options = that.config;
             //获取表单区域所有值
-            var json = form.val(that.config.formId);
-            console.log(iceEditorObjects)
+            var json = form.val(!that.config.dataFormId ? that.config.dataFormId : that.config.formId);
             for (let key in iceEditorObjects) {
                 json[key] = iceEditorObjects[key].getContent();
             }

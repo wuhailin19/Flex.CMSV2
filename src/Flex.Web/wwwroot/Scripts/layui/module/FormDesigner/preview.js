@@ -135,6 +135,5 @@ layui.config(
 
 function getSubmitData() {
     var data = $('#testdemo').form[0].serialize();
-    console.log(data);
     return data;
 }
