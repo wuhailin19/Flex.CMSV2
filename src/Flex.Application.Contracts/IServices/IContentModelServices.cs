@@ -15,5 +15,6 @@ namespace Flex.Application.Contracts.IServices
         Task<IEnumerable<ContentSelectItemDto>> GetSelectItem();
         Task<IEnumerable<ContentModelColumnDto>> ListAsync();
         Task<ProblemDetails<string>> Update(UpdateContentModelDto model);
+        Task<ProblemDetails<string>> UpdateFormString(UpdateFormHtmlStringDto model);
     }
 }

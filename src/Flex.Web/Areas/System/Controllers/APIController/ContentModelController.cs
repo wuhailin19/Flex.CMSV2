@@ -62,5 +62,17 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                 return Fail(result.Detail);
             return Success(result.Detail);
         }
+        
+        [HttpPost("UpdateFormString")]
+        public async Task<string> UpdateFormString()
+        {
+            var validate = await ValidateModel<UpdateFormHtmlStringDto>();
+            if (!validate.IsSuccess)
+                return Fail(validate.Detail);
+            var result = await _services.UpdateFormString(validate.Content);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
+        }
     }
 }

@@ -69,6 +69,14 @@ namespace Flex.Application.Contracts.Exceptions
 
         /// <summary> 未选择删除数据 </summary>
         [Description("未选择删除数据")]
-         NotChooseData = 10013
+         NotChooseData = 10013,
+
+        /// <summary> 上传失败 </summary>
+        [Description("上传失败")]
+        UploadFail = 10014,
+
+        /// <summary>上传文件格式不正确 </summary>
+        [Description("上传文件格式不正确")]
+        UploadTypeDenied = 10015
     }
 }

@@ -54,6 +54,23 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
             }
         }
+        public async Task<ProblemDetails<string>> UpdateFormString(UpdateFormHtmlStringDto model)
+        {
+            var responsity = _unitOfWork.GetRepository<SysContentModel>();
+            var contentmodel = await responsity.GetFirstOrDefaultAsync(m => m.Id == model.Id);
+            contentmodel.FormHtmlString = model.FormHtmlString;
+            UpdateIntEntityBasicInfo(contentmodel);
+            try
+            {
+                responsity.Update(contentmodel);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+            }
+        }
         public async Task<ProblemDetails<string>> Update(UpdateContentModelDto model)
         {
             var responsity = _unitOfWork.GetRepository<SysContentModel>();

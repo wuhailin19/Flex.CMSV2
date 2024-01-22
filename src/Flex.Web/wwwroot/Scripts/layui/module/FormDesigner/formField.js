@@ -17,7 +17,7 @@ layui.define(['layer'], function (exports) {
                 showWordLimit: false,
                 readonly: false,
                 disabled: false,
-                required: true,
+                required: false,
                 hideLabel:false,
                 expression:"",
                 document: '',
@@ -37,7 +37,7 @@ layui.define(['layer'], function (exports) {
                 showWordLimit: false,
                 readonly: false,
                 disabled: false,
-                required: true,
+                required: false,
                 hideLabel:false,
                 document: ''
             },
@@ -404,7 +404,7 @@ layui.define(['layer'], function (exports) {
                 disabled: false,
                 required: true,
                 document: '',
-                uploadUrl: '',
+                uploadUrl: '/api/Upload/UploadImage',
             },
             file: {
                 id:'-1',
@@ -418,7 +418,7 @@ layui.define(['layer'], function (exports) {
                 disabled: false,
                 required: true,
                 document: '',
-                uploadUrl: '',
+                uploadUrl: '/api/Upload/UploadFile',
             },
             textarea: {
                 id:'-1',

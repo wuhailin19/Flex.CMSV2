@@ -8,7 +8,7 @@
     datawidths: 1000,
     dataheights: 500,
     isEditReload: true,
-    isOperaReload: true,
+    isOperaReload: false,
     addTitle: '添加',
     editTitle: '编辑',
     operationTitle: '修改',
@@ -80,8 +80,8 @@
     },
     openOperaIframe: function (layer, insTb) {
         var self = this;
-        let widthstr = self.operawidths + 'px';
-        let heightstr = self.operaheights + 'px';
+        let widthstr = '95%';
+        let heightstr = '95%';
         let isreload = self.isOperaReload;
         //iframe窗
         layer.open({
@@ -91,7 +91,7 @@
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: routePageLink + 'OperationPermission',
+            content: '/system/FormDesigner/Index',
             end: function () {
                 if (isreload) {
                     defaultOptions.callBack(insTb);

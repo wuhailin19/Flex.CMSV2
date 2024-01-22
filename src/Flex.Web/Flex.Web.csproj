@@ -50,6 +50,7 @@
     <Folder Include="Areas\System\Models\" />
     <Folder Include="Controllers\" />
     <Folder Include="Views\" />
+    <Folder Include="wwwroot\upload\" />
   </ItemGroup>
   
   <ItemGroup>

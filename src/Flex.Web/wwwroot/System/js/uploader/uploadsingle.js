@@ -4,18 +4,18 @@
 ; function ___initUpload($elment, options) {
     // 当domReady的时候开始初始化
     //$(window).on('load', function () {
-   
+
     var $wrap = $($elment);
     options = $.extend({
         single: false,
         isImage: true,
         autoupload: false,
-        serverUrl: '/api/Upload/OnLoad',
+        serverUrl: '/api/Upload/UploadImage',
         imageExtensions: 'jpg,jpeg,gif,png,bmp,svg',
         FileExtensions: 'txt,doc,docx,xls,xlsx,mp4,zip',
         valueElement: undefined
     }, options)
-    
+
     init();
     var $queue = $('<ul class="filelist"></ul>').appendTo($wrap.find('.queueList')),// 图片容器
         $statusBar = $wrap.find('.statusBar'),// 状态栏，包括进度和控制按钮
@@ -60,8 +60,8 @@
 
         $wrap.addClass("webUploader");
         if (options.valueElement != undefined)
-            $wrap.append('<input type="hidden" name="fujian" value="" />');
-        if (options.single) { 
+            $wrap.append('<input type="hidden" id="' + $elment + 'fujian" value="" />');
+        if (options.single) {
             $wrap.addClass("singleButton");
             return;
         }
@@ -271,7 +271,7 @@
         $li.off().find('.file-panel').off().end().remove();
     }
 
-    function updateTotalProgress() {
+    function updateTotalProgress(file) {
         var loaded = 0,
             total = 0,
             spans = $progress.children(),
@@ -280,11 +280,13 @@
         $.each(percentages, function (k, v) {
             total += v[0];
             loaded += v[0] * v[1];
+
         });
 
         percent = total ? loaded / total : 0;
-
-
+        if (file != undefined && percent > 0) {
+            tips.showProgress(file.id, file.name + "上传中：" + Math.round(percent * 100) + '%')
+        }
         spans.eq(0).text(Math.round(percent * 100) + '%');
         spans.eq(1).css('width', Math.round(percent * 100) + '%');
         updateStatus();
@@ -312,9 +314,9 @@
             if (stats.uploadFailNum) {
                 text += '，失败' + stats.uploadFailNum + '个';
             }
-        }
 
-        $info.html(text);
+        }
+        //$info.html(text);
     }
 
     function setState(val) {
@@ -369,6 +371,8 @@
             case 'finish':
                 stats = uploader.getStats();
                 if (stats.successNum) {
+                    tips.closeProgressbox();
+                    tips.showSuccess('上传成功');
                     //alert('上传成功');
                 } else {
                     // 没有成功的图片，重设
@@ -387,7 +391,7 @@
 
         $percent.css('width', percentage * 100 + '%');
         percentages[file.id][1] = percentage;
-        updateTotalProgress();
+        updateTotalProgress(file);
     };
 
     uploader.onFileQueued = function (file) {
@@ -403,7 +407,8 @@
             addFile(file);
         }
         setState('ready');
-        updateTotalProgress();
+
+        updateTotalProgress(file);
         if (options.autoupload) {
             percentages[file.id] = [file.size, 0];
             file.rotation = 0;
@@ -482,9 +487,8 @@
 
     uploader.on('uploadSuccess', function (file, data) {
         if (options.single) { fileCount = 0; fileSize = 0; uploader.removeFile(file); }
-        var idsobj = options.valueElement == undefined ? $($elment + ' input[name=fujian]') : $(options.valueElement);
+        var idsobj = options.valueElement == undefined ? $('#' + $elment + 'fujian') : $(options.valueElement);
         idsobj.val(data.msg);
-
         //if (idsobj.attr('data-' + data.type) != '' && idsobj.attr('data-' + data.type) != undefined) {
         //    if (data.type != undefined && data.type != '') {
         //        var idstr = idsobj.attr('data-' + data.type) + "," + data.id;

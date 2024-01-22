@@ -1958,7 +1958,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     _html += '</div>';
                     elem.append(_html);
                     if (that.config.viewOrDesign) {
-                        var data = { "select": input_id, "uploadUrl": "/api/upload/OnLoad" };
+                        var data = { "select": input_id, "uploadUrl": json.uploadUrl };
                         var exists = images.some(item => item.select === data.select && item.uploadUrl === data.uploadUrl);
                         if (!exists)
                             images.push(data);
@@ -2008,16 +2008,19 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     if (selected === undefined) {
                         selected = false;
                     }
+                    var input_id = json.id;
                     var _html = '<div id="{0}" class="layui-form-item {2}"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index);
                     _html += '<label class="layui-form-label {0}">{1}:</label>'.format(json.required ? 'layui-form-required' : '', json.label);
                     _html += '<div class="layui-input-block">';
-                    _html += '<div class="layui-upload">';
-                    _html += '<button type="button" class="layui-btn" id="{0}">多图片上传</button>'.format(json.tag + json.id);
-                    _html += '<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;width: 88%">预览图：';
-                    _html += '<div class="layui-upload-list uploader-list" style="overflow: auto;" id="uploader-list-{0}">'.format(json.id);
+                    _html += '<input type="text" name="' + input_id + '" placeholder="" autocomplete="off" class="layui-input">';
                     _html += '</div>';
-                    _html += '</blockquote>';
-                    _html += '</div>';
+                    _html += '<div class="layui-input-block" style="margin-top:10px;">';
+                    _html += '<button type="button" class="layui-btn " id="uploader-show_' + input_id + '">';
+                    _html += '<i class="layui-icon  layui-icon-upload"></i>上传';
+                    _html += '</button>';
+                    _html += '<button type="button" class="layui-btn" id="cropper-btn_' + input_id + '">';
+                    _html += '<i class="layui-icon  layui-icon-set"></i> 裁剪';
+                    _html += '</button>';
                     _html += '</div>';
                     _html += '</div>';
                     return _html;
@@ -2165,24 +2168,22 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     if (selected === undefined) {
                         selected = false;
                     }
+                    var input_id = json.id;
                     var _html = '<div id="{0}" class="layui-form-item {2}"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index);
                     _html += '<label class="layui-form-label {0}">{1}:</label>'.format(json.required ? 'layui-form-required' : '', json.label);
                     _html += '<div class="layui-input-block">';
-                    _html += '<div class="layui-upload">';
-                    _html += '<button type="button" class="layui-btn layui-btn-normal" id="{0}">选择多文件</button> '.format(json.tag + json.id);
-                    _html += ' <div class="layui-upload-list" style="max-width: 1000px;"><table class="layui-table">';
-                    _html += '<colgroup><col><col width="150"><col width="260"><col width="150"></colgroup>';
-                    _html += '<thead><tr><th>文件名</th><th>大小</th><th>上传进度</th><th>操作</th></tr></thead>';
-                    _html += '<tbody id="list-{0}"></tbody></table></div>'.format(json.id);
-                    _html += '<button type="button" class="layui-btn" id="listAction-{0}">开始上传</button>'.format(json.id);
+                    _html += '<input type="text" name="' + input_id + '" placeholder="" autocomplete="off" class="layui-input">';
                     _html += '</div>';
-                    _html += '</blockquote>';
+                    _html += '<div class="layui-input-block" style="margin-top:10px;">';
+                    _html += '<button type="button" class="layui-btn " id="uploader-show_' + input_id + '">';
+                    _html += '<i class="layui-icon  layui-icon-upload"></i>上传';
+                    _html += '</button>';
                     _html += '</div>';
                     _html += '</div>';
-                    _html += '</div>';
+
                     elem.append(_html);
                     if (that.config.viewOrDesign) {
-                        var data = { "select": json.id, "uploadUrl": json.uploadUrl };
+                        var data = { "select": input_id, "uploadUrl": json.uploadUrl };
                         var exists = files.some(item => item.select === data.select && item.uploadUrl === data.uploadUrl);
                         if (!exists)
                             files.push(data);
@@ -2207,9 +2208,6 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     var _json = JSON.parse(JSON.stringify(formField.components.file));
                     _json.id = id;
                     _json.index = index;
-                    layer.msg('上传组件请在组件内部自行编写代码，或者根据demo在外部编写代码', {
-                        time: 2000
-                    })
                     return _json;
 
                 },
@@ -2235,16 +2233,12 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     var _html = '<div id="{0}" class="layui-form-item {2}"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index);
                     _html += '<label class="layui-form-label {0}">{1}:</label>'.format(json.required ? 'layui-form-required' : '', json.label);
                     _html += '<div class="layui-input-block">';
-                    _html += '<div class="layui-upload">';
-                    _html += '<button type="button" class="layui-btn layui-btn-normal" id="{0}">选择多文件</button> '.format(json.tag + json.id);
-                    _html += ' <div class="layui-upload-list" style="max-width: 1000px;"><table class="layui-table">';
-                    _html += '<colgroup><col><col width="150"><col width="260"><col width="150"></colgroup>';
-                    _html += '<thead><tr><th>文件名</th><th>大小</th><th>上传进度</th><th>操作</th></tr></thead>';
-                    _html += '<tbody id="list-{0}"></tbody></table></div>'.format(json.id);
-                    _html += '<button type="button" class="layui-btn" id="listAction-{0}">开始上传</button>'.format(json.id);
+                    _html += '<input type="text" name="' + input_id + '" placeholder="" autocomplete="off" class="layui-input">';
                     _html += '</div>';
-                    _html += '</blockquote>';
-                    _html += '</div>';
+                    _html += '<div class="layui-input-block" style="margin-top:10px;">';
+                    _html += '<button type="button" class="layui-btn " id="uploader-show_' + input_id + '">';
+                    _html += '<i class="layui-icon  layui-icon-upload"></i>上传';
+                    _html += '</button>';
                     _html += '</div>';
                     _html += '</div>';
                     return _html;
@@ -2256,36 +2250,9 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * */
                 generateScript: function (json, that) {
                     var scriptHtmlCode = '';
-                    scriptHtmlCode += ['upload.render({'
-                        , 'elem: "#' + json.tag + json.id + '" '
-                        , ', url: "' + json.uploadUrl + '"'
-                        , ' ,elemList: $("#list-' + json.id + '")'
-                        , ',accept: "file"'
-                        , ',multiple: true'
-                        , ',number: 3'
-                        , ',auto: false'
-                        , ',bindAction: "#listAction-' + json.id + '"'
-                        , ',choose: function(obj){'
-                        , 'var that = this;'
-                        , 'var files = this.files = obj.pushFile();'
-                        , 'obj.preview(function(index, file, result){'
-                        , 'var tr = $(["<tr id="upload-"+ index +"">"'
-                        , ',"<td>"+ file.name +"</td>"'
-                        , ',"<td>"+ (file.size/1014).toFixed(1) +"kb</td>"'
-                        , ',"<td><div class="layui-progress" lay-filter="progress-demo-"+ index +""><div class="layui-progress-bar" lay-percent=""></div></div></td>"'
-                        , ',"<td>","<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>","<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>","</td>"'
-                        , ',"</tr>"].join(""));'
-                        , 'tr.find(".demo-reload").on("click", function(){obj.upload(index, file);});'
-                        , 'tr.find(".demo-delete").on("click", function(){delete files[index];tr.remove();uploadListIns.config.elem.next()[0].value = ""; });'
-                        , 'that.elemList.append(tr);'
-                        , 'element.render("progress");}'
-                        , ',done: function(res, index, upload)'
-                        , '{var that = this;if(res.code == 0){var tr = that.elemList.find("tr#upload-"+ index),tds = tr.children();tds.eq(3).html("");delete this.files[index];return;}this.error(index, upload);}'
-                        , ',allDone: function(obj){console.log(obj)}'
-                        , ',error: function(index, upload){var that = this;var tr = that.elemList.find("tr#upload-"+ index),'
-                        , 'tds = tr.children();tds.eq(3).find(".demo-reload").removeClass("layui-hide");}'
-                        , ',progress: function(n, elem, e, index){element.progress("progress-demo-"+ index, n + "%");}'
-                        , '});'].join('');
+                    //初始化上传工具
+                    scriptHtmlCode += 'var options = {single: true,autoupload: true,isImage: false, valueElement: input[name=' + json.tag + json.id + ']};';
+                    scriptHtmlCode += '___initUpload("#uploader-show_" + input_id, options);';
                     return scriptHtmlCode;
                 }
             },
@@ -3521,7 +3488,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                             });
                         });
                         $('#id').mouseover(function () {
-                            layer.tips('请点击修改id', '#id',);
+                            tips.showProStatus($(this), '请点击修改id');
                         });
                         break;
                     case 'labelWidth':
@@ -4821,6 +4788,28 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
             });
             $('body').append(staticField.importHtml);
             $('body').append(staticField.exportHtml);
+            $('.saveJson').on('click', function () {
+                var data = {};
+                data.Id = parent.req_Data.Id;
+
+                data.FormHtmlString = JSON.stringify(options.data, null, 4);
+                ajaxHttp({
+                    url: api + 'ContentModel/UpdateFormString',
+                    type: 'Post',
+                    data: JSON.stringify(data),
+                    async: false,
+                    dataType: 'json',
+                    success: function (json) {
+                        if (json.code == 200) {
+                            tips.showSuccess(json.msg);
+                        } else {
+                            tips.showFail(json.msg);
+                        }
+                    },
+                    complete: function () { }
+                })
+            })
+
             //注册导入数据
             $('.importJson').on('click', function () {
                 document.getElementById('import-json-code').value = JSON.stringify(options.data, null, 4);

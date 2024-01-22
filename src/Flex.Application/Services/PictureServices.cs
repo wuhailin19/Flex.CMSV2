@@ -1,4 +1,5 @@
-﻿using Flex.Core.Helper.ImgFiles;
+﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Core.Helper.ImgFiles;
 using Flex.Core.Helper.UploadHelper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,20 +19,20 @@ namespace Flex.Application.Services
         /// <summary>
         /// 图片储存位置
         /// </summary>
-        private string imgpath = $"/upload/image/{DateTime.Now.ToDefaultDateTimeStr()}";
+        private string imgpath = $"/upload/images/{DateTime.Now.ToDefaultDateTimeStr()}";
         public PictureServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IWebHostEnvironment env) 
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _env = env;
-            basePath = Path.Combine(_env.WebRootPath);
+            basePath = _env.WebRootPath;
         }
         public ProblemDetails<string> UploadImgService(IFormFileCollection input)
         {
             if (input.Count == 0)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "未上传文件");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadFail.GetEnumDescription());
             var file = input[0];
             if(!FileCheckHelper.IsAllowedExtension(file))
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "上传文件格式不正确");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadTypeDenied.GetEnumDescription());
             string uniqueFileName = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString() + new Random().Next(1000, 9999).ToString();
             var extension = Path.GetExtension(file.FileName);
 

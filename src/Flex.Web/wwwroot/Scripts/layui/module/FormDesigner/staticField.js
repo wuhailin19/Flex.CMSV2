@@ -225,7 +225,6 @@ layui.define(['layer'], function (exports) {
             '                <div class="layui-tab layui-tab-brief" lay-filter="form-attr">\n' +
             '                    <ul class="layui-tab-title">\n' +
             '                        <li class="layui-this">字段设置</li>\n' +
-            '                        <li>表单设置</li>\n' +
             '                    </ul>\n' +
             '                    <div class="layui-tab-content">\n' +
             '                        <div class="layui-tab-item layui-show" id="columnProperty">\n' +

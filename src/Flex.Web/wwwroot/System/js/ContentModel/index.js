@@ -131,7 +131,7 @@ layui.use('table', function () {
             case 'dataPermission':
                 defaultOptions.openDataPermissionIframe(layer, insTb);
                 break;
-            case 'operationPermission':
+            case 'formdesigner':
                 defaultOptions.openOperaIframe(layer, insTb);
                 break;
         }

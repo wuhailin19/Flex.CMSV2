@@ -12,10 +12,12 @@ namespace Flex.Web.Areas.System.Controllers.APIController
     {
         IUploadServices uploadServices;
         private IPictureServices _pictureServices;
-        public UploadController(IUploadServices uploadServices, IPictureServices pictureServices)
+        private IFileServices _fileServices;
+        public UploadController(IUploadServices uploadServices, IPictureServices pictureServices, IFileServices fileServices)
         {
             this.uploadServices = uploadServices;
             _pictureServices = pictureServices;
+            _fileServices = fileServices;
         }
         [HttpGet("Config")]
         [AllowAnonymous]
@@ -40,10 +42,18 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             };
             return Success(options);
         }
-       
-        [HttpPost("OnLoad")]
+        [HttpPost("UploadFile")]
+        public string UploadFile(IFormFileCollection file)
+        {
+            var result = _fileServices.UploadFilesService(file);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
+        }
+
+        [HttpPost("UploadImage")]
         [Descriper(Name = "上传图片")]
-        public string OnLoad(IFormFileCollection file)
+        public string UploadImage(IFormFileCollection file)
         {
             var result = _pictureServices.UploadImgService(file);
             if (!result.IsSuccess)

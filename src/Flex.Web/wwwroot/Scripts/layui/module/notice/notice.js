@@ -124,14 +124,14 @@
 
             // internal functions
 
-            function clearContainer (options) {
+            function clearContainer(options) {
                 var toastsToClear = $container.children();
                 for (var i = toastsToClear.length - 1; i >= 0; i--) {
                     clearToast($(toastsToClear[i]), options);
                 }
             }
 
-            function clearToast ($toastElement, options, clearOptions) {
+            function clearToast($toastElement, options, clearOptions) {
                 var force = clearOptions && clearOptions.force ? clearOptions.force : false;
                 if ($toastElement && (force || $(':focus', $toastElement).length === 0)) {
                     $toastElement[options.hideMethod]({
@@ -210,11 +210,15 @@
                     options = $.extend(options, map.optionsOverride);
                     iconClass = map.optionsOverride.iconClass || iconClass;
                 }
-
                 if (shouldExit(options, map)) { return; }
 
-                toastId++;
-
+                if (map.optionsOverride != undefined) {
+                    if (map.optionsOverride.setId == undefined)
+                        toastId++;
+                    else
+                        toastId = map.optionsOverride.setId;
+                } else
+                    toastId++;
                 $container = getContainer(options, true);
 
                 var intervalId = null;
@@ -279,7 +283,7 @@
                     switch (map.iconClass) {
                         case 'toast-success':
                         case 'toast-info':
-                            ariaValue =  'polite';
+                            ariaValue = 'polite';
                             break;
                         default:
                             ariaValue = 'assertive';
@@ -324,7 +328,7 @@
                     $toastElement.hide();
 
                     $toastElement[options.showMethod](
-                        {duration: options.showDuration, easing: options.showEasing, complete: options.onShown}
+                        { duration: options.showDuration, easing: options.showEasing, complete: options.onShown }
                     );
 
                     if (options.timeOut > 0) {
@@ -368,7 +372,11 @@
                         if (options.escapeHtml) {
                             suffix = escapeHtml(map.message);
                         }
+                        if (options.setId != undefined) {
+                            $messageElement.attr("id", options.setId);
+                        }
                         $messageElement.append(suffix).addClass(options.messageClass);
+
                         $toastElement.append($messageElement);
                     }
                 }
@@ -441,7 +449,7 @@
                     clearTimeout(intervalId);
                     progressBar.hideEta = 0;
                     $toastElement.stop(true, true)[options.showMethod](
-                        {duration: options.showDuration, easing: options.showEasing}
+                        { duration: options.showDuration, easing: options.showEasing }
                     );
                 }
 
@@ -474,7 +482,7 @@
     if (typeof module !== 'undefined' && module.exports) { //Node
         module.exports = factory(require('jquery'));
     }
-    else if (window.layui && layui.define){
+    else if (window.layui && layui.define) {
         layui.define('jquery', function (exports) { //layui加载
             exports('toastr', factory(layui.jquery));
             exports('notice', factory(layui.jquery));

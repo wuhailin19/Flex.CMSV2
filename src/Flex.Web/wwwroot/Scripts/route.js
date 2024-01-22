@@ -97,22 +97,45 @@ var tips = {
     timeout: 6000,
     msgboxtime: 1000,
     index: undefined,
+    boxindex: undefined,
     showProStatus: function ($emlemt, msg) {
         tips.index = layer.tips(msg, $emlemt, {
             tips: 4,
             time: tips.timeout     // 3秒消失
         })
     },
-    message: function (msg,cate) {
+    message: function (msg, cate) {
         global_notice[cate](msg);
     },
+    uploadProgressInfo: function (fileid, msg) {
+        fileid = fileid + "_progress_box";
+        if ($("#" + fileid).length > 0) {
+            $("#" + fileid).text(msg);
+            return;
+        }
+        let options = {
+            timeOut: "300000",
+            extendedTimeOut: "300000",
+            progressBar: false,
+            closeButton: false,
+            closeOnHover: false,
+            setId: fileid
+        }
+        global_notice.info(msg,"", options);
+    },
+    showProgress(fileid, msg) {
+        tips.uploadProgressInfo(fileid, msg);
+    },
     showSuccess: function (msg) {
-        top.tips.message(msg,'success');
+        top.tips.message(msg, 'success');
     },
     showFail: function (msg) {
         top.tips.message(msg, 'error');
     },
     closeTips: function () {
         layer.close(tips.index);
+    },
+    closeProgressbox: function () {
+        global_notice.clear();
     }
 }
