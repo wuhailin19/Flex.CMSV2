@@ -3,6 +3,7 @@ using Flex.Application.SqlServerSQLString;
 using Flex.Core.Extensions;
 using Flex.Domain.Base;
 using Flex.Domain.Dtos.ContentModel;
+using Flex.Domain.Dtos.Field;
 using Flex.EFSqlServer.Repositories;
 using System;
 using System.Collections;
@@ -34,7 +35,13 @@ namespace Flex.Application.Services
             var list = await responsity.GetAllAsync();
             return _mapper.Map<List<ContentSelectItemDto>>(list);
         }
-
+        public async Task<ProblemDetails<string>> GetFormHtml(int ModelId)
+        {
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == ModelId);
+            if (contentmodel == null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "没有选择有效模型");
+            return new ProblemDetails<string>(HttpStatusCode.OK, contentmodel.FormHtmlString);
+        }
         public async Task<ProblemDetails<string>> Add(AddContentModelDto model)
         {
             var responsity = _unitOfWork.GetRepository<SysContentModel>();
@@ -57,18 +64,32 @@ namespace Flex.Application.Services
         public async Task<ProblemDetails<string>> UpdateFormString(UpdateFormHtmlStringDto model)
         {
             var responsity = _unitOfWork.GetRepository<SysContentModel>();
+            var filedresponsity = _unitOfWork.GetRepository<sysField>();
+            
             var contentmodel = await responsity.GetFirstOrDefaultAsync(m => m.Id == model.Id);
             contentmodel.FormHtmlString = model.FormHtmlString;
             UpdateIntEntityBasicInfo(contentmodel);
+            _unitOfWork.SetTransaction();
             try
             {
+                var fileds = JsonHelper.Json<List<FiledHtmlStringDto>>(model.FormHtmlString);
+                string filedinsertstring = string.Empty;
+                if (fileds.Count > 0)
+                {
+                    foreach (var item in fileds)
+                    {
+                        filedinsertstring += _sqlServerServices.InsertTableField(contentmodel.TableName, item.id, item.tag);
+                    }
+                }
+                _unitOfWork.ExecuteSqlCommand(filedinsertstring);
                 responsity.Update(contentmodel);
-                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesTranAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                await _unitOfWork.RollbackAsync();
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ex.Message);
             }
         }
         public async Task<ProblemDetails<string>> Update(UpdateContentModelDto model)

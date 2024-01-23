@@ -34,10 +34,21 @@
     <script src="~/scripts/layui/module/formdesigner/jsformat.js"></script>
 
     <script>
+        var data = [];
+        ajaxHttp({
+            url: api + 'ContentModel/GetFormHtml/' + parent.req_Data.Id,
+            type: 'Get',
+            async: false,
+            dataType: 'json',
+            success: function (result) {
+                data = JSON.parse(result.msg);
+            },
+            complete: function () { }
+        })
         layui.config(
             { base: '/Scripts/layui/module/FormDesigner/' }).use(['layer', 'formDesigner'], function () {
                 var formDesigner = layui.formDesigner;
-                var data = [];
+                
                 var render = formDesigner.render({
                     data: data,
                     elem: '#formdesigner'

@@ -58,7 +58,7 @@ namespace Flex.Application.Services
             }
             finally
             {
-                if (IsSuccess)
+                if (IsSuccess&& FileCheckHelper.IsThumbImage(extension))
                     PlatformsPictureOperation.MakeThumb(savepath, 200, 200, ImageThumbEnum.Cut);
             }
         }

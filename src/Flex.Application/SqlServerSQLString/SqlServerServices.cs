@@ -39,7 +39,8 @@ namespace Flex.Application.SqlServerSQLString
                                       "[LastEditDate] [datetime] NOT NULL default getdate()," +
                                       "[Version] [int] NOT NULL default 0 " +
                                       " )";
-        public string InsertTableField(string TableName, sysField model) => "ALTER TABLE [" + TableName + "]  ADD [" + model.FieldName + "]  " + ConvertDataType(model);
+        public string InsertTableField(string TableName, sysField model) => "ALTER TABLE [" + TableName + "]  ADD [" + model.FieldName + "]  " + ConvertDataType(model.FieldType)+";";
+        public string InsertTableField(string TableName, string filedName,string filedtype) => "ALTER TABLE [" + TableName + "]  ADD [" + filedName + "]  " + ConvertDataType(filedtype) +";";
         public string DeleteTableField(string TableName, List<sysField> Fields)
         {
             string sql = string.Empty;
@@ -100,26 +101,38 @@ namespace Flex.Application.SqlServerSQLString
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        private string ConvertDataType(sysField model)
+        private string ConvertDataType(string FieldType)
         {
             string returntype = string.Empty;
-            switch (model.FieldType)
+            switch (FieldType)
             {
-                case "TextBox": returntype = "nvarchar(255)"; break;
-                case "MultipleTextType": returntype = "nvarchar(2000)"; break;
-                case "Editor": returntype = "nvarchar(max)"; break;
-                case "eWebEditor": returntype = "nvarchar(max)"; break;
-                case "ListBoxType": returntype = "nvarchar(255)"; break;
-                case "PicType": returntype = "nvarchar(255)"; break;
-                case "FileType": returntype = "nvarchar(255)"; break;
-                case "FileUpload": returntype = "nvarchar(255)"; break;
-                case "ColorPicker": returntype = "nvarchar(255)"; break;
-                case "MutiImgSelect": returntype = "nvarchar(max)"; break;
-                case "TimerPicker": returntype = "datetime"; break;
-                case "ProvincialLinkage": returntype = "nvarchar(255)"; break;
-                case "Dictionary-1": returntype = "nvarchar(50)"; break;
-                case "Dictionary-2": returntype = "nvarchar(50)"; break;
-                case "Relevance": returntype = "nvarchar(255)"; break;
+                case "input": returntype = "nvarchar(255)"; break;
+                case "password": returntype = "nvarchar(255)"; break;
+                case "select": returntype = "nvarchar(255)"; break;
+                case "radio": returntype = "nvarchar(255)"; break;
+                case "checkbox": returntype = "nvarchar(255)"; break;
+                case "switch": returntype = "nvarchar(255)"; break;
+                case "slider": returntype = "nvarchar(255)"; break;
+                case "numberInput": returntype = "nvarchar(255)"; break;
+                case "labelGeneration": returntype = "nvarchar(500)"; break;
+                case "bottom": returntype = "nvarchar(255)"; break;
+                case "sign": returntype = "nvarchar(255)"; break;
+                case "iconPicker": returntype = "nvarchar(255)"; break;
+                case "cron": returntype = "nvarchar(max)"; break;
+                case "date": returntype = "datetime"; break;
+                case "dateRange": returntype = "nvarchar(255)"; break;
+                case "rate": returntype = "nvarchar(255)"; break;
+                case "carousel": returntype = "nvarchar(500)"; break;
+                case "colorpicker": returntype = "nvarchar(255)"; break;
+                case "image": returntype = "nvarchar(255)"; break;
+                case "file": returntype = "nvarchar(255)"; break;
+                case "textarea": returntype = "nvarchar(max)"; break;
+                case "editor": returntype = "nvarchar(max)"; break;
+                case "blockquote": returntype = "nvarchar(255)"; break;
+                case "line": returntype = "nvarchar(255)"; break;
+                case "spacing": returntype = "nvarchar(255)"; break;
+                case "textField": returntype = "nvarchar(255)"; break;
+                case "grid": returntype = "nvarchar(255)"; break;
             }
             return returntype;
         }

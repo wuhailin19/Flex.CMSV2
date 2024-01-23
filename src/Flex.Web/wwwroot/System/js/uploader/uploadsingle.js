@@ -372,7 +372,6 @@
                 stats = uploader.getStats();
                 if (stats.successNum) {
                     tips.closeProgressbox();
-                    tips.showSuccess('上传成功');
                     //alert('上传成功');
                 } else {
                     // 没有成功的图片，重设
@@ -487,8 +486,15 @@
 
     uploader.on('uploadSuccess', function (file, data) {
         if (options.single) { fileCount = 0; fileSize = 0; uploader.removeFile(file); }
+
         var idsobj = options.valueElement == undefined ? $('#' + $elment + 'fujian') : $(options.valueElement);
-        idsobj.val(data.msg);
+        if (data.code == 200) {
+            idsobj.val(data.msg);
+            
+            tips.showSuccess('上传成功');
+        }
+        else
+            tips.showFail(data.msg);
         //if (idsobj.attr('data-' + data.type) != '' && idsobj.attr('data-' + data.type) != undefined) {
         //    if (data.type != undefined && data.type != '') {
         //        var idstr = idsobj.attr('data-' + data.type) + "," + data.id;

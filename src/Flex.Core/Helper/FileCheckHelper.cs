@@ -9,7 +9,13 @@ namespace Flex.Core.Helper
 {
     public class FileCheckHelper
     {
-        static string[] fileType = { "255216", "6677", "7173", "208207", "8297", "8075", "98109", "3780", "13780", "00" };
+        static string[] fileType = { "255216", "6677", "7173", "208207", "8297", "8075", "98109", "3780", "13780", "00", "60115" };
+        static string[] deniedThumbImageExt = { ".bmp",".gif",".svg"};
+        public static bool IsThumbImage(string ext) {
+            if(!deniedThumbImageExt.Contains(ext))
+                return true;
+            return false;
+        }
         public static bool IsAllowedExtension(IFormFile file)
         {
             long fileLen = file.Length;
@@ -40,6 +46,7 @@ namespace Flex.Core.Helper
             txt：98109
             pdf：3780
             png:13780
+            svg:60115
             */
             return fileType.Contains(fileclass);
         }

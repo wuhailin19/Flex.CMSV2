@@ -1,7 +1,7 @@
 layui.define(['layer'], function (exports) {
 
     var staticField = {
-        lang :  {
+        lang: {
             id: "标识",
             label: "标题",
             index: "序号",
@@ -12,7 +12,7 @@ layui.define(['layer'], function (exports) {
             span: '网格宽度',
             placeholder: "placeholder",
             defaultValue: "默认值",
-            dateDefaultValue:'默认时间',
+            dateDefaultValue: '默认时间',
             labelWidth: "文本宽度",
             clearable: "是否清楚",
             prepend: "前缀",
@@ -67,103 +67,103 @@ layui.define(['layer'], function (exports) {
             autoplay: "自动切换",
             anim: "切换方式",
             arrow: "切换箭头",
-            tab:"tab选项卡",
-            tabHeaders:"tab标题",
-            isInput:"显示输入框",
-            dateRange:"日期范围",
-            dateRangeDefaultValue:"默认范围",
-            menu:"头部菜单",
-            numberInput:"排序文本框",
-            iconPicker:"图标选择器",
-            iconPickerSearch:"是否搜索",
-            iconPickerPage:"是否分页",
-            iconPickerLimit:"显示数量",
-            iconPickerCellWidth:"图标宽度",
-            cron:"Cron表达式",
-            cronUrl:"运行路径",
-            labelGeneration:"标签组件",
-            isEnter:"是否回车",
-            buttonIcon:"按钮图标",
-            buttonType:"按钮类型",
-            buttonSize:"组件尺寸",
-            bottom:"按钮组件",
-            buttonVlaue:"按钮文字",
-            sign:"sign签名组件",
-            hideLabel:"隐藏标签",
-            colorSelection:"颜色选择",
-            blockquote:"便签信息",
-            line:"分割线",
-            spacing:"间距",
-            whiteSpace:"组件高度",
-            textField:"HTML"
+            tab: "tab选项卡",
+            tabHeaders: "tab标题",
+            isInput: "显示输入框",
+            dateRange: "日期范围",
+            dateRangeDefaultValue: "默认范围",
+            menu: "头部菜单",
+            numberInput: "排序文本框",
+            iconPicker: "图标选择器",
+            iconPickerSearch: "是否搜索",
+            iconPickerPage: "是否分页",
+            iconPickerLimit: "显示数量",
+            iconPickerCellWidth: "图标宽度",
+            cron: "Cron表达式",
+            cronUrl: "运行路径",
+            labelGeneration: "标签组件",
+            isEnter: "是否回车",
+            buttonIcon: "按钮图标",
+            buttonType: "按钮类型",
+            buttonSize: "组件尺寸",
+            bottom: "按钮组件",
+            buttonVlaue: "按钮文字",
+            sign: "sign签名组件",
+            hideLabel: "隐藏标签",
+            colorSelection: "颜色选择",
+            blockquote: "便签信息",
+            line: "分割线",
+            spacing: "间距",
+            whiteSpace: "组件高度",
+            textField: "HTML"
         },
-        templateFormList : [
+        templateFormList: [
             {
                 text: '默认模板', imageUrl: "/Scripts/layui/module/FormDesigner/images/1.PNG",
-                 value:[
-                     {
-                         "id": "input_1",
-                         "index": 0,
-                         "label": "单行文本",
-                         "tag": "input",
-                         "tagIcon": "input",
-                         "placeholder": "请输入",
-                         "defaultValue": null,
-                         "labelWidth": 110,
-                         "width": "100%",
-                         "clearable": true,
-                         "maxlength": null,
-                         "showWordLimit": false,
-                         "readonly": false,
-                         "disabled": false,
-                         "required": true,
-                         "expression": "",
-                         "document": ""
-                     }
-                 ]
-             }
+                value: [
+                    {
+                        "id": "input_1",
+                        "index": 0,
+                        "label": "单行文本",
+                        "tag": "input",
+                        "tagIcon": "input",
+                        "placeholder": "请输入",
+                        "defaultValue": null,
+                        "labelWidth": 110,
+                        "width": "100%",
+                        "clearable": true,
+                        "maxlength": null,
+                        "showWordLimit": false,
+                        "readonly": false,
+                        "disabled": false,
+                        "required": true,
+                        "expression": "",
+                        "document": ""
+                    }
+                ]
+            }
         ],
-        expressions : [{text: '默认', value: ""}
-            , {text: '数字', value: 'number'}
-            , {text: '邮箱', value: 'email'}
-            , {text: '手机', value: 'phone'}
-            , {text: '身份证', value: 'identity'}
-            , {text: '日期', value: 'date'}
-            , {text: '网址', value: 'url'}
-            , {text: '密码', value: 'pass'}
-        ], anims : [{text: '左右切换', value: 'default'}
-            , {text: '上下切换', value: 'updown'}
-            , {text: '渐隐渐显切换', value: 'fade'}
-        ], arrows : [{text: '悬停显示', value: 'hover'}
-            , {text: '始终显示', value: 'always'}
-            , {text: '始终不显示', value: 'none'}]
-        , dateTypes : [{text: '年选择器', value: 'year'}
-            , {text: '年月选择器', value: 'month'}
-            , {text: '时间选择器', value: 'time'}
-            , {text: '日期选择器', value: 'date'}
-            , {text: '日期时间选择器', value: 'datetime'}]
-        , buttonTypes : [{text: '原始', value: 'layui-btn-primary'}
-            , {text: '默认', value: ""}
-            , {text: '百搭', value: 'layui-btn-normal'}
-            , {text: '暖色', value: 'layui-btn-warm'}
-            , {text: '警告', value: ' layui-btn-danger'}]
-        , buttonSizes : [{text: '大型', value: 'layui-btn-lg'}
-            , {text: '默认', value: ""}
-            , {text: '小型', value: 'layui-btn-sm'}
-            , {text: '迷你', value: 'layui-btn-xs'}]
-        , dateFormats : ["yyyy年MM月", "yyyy-MM-dd", "dd/MM/yyyy", "yyyyMMdd", "yyyy-MM-dd HH:mm:ss", "yyyy年MM月dd日 HH时mm分ss秒"]
-        , iceEditMenus : [
-            {value:'backColor',text:'字体背景颜色'},{value:'fontSize',text:'字体大小'},{value:'foreColor',text:'字体颜色'},{value:'bold',text:'粗体'},
-            {value:'italic',text:'斜体'},{value:'underline',text:'下划线'},{value:'strikeThrough',text:'删除线'},{value:'justifyLeft',text:'左对齐'},
-            {value:'justifyCenter',text:'居中对齐'},{value:'justifyRight',text:'右对齐'},{value:'indent',text:'增加缩进'},{value:'outdent',text:'减少缩进'},
-            {value:'insertOrderedList',text:'有序列表'},{value:'insertUnorderedList',text:'无序列表'},{value:'superscript',text:'上标'},{value:'subscript',text:'下标'},
-            {value:'createLink',text:'创建连接'},{value:'unlink',text:'取消连接'},{value:'hr',text:'水平线'},{value:'face',text:'表情'},{value:'table',text:'表格'},
-            {value:'files',text:'附件'},{value:'music',text:'音乐'},{value:'video',text:'视频'},{value:'insertImage',text:'图片'},
-            {value:'removeFormat',text:'格式化样式'},{value:'code',text:'源码'},{value:'line',text:'菜单分割线'}
+        expressions: [{ text: '默认', value: "" }
+            , { text: '数字', value: 'number' }
+            , { text: '邮箱', value: 'email' }
+            , { text: '手机', value: 'phone' }
+            , { text: '身份证', value: 'identity' }
+            , { text: '日期', value: 'date' }
+            , { text: '网址', value: 'url' }
+            , { text: '密码', value: 'pass' }
+        ], anims: [{ text: '左右切换', value: 'default' }
+            , { text: '上下切换', value: 'updown' }
+            , { text: '渐隐渐显切换', value: 'fade' }
+        ], arrows: [{ text: '悬停显示', value: 'hover' }
+            , { text: '始终显示', value: 'always' }
+            , { text: '始终不显示', value: 'none' }]
+        , dateTypes: [{ text: '年选择器', value: 'year' }
+            , { text: '年月选择器', value: 'month' }
+            , { text: '时间选择器', value: 'time' }
+            , { text: '日期选择器', value: 'date' }
+            , { text: '日期时间选择器', value: 'datetime' }]
+        , buttonTypes: [{ text: '原始', value: 'layui-btn-primary' }
+            , { text: '默认', value: "" }
+            , { text: '百搭', value: 'layui-btn-normal' }
+            , { text: '暖色', value: 'layui-btn-warm' }
+            , { text: '警告', value: ' layui-btn-danger' }]
+        , buttonSizes: [{ text: '大型', value: 'layui-btn-lg' }
+            , { text: '默认', value: "" }
+            , { text: '小型', value: 'layui-btn-sm' }
+            , { text: '迷你', value: 'layui-btn-xs' }]
+        , dateFormats: ["yyyy年MM月", "yyyy-MM-dd", "dd/MM/yyyy", "yyyyMMdd", "yyyy-MM-dd HH:mm:ss", "yyyy年MM月dd日 HH时mm分ss秒"]
+        , iceEditMenus: [
+            { value: 'backColor', text: '字体背景颜色' }, { value: 'fontSize', text: '字体大小' }, { value: 'foreColor', text: '字体颜色' }, { value: 'bold', text: '粗体' },
+            { value: 'italic', text: '斜体' }, { value: 'underline', text: '下划线' }, { value: 'strikeThrough', text: '删除线' }, { value: 'justifyLeft', text: '左对齐' },
+            { value: 'justifyCenter', text: '居中对齐' }, { value: 'justifyRight', text: '右对齐' }, { value: 'indent', text: '增加缩进' }, { value: 'outdent', text: '减少缩进' },
+            { value: 'insertOrderedList', text: '有序列表' }, { value: 'insertUnorderedList', text: '无序列表' }, { value: 'superscript', text: '上标' }, { value: 'subscript', text: '下标' },
+            { value: 'createLink', text: '创建连接' }, { value: 'unlink', text: '取消连接' }, { value: 'hr', text: '水平线' }, { value: 'face', text: '表情' }, { value: 'table', text: '表格' },
+            { value: 'files', text: '附件' }, { value: 'music', text: '音乐' }, { value: 'video', text: '视频' }, { value: 'insertImage', text: '图片' },
+            { value: 'removeFormat', text: '格式化样式' }, { value: 'code', text: '源码' }, { value: 'line', text: '菜单分割线' }
         ],
-        formDesignerHtml : '<div class="layui-layout layui-layout-admin">\n' +
+        formDesignerHtml: '<div class="layui-layout layui-layout-admin">\n' +
             '    <div class="layui-header">\n' +
-            '        <div class="layui-logo">表单设计器</div>\n' +
+            '        <div class="layui-logo">' + (!parent.req_Data ? '' : parent.req_Data.Name)+ '</div>\n' +
             '        <!-- 头部区域（可配合layui已有的水平导航） -->\n' +
             '        <ul class="layui-nav layui-layout-left">\n' +
             '            <li class="layui-nav-item"><a href=""></a></li>\n' +
@@ -171,18 +171,6 @@ layui.define(['layer'], function (exports) {
             '        <ul class="layui-nav layui-layout-right">\n' +
             '            <li class="layui-nav-item">\n' +
             '                <a id="saveJson" href="#" class="saveJson">保存</a>\n' +
-            '            </li>\n' +
-            '            <li class="layui-nav-item">\n' +
-            '                <a id="btnImportJson" href="#" class="importJson">导入数据</a>\n' +
-            '            </li>\n' +
-            '            <li class="layui-nav-item">\n' +
-            '                <a id="btnExportJson" href="#" class="exportJson">导出数据</a>\n' +
-            '            </li>\n' +
-            '            <li class="layui-nav-item">\n' +
-            '                <a href="#" class="previewForm">预览</a>\n' +
-            '            </li>\n' +
-            '            <li class="layui-nav-item">\n' +
-            '                <a href="#" class="generateCode">生成代码</a>\n' +
             '            </li>\n' +
             '        </ul>\n' +
             '    </div>\n' +
@@ -254,18 +242,18 @@ layui.define(['layer'], function (exports) {
             '            </form>\n' +
             '        </div>\n' +
             '    </div>\n' +
-            '</div>',
-        formDefaultButton:'<div class="layui-form-item">\n' +
+        '</div>',
+        formDefaultButton: '<div class="layui-form-item">\n' +
             '    <div class="layui-input-block">\n' +
             '        <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">提交</button>\n' +
             '        <button type="reset" class="layui-btn layui-btn-primary">重置</button>\n' +
             '    </div>\n' +
             '</div>',
-        importHtml:'<div class="importjsoncodeview layui-layer-wrap" style="display: none;">\n' +
+        importHtml: '<div class="importjsoncodeview layui-layer-wrap" style="display: none;">\n' +
             '    <textarea class="site-demo-text" id="import-json-code-view"></textarea>\n' +
             '    <a href="javascript:;" class="layui-btn layui-btn-normal" style="margin-right:20px;" id="import-json-code">导入数据</a>\n' +
             '</div>',
-        exportHtml:'<div class="htmlcodeview layui-layer-wrap" style="display: none;">\n' +
+        exportHtml: '<div class="htmlcodeview layui-layer-wrap" style="display: none;">\n' +
             '    <textarea class="site-demo-text" id="generate-code-view"></textarea>\n' +
             '    <a href="javascript:;" class="layui-btn layui-btn-normal" style="margin-right:20px;" id="copy-html-code">复制代码</a>\n' +
             '</div>',
@@ -296,12 +284,12 @@ layui.define(['layer'], function (exports) {
             '<script type="text/javascript" src="/Scripts/layui/module/numberInput.js"></script>\n' +
             '<script type="text/javascript" src="/Scripts/layui/module/iconPicker.js"></script>\n' +
             '<script type="text/javascript" src="/Scripts/layui/module/cron.js"></script>\n' +
-            '<script type="text/javascript" src="/system/htmleditor/_ueditor/editor_config.js"></script>\n'+
+            '<script type="text/javascript" src="/system/htmleditor/_ueditor/editor_config.js"></script>\n' +
             '<script type="text/javascript" src="/system/htmleditor/_ueditor/editor_all.js"></script>\n' +
             '<script type="text/javascript" src="/Scripts/layui/module/labelGeneration.js"></script>\n' +
             '<script type="text/javascript" src="/Scripts/layui/module/FormDesigner/config.js?v=100"></script>\n' +
             '<script>\n' +
-            '    layui.use(["layer", "laytpl", "element", "form", "slider", "laydate", "rate", "colorpicker", "layedit", "carousel", "upload", "formField", "numberInput", "iconPicker", "cron", "labelGeneration"], function () {\n' +
+            '    layui.use(["layer", "laytpl", "element", "form", "slider", "laydate", "rate", "colorpicker", "layedit", "carousel", "upload", "formField", "numberInput", "iconHhysFa", "cron", "labelGeneration"], function () {\n' +
             '        var $ = layui.jquery\n' +
             '            , layer = layui.layer\n' +
             '            , laytpl = layui.laytpl\n' +
@@ -318,7 +306,7 @@ layui.define(['layer'], function (exports) {
             '            , formField = layui.formField\n' +
             '            , hint = layui.hint\n' +
             '            , numberInput = layui.numberInput\n' +
-            '            , iconPicker = layui.iconPicker\n' +
+            '            , iconPicker = layui.iconHhysFa\n' +
             '            , cron = layui.cron\n' +
             '            , labelGeneration = layui.labelGeneration;\n' +
             '        {1}\n' +

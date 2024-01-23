@@ -17,7 +17,7 @@ layui.config(
         var render;
 
         ajaxHttp({
-            url: api + 'ColumnContent/GetFormHtml/7',
+            url: api + 'ContentModel/GetFormHtml/' + parent.parent.req_Data.Id,
             type: 'Get',
             async: false,
             dataType: 'json',

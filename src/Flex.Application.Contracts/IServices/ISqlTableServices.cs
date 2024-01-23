@@ -17,5 +17,6 @@ namespace Flex.Application.Contracts.IServices
         string DeleteContentTableData(string TableName, string Ids);
         string DeleteTableField(string TableName, List<sysField> model);
         string InsertTableField(string TableName, sysField model);
+        string InsertTableField(string TableName, string filedName, string filedtype);
     }
 }

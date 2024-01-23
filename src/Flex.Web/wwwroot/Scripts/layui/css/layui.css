@@ -646,7 +646,7 @@ hr.layui-border-black, hr.layui-border-blue, hr.layui-border-cyan, hr.layui-bord
 .layui-form-select { position: relative; color: #5f5f5f }
 .layui-form-select .layui-input { padding-right: 30px; cursor: pointer }
 .layui-form-select .layui-edge { position: absolute; right: 10px; top: 50%; margin-top: -3px; cursor: pointer; border-width: 6px; border-top-color: #c2c2c2; border-top-style: solid; transition: all .3s; -webkit-transition: all .3s }
-.layui-form-select dl { display: none; position: absolute; left: 0; top: 42px; padding: 5px 0; z-index: 899; min-width: 100%; border: 1px solid #eee; max-height: 300px; overflow-y: auto; background-color: #fff; border-radius: 2px; box-shadow: 1px 1px 4px rgb(0 0 0 / 8%); box-sizing: border-box }
+.layui-form-select dl { display: none; position: absolute; left: 0; top: 42px; padding: 5px 0; z-index: 1000; min-width: 100%; border: 1px solid #eee; max-height: 300px; overflow-y: auto; background-color: #fff; border-radius: 2px; box-shadow: 1px 1px 4px rgb(0 0 0 / 8%); box-sizing: border-box }
 .layui-form-select dl dd, .layui-form-select dl dt { padding: 0 10px; line-height: 36px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
 .layui-form-select dl dt { font-size: 12px; color: #999 }
 .layui-form-select dl dd { cursor: pointer }

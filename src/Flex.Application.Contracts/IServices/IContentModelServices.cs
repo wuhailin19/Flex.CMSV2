@@ -12,6 +12,7 @@ namespace Flex.Application.Contracts.IServices
     {
         Task<ProblemDetails<string>> Add(AddContentModelDto model);
         Task<ProblemDetails<string>> Delete(string Id);
+        Task<ProblemDetails<string>> GetFormHtml(int ModelId);
         Task<IEnumerable<ContentSelectItemDto>> GetSelectItem();
         Task<IEnumerable<ContentModelColumnDto>> ListAsync();
         Task<ProblemDetails<string>> Update(UpdateContentModelDto model);

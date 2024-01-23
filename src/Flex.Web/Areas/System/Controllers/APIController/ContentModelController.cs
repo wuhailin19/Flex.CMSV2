@@ -3,6 +3,7 @@ using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ContentModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Flex.Web.Areas.System.Controllers.APIController
 {
@@ -29,6 +30,14 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         [HttpGet("GetSelectItem")]
         public async Task<string> GetSelectItem() {
             return Success(await _services.GetSelectItem());
+        }
+        
+        [HttpGet("GetFormHtml/{modelId}")]
+        public async Task<string> GetFormHtml(int modelId) {
+            var result = await _services.GetFormHtml(modelId);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
         }
 
         [HttpPut]
