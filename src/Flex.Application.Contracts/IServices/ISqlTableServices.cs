@@ -11,6 +11,7 @@ namespace Flex.Application.Contracts.IServices
 {
     public interface ISqlTableServices
     {
+        string AlertTableField(string TableName, string oldfiledName, string filedName, string filedtype);
         string CreateContentTableSql(string TableName);
         StringBuilder CreateInsertSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters);
         StringBuilder CreateUpdateSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters);
@@ -18,5 +19,6 @@ namespace Flex.Application.Contracts.IServices
         string DeleteTableField(string TableName, List<sysField> model);
         string InsertTableField(string TableName, sysField model);
         string InsertTableField(string TableName, string filedName, string filedtype);
+        string ReNameTableField(string TableName, string oldfiledName, string filedName);
     }
 }

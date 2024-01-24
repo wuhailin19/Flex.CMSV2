@@ -33,5 +33,16 @@ namespace Flex.Domain.Base
             builder.HasQueryFilter(m => m.StatusCode != StatusCode.Deleted);
             builder.HasKey(c => c.Id);
         }
+        public virtual void ConfigureStringId<T>(EntityTypeBuilder<T> builder) where T : BaseEntity
+        {
+            builder.Property(m => m.AddTime).HasDefaultValueSql("GETDATE()");
+            builder.Property(m => m.AddUserName).HasMaxLength(200);
+            builder.Property(m => m.LastEditUserName).HasMaxLength(200);
+            builder.Property(m => m.StatusCode).HasDefaultValue(StatusCode.Enable);
+            builder.Property(m => m.Version).HasDefaultValue(0);
+            builder.Property(m => m.Id).ValueGeneratedNever(); // ID 不自增
+            builder.HasQueryFilter(m => m.StatusCode != StatusCode.Deleted);
+            builder.HasKey(c => c.Id);
+        }
     }
 }

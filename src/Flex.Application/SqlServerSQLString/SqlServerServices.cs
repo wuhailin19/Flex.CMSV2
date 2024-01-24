@@ -41,6 +41,8 @@ namespace Flex.Application.SqlServerSQLString
                                       " )";
         public string InsertTableField(string TableName, sysField model) => "ALTER TABLE [" + TableName + "]  ADD [" + model.FieldName + "]  " + ConvertDataType(model.FieldType)+";";
         public string InsertTableField(string TableName, string filedName,string filedtype) => "ALTER TABLE [" + TableName + "]  ADD [" + filedName + "]  " + ConvertDataType(filedtype) +";";
+        public string AlertTableField(string TableName,string oldfiledName, string filedName, string filedtype) => "EXEC sp_rename '" + TableName + "." + oldfiledName + "', '"+filedName+"', 'COLUMN';ALTER TABLE "+TableName+" ALTER COLUMN "+filedName+" "+ ConvertDataType(filedtype) + ";";
+        public string ReNameTableField(string TableName,string oldfiledName, string filedName) => "EXEC sp_rename '" + TableName + "." + oldfiledName + "', '"+filedName+"', 'COLUMN';";
         public string DeleteTableField(string TableName, List<sysField> Fields)
         {
             string sql = string.Empty;

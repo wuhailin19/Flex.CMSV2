@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Flex.Domain.Entities
 {
-    public class sysField : BaseIntEntity, EntityContext
+    public class sysField : BaseEntity, EntityContext
     {
         /// <summary>
         /// 字段含义

@@ -43,7 +43,7 @@ namespace Flex.Application.Services
             };
             fieldmodel.FieldAttritude = JsonHelper.ToJson(fieldattritudemodel);
             fieldmodel.ShowInTable = model.ShowInTable;
-            AddIntEntityBasicInfo(fieldmodel);
+            AddStringEntityBasicInfo(fieldmodel);
 
             var contentmodel = await contentresponsity.GetFirstOrDefaultAsync(m => m.Id == fieldmodel.ModelId);
             _unitOfWork.SetTransaction();
@@ -112,7 +112,7 @@ namespace Flex.Application.Services
             model.IsApiField = updateFieldDto.IsApiField;
             model.IsSearch = updateFieldDto.IsSearch;
             model.ShowInTable = updateFieldDto.ShowInTable;
-            UpdateIntEntityBasicInfo(model);
+            UpdateStringEntityBasicInfo(model);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == model.ModelId);
             try
             {
@@ -127,7 +127,7 @@ namespace Flex.Application.Services
                 throw;
             }
         }
-        public async Task<UpdateFieldDto> GetFiledInfoById(int Id)
+        public async Task<UpdateFieldDto> GetFiledInfoById(string Id)
         {
             return _mapper.Map<UpdateFieldDto>(await responsity.GetFirstOrDefaultAsync(m => m.Id == Id));
         }
@@ -144,7 +144,7 @@ namespace Flex.Application.Services
             foreach (var item in delete_list)
             {
                 item.StatusCode = StatusCode.Deleted;
-                UpdateIntEntityBasicInfo(item);
+                UpdateStringEntityBasicInfo(item);
                 softdels.Add(item);
             }
             int modelId = 0;

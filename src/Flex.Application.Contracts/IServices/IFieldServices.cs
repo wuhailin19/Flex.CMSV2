@@ -13,7 +13,7 @@ namespace Flex.Application.Contracts.IServices
     {
         Task<ProblemDetails<string>> Add(AddFieldDto model);
         Task<ProblemDetails<string>> Delete(string Id);
-        Task<UpdateFieldDto> GetFiledInfoById(int Id);
+        Task<UpdateFieldDto> GetFiledInfoById(string Id);
         Task<IEnumerable<FieldColumnDto>> ListAsync(int Id);
         Task<ProblemDetails<string>> Update(UpdateFieldDto updateFieldDto);
     }

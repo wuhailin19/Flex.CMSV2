@@ -33,7 +33,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         //}
 
         [HttpGet("GetFiledInfoById/{Id}")]
-        public async Task<string> GetFiledInfoById(int Id) {
+        public async Task<string> GetFiledInfoById(string Id) {
             return Success(await _services.GetFiledInfoById(Id));
         }
 

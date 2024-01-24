@@ -4,7 +4,7 @@ layui.define(['layer'], function (exports) {
         components : {
             input: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "单行文本",
                 tag: "input",
                 tagIcon: 'input',
@@ -24,7 +24,7 @@ layui.define(['layer'], function (exports) {
             },
             password: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "密码框",
                 tag: "password",
                 tagIcon: 'password',
@@ -43,7 +43,7 @@ layui.define(['layer'], function (exports) {
             },
             select: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "下拉框",
                 tag: "select",
                 tagIcon: 'select',
@@ -79,7 +79,7 @@ layui.define(['layer'], function (exports) {
             },
             radio: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "单选组",
                 tag: "radio",
                 tagIcon: 'radio',
@@ -112,7 +112,7 @@ layui.define(['layer'], function (exports) {
             },
             checkbox: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "复选组",
                 tag: "checkbox",
                 tagIcon: 'checkbox',
@@ -146,7 +146,7 @@ layui.define(['layer'], function (exports) {
             },
             switch: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "开关",
                 tag: "switch",
                 tagIcon: 'switch',
@@ -160,7 +160,7 @@ layui.define(['layer'], function (exports) {
             },
             slider: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "滑块",
                 tag: "slider",
                 tagIcon: 'slider',
@@ -177,7 +177,7 @@ layui.define(['layer'], function (exports) {
             },
             numberInput: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "排序文本框",
                 tag: "numberInput",
                 tagIcon: 'numberInput',
@@ -193,7 +193,7 @@ layui.define(['layer'], function (exports) {
             },
             labelGeneration: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "标签组件",
                 tag: "labelGeneration",
                 tagIcon: 'labelGeneration',
@@ -205,7 +205,7 @@ layui.define(['layer'], function (exports) {
             },
             bottom: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "按钮组件",
                 tag: "bottom",
                 tagIcon: 'bottom',
@@ -220,7 +220,7 @@ layui.define(['layer'], function (exports) {
             },
             sign: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "签名组件",
                 tag: "sign",
                 tagIcon: 'sign',
@@ -234,7 +234,7 @@ layui.define(['layer'], function (exports) {
             },
             iconPicker: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "图标选择器",
                 tag: "iconPicker",
                 tagIcon: 'iconPicker',
@@ -250,7 +250,7 @@ layui.define(['layer'], function (exports) {
             },
             cron: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "Cron表达式",
                 tag: "cron",
                 tagIcon: 'cron',
@@ -266,7 +266,7 @@ layui.define(['layer'], function (exports) {
             },
             date: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "日期",
                 tag: "date",
                 tagIcon: 'date',
@@ -294,7 +294,7 @@ layui.define(['layer'], function (exports) {
             },
             dateRange: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "日期范围",
                 tag: "dateRange",
                 tagIcon: 'dateRange',
@@ -321,7 +321,7 @@ layui.define(['layer'], function (exports) {
             },
             rate: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "评分",
                 tag: "rate",
                 tagIcon: 'rate',
@@ -339,7 +339,7 @@ layui.define(['layer'], function (exports) {
             },
             carousel: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "轮播图",
                 tag: "carousel",
                 tagIcon: 'carousel',
@@ -377,7 +377,7 @@ layui.define(['layer'], function (exports) {
             },
             colorpicker: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "颜色选择器",
                 tag: "colorpicker",
                 tagIcon: 'colorpicker',
@@ -394,7 +394,7 @@ layui.define(['layer'], function (exports) {
             },
             image: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "上传图片",
                 tag: "image",
                 tagIcon: 'image',
@@ -408,7 +408,7 @@ layui.define(['layer'], function (exports) {
             },
             file: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "上传文件",
                 tag: "file",
                 tagIcon: 'file',
@@ -422,7 +422,7 @@ layui.define(['layer'], function (exports) {
             },
             textarea: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "多行文本",
                 tag: "textarea",
                 tagIcon: 'textarea',
@@ -437,7 +437,7 @@ layui.define(['layer'], function (exports) {
             },
             editor: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "编辑器",
                 tag: "editor",
                 tagIcon: 'editor',
@@ -455,7 +455,7 @@ layui.define(['layer'], function (exports) {
             },
             blockquote: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "便签信息",
                 tag: "blockquote",
                 tagIcon: 'blockquote',
@@ -466,7 +466,7 @@ layui.define(['layer'], function (exports) {
             },
             line: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "分割线",
                 tag: "line",
                 tagIcon: 'line',
@@ -477,7 +477,7 @@ layui.define(['layer'], function (exports) {
             },
             spacing: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "间距",
                 tag: "spacing",
                 tagIcon: 'spacing',
@@ -487,7 +487,7 @@ layui.define(['layer'], function (exports) {
             },
             textField: {
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 label: "HTML",
                 tag: "textField",
                 tagIcon: 'textField',
@@ -496,7 +496,7 @@ layui.define(['layer'], function (exports) {
             },
             grid:{
                 id:'-1',
-                index:'-1',
+                index:'-1',uuid:'-1',IsEdit:false,
                 tag: 'grid',
                 span: 2,
                 columns: [

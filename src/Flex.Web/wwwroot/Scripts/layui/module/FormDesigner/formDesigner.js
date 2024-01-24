@@ -1,3 +1,4 @@
+
 /**
  +------------------------------------------------------------------------------------+
  + ayq-layui-form-designer(layui表单设计器)
@@ -111,7 +112,23 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 that.render();
             };
 
+        function generateUUID() {
+            var crypto = window.crypto || window.msCrypto;
 
+            if (crypto) {
+                var buffer = new Uint16Array(8);
+                crypto.getRandomValues(buffer);
+                return (
+                    buffer[0].toString(16) + buffer[1].toString(16) + '-' +
+                    buffer[2].toString(16) + '-' +
+                    buffer[3].toString(16) + '-' +
+                    buffer[4].toString(16) + '-' +
+                    buffer[5].toString(16) + buffer[6].toString(16) + buffer[7].toString(16)
+                );
+            } else {
+                return "-1";
+            }
+        }
         /* 组件定义 */
         Class.prototype.components = {
             input: {
@@ -157,6 +174,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} that 实例对象
                  * */
                 update: function (json, that) {
+                    json.IsEdit = true;
                     var _disabled = json.disabled ? 'disabled=""' : '';
                     var _readonly = json.readonly ? 'readonly=""' : '';
                     var _required = json.required ? 'required' : '';
@@ -197,7 +215,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 jsonData: function (id, index, that) {
                     var _json = JSON.parse(JSON.stringify(formField.components.input));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index; _json.uuid = generateUUID();
                     return _json;
                 },
                 /**
@@ -206,8 +224,10 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} that 实例对象
                  * */
                 property: function (json, that) {
+                
                     that.renderCommonProperty(json); //根据 json 对象获取对应的属性的html
                     that.initCommonProperty(json); //初始化 json 对象获取对应的属性
+
                 },
                 /**
                  * 根据json对象生成html文本
@@ -276,7 +296,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var $block = $('#' + json.id + json.tag);
                     $block.css("width", "calc({0} - 35px)".format(json.width));
                     $block.css("border-left", "5px solid {0}".format(json.colorSelection));
@@ -291,7 +311,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 jsonData: function (id, index, that) {
                     var _json = JSON.parse(JSON.stringify(formField.components.blockquote));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
                 },
                 /**
@@ -354,6 +374,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} that 实例对象
                  * */
                 update: function (json, that) {
+                    json.IsEdit = true;
                     var $block = $('#' + json.id + json.tag);
                     $block.css("height", "{0}px".format(json.whiteSpace));
                 },
@@ -366,7 +387,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 jsonData: function (id, index, that) {
                     var _json = JSON.parse(JSON.stringify(formField.components.spacing));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
                 },
                 /**
@@ -430,7 +451,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var $block = $('#' + json.id + json.tag);
                     $block.css("width", json.width);
                     $block.css("border-color", json.colorSelection);
@@ -448,7 +469,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 jsonData: function (id, index, that) {
                     var _json = JSON.parse(JSON.stringify(formField.components.line));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
                 },
                 /**
@@ -523,7 +544,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var _disabled = json.disabled ? 'disabled=""' : '';
                     var _readonly = json.readonly ? 'readonly=""' : '';
                     var _required = json.required ? 'lay-verify="required"' : '';
@@ -560,7 +581,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.password));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
 
                 },
@@ -641,7 +662,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var _disabled = json.disabled ? 'disabled=""' : '';
                     var _required = json.required ? 'lay-verify="required"' : '';
                     var _disabledClass = json.disabled ? ' layui-disabled' : '';
@@ -676,7 +697,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.textarea));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
 
                 },
@@ -765,7 +786,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var _disabled = json.disabled ? 'disabled=""' : '';
                     var _required = json.required ? 'required' : '';
                     var $block = $('#' + json.id + ' .layui-input-block');
@@ -814,7 +835,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.select));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
                 },
                 /**
@@ -908,7 +929,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var _disabled = json.disabled ? 'disabled=""' : '';
                     var $block = $('#' + json.id + ' .layui-input-block');
                     var $label = $('#' + json.id + ' .layui-form-label');
@@ -947,7 +968,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.radio));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
 
                 },
@@ -1037,7 +1058,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var _disabled = json.disabled ? 'disabled=""' : '';
                     var _required = json.required ? 'lay-verify="otherReq"' : '';
                     var $block = $('#' + json.id + ' .layui-input-block');
@@ -1079,7 +1100,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.checkbox));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
 
                     return _json;
 
@@ -1165,7 +1186,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var _disabled = json.disabled ? 'disabled=""' : '';
                     var _disabledClass = json.disabled ? ' layui-disabled' : '';
                     var $block = $('#' + json.id + ' .layui-input-block');
@@ -1198,7 +1219,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 jsonData: function (id, index, that) {
                     var _json = JSON.parse(JSON.stringify(formField.components.switch));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
 
                 },
@@ -1286,7 +1307,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var $block = $('#' + json.id + ' .layui-input-block');
                     var $label = $('#' + json.id + ' .layui-form-label');
                     $label.empty();
@@ -1321,7 +1342,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.slider));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
 
                 },
@@ -1422,7 +1443,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var _disabledClass = json.disabled ? ' layui-disabled' : '';
                     var _disabledStyle = json.disabled ? ' pointer-events: none;' : '';
                     var _required = json.required ? 'required' : '';
@@ -1466,7 +1487,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.date));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
 
                 },
@@ -1567,7 +1588,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var $block = $('#' + json.id + ' .layui-input-block');
                     var $label = $('#' + json.id + ' .layui-form-label');
                     $label.empty();
@@ -1602,7 +1623,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.rate));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
 
                 },
@@ -1701,7 +1722,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     $('#' + json.tag + json.id).remove();
                     var _html = '';
                     _html += '<div class="layui-carousel" id="{0}">'.format(json.tag + json.id);
@@ -1734,7 +1755,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.carousel));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
 
                 },
@@ -1831,7 +1852,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var $block = $('#' + json.id + ' .layui-input-block');
                     var $label = $('#' + json.id + ' .layui-form-label');
                     $label.empty();
@@ -1869,7 +1890,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.colorpicker));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
 
                 },
@@ -1969,7 +1990,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
 
                 },
                 /**
@@ -1982,7 +2003,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.image));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     //layer.msg('上传组件请在组件内部自行编写代码，或者根据demo在外部编写代码', {
                     //    time: 2000
                     //})
@@ -2073,7 +2094,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
 
                 },
                 /**
@@ -2086,7 +2107,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.image));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     //layer.msg('上传组件请在组件内部自行编写代码，或者根据demo在外部编写代码', {
                     //    time: 2000
                     //})
@@ -2194,7 +2215,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
 
                 },
                 /**
@@ -2207,7 +2228,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.file));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
 
                 },
@@ -2307,7 +2328,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var _disabledClass = json.disabled ? ' layui-disabled' : '';
                     var _disabledStyle = json.disabled ? ' pointer-events: none;' : '';
                     var _required = json.required ? 'required' : '';
@@ -2351,7 +2372,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 jsonData: function (id, index, that) {
                     var _json = JSON.parse(JSON.stringify(formField.components.dateRange));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
 
                 },
@@ -2456,7 +2477,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var $block = $('#' + json.id + ' .layui-input-block');
                     var $label = $('#' + json.id + ' .layui-form-label');
                     if (json.hideLabel) {
@@ -2504,7 +2525,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.bottom));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
                 },
                 /**
@@ -2608,7 +2629,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var _disabled = json.disabled ? 'disabled=""' : '';
                     var _disabledClass = json.disabled ? ' layui-disabled' : '';
                     var $block = $('#' + json.id + ' .layui-input-block');
@@ -2652,7 +2673,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 jsonData: function (id, index, that) {
                     var _json = JSON.parse(JSON.stringify(formField.components.numberInput));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
                 },
                 /**
@@ -2766,7 +2787,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var _disabled = json.disabled ? 'disabled=""' : '';
                     var _disabledClass = json.disabled ? ' layui-disabled' : '';
                     var $block = $('#' + json.id + ' .layui-input-block');
@@ -2826,7 +2847,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.iconPicker));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
                 },
                 /**
@@ -2936,7 +2957,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var _disabled = json.disabled ? 'disabled=""' : '';
                     var _disabledClass = json.disabled ? ' layui-disabled' : '';
                     var _required = json.required ? 'required' : '';
@@ -2989,7 +3010,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 jsonData: function (id, index, that) {
                     var _json = JSON.parse(JSON.stringify(formField.components.cron));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
                 },
                 /**
@@ -3115,7 +3136,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var $block = $('#' + json.id + ' .layui-input-block');
                     var $label = $('#' + json.id + ' .layui-form-label');
                     $block.empty();
@@ -3153,7 +3174,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.sign));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
                     return _json;
                 },
                 /**
@@ -3248,7 +3269,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var $label = $('#' + json.id + ' .layui-form-label');
                     $label.empty();
                     $label.css("width", json.width);
@@ -3290,7 +3311,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID
                     var _json = JSON.parse(JSON.stringify(formField.components.editor));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
 
                     return _json;
 
@@ -3379,7 +3400,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) {
+                update: function (json, that) { json.IsEdit=true;
                     var $block = $('#' + json.id);
                     $block.empty();
                     var colClass = 'layui-col-md6';
@@ -3407,7 +3428,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //分配一个新的ID 默认是一个一行两列的布局对象
                     var _json = JSON.parse(JSON.stringify(formField.components.grid));
                     _json.id = id;
-                    _json.index = index;
+                    _json.index = index;_json.uuid=generateUUID();
 
                     return _json;
 
@@ -3479,6 +3500,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                                 if (_checkid === undefined) {
                                     var findJsonItem = that.findJsonItem(options.data, options.selectItem.id);
                                     findJsonItem.id = value;
+                                    findJsonItem.IsEdit = true;
                                     that.renderForm();
                                 } else {
                                     //提示层
@@ -3829,7 +3851,6 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
         Class.prototype.renderCommonProperty = function (json) {
             $('#columnProperty').empty();
             var _html = '';
-
             for (var key in json) {
                 if (key === 'index') {
                     continue;
@@ -3854,6 +3875,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                         _html += '</div>';
                         break;
                     case 'readonly':
+
                         var yes = "只读";
                         var no = "可写";
                         _html += '<div class="layui-form-item" >';
@@ -4262,6 +4284,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
 
         /* 给字段属性绑定事件 实现双向绑定*/
         Class.prototype.bindPropertyEvent = function (_json) {
+           
             var that = this
                 , options = that.config;
             if (options.data === undefined) {
@@ -4490,6 +4513,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 var _key = data.elem.name;
                 var _value = data.elem.checked ? true : false;
                 var _json = options.selectItem;
+
                 switch (_key) {
                     case 'readonly':
                     case 'disabled':
@@ -4520,6 +4544,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
 
             form.on('radio', function (data) {
                 var _json = options.selectItem;
+
                 switch (_json.tag) {
                     case 'radio':
                         var _index = parseInt($("#" + _json.id + " .layui-input-block div.layui-form-radio").index(data.othis[0]));
@@ -4834,12 +4859,9 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 document.execCommand("Copy"); // 执行
                 layer.msg('复制成功');
             });
-            $('#import-json-code').on('click', function () {
-                var _value = document.getElementById("import-json-code-view").value;
-                options.data = JSON.parse(_value);
+            $('#initformproperty').on('click', function () {
+                options.data = json_data.slice();
                 that.renderForm();
-                layer.closeAll();
-                layer.msg('导入成功');
             });
             //注册导出数据
             $('.exportJson').on('click', function () {
@@ -4887,6 +4909,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 });
 
             });
+
             that.renderForm();
         }
 
@@ -4941,7 +4964,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     },
                     //拖动结束
                     onEnd: function (evt) {
-                        //console.log(evt);
+                        console.log(evt);
                     }
                 };
                 var gridSortable = Sortable.create(el, ops);
@@ -5207,8 +5230,6 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     if (_id.indexOf('image') == 0)
                         images.filter(item => item.id !== _id);
                     options.selectItem = that.deleteJsonItem(options.data, _id);
-                    console.log(files)
-                    console.log(images)
                 }
                 that.renderForm();
             });
@@ -5227,9 +5248,10 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 options.selectItem = that.findJsonItem(options.data, _id);
                 var tag = $(this)[0].dataset.tag;
 
+
                 //显示当前的属性
                 that.components[tag].property(options.selectItem, that);
-                that.bindPropertyEvent();
+                that.bindPropertyEvent(options.selectItem);
                 //移除 #formDesignerForm .layui-form-item 下所有的 active
                 $('#formDesignerForm .layui-form-item').removeClass('active');
                 //给当前元素增加class

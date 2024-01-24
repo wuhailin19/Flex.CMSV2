@@ -5,9 +5,11 @@ using Flex.Domain.Base;
 using Flex.Domain.Dtos.ContentModel;
 using Flex.Domain.Dtos.Field;
 using Flex.EFSqlServer.Repositories;
+using Microsoft.AspNetCore.Http.Metadata;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +19,7 @@ namespace Flex.Application.Services
     public class ContentModelServices : BaseService, IContentModelServices
     {
         ISqlTableServices _sqlServerServices;
-        public ContentModelServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims,ISqlTableServices sqlServerServices)
+        public ContentModelServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, ISqlTableServices sqlServerServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _sqlServerServices = sqlServerServices;
@@ -28,7 +30,7 @@ namespace Flex.Application.Services
             var list = await responsity.GetAllAsync();
             return _mapper.Map<List<ContentModelColumnDto>>(list);
         }
-        
+
         public async Task<IEnumerable<ContentSelectItemDto>> GetSelectItem()
         {
             var responsity = _unitOfWork.GetRepository<SysContentModel>();
@@ -65,7 +67,7 @@ namespace Flex.Application.Services
         {
             var responsity = _unitOfWork.GetRepository<SysContentModel>();
             var filedresponsity = _unitOfWork.GetRepository<sysField>();
-            
+
             var contentmodel = await responsity.GetFirstOrDefaultAsync(m => m.Id == model.Id);
             contentmodel.FormHtmlString = model.FormHtmlString;
             UpdateIntEntityBasicInfo(contentmodel);
@@ -73,15 +75,89 @@ namespace Flex.Application.Services
             try
             {
                 var fileds = JsonHelper.Json<List<FiledHtmlStringDto>>(model.FormHtmlString);
-                string filedinsertstring = string.Empty;
-                if (fileds.Count > 0)
+                var filedlist = new List<sysField>();
+                var insertfiledlist = new List<FiledHtmlStringDto>();
+                var updatefiledlist = new List<FiledHtmlStringDto>();
+                var deletefiledlist = new List<sysField>();
+                var fullfiledlist = await filedresponsity.GetAllAsync(m => m.ModelId == model.Id);
+                #region 对结果集进行分组
+                foreach (var item in fileds)
                 {
-                    foreach (var item in fileds)
+                    if (!fullfiledlist.Any(m => m.Id == item.uuid))
+                        insertfiledlist.Add(item);
+                    else
+                        updatefiledlist.Add(item);
+                }
+                foreach (var item in fullfiledlist)
+                {
+                    if (!fileds.Any(m => m.uuid == item.Id))
+                        deletefiledlist.Add(item);
+                }
+                #endregion
+
+                #region 新增部分
+                if (insertfiledlist.Count > 0)
+                {
+                    string filedinsertstring = string.Empty;
+                    foreach (var item in insertfiledlist)
                     {
+                        var filedmodel = new sysField
+                        {
+                            Name = item.label,
+                            Id = item.uuid,
+                            FieldName = item.id,
+                            FieldType = item.tag,
+                            ModelId = model.Id,
+                            OrderId = item.index
+                        };
+                        AddStringEntityBasicInfo(filedmodel);
+                        filedlist.Add(filedmodel);
                         filedinsertstring += _sqlServerServices.InsertTableField(contentmodel.TableName, item.id, item.tag);
                     }
+                    _unitOfWork.ExecuteSqlCommand(filedinsertstring);
+                    await filedresponsity.InsertAsync(filedlist);
                 }
-                _unitOfWork.ExecuteSqlCommand(filedinsertstring);
+                #endregion
+
+                #region 修改部分
+                if (updatefiledlist.Count > 0)
+                {
+                    string updatestring = string.Empty;
+                    filedlist.Clear();
+                    foreach (var item in updatefiledlist)
+                    {
+                        var updatemodel = fullfiledlist.Where(m => m.Id == item.uuid)
+                            .FirstOrDefault();
+                        if (updatemodel != null)
+                        {
+                            updatestring += _sqlServerServices.AlertTableField(contentmodel.TableName, updatemodel.FieldName, item.id, item.tag);
+
+                            updatemodel.OrderId = item.index;
+                            updatemodel.FieldName = item.id;
+                            updatemodel.Name = item.label;
+                            UpdateStringEntityBasicInfo(updatemodel);
+
+                            filedlist.Add(updatemodel);
+                        }
+                    }
+                    _unitOfWork.ExecuteSqlCommand(updatestring);
+                    filedresponsity.Update(filedlist);
+                }
+                #endregion
+
+                #region 删除部分
+                if (deletefiledlist.Count > 0)
+                {
+                    string deletestring = string.Empty;
+                    foreach (var item in deletefiledlist)
+                    {
+                        item.StatusCode = StatusCode.Deleted;
+                        deletestring += _sqlServerServices.ReNameTableField(contentmodel.TableName,item.FieldName, (item.FieldName+item.Id).Replace("-","_"));
+                    }
+                    _unitOfWork.ExecuteSqlCommand(deletestring);
+                    filedresponsity.Update(deletefiledlist);
+                }
+                #endregion
                 responsity.Update(contentmodel);
                 await _unitOfWork.SaveChangesTranAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());

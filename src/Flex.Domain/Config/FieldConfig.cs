@@ -21,7 +21,7 @@ namespace Flex.Domain.Config
             builder.Property(m => m.ShowInTable).HasDefaultValue(false);
             builder.Property(m => m.OrderId).HasDefaultValue(0);
             builder.Property(m => m.ModelId).HasDefaultValue(0).IsRequired();
-            base.ConfigureIntId(builder);
+            base.ConfigureStringId(builder);
         }
     }
 }

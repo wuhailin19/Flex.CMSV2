@@ -11,7 +11,7 @@ namespace Flex.Domain.Dtos.ContentModel
         [ToolAttr(Fixed = AlignEnum.Left, Types = controlType.checkBox)]
         public controlType checkbox { get; set; }
         [ToolAttr(NameAttr = "编号", AlignAttr = AlignEnum.Center, maxWidth = "80")]
-        public int Id { set; get; }
+        public string Id { set; get; }
         [ToolAttr(NameAttr = "字段名称")]
         public string FieldName { set; get; }
         [ToolAttr(NameAttr = "字段含义")]

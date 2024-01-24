@@ -35,6 +35,11 @@ namespace Flex.Application.Services
             model.AddUser = _claims.UserId;
             model.AddUserName = _claims.UserName;
         }
+        public virtual void AddStringEntityBasicInfo<T>(T model) where T : BaseEntity
+        {
+            model.AddUser = _claims.UserId;
+            model.AddUserName = _claims.UserName;
+        }
         public virtual void UpdateLongEntityBasicInfo<T>(T model) where T : BaseLongEntity
         {
             model.Version += 1;
@@ -43,6 +48,13 @@ namespace Flex.Application.Services
             model.LastEditUserName = _claims.UserName;
         }
         public virtual void UpdateIntEntityBasicInfo<T>(T model) where T : BaseIntEntity
+        {
+            model.Version += 1;
+            model.LastEditDate = Clock.Now;
+            model.LastEditUser = _claims.UserId;
+            model.LastEditUserName = _claims.UserName;
+        }
+        public virtual void UpdateStringEntityBasicInfo<T>(T model) where T : BaseEntity
         {
             model.Version += 1;
             model.LastEditDate = Clock.Now;

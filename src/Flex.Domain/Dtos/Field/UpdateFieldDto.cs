@@ -8,6 +8,6 @@ namespace Flex.Domain.Dtos.Field
 {
     public class UpdateFieldDto: FiledInputBaseDto
     {
-        public int Id { set; get; }
+        public string Id { set; get; }
     }
 }

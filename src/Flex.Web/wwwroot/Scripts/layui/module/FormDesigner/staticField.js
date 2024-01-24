@@ -172,6 +172,9 @@ layui.define(['layer'], function (exports) {
             '            <li class="layui-nav-item">\n' +
             '                <a id="saveJson" href="#" class="saveJson">保存</a>\n' +
             '            </li>\n' +
+            '            <li class="layui-nav-item">\n' +
+            '                <a id="initformproperty" href="#" class="initformproperty">初始化字段</a>\n' +
+            '            </li>\n' +
             '        </ul>\n' +
             '    </div>\n' +
             '    <div class="layui-side">\n' +
