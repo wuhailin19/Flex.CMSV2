@@ -71,15 +71,27 @@ layui.config(
         }
         //监听提交
         form.on('submit(formDemo)', function (data) {
-            var json = render.getFormData();
-            $('input[type=checkbox]').each(function () {
+            $('input[data-group=datastatus]').each(function () {
                 if ($(this)[0].checked)
                     data.field[$(this).attr('name')] = true;
                 else
                     data.field[$(this).attr('name')] = false;
             });
+
+            var json = render.getOptions().data;
+            var checkboxs = json.filter(item => item.tag == "checkbox");
+            if (checkboxs.length > 0) { 
+                for (var i = 0; i < checkboxs.length; i++) {
+                    $('input[data-filedgroup=' + checkboxs[i].id + ']').each(function () {
+                        if ($(this)[0].checked)
+                            data.field[$(this).attr('data-filedgroup')] = $(this).val();
+                        else
+                            data.field[$(this).attr('data-filedgroup')] = "";
+                    });
+                }
+            }
             layer.msg(JSON.stringify(data.field), { icon: 6 });
-            console.log()
+            console.log(data.field)
             return false;
         });
         $('#globalDisable').on('click', function () {

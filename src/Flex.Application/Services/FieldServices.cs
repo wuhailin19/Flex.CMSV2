@@ -119,7 +119,7 @@ namespace Flex.Application.Services
                 responsity.Update(model);
                 await _unitOfWork.SaveChangesAsync();
 
-                await CreateModelHtmlString(contentmodel);
+                //await CreateModelHtmlString(contentmodel);
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)

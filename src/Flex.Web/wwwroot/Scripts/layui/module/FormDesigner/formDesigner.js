@@ -1044,9 +1044,9 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     }
                     for (var i = 0; i < json.options.length; i++) {
                         if (json.options[i].checked) {
-                            _html += '<input type="checkbox" name="{0}[{1}]" title="{2}" checked="" {3} {4}>'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
+                            _html += '<input type="checkbox" data-filedgroup="{0}" name="{0}[{1}]" title="{2}" checked="" {3} {4} value="{1}">'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
                         } else {
-                            _html += '<input type="checkbox" name="{0}[{1}]" title="{2}" {3} {4}>'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
+                            _html += '<input type="checkbox" data-filedgroup="{0}" name="{0}[{1}]" title="{2}" {3} {4} value="{1}">'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
                         }
                     }
                     _html += '</div>';
@@ -1070,9 +1070,9 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //重绘设计区改id下的所有元素
                     for (var i = 0; i < json.options.length; i++) {
                         if (json.options[i].checked) {
-                            _html += '<input type="checkbox" name="{0}[{1}]" title="{2}" checked="" {3} {4}>'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
+                            _html += '<input type="checkbox" data-filedgroup="{0}" name="{0}[{1}]" title="{2}" checked="" {3} {4}>'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
                         } else {
-                            _html += '<input type="checkbox" name="{0}[{1}]" title="{2}" {3} {4}>'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
+                            _html += '<input type="checkbox" data-filedgroup="{0}" name="{0}[{1}]" title="{2}" {3} {4}>'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
                         }
                     }
                     $block.append(_html);
