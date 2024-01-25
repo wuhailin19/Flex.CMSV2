@@ -915,9 +915,9 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     }
                     for (var i = 0; i < json.options.length; i++) {
                         if (json.options[i].checked) {
-                            _html += '<input type="radio" name="{0}" value="{1}" title="{2}" checked="" {3}>'.format(json.id, json.options[i].value, json.options[i].text, _disabled);
+                            _html += '<input type="radio" name="{0}" value="{1}" title="{2}" checked="" {3} lay-filter="formdesigner">'.format(json.id, json.options[i].value, json.options[i].text, _disabled);
                         } else {
-                            _html += '<input type="radio" name="{0}" value="{1}" title="{2}" {3}>'.format(json.id, json.options[i].value, json.options[i].text, _disabled);
+                            _html += '<input type="radio" name="{0}" value="{1}" title="{2}" {3} lay-filter="formdesigner">'.format(json.id, json.options[i].value, json.options[i].text, _disabled);
                         }
                     }
                     _html += '</div>';
@@ -929,7 +929,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                  * @param {object} json 变更后的json属性
                  * @param {object} that 实例对象
                  * */
-                update: function (json, that) { json.IsEdit=true;
+                update: function (json, that) { 
                     var _disabled = json.disabled ? 'disabled=""' : '';
                     var $block = $('#' + json.id + ' .layui-input-block');
                     var $label = $('#' + json.id + ' .layui-form-label');
@@ -950,9 +950,9 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //重绘设计区改id下的所有元素
                     for (var i = 0; i < json.options.length; i++) {
                         if (json.options[i].checked) {
-                            _html += '<input type="radio" name="{0}" value="{1}" title="{2}" checked="" {3}>'.format(json.id, json.options[i].value, json.options[i].text, _disabled);
+                            _html += '<input type="radio" name="{0}" value="{1}" title="{2}" checked="" {3} lay-filter="formdesigner">'.format(json.id, json.options[i].value, json.options[i].text, _disabled);
                         } else {
-                            _html += '<input type="radio" name="{0}" value="{1}" title="{2}" {3}>'.format(json.id, json.options[i].value, json.options[i].text, _disabled);
+                            _html += '<input type="radio" name="{0}" value="{1}" title="{2}" {3} lay-filter="formdesigner">'.format(json.id, json.options[i].value, json.options[i].text, _disabled);
                         }
                     }
                     $block.append(_html);
@@ -4104,9 +4104,9 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                                 }
                             } else {
                                 if (json.options[i].checked) {
-                                    _html += '   <input type="radio" name="{0}"  checked="">'.format(json.tag);
+                                    _html += '   <input type="radio" name="{0}"  checked="" lay-filter="propertybutton">'.format(json.tag);
                                 } else {
-                                    _html += '   <input type="radio" name="{0}">'.format(json.tag);
+                                    _html += '   <input type="radio" name="{0}" lay-filter="propertybutton">'.format(json.tag);
                                 }
 
                             }
@@ -4282,7 +4282,6 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
 
         /* 给字段属性绑定事件 实现双向绑定*/
         Class.prototype.bindPropertyEvent = function (_json) {
-           
             var that = this
                 , options = that.config;
             if (options.data === undefined) {
@@ -4529,7 +4528,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                         _json[_key] = _value;
                         that.components[_json.tag].update(_json, that);
                         that.components[_json.tag].property(_json, that);
-                        form.render();
+                        form.render('checkbox');
                         break;
                     case 'hideLabel':
                         _json[_key] = _value;
@@ -4539,14 +4538,45 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                         break;
                 }
             });
-
-            form.on('radio', function (data) {
+            form.on('radio(propertybutton)', function (data) {
                 var _json = options.selectItem;
-
                 switch (_json.tag) {
                     case 'radio':
                         var _index = parseInt($("#" + _json.id + " .layui-input-block div.layui-form-radio").index(data.othis[0]));
-                       
+                        if ($(data.othis[0]).parent().parent().parent().attr("id") === 'radio') {
+                            _index = parseInt($(data.othis[0]).parent().parent().attr("data-index"));
+                        }
+                        for (var i = 0; i < _json.options.length; i++) {
+                            if (i === _index) {
+                                _json.options[i].checked = true;
+                                continue;
+                            }
+                            _json.options[i].checked = false;
+                        }
+                        that.components[_json.tag].update(_json, that);
+                        break;
+                    case 'select':
+                    case 'carousel':
+                        var _index = parseInt(data.elem.closest('.layui-form-item').dataset.index);
+                        for (var i = 0; i < _json.options.length; i++) {
+                            if (i === _index) {
+                                _json.options[i].checked = true;
+                                _json.startIndex = i;
+                                continue;
+                            }
+                            _json.options[i].checked = false;
+                        }
+                        that.components[_json.tag].update(_json, that);
+                        break;
+                    default:
+                        break;
+                }
+            });
+            form.on('radio(formdesigner)', function (data) {
+                var _json = options.selectItem;
+                switch (_json.tag) {
+                    case 'radio':
+                        var _index = parseInt($("#" + _json.id + " .layui-input-block div.layui-form-radio").index(data.othis[0]));
                         if ($(data.othis[0]).parent().parent().parent().attr("id") === 'radio') {
                             _index = parseInt($(data.othis[0]).parent().parent().attr("data-index"));
                         }
