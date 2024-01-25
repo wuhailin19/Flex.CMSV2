@@ -1,5 +1,6 @@
 ﻿var demojs = [];
 var parent_json = parent.req_Data;
+
 //JavaScript代码区域
 layui.config(
     { base: '/scripts/layui/module/formDesigner/' })
@@ -27,6 +28,30 @@ layui.config(
             },
             complete: function () { }
         })
+
+        var checkboxs = demojs.filter(item => item.tag == "checkbox");
+        var remotedata_checkboxs = checkboxs.filter(item => item.LocalSource == false);
+        if (remotedata_checkboxs.length > 0) {
+            for (var i = 0; i < remotedata_checkboxs.length; i++) {
+                (function (index) {
+                    ajaxHttp({
+                        url: remotedata_checkboxs[index].remoteUrl,
+                        type: remotedata_checkboxs[index].remoteMethod,
+                        async: false,
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.code == 200) {
+                                remotedata_checkboxs[index].options = res.content;
+                            } else {
+                                tips.showFail(res.msg);
+                            }
+                        },
+                        complete: function (res) {
+                        }
+                    })
+                })(i);
+            }
+        }
 
         render = formDesigner.render({
             elem: '#view',
@@ -59,6 +84,7 @@ layui.config(
             });
         }
 
+        var iceEditorObjects = render.geticeEditorObjects();
         var filesData = render.getFiles();
 
         for (var i = 0; i < filesData.length; i++) {
@@ -78,20 +104,37 @@ layui.config(
                     data.field[$(this).attr('name')] = false;
             });
 
-            var json = render.getOptions().data;
-            var checkboxs = json.filter(item => item.tag == "checkbox");
             if (checkboxs.length > 0) { 
                 for (var i = 0; i < checkboxs.length; i++) {
-                    $('input[data-filedgroup=' + checkboxs[i].id + ']').each(function () {
-                        if ($(this)[0].checked)
-                            data.field[$(this).attr('data-filedgroup')] = $(this).val();
-                        else
-                            data.field[$(this).attr('data-filedgroup')] = "";
-                    });
+                    data.field[checkboxs[i].id] = getCheckboxValue(checkboxs[i].id);
                 }
             }
-            layer.msg(JSON.stringify(data.field), { icon: 6 });
-            console.log(data.field)
+            delete data.field["editorValue_forUeditor"];
+            for (let key in iceEditorObjects) {
+                data.field[key] = iceEditorObjects[key].getContent();
+            }
+            data.field.ParentId = parent.currentparentId;
+            ajaxHttp({
+                url: api + 'ColumnContent',
+                type: 'Put',
+                data: JSON.stringify(data.field),
+                async: false,
+                success: function (json) {
+                    if (json.code == 200) {
+                        tips.showSuccess(json.msg);
+                        setTimeout(function () {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                        }, 300)
+                    } else {
+                        tips.showFail(json.msg);
+                    }
+                },
+                complete: function () {
+
+                }
+            })
+            //layer.msg(JSON.stringify(data.field), { icon: 6 });
             return false;
         });
         $('#globalDisable').on('click', function () {

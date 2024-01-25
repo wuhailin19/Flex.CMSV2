@@ -147,13 +147,28 @@ namespace Flex.Application.Services
             table["LastEditDate"] = Clock.Now;
             table["OrderId"] = 0;
         }
+
         public async Task<ProblemDetails<string>> Add(Hashtable table)
         {
-            InitTable(table);
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+            var filedmodel = await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId);
+            var keysToRemove = new List<object>();
+            var white_fileds = defaultFields.ToList();
+            foreach (var item in table.Keys)
+            {
+                if (white_fileds.Any(m => m.Equals(item.ToString(), StringComparison.OrdinalIgnoreCase)))
+                    continue;
+                if (!filedmodel.Any(m => m.FieldName.Equals(item.ToString(), StringComparison.OrdinalIgnoreCase)))
+                    keysToRemove.Add(item);
+            }
+            foreach (var key in keysToRemove)
+            {
+                table.Remove(key);
+            }
+            InitTable(table);
             StringBuilder builder = new StringBuilder();
             SqlParameter[] commandParameters = new SqlParameter[] { };
             builder = _sqlTableServices.CreateInsertSqlString(table, contentmodel.TableName, out commandParameters);
@@ -175,20 +190,31 @@ namespace Flex.Application.Services
         }
         public async Task<ProblemDetails<string>> Update(Hashtable table)
         {
-            InitTable(table);
-
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
-
+            var filedmodel = await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId);
+            var keysToRemove = new List<object>();
+            var white_fileds = defaultFields.ToList();
+            foreach (var item in table.Keys)
+            {
+                if (white_fileds.Any(m => m.Equals(item.ToString(), StringComparison.OrdinalIgnoreCase)))
+                    continue;
+                if (!filedmodel.Any(m => m.FieldName.Equals(item.ToString(), StringComparison.OrdinalIgnoreCase)))
+                    keysToRemove.Add(item);
+            }
+            foreach (var key in keysToRemove)
+            {
+                table.Remove(key);
+            }
+            InitTable(table);
             StringBuilder builder = new StringBuilder();
             SqlParameter[] commandParameters = new SqlParameter[] { };
             builder = _sqlTableServices.CreateUpdateSqlString(table, contentmodel.TableName, out commandParameters);
             try
             {
                 var result = _unitOfWork.ExecuteSqlCommand(builder.ToString(), commandParameters);
-
                 if (result > 0)
                 {
                     await _unitOfWork.SaveChangesAsync();

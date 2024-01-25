@@ -57,7 +57,7 @@ div.edui-box { position: relative; display: -moz-inline-box !important; display:
 .edui-default .edui-menu .edui-popup-content { background-color: white; padding: 3px; }
 .edui-default .edui-menu-body { _width: 150px; min-width: 150px; background: url("../images/sparator_v.png") repeat-y 25px; }
 .edui-default .edui-menuitem { height: 20px; cursor: default; vertical-align: top; }
-.edui-default .edui-menuitem .edui-icon { width: 20px !important; height: 20px !important; background: url(../images/icons.png) 0 -40px; background: url(../images/icons.gif) 0 -40 px\9; }
+.edui-default .edui-menuitem .edui-icon {  background: url(../images/icons.png) 0 -40px; background: url(../images/icons.gif) 0 -40 px\9; }
 .edui-default .edui-menuitem .edui-label { font-size: 12px; line-height: 20px; height: 20px; padding-left: 10px; padding-right: 20px; }
 .edui-default .edui-state-checked .edui-menuitem-body { background: url("../images/icons-all.gif") no-repeat 6px -205px; }
 .edui-default .edui-state-disabled .edui-menuitem-label { color: gray; }
@@ -72,7 +72,7 @@ div.edui-box { position: relative; display: -moz-inline-box !important; display:
 .edui-toolbar .edui-state-checked .edui-combox-body .edui-arrow { border-left: 1px solid #DCAC6C; }
 .edui-toolbar .edui-state-disabled .edui-combox-body { background-color: #F0F0EE; opacity: .3; filter: alpha(opacity = 30); }
 .edui-toolbar .edui-state-opened .edui-combox-body { background-color: white; border: 1px solid gray; }
-.edui-default .edui-toolbar .edui-button .edui-icon, .edui-default .edui-toolbar .edui-menubutton .edui-icon, .edui-default .edui-toolbar .edui-splitbutton .edui-icon { height: 20px !important; width: 20px !important; }
+.edui-default .edui-toolbar .edui-button .edui-icon, .edui-default .edui-toolbar .edui-menubutton .edui-icon, .edui-default .edui-toolbar .edui-splitbutton .edui-icon { padding:5px; }
 .edui-default .edui-toolbar .edui-button .edui-button-wrap { padding: 1px; position: relative; }
 .edui-default .edui-toolbar .edui-button .edui-state-hover .edui-button-wrap { background-color: #fff5d4; padding: 0; border: 1px solid #dcac6c; }
 .edui-default .edui-toolbar .edui-button .edui-state-checked .edui-button-wrap { background-color: #ffe69f; padding: 0; border: 1px solid #dcac6c; }

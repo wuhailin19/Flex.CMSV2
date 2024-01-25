@@ -1044,9 +1044,9 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     }
                     for (var i = 0; i < json.options.length; i++) {
                         if (json.options[i].checked) {
-                            _html += '<input type="checkbox" data-filedgroup="{0}" name="{0}[{1}]" title="{2}" checked="" {3} {4} value="{1}">'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
+                            _html += '<input type="checkbox" name="{0}" title="{2}" checked="" {3} {4} value="{1}">'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
                         } else {
-                            _html += '<input type="checkbox" data-filedgroup="{0}" name="{0}[{1}]" title="{2}" {3} {4} value="{1}">'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
+                            _html += '<input type="checkbox" name="{0}" title="{2}" {3} {4} value="{1}">'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
                         }
                     }
                     _html += '</div>';
@@ -1070,9 +1070,9 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     //重绘设计区改id下的所有元素
                     for (var i = 0; i < json.options.length; i++) {
                         if (json.options[i].checked) {
-                            _html += '<input type="checkbox" data-filedgroup="{0}" name="{0}[{1}]" title="{2}" checked="" {3} {4}>'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
+                            _html += '<input type="checkbox" name="{0}" title="{2}" checked="" {3} {4} value="{1}">'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
                         } else {
-                            _html += '<input type="checkbox" data-filedgroup="{0}" name="{0}[{1}]" title="{2}" {3} {4}>'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
+                            _html += '<input type="checkbox" name="{0}" title="{2}" {3} {4} value="{1}">'.format(json.id, json.options[i].value, json.options[i].text, _disabled, _required);
                         }
                     }
                     $block.append(_html);
@@ -1283,9 +1283,9 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     var _html = '<div id="{0}" class="layui-form-item {2}"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index);
                     _html += '<label class="layui-form-label" style="width: {1}px;{2}">{0}:</label>'.format(json.label, json.labelWidth, _hideLabel);
                     if (json.hideLabel) {
-                        _html += '<div class="layui-input-block layui-form" style="width:calc({0});margin-left: 0px">'.format(json.width);
+                        _html += '<div class="layui-input-block layui-form slider" style="width:calc({0});margin-left: 0px">'.format(json.width);
                     } else {
-                        _html += '<div class="layui-input-block layui-form" style="width:calc({0} - {1}px);margin-left: {1}px">'.format(json.width, json.labelWidth);
+                        _html += '<div class="layui-input-block layui-form slider" style="width:calc({0} - {1}px);margin-left: {1}px">'.format(json.width, json.labelWidth);
                     }
                     _html += '<div id="{0}" class="widget-slider"></div>'.format(json.tag + json.id);
                     _html += '<input name="{0}" type="hidden" value="{1}"></input>'.format(json.id, json.defaultValue);
@@ -2296,7 +2296,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     var _html = '<div id="{0}" class="layui-form-item {2}"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index);
                     _html += '<div class="layui-inline">';
                     _html += '<label class="layui-form-label {0}" style="width: {3}px;{4}"><span style="color:red;">{2}</span>{1}:</label>'.format(json.required ? 'layui-form-required' : '', json.label, json.required ? '*' : '', json.labelWidth, _hideLabel);
-                    _html += '<div class="layui-inline" id="{0}" style="line-height: 40px;{1}">'.format(json.tag + json.id, _disabledStyle);
+                    _html += '<div class="layui-inline daterangebox" id="{0}" style="line-height: 40px;{1}">'.format(json.tag + json.id, _disabledStyle);
                     _html += '<div class="layui-input-inline">';
                     _html += '<input id="start-{0}" lay-verify="{3}" name="start{2}" class="layui-input {1}" autocomplete="off" placeholder="开始日期"></input>'.format(json.tag + json.id, _disabledClass, json.id, _required);
                     _html += '</div>';
@@ -2335,7 +2335,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                     var _hideLabel = json.hideLabel ? 'display: none;' : '';
                     var _html = '<div class="layui-inline">';
                     _html += '<label class="layui-form-label {0}" style="width: {3}px;{4}"><span style="color:red;">{2}</span>{1}:</label>'.format(json.required ? 'layui-form-required' : '', json.label, json.required ? '*' : '', json.labelWidth, _hideLabel);
-                    _html += '<div class="layui-inline" id="{0}" style="line-height: 40px;{1}">'.format(json.tag + json.id, _disabledStyle);
+                    _html += '<div class="layui-inline daterangebox" id="{0}" style="line-height: 40px;{1}">'.format(json.tag + json.id, _disabledStyle);
                     _html += '<div class="layui-input-inline">';
                     _html += '<input id="start-{0}" lay-verify="{3}" name="start{2}" class="layui-input {1}" autocomplete="off" placeholder="开始日期" ></input>'.format(json.tag + json.id, _disabledClass, json.id, _required);
                     _html += '</div>';
@@ -3544,10 +3544,8 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                         });
                         break;
                     case 'options':
-
                         if (json.tag == "checkbox") {
                             if (!json.LocalSource) {
-
                                 form.render('checkbox');
                                 that.addOptionEvent(json);
                                 break;
@@ -4548,6 +4546,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                 switch (_json.tag) {
                     case 'radio':
                         var _index = parseInt($("#" + _json.id + " .layui-input-block div.layui-form-radio").index(data.othis[0]));
+                       
                         if ($(data.othis[0]).parent().parent().parent().attr("id") === 'radio') {
                             _index = parseInt($(data.othis[0]).parent().parent().attr("data-index"));
                         }

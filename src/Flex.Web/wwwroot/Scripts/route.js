@@ -1,6 +1,21 @@
 ﻿var route_href = window.location.href;
 //var api = route_href.split('/')[0] + "//" + route_href.split('/')[2]+"/";
 var api = "http://127.0.01:5003/api/";
+function getCheckboxValue(name) {
+    var arraybox = [];
+    $('input[name=' + name + ']:checked').each(function () {
+        arraybox.push($(this).val());
+    });
+    return arraybox.join(',');
+}
+function setCheckboxValue(name, value) {
+    if (value == '')
+        return;
+    var arraybox = value.split(',');
+    for (var i = 0; i < arraybox.length; i++) {
+        $('input[name=' + name + '][value=' + arraybox[i] + ']').attr('checked', true)
+    }
+}
 var HttpRequest = function (options) {
     var defaults = {
         type: 'get',

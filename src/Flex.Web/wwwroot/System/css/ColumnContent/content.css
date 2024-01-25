@@ -4,6 +4,8 @@
 .layui-tab-content { padding: 0px; padding-top: 80px; overflow: hidden; }
 .layui-form-item .layui-inline { margin-bottom: 0px; margin-right: 0px; }
 .layui-btn-sm { padding: 0 18px; }
+.layui-form-label { width: auto; max-width:80px;}
+.layui-laydate-content td > div{font-size:14px;}
 
 @media screen and (max-width:800px) {
     .layui-form-label { width: 80px; }
