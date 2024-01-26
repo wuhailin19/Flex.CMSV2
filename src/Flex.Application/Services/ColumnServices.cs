@@ -1,7 +1,10 @@
 ﻿using Flex.Application.Contracts.Exceptions;
 using Flex.Core.Attributes;
 using Flex.Domain.Dtos.Column;
+using Flex.Domain.Dtos.Role;
 using Flex.Domain.Entities;
+using Newtonsoft.Json;
+using ShardingCore.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,6 +21,11 @@ namespace Flex.Application.Services
         {
         }
 
+        /// <summary>
+        /// 用于递归
+        /// </summary>
+        /// <param name="fulllist"></param>
+        /// <param name="treeColumns"></param>
         private void AddChildrenToColumn(List<SysColumn> fulllist, List<TreeColumnListDto> treeColumns)
         {
             List<SysColumn> sysColumns = new List<SysColumn>();
@@ -51,7 +59,7 @@ namespace Flex.Application.Services
             };
             return finaltrees;
         }
-        
+
         public async Task<IEnumerable<TreeColumnListDto>> GetManageTreeListAsync()
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
@@ -102,6 +110,27 @@ namespace Flex.Application.Services
                     m.IsAdd = true;
                 });
             }
+            else { 
+                var roleresponsitory= _unitOfWork.GetRepository<SysRole>();
+                var currentrole = _claims.UserRole.ToList();
+                var role = await roleresponsitory.GetAllAsync(m=> currentrole.Contains(m.Id.ToString()));
+
+                foreach (var item in role)
+                {
+                    if (item.DataPermission.IsEmpty())
+                        continue;
+                    var jObj = JsonConvert.DeserializeObject<List<DataPermissionDto>>(item.DataPermission).FirstOrDefault();
+                    if (jObj == null)
+                        continue;
+                    treeColumns.Each(m =>
+                    {
+                        m.IsDelete = jObj.delete.ToList("-").Contains(m.Id.ToString());
+                        m.IsEdit = jObj.edit.ToList("-").Contains(m.Id.ToString());
+                        m.IsSelect = jObj.select.ToList("-").Contains(m.Id.ToString());
+                        m.IsAdd = jObj.add.ToList("-").Contains(m.Id.ToString());
+                    });
+                }
+            }
             return treeColumns;
         }
         public async Task<ProblemDetails<string>> AddColumn(AddColumnDto addColumnDto)
@@ -127,7 +156,7 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
             var Ids = Id.ToList("-");
             var delete_list = adminRepository.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
-            if(delete_list.Count == 0)
+            if (delete_list.Count == 0)
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             try
             {
@@ -162,7 +191,7 @@ namespace Flex.Application.Services
             model.ModelId = updateColumnDto.ModelId;
             model.ExtensionModelId = updateColumnDto.ExtensionModelId;
             model.IsShow = updateColumnDto.IsShow;
-            model.ParentId= updateColumnDto.ParentId;
+            model.ParentId = updateColumnDto.ParentId;
             UpdateIntEntityBasicInfo(model);
             try
             {

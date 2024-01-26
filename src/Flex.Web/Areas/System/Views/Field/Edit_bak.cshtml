@@ -35,7 +35,46 @@
                 <input type="text" name="Name" placeholder="请输入字段含义" autocomplete="off" value="" class="layui-input" lay-verify='required'>
             </div>
         </div>
-        
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">字段名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="FieldName" placeholder="请输入字段名称" autocomplete="off" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">字段描述</label>
+            <div class="layui-input-block">
+                <input type="text" name="FieldDescription" placeholder="请输入字段描述" value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">字段类型</label>
+            <div class="layui-input-block">
+                <select name="FieldType" lay-search="" id="FieldType" required lay-verify="required">
+                    <option value="TextBox">文本框</option>
+                    <option value="Editor">编辑器</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">字段验证</label>
+            <div class="layui-input-block">
+                <input type="checkbox" class="Validation" name="ValidateNumber" title="数字" value="lay-verify='number'">
+                <input type="checkbox" class="Validation" name="ValidateEmpty" title="非空" value="lay-verify='required'">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">宽度</label>
+            <div class="layui-input-block">
+                <input type="text" name="Width" placeholder="请输入宽度" value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">高度</label>
+            <div class="layui-input-block">
+                <input type="text" name="Height" placeholder="请输入高度" value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">接口字段名</label>
             <div class="layui-input-block">

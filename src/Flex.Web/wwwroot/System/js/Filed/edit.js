@@ -44,11 +44,6 @@ layui.config({
 
     var model = {
         Name: parent_json.Name,
-        FieldName: parent_json.FieldName,
-        FieldDescription: parent_json.FieldDescription,
-        FieldType: parent_json.FieldType,
-        Width: currentinfo.Width,
-        Height: currentinfo.Height,
         ApiName: parent_json.ApiName,
         IsApiField: parent_json.IsApiField,
         ValidateNumber: currentinfo.ValidateNumber,

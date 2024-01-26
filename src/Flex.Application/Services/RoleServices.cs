@@ -1,6 +1,9 @@
 ﻿using Consul;
 using Flex.Application.Contracts.Exceptions;
 using Flex.Domain.Dtos.Role;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Tls;
+using ShardingCore.Extensions;
 
 namespace Flex.Application.Services
 {
@@ -48,6 +51,26 @@ namespace Flex.Application.Services
         }
 
         /// <summary>
+        /// 传入roleId获取栏目权限列表
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<DataPermissionDto>> GetDataPermissionListById(int Id)
+        {
+            List<DataPermissionDto> permissionDtos = new List<DataPermissionDto>();
+            var role = await _unitOfWork
+                .GetRepository<SysRole>()
+                .GetAllAsync(m => m.Id == Id);
+            if (role.Count == 0)
+                return permissionDtos;
+            var model = role.FirstOrDefault();
+            if (model.DataPermission.IsEmpty())
+                return permissionDtos;
+            permissionDtos = JsonConvert.DeserializeObject<List<DataPermissionDto>>(model.DataPermission).ToList();
+            return permissionDtos;
+        }
+
+        /// <summary>
         /// 获取角色列表
         /// </summary>
         /// <param name="roleId"></param>
@@ -81,10 +104,10 @@ namespace Flex.Application.Services
             {
                 model.MenuPermissions = role.MenuPermissions;
                 model.LastEditUser = _claims.UserId;
-                model.LastEditUserName= _claims.UserName;
+                model.LastEditUserName = _claims.UserName;
                 model.LastEditDate = Clock.Now;
                 model.Version += 1;
-                
+
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");

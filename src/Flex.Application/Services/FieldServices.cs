@@ -89,25 +89,28 @@ namespace Flex.Application.Services
                 throw;
             }
         }
+        
         public async Task<ProblemDetails<string>> Update(UpdateFieldDto updateFieldDto)
         {
             var model = await responsity.GetFirstOrDefaultAsync(m => m.Id == updateFieldDto.Id);
             model.Name = updateFieldDto.Name;
-            model.FieldName = updateFieldDto.FieldName;
-            model.FieldType = updateFieldDto.FieldType;
-            var validatemodel = new FiledValidateModel()
-            {
-                ValidateEmpty = updateFieldDto.ValidateEmpty,
-                ValidateNumber = updateFieldDto.ValidateNumber
-            };
-            model.Validation = JsonHelper.ToJson(validatemodel);
-            var fieldattritudemodel = new FieldAttritudeModel()
-            {
-                Width = updateFieldDto.Width,
-                Height = updateFieldDto.Height
-            };
-            model.FieldAttritude = JsonHelper.ToJson(fieldattritudemodel);
-            model.FieldDescription = updateFieldDto.FieldDescription;
+            #region 废弃
+            //model.FieldName = updateFieldDto.FieldName;
+            //model.FieldType = updateFieldDto.FieldType;
+            //var validatemodel = new FiledValidateModel()
+            //{
+            //    ValidateEmpty = updateFieldDto.ValidateEmpty,
+            //    ValidateNumber = updateFieldDto.ValidateNumber
+            //};
+            //model.Validation = JsonHelper.ToJson(validatemodel);
+            //var fieldattritudemodel = new FieldAttritudeModel()
+            //{
+            //    Width = updateFieldDto.Width,
+            //    Height = updateFieldDto.Height
+            //};
+            //model.FieldAttritude = JsonHelper.ToJson(fieldattritudemodel);
+            //model.FieldDescription = updateFieldDto.FieldDescription;
+            #endregion
             model.ApiName = updateFieldDto.ApiName;
             model.IsApiField = updateFieldDto.IsApiField;
             model.IsSearch = updateFieldDto.IsSearch;

@@ -21,5 +21,9 @@ namespace Flex.Web.Areas.System.Controllers.ViewController
         {
             return View();
         }
+        public ActionResult DataPermission()
+        {
+            return View();
+        }
     }
 }

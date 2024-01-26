@@ -9,7 +9,7 @@ function getCheckboxValue(name) {
     return arraybox.join(',');
 }
 function setCheckboxValue(name, value) {
-    if (value == '')
+    if (value == null || value == undefined || value == "")
         return;
     var arraybox = value.split(',');
     for (var i = 0; i < arraybox.length; i++) {

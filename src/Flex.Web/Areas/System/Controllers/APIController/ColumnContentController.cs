@@ -24,6 +24,11 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(await _columnServices.GetTableThs(ParentId));
         }
 
+        /// <summary>
+        /// 多选checkbox数据用此接口
+        /// </summary>
+        /// <param name="ParentId"></param>
+        /// <returns></returns>
         [HttpGet("ContentOptions/{ParentId}")]
         [Descriper(IsFilter = true)]
         public async Task<string> GetContentOptions(int ParentId)

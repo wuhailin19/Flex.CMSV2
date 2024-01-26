@@ -14,11 +14,11 @@ namespace Flex.Domain.AutoMapper
     {
         public FiledProfile() {
             CreateMap<sysField, FieldColumnDto>();
-            CreateMap<sysField, UpdateFieldDto>()
-                .ForMember(dest => dest.Width, opt => opt.MapFrom(src => DeserializeAttritude(src.FieldAttritude).Width))
-                .ForMember(dest => dest.Height, opt => opt.MapFrom(src => DeserializeAttritude(src.FieldAttritude).Height))
-                .ForMember(dest => dest.ValidateEmpty, opt => opt.MapFrom(src => DeserializeValidation(src.Validation).ValidateEmpty))
-                .ForMember(dest => dest.ValidateNumber, opt => opt.MapFrom(src => DeserializeValidation(src.Validation).ValidateNumber));
+            CreateMap<sysField, UpdateFieldDto>();
+                //.ForMember(dest => dest.Width, opt => opt.MapFrom(src => DeserializeAttritude(src.FieldAttritude).Width))
+                //.ForMember(dest => dest.Height, opt => opt.MapFrom(src => DeserializeAttritude(src.FieldAttritude).Height))
+                //.ForMember(dest => dest.ValidateEmpty, opt => opt.MapFrom(src => DeserializeValidation(src.Validation).ValidateEmpty))
+                //.ForMember(dest => dest.ValidateNumber, opt => opt.MapFrom(src => DeserializeValidation(src.Validation).ValidateNumber));
               
             CreateMap<AddFieldDto, sysField>();
         }
