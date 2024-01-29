@@ -18,7 +18,7 @@ ajaxHttp({
     dataType:'json',
     success: function (json) {
         if (json.code == 200) {
-            datamission = json.content;
+            datamission = json.content[0];
         }
     },
     complete: function () { }
@@ -102,22 +102,21 @@ layui.config({
             }
         })
         ids += "}]";
-        console.log(ids)
-        $.ajax({
-            url: api + 'RolesPermission/UpdateDataPermission',
+        ajaxHttp({
+            url: api + 'RolePermission/UpdateDataPermission',
             type: 'Post',
             datatype: 'json',
-            data: { Id: parent_json.RolesID, chooseId: ids },
+            data: JSON.stringify({ Id: parent_json.Id, chooseId: ids }),
             async: false,
-            success: function (result) {
-                let json = JSON.parse(result);
+            success: function (json) {
                 if (json.code == 200) {
-                    layer.msg(json.msg, { icon: 6, time: 300 }, function () {
+                    tips.showSuccess(json.msg);
+                    setTimeout(function () {
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭
-                    });
+                    }, 300)
                 } else {
-                    layer.msg(json.msg, { icon: 5, time: 1000 });
+                    tips.showFail(json.msg); 
                 }
             },
             complete: function () {
@@ -134,7 +133,6 @@ layui.config({
     //监听表格复选框选择
     treeTable.on('checkbox(demo_tree)', function (obj) { // layui 内置方法
         var data = insTb.checkStatus();
-        console.log(data)
         if (obj.checked == true) {
             for (var i = 0; i < data.length; i++) {
                 if (data[i].isIndeterminate == false) {
@@ -146,7 +144,6 @@ layui.config({
                 }
             }
         } else {
-            console.log(obj.data)
             setCheckboxstatus(obj.data);
         }
     });

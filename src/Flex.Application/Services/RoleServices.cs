@@ -1,9 +1,12 @@
 ﻿using Consul;
 using Flex.Application.Contracts.Exceptions;
 using Flex.Domain.Dtos.Role;
+using Flex.Domain.Dtos.RoleUrl;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Tls;
 using ShardingCore.Extensions;
+using System.Data;
+using System.Text.RegularExpressions;
 
 namespace Flex.Application.Services
 {
@@ -49,6 +52,33 @@ namespace Flex.Application.Services
                 .GetRepository<SysRole>()
                 .GetAllAsync(m => rolelist.Contains(m.Id.ToString()), null, null, true, false);
         }
+
+        #region 获取单角色
+        /// <summary>
+        /// 获取当前角色实体
+        /// </summary>
+        /// <returns></returns>
+        public async Task<SysRole> GetCurrentRoldDtoAsync()
+        {
+            var currentrole = await _unitOfWork.GetRepository<SysRole>()
+                        .GetFirstOrDefaultAsync(m => _claims.UserRole == m.Id.ToString(), null, null, true, false);
+            if (currentrole is null)
+                return default(SysRole);
+            return currentrole;
+        }
+        /// <summary>
+        /// 获取角色实体ById
+        /// </summary>
+        /// <returns></returns>
+        public async Task<SysRole> GetRoleByIdAsync(string Id)
+        {
+            var currentrole = await _unitOfWork.GetRepository<SysRole>()
+                        .GetFirstOrDefaultAsync(m => Id.Contains(m.Id.ToString()), null, null, true, false);
+            if (currentrole is null)
+                return default(SysRole);
+            return currentrole;
+        }
+        #endregion
 
         /// <summary>
         /// 传入roleId获取栏目权限列表
@@ -103,11 +133,43 @@ namespace Flex.Application.Services
             try
             {
                 model.MenuPermissions = role.MenuPermissions;
-                model.LastEditUser = _claims.UserId;
-                model.LastEditUserName = _claims.UserName;
-                model.LastEditDate = Clock.Now;
-                model.Version += 1;
-
+                UpdateIntEntityBasicInfo(model);
+                _unitOfWork.GetRepository<SysRole>().Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+            }
+            catch
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改失败");
+            }
+        }
+        public async Task<ProblemDetails<string>> UpdateDataPermission(InputRoleDatapermissionDto role)
+        {
+            var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
+            if (model == null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "该角色不存在");
+            try
+            {
+                model.DataPermission = role.chooseId;
+                UpdateIntEntityBasicInfo(model);
+                _unitOfWork.GetRepository<SysRole>().Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+            }
+            catch
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改失败");
+            }
+        }
+        public async Task<ProblemDetails<string>> UpdateApiPermission(InputRoleUrlDto role)
+        {
+            var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
+            if (model == null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "该角色不存在");
+            try
+            {
+                model.UrlPermission = role.sysapis;
+                UpdateIntEntityBasicInfo(model);
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
@@ -146,14 +208,10 @@ namespace Flex.Application.Services
         }
         public async Task<Dictionary<string, List<string>>> PermissionDtosAsync()
         {
-
             var result = new Dictionary<string, List<string>>();
             var RoleList = await _unitOfWork.GetRepository<SysRole>().GetAllAsync();
-
             var UrlList = await _unitOfWork.GetRepository<SysRoleUrl>().GetAllAsync();
-
             //var permisslists = new List<PermissionDto>();
-
             RoleList.Foreach(item =>
             {
                 if (!item.UrlPermission.IsNullOrEmpty())
@@ -173,7 +231,34 @@ namespace Flex.Application.Services
                     //permisslists.Add(model);
                 }
             });
-
+            return result;
+        }
+        private const string pattern = "{[a-zA-Z]+}";
+        public async Task<Dictionary<string, List<string>>> CurrentPermissionDtosAsync()
+        {
+            var result = new Dictionary<string, List<string>>();
+            var RoleList = await GetRoleByRoleIdAsync(_claims.UserRole);
+            var UrlList = await _unitOfWork.GetRepository<SysRoleUrl>().GetAllAsync();
+            //var permisslists = new List<PermissionDto>();
+            foreach (var item in RoleList)
+            {
+                if (item.UrlPermission.IsNotNullOrEmpty())
+                {
+                    var apipermissionmodel = JsonConvert.DeserializeObject<ApiPermissionDto>(item.UrlPermission) ;
+                    var dataapi_list = UrlList.Where(u => apipermissionmodel.dataapi.Split('-').Contains(u.Id.ToString()));
+                    var pageapi_list = UrlList.Where(u => apipermissionmodel.pageapi.Split('-').Contains(u.Id.ToString()));
+                    List<string> strings = new List<string>();
+                    foreach (var dataapi in dataapi_list)
+                    {
+                        strings.Add(Regex.Replace(dataapi.Url, pattern, ""));
+                    }
+                    foreach (var pageapi in pageapi_list)
+                    {
+                        strings.Add(Regex.Replace(pageapi.Url, pattern, ""));
+                    }
+                    result.Add(item.Id.ToString(), strings);
+                }
+            }
             return result;
         }
     }

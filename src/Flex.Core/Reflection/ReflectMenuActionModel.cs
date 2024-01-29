@@ -11,6 +11,7 @@
         /// 动作对应的权限ID
         /// </summary>
         public int ActionId { set; get; }
+        public int Cate { set; get; }
 
         /// <summary>
         /// 动作描述
@@ -19,7 +20,7 @@
         /// <summary>
         /// 请求类型
         /// </summary>
-        public string ActionType { set; get; }
+        public string ActionType { set; get; } = "HttpGet";
         /// <summary>
         /// 是否需要权限
         /// </summary>

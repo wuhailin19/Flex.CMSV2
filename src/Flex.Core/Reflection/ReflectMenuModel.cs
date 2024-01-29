@@ -19,6 +19,7 @@ namespace Flex.Core.Reflection
         /// </summary>
         public string MenuController { set; get; }
 
+
         /// <summary>
         /// 菜单链接
         /// </summary>

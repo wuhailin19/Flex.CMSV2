@@ -34,7 +34,11 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         [HttpGet("GetDataPermissionListById")]
         public async Task<string> GetDataPermissionListById(int Id)
         {
-            return Success(await _roleServices.GetDataPermissionListById(Id));
+            var result = await _roleServices.GetDataPermissionListById(Id);
+            if (result.Count() > 0)
+                return Success(result);
+            else
+                return Fail("无数据");
         }
 
         /// <summary>
@@ -61,6 +65,34 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                 return Success(result.Detail);
             return Fail(result.Detail);
         }
+        
+        /// <summary>
+        /// 修改栏目数据权限
+        /// </summary>
+        /// <param name="roleMenuDto"></param>
+        /// <returns></returns>
+        [HttpPost("UpdateDataPermission")]
+        public async Task<string> UpdateDataPermission(InputRoleDatapermissionDto roledataDto) {
+            var result = await _roleServices.UpdateDataPermission(roledataDto);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+
+        /// <summary>
+        /// 修改接口权限
+        /// </summary>
+        /// <param name="roleMenuDto"></param>
+        /// <returns></returns>
+        [HttpPost("UpdateApiPermission")]
+        public async Task<string> UpdateApiPermission(InputRoleUrlDto roleurlDto)
+        {
+            var result = await _roleServices.UpdateApiPermission(roleurlDto);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+
 
         [HttpDelete("{Id}")]
         public async Task<string> Delete(string Id)

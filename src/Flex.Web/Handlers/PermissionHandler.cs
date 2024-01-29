@@ -34,7 +34,7 @@ namespace Flex.Web.Handlers
                     var expirationtime = DateTime.Parse(context.User.Claims.First(m => m.Type == ClaimTypes.Expiration)?.Value);
                     if (expirationtime < Clock.Now)
                     {
-                        _logger.LogWarning("该用户{0}（{2}），登录已超时，链接{1}", _claims.UserName, nowurl,_claims.UserId);
+                        _logger.LogWarning("该用户{0}（{2}），登录已超时，链接{1}", _claims.UserName, nowurl, _claims.UserId);
                         Fail(context, httpContext, StatusCodes.Status419AuthenticationTimeout);
                         return;
                     }
@@ -50,21 +50,22 @@ namespace Flex.Web.Handlers
                         Fail(context, httpContext);
                         return;
                     }
-                    context.Succeed(requirement);
-                    return;
                     //所有角色对应的接口权限
                     var RoleList = new Dictionary<string, List<string>>();
                     var role_items = userrole.Split(',');
-                    RoleList = await GetRoleUrlDictByRedisOrDataServer(RoleList, role_items);
+                    RoleList = await GetRoleUrlDictByRedisOrDataServer(role_items);
                     
                     var result = false;
                     foreach (var role in role_items)
                     {
                         if (!RoleList.ContainsKey(role))
                             continue;
-                        if (RoleList[role].Contains(nowurl))
+                        foreach (var item in RoleList[role])
                         {
-                            result = true; break;
+                            if (nowurl.Contains(item))
+                            {
+                                result = true; break;
+                            }
                         }
                     }
                     if (result)
@@ -86,8 +87,9 @@ namespace Flex.Web.Handlers
         /// <param name="RoleList"></param>
         /// <param name="role_items"></param>
         /// <returns></returns>
-        private async Task<Dictionary<string, List<string>>> GetRoleUrlDictByRedisOrDataServer(Dictionary<string, List<string>> RoleList, string[] role_items)
+        private async Task<Dictionary<string, List<string>>> GetRoleUrlDictByRedisOrDataServer(string[] role_items)
         {
+            Dictionary<string, List<string>> RoleList=new Dictionary<string, List<string>>();
             //if (RedisHelperFull.RedisConfig.Useable)
             //{
             //    if (await RedisHelperFull.Instance.KeyExistsAsync(RedisKeyRepository.RoleRedisKey))
@@ -118,6 +120,8 @@ namespace Flex.Web.Handlers
             //        roleitems.Add(new HashEntry(item.Key, JsonHelper.ToJson(item.Value)));
             //    }
             //}
+
+            RoleList = await _roleServices.CurrentPermissionDtosAsync();
 
             return RoleList;
         }

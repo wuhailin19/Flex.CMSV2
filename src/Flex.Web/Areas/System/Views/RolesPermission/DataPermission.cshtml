@@ -30,8 +30,8 @@
     <script type="text/html" id="barDemo">
         {{#if(d.Id==-1){}}
         <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="sp">
-        <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="add">
-        <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="edit">
+        <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="ad">
+        <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="ed">
         <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="dp">
         {{#}else{}}
 
@@ -46,19 +46,19 @@
 
         {{#if(d.IsAdd){}}
         @*添加*@
-        {{#if(('-'+datamission.add+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
-        <input type="checkbox" name="add" title="添加" data-id="{{d.Id}}" lay-skin="primary" checked>
+        {{#if(('-'+datamission.ad+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
+        <input type="checkbox" name="ad" title="添加" data-id="{{d.Id}}" lay-skin="primary" checked>
         {{#}else{}}
-        <input type="checkbox" name="add" title="添加" data-id="{{d.Id}}" lay-skin="primary">
+        <input type="checkbox" name="ad" title="添加" data-id="{{d.Id}}" lay-skin="primary">
         {{#}}}
         {{#}}}
 
         {{#if(d.IsEdit){}}
         @*编辑*@
-        {{#if(('-'+datamission.edit+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
-        <input type="checkbox" name="edit" title="编辑" data-id="{{d.Id}}" lay-skin="primary" checked>
+        {{#if(('-'+datamission.ed+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
+        <input type="checkbox" name="ed" title="编辑" data-id="{{d.Id}}" lay-skin="primary" checked>
         {{#}else{}}
-        <input type="checkbox" name="edit" title="编辑" data-id="{{d.Id}}" lay-skin="primary">
+        <input type="checkbox" name="ed" title="编辑" data-id="{{d.Id}}" lay-skin="primary">
         {{#}}}
         {{#}}}
 

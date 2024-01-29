@@ -124,10 +124,10 @@ namespace Flex.Application.Services
                         continue;
                     treeColumns.Each(m =>
                     {
-                        m.IsDelete = jObj.delete.ToList("-").Contains(m.Id.ToString());
-                        m.IsEdit = jObj.edit.ToList("-").Contains(m.Id.ToString());
-                        m.IsSelect = jObj.select.ToList("-").Contains(m.Id.ToString());
-                        m.IsAdd = jObj.add.ToList("-").Contains(m.Id.ToString());
+                        m.IsDelete = jObj.dp.ToList("-").Contains(m.Id.ToString());
+                        m.IsEdit = jObj.ed.ToList("-").Contains(m.Id.ToString());
+                        m.IsSelect = jObj.sp.ToList("-").Contains(m.Id.ToString());
+                        m.IsAdd = jObj.ad.ToList("-").Contains(m.Id.ToString());
                     });
                 }
             }

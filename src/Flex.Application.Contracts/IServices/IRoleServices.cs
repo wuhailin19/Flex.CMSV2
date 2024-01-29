@@ -7,13 +7,18 @@ namespace Flex.Application.Contracts.IServices
     public interface IRoleServices
     {
         Task<ProblemDetails<string>> AddNewRole(InputRoleDto role);
+        Task<Dictionary<string, List<string>>> CurrentPermissionDtosAsync();
         Task<ProblemDetails<string>> Delete(string Id);
         Task<IEnumerable<RoleDto>> GetCurrentAdminRoleByTokenAsync();
+        Task<SysRole> GetCurrentRoldDtoAsync();
         Task<IEnumerable<DataPermissionDto>> GetDataPermissionListById(int Id);
+        Task<SysRole> GetRoleByIdAsync(string Id);
         Task<IEnumerable<SysRole>> GetRoleByRoleIdAsync(string roleId);
         Task<PagedList<RoleColumnDto>> GetRoleListAsync(int page, int pagesize);
         Task<IEnumerable<RoleSelectDto>> GetRoleListAsync();
         Task<Dictionary<string, List<string>>> PermissionDtosAsync();
+        Task<ProblemDetails<string>> UpdateApiPermission(InputRoleUrlDto role);
+        Task<ProblemDetails<string>> UpdateDataPermission(InputRoleDatapermissionDto role);
         Task<ProblemDetails<string>> UpdateMenuPermission(InputRoleMenuDto role);
     }
 }

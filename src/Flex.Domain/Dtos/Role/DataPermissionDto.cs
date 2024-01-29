@@ -8,9 +8,21 @@ namespace Flex.Domain.Dtos.Role
 {
     public class DataPermissionDto
     {
-        public string select { set; get; }
-        public string add { set; get; }
-        public string edit { set; get; }
-        public string delete { set; get; }
+        /// <summary>
+        /// 修改
+        /// </summary>
+        public string sp { set; get; }
+        /// <summary>
+        /// 新增
+        /// </summary>
+        public string ad { set; get; }
+        /// <summary>
+        /// 编辑
+        /// </summary>
+        public string ed { set; get; }
+        /// <summary>
+        /// 删除
+        /// </summary>
+        public string dp { set; get; }
     }
 }
