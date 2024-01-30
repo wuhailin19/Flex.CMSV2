@@ -203,7 +203,7 @@ namespace Flex.Application.Services
             }
             if (list.IsNullOrEmpty())
                 return default;
-            var currentrole =await _roleServices.GetRoleByIdAsync(Id.ToString());
+            var currentrole =await _roleServices.GetRoleByIdAsync(Id);
             if (!string.IsNullOrEmpty(currentrole.MenuPermissions))
                 menus = currentrole.MenuPermissions.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
             else

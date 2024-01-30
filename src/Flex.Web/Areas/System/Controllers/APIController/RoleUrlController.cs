@@ -42,6 +42,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<string> InitRoleUrl()
         {
             var result = await _roleUrlServices.CreateUrlList();

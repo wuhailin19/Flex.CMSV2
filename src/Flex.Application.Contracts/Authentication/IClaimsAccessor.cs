@@ -9,7 +9,7 @@ namespace Flex.Application.Authorize
         string UserName { get; }
         long UserId { get; }
         string UserAccount { get; }
-        string UserRole { get; }
+        int UserRole { get; }
         string UserRoleDisplayName { get; }
         bool IsSystem { get; }
     }

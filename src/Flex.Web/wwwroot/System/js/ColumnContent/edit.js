@@ -71,6 +71,14 @@ layui.config(
                 })(i);
             }
         }
+        var colorpickers = demojs.filter(item => item.tag == "colorpicker");
+        if (colorpickers.length > 0) {
+            for (var i = 0; i < colorpickers.length; i++) {
+                if (model.hasOwnProperty(colorpickers[i].id))
+                    colorpickers[i]["defaultValue"] = model[colorpickers[i].id];
+            }
+        }
+
 
         render = formDesigner.render({
             elem: '#view',
@@ -81,6 +89,7 @@ layui.config(
             viewOrDesign: true,
             //formData: model
         });
+
         for (var i = 0; i < checkboxs.length; i++) {
             setCheckboxValue(checkboxs[i].id, model[checkboxs[i].id]);
         }

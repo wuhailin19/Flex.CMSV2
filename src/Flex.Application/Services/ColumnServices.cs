@@ -14,11 +14,14 @@ using System.Threading.Tasks;
 
 namespace Flex.Application.Services
 {
+
     public class ColumnServices : BaseService, IColumnServices
     {
-        public ColumnServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims)
+        IRoleServices _roleServices;
+        public ColumnServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IRoleServices roleServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
+            _roleServices = roleServices;
         }
 
         /// <summary>
@@ -66,6 +69,7 @@ namespace Flex.Application.Services
             var list = (await coreRespository.GetAllAsync()).OrderBy(m => m.OrderId).ToList();
             if (!_claims.IsSystem)
             {
+
             }
             List<TreeColumnListDto> treeColumns = new List<TreeColumnListDto>();
             list.Where(m => m.ParentId == 0).Each(item =>
@@ -110,25 +114,19 @@ namespace Flex.Application.Services
                     m.IsAdd = true;
                 });
             }
-            else { 
-                var roleresponsitory= _unitOfWork.GetRepository<SysRole>();
-                var currentrole = _claims.UserRole.ToList();
-                var role = await roleresponsitory.GetAllAsync(m=> currentrole.Contains(m.Id.ToString()));
-
-                foreach (var item in role)
+            else
+            {
+                var roleresponsitory = _unitOfWork.GetRepository<SysRole>();
+                var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
+                var jObj = JsonConvert.DeserializeObject<List<DataPermissionDto>>(currentrole.DataPermission).FirstOrDefault();
+                var selectstr = jObj.sp.ToList("-");
+                treeColumns = treeColumns.Where(m => selectstr.Contains(m.Id.ToString())).ToList();
+                foreach (var tc in treeColumns)
                 {
-                    if (item.DataPermission.IsEmpty())
-                        continue;
-                    var jObj = JsonConvert.DeserializeObject<List<DataPermissionDto>>(item.DataPermission).FirstOrDefault();
-                    if (jObj == null)
-                        continue;
-                    treeColumns.Each(m =>
-                    {
-                        m.IsDelete = jObj.dp.ToList("-").Contains(m.Id.ToString());
-                        m.IsEdit = jObj.ed.ToList("-").Contains(m.Id.ToString());
-                        m.IsSelect = jObj.sp.ToList("-").Contains(m.Id.ToString());
-                        m.IsAdd = jObj.ad.ToList("-").Contains(m.Id.ToString());
-                    });
+                    tc.IsDelete = jObj.dp.ToList("-").Contains(tc.Id.ToString());
+                    tc.IsEdit = jObj.ed.ToList("-").Contains(tc.Id.ToString());
+                    tc.IsSelect = jObj.sp.ToList("-").Contains(tc.Id.ToString());
+                    tc.IsAdd = jObj.ad.ToList("-").Contains(tc.Id.ToString());
                 }
             }
             return treeColumns;

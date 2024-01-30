@@ -1,24 +1,34 @@
 ﻿using Flex.Application.Authorize;
+using Flex.Application.Contracts.Exceptions;
+using Flex.Core;
+using Flex.Core.Helper;
+using Flex.Core.Helper.MemoryCacheHelper;
 using Flex.Core.Timing;
+using Flex.Domain.Cache;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using ShardingCore.Extensions;
+using System.Collections.Concurrent;
 using System.Security.Claims;
 
 namespace Flex.Web.Handlers
 {
+
     public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     {
         private readonly IHttpContextAccessor _Context;
         private readonly IClaimsAccessor _claims;
         private readonly IRoleServices _roleServices;
         private readonly ILogger<PermissionHandler> _logger;
-        public PermissionHandler(IHttpContextAccessor Context, IClaimsAccessor claims, IRoleServices roleServices, ILogger<PermissionHandler> logger)
+        private ICaching _caching;
+        public PermissionHandler(IHttpContextAccessor Context, IClaimsAccessor claims, IRoleServices roleServices, ILogger<PermissionHandler> logger, ICaching caching)
         {
             _Context = Context;
             _claims = claims;
             _roleServices = roleServices;
             _logger = logger;
+            _caching = caching;
         }
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
@@ -44,28 +54,21 @@ namespace Flex.Web.Handlers
                         return;
                     }
                     var userrole = _claims.UserRole;
-                    if (userrole.IsNullOrEmpty())
+                    if (userrole == 0)
                     {
                         _logger.LogWarning("该用户{0}（{2}），没有角色信息，链接{1}", _claims.UserName, nowurl, _claims.UserId);
                         Fail(context, httpContext);
                         return;
                     }
                     //所有角色对应的接口权限
-                    var RoleList = new Dictionary<string, List<string>>();
-                    var role_items = userrole.Split(',');
-                    RoleList = await GetRoleUrlDictByRedisOrDataServer(role_items);
-                    
+                    var RoleList = await GetRoleUrlDictByRedisOrDataServer();
+
                     var result = false;
-                    foreach (var role in role_items)
+                    foreach (var item in RoleList[_claims.UserRole])
                     {
-                        if (!RoleList.ContainsKey(role))
-                            continue;
-                        foreach (var item in RoleList[role])
+                        if (nowurl.Contains(item))
                         {
-                            if (nowurl.Contains(item))
-                            {
-                                result = true; break;
-                            }
+                            result = true; break;
                         }
                     }
                     if (result)
@@ -81,15 +84,16 @@ namespace Flex.Web.Handlers
                 }
             }
         }
+
         /// <summary>
         /// 获取角色和权限Url对应关系的字典
         /// </summary>
         /// <param name="RoleList"></param>
         /// <param name="role_items"></param>
         /// <returns></returns>
-        private async Task<Dictionary<string, List<string>>> GetRoleUrlDictByRedisOrDataServer(string[] role_items)
+        private async Task<Dictionary<int, List<string>>> GetRoleUrlDictByRedisOrDataServer()
         {
-            Dictionary<string, List<string>> RoleList=new Dictionary<string, List<string>>();
+            #region 缓存版本
             //if (RedisHelperFull.RedisConfig.Useable)
             //{
             //    if (await RedisHelperFull.Instance.KeyExistsAsync(RedisKeyRepository.RoleRedisKey))
@@ -120,11 +124,21 @@ namespace Flex.Web.Handlers
             //        roleitems.Add(new HashEntry(item.Key, JsonHelper.ToJson(item.Value)));
             //    }
             //}
-
-            RoleList = await _roleServices.CurrentPermissionDtosAsync();
-
+            #endregion
+            var userid = RoleKeys.userRoleKey + _claims.UserRole;
+            Dictionary<int, List<string>> RoleList;
+            if (_caching.Get(userid) == null)
+            {
+                RoleList = await _roleServices.CurrentPermissionDtosAsync();
+                _caching.Set(userid, RoleList, new TimeSpan(1, 0, 0));
+            }
+            else
+            {
+                RoleList = _caching.Get(userid) as Dictionary<int, List<string>>;
+            }
             return RoleList;
         }
+
 
         private void Fail(AuthorizationHandlerContext context, HttpContext httpContext, int statusCodes = StatusCodes.Status401Unauthorized)
         {

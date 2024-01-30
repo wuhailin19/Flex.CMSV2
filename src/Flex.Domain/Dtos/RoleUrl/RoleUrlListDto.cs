@@ -11,6 +11,7 @@ namespace Flex.Domain.Dtos.RoleUrl
         public string Id { set; get; }
         public string Name { set; get; }
         public string Url { set; get; }
+        public string ParentId { set; get; }
         public bool IsSelect { set; get; }
     }
 }

@@ -34,8 +34,11 @@ layui.config({
         headers: httpTokenHeaders,
         where: { cateid: 1 },
         tree: {
-            iconIndex: 14,
-            isPidData: false
+            iconIndex: 1,
+            isPidData: true,
+            openName: 'Name',
+            idName: 'Id',
+            pidName: 'ParentId'
         },
         parseData: function (res) {
             return {
@@ -51,6 +54,7 @@ layui.config({
         }],
         id: 'testReloadf',
         cols: [
+            { type: "checkbox", fixed: "left", sort: false },
             { field: "Name", title: "接口名", sort: false },
             { field: "Url", title: "链接", sort: false },
             { title: "授权", align: "center", sort: false, templet: "#barDemo", fixed: "right" }
@@ -79,7 +83,7 @@ layui.config({
                     $(this).addClass(checkclass);
                 }
             })
-            $('td[data-key=0-2] .layui-form-checkbox').click(function () {
+            $('td[data-key=0-3] .layui-form-checkbox').click(function () {
                 if ($(this).hasClass('layui-form-checked')) {
                     $(this).prev().attr('checked', true);
                 } else {
@@ -96,8 +100,11 @@ layui.config({
         headers: httpTokenHeaders,
         where: { cateid: 2 },
         tree: {
-            iconIndex: 14,
-            isPidData: false
+            iconIndex: 1,
+            isPidData: true,
+            openName: 'Name',
+            idName: 'Id',
+            pidName: 'ParentId'
         },
         parseData: function (res) {
             return {
@@ -113,6 +120,7 @@ layui.config({
             icon: 'layui-icon-tips'
         }],
         cols: [
+            { type: "checkbox", fixed: "left", sort: false },
             { field: "Name", title: "接口名", sort: false },
             { field: "Url", title: "链接", sort: false },
             { title: "授权", align: "center", sort: false, templet: "#barDemos", fixed: "right" }
@@ -142,13 +150,61 @@ layui.config({
                     $(this).addClass(checkclass);
                 }
             })
-            $('td[data-key=0-2] .layui-form-checkbox').click(function () {
+            $('td[data-key=0-3] .layui-form-checkbox').click(function () {
                 if ($(this).hasClass('layui-form-checked')) {
                     $(this).prev().attr('checked', true);
                 } else {
                     $(this).prev().attr('checked', false);
                 }
             })
+        }
+    });
+    function setCheckboxstatus(datas) {
+        if (datas == null || datas == undefined)
+            return;
+        $('.layui-table tr[data-index=' + datas.LAY_INDEX + '] td[data-key=0-3] input[type=checkbox]').next().removeClass('layui-form-checked');
+        $('.layui-table tr[data-index=' + datas.LAY_INDEX + '] td[data-key=0-3] input[type=checkbox]').attr('checked', false);
+        if (datas.children == null || datas.children == undefined) {
+            return;
+        }
+        for (var i = 0; i < datas.children.length; i++) {
+            $('.layui-table tr[data-index=' + datas.children[i].LAY_INDEX + '] td[data-key=0-3] input[type=checkbox]').next().removeClass('layui-form-checked');
+            $('.layui-table tr[data-index=' + datas.children[i].LAY_INDEX + '] td[data-key=0-3] input[type=checkbox]').attr('checked', false);
+            setCheckboxstatus(datas.children[i]);
+        }
+    }
+    //监听表格复选框选择
+    treeTable.on('checkbox(demo_tree)', function (obj) { // layui 内置方法
+        var data = insTb.checkStatus();
+        if (obj.checked == true) {
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].isIndeterminate == false) {
+                    $('.layui-table tr[data-index=' + data[i].LAY_INDEX + '] td[data-key=0-3] input[type=checkbox]').next().addClass('layui-form-checked');
+                    $('.layui-table tr[data-index=' + data[i].LAY_INDEX + '] td[data-key=0-3] input[type=checkbox]').attr('checked', true);
+                } else {
+                    $('.layui-table tr[data-index=' + data[i].LAY_INDEX + '] td[data-key=0-3] input[type=checkbox][name=select]').next().addClass('layui-form-checked');
+                    $('.layui-table tr[data-index=' + data[i].LAY_INDEX + '] td[data-key=0-3] input[type=checkbox][name=select]').attr('checked', true);
+                }
+            }
+        } else {
+            setCheckboxstatus(obj.data);
+        }
+    });
+    //监听表格复选框选择
+    treeTable.on('checkbox(demo_trees)', function (obj) { // layui 内置方法
+        var data = insTbs.checkStatus();
+        if (obj.checked == true) {
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].isIndeterminate == false) {
+                    $('.layui-table tr[data-index=' + data[i].LAY_INDEX + '] td[data-key=0-3] input[type=checkbox]').next().addClass('layui-form-checked');
+                    $('.layui-table tr[data-index=' + data[i].LAY_INDEX + '] td[data-key=0-3] input[type=checkbox]').attr('checked', true);
+                } else {
+                    $('.layui-table tr[data-index=' + data[i].LAY_INDEX + '] td[data-key=0-3] input[type=checkbox][name=select]').next().addClass('layui-form-checked');
+                    $('.layui-table tr[data-index=' + data[i].LAY_INDEX + '] td[data-key=0-3] input[type=checkbox][name=select]').attr('checked', true);
+                }
+            }
+        } else {
+            setCheckboxstatus(obj.data);
         }
     });
     var $ = layui.$, active = {

@@ -9,6 +9,7 @@
         public string? RequestType { get; set; }
         public int MaxErrorCount { get; set; }
         public int Category { get; set; }
+        public string ParentId { get; set; }
         public bool NeedActionPermission { get; set; }
         public int OrderId { get; set; }
     }

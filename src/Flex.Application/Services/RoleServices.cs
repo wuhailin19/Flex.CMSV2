@@ -1,5 +1,6 @@
 ﻿using Consul;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Domain.Cache;
 using Flex.Domain.Dtos.Role;
 using Flex.Domain.Dtos.RoleUrl;
 using Newtonsoft.Json;
@@ -12,9 +13,11 @@ namespace Flex.Application.Services
 {
     public class RoleServices : BaseService, IRoleServices
     {
-        public RoleServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims)
+        ICaching _caching;
+        public RoleServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, ICaching caching)
             : base(unitOfWork, mapper, idWorker, claims)
         {
+            _caching = caching;
         }
 
         /// <summary>
@@ -45,12 +48,11 @@ namespace Flex.Application.Services
         /// </summary>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<SysRole>> GetRoleByRoleIdAsync(string roleId)
+        public async Task<IEnumerable<SysRole>> GetRoleByRoleIdAsync(int roleId)
         {
-            var rolelist = roleId.ToList();
             return await _unitOfWork
                 .GetRepository<SysRole>()
-                .GetAllAsync(m => rolelist.Contains(m.Id.ToString()), null, null, true, false);
+                .GetAllAsync(m => m.Id == roleId);
         }
 
         #region 获取单角色
@@ -61,7 +63,7 @@ namespace Flex.Application.Services
         public async Task<SysRole> GetCurrentRoldDtoAsync()
         {
             var currentrole = await _unitOfWork.GetRepository<SysRole>()
-                        .GetFirstOrDefaultAsync(m => _claims.UserRole == m.Id.ToString(), null, null, true, false);
+                        .GetFirstOrDefaultAsync(m => _claims.UserRole == m.Id, null, null, true, false);
             if (currentrole is null)
                 return default(SysRole);
             return currentrole;
@@ -70,10 +72,10 @@ namespace Flex.Application.Services
         /// 获取角色实体ById
         /// </summary>
         /// <returns></returns>
-        public async Task<SysRole> GetRoleByIdAsync(string Id)
+        public async Task<SysRole> GetRoleByIdAsync(int Id)
         {
             var currentrole = await _unitOfWork.GetRepository<SysRole>()
-                        .GetFirstOrDefaultAsync(m => Id.Contains(m.Id.ToString()), null, null, true, false);
+                        .GetFirstOrDefaultAsync(m => m.Id == Id);
             if (currentrole is null)
                 return default(SysRole);
             return currentrole;
@@ -172,6 +174,7 @@ namespace Flex.Application.Services
                 UpdateIntEntityBasicInfo(model);
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
+                _caching.Remove(RoleKeys.userRoleKey + role.Id);
                 return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
             }
             catch
@@ -233,32 +236,30 @@ namespace Flex.Application.Services
             });
             return result;
         }
-        private const string pattern = "{[a-zA-Z]+}";
-        public async Task<Dictionary<string, List<string>>> CurrentPermissionDtosAsync()
+        private const string pattern = "{[a-zA-Z]+}/?";
+
+        public async Task<Dictionary<int, List<string>>> CurrentPermissionDtosAsync()
         {
-            var result = new Dictionary<string, List<string>>();
-            var RoleList = await GetRoleByRoleIdAsync(_claims.UserRole);
-            var UrlList = await _unitOfWork.GetRepository<SysRoleUrl>().GetAllAsync();
-            //var permisslists = new List<PermissionDto>();
-            foreach (var item in RoleList)
-            {
-                if (item.UrlPermission.IsNotNullOrEmpty())
-                {
-                    var apipermissionmodel = JsonConvert.DeserializeObject<ApiPermissionDto>(item.UrlPermission) ;
-                    var dataapi_list = UrlList.Where(u => apipermissionmodel.dataapi.Split('-').Contains(u.Id.ToString()));
-                    var pageapi_list = UrlList.Where(u => apipermissionmodel.pageapi.Split('-').Contains(u.Id.ToString()));
-                    List<string> strings = new List<string>();
-                    foreach (var dataapi in dataapi_list)
-                    {
-                        strings.Add(Regex.Replace(dataapi.Url, pattern, ""));
-                    }
-                    foreach (var pageapi in pageapi_list)
-                    {
-                        strings.Add(Regex.Replace(pageapi.Url, pattern, ""));
-                    }
-                    result.Add(item.Id.ToString(), strings);
-                }
-            }
+            var result = new Dictionary<int, List<string>>();
+            var currentRole = await GetCurrentRoldDtoAsync();
+            var urlList = await _unitOfWork.GetRepository<SysRoleUrl>().GetAllAsync();
+
+            if (currentRole?.UrlPermission.IsNullOrEmpty() ?? true)
+                return result;
+
+            var apiPermissionModel = JsonConvert.DeserializeObject<ApiPermissionDto>(currentRole.UrlPermission);
+            var dataAndPageApiList = urlList
+                .Where(u => 
+                            apiPermissionModel.dataapi.Split('-').Contains(u.Id.ToString()) ||
+                            apiPermissionModel.pageapi.Split('-').Contains(u.Id.ToString()))
+                .OrderBy(m => m.Url)
+                .ToList();
+
+            var urls = dataAndPageApiList
+                .Select(api => Regex.Replace(api.Url, pattern, ""))
+                .ToList();
+
+            result.Add(currentRole.Id, urls);
             return result;
         }
     }

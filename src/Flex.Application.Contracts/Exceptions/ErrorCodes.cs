@@ -21,19 +21,21 @@ namespace Flex.Application.Contracts.Exceptions
 
         /// <summary> 系统错误 </summary>
         [Description("服务器心情不好，请稍后重试~")]
-         SystemError = 10001,
+         SystemError = 211,
 
         /// <summary> 参数错误 </summary>
         [Description("参数错误")]
-         ParamaterError = 10002,
+         ParamaterError = 212,
 
         /// <summary> 调用受限 </summary>
         [Description("该请求调用受限")]
-         ClientError = 10003,
+        Unauthorized = 213,
 
         /// <summary> 调用受限 </summary>
         [Description("该请求已超时")]
-         ClientTimeoutError = 10004,
+         ClientTimeoutError = 214,
+
+        
 
         /// <summary> 当前数据已被修改 </summary>
         [Description("当前数据已被修改")]
@@ -77,6 +79,10 @@ namespace Flex.Application.Contracts.Exceptions
 
         /// <summary>上传文件格式不正确 </summary>
         [Description("上传文件格式不正确")]
-        UploadTypeDenied = 10015
+        UploadTypeDenied = 10015,
+
+        /// <summary> 登录已超时 </summary>
+        [Description("登录已超时")]
+        LoginTimeoutError = 215,
     }
 }

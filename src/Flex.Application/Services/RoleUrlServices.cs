@@ -3,6 +3,7 @@ using Flex.Core.Reflection;
 using Flex.Domain.Dtos.RoleUrl;
 using Flex.EFSqlServer.Repositories;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Utilities;
 using System.Linq.Expressions;
 using System.Security;
 
@@ -20,7 +21,7 @@ namespace Flex.Application.Services
         }
         public async Task<ApiPermissionDto> GetRoleUrlListById(int Id)
         {
-            var role = await _roleServices.GetRoleByIdAsync(Id.ToString());
+            var role = await _roleServices.GetRoleByIdAsync(Id);
             var jObj = JsonConvert.DeserializeObject<ApiPermissionDto>(role.UrlPermission);
             if (jObj != null)
             {
@@ -42,7 +43,7 @@ namespace Flex.Application.Services
                     expression = expression.And(m => m.Url.Contains(k));
                 var lists = await repository.GetAllAsync(expression);
                 var models = _mapper.Map<List<RoleUrlListDto>>(lists);
-                models.Add(new RoleUrlListDto { Id = "00000", Url = "", Name = "快捷选择" });
+                models.Add(new RoleUrlListDto { Id = "00000", ParentId = "000001", Url = "", Name = "快捷选择" });
                 return models.OrderBy(m => m.Url);
             }
             else
@@ -60,7 +61,7 @@ namespace Flex.Application.Services
                 if (k != null)
                     expression = m => m.Category == cateid.ToInt() && m.Url.Contains(k);
                 var models = _mapper.Map<List<RoleUrlListDto>>(model);
-                models.Add(new RoleUrlListDto { Id = "00000", Url = "", Name = "快捷选择" });
+                models.Add(new RoleUrlListDto { Id = "00000", ParentId = "000001", Url = "", Name = "快捷选择" });
                 return models.OrderBy(m => m.Url);
             }
         }
@@ -69,9 +70,25 @@ namespace Flex.Application.Services
             List<ReflectMenuModel> data = ReflectionUrl.GetALLMenuByReflection();
             var menuapis = new List<SysRoleUrl>();
             DateTime dateTime = DateTime.Now;
-            data.ForEach(item =>
+            foreach (var item in data)
             {
-                item.ActionList.ForEach(items =>
+                SysRoleUrl parentApi = new SysRoleUrl();
+                parentApi.Id = EncryptHelper.MD5(item.MenuLink);
+                parentApi.Url = item.MenuLink.ToLower();
+                parentApi.Name = item.MenuName;
+                parentApi.Description = item.MenuName;
+                parentApi.MaxErrorCount = 10;
+                parentApi.ReturnContent = "";
+                parentApi.NeedActionPermission = false;
+                parentApi.RequestType = null;
+                parentApi.OrderId = 1;
+                parentApi.ParentId = "-1";
+                parentApi.AddUserName = "system";
+                parentApi.AddTime = Clock.Now;
+                parentApi.LastEditDate = Clock.Now;
+                parentApi.LastEditUserName = "system";
+                
+                foreach (var items in item.ActionList)
                 {
                     SysRoleUrl menuApi = new SysRoleUrl();
                     menuApi.Id = EncryptHelper.MD5(item.MenuLink + items.ActionCode);
@@ -83,15 +100,20 @@ namespace Flex.Application.Services
                     menuApi.NeedActionPermission = items.ActionPermission;
                     menuApi.RequestType = items.ActionType;
                     menuApi.Category = items.Cate;
+                    if (parentApi.Category == 0)
+                        parentApi.Category = items.Cate;
                     menuApi.OrderId = 1;
+                    menuApi.ParentId = parentApi.Id;
                     menuApi.AddUserName = "system";
                     menuApi.AddTime = Clock.Now;
                     menuApi.LastEditDate = Clock.Now;
                     menuApi.LastEditUserName = "system";
-                    if (!menuapis.Contains(menuApi))
+                    if (!menuapis.Any(m => m.Id == menuApi.Id))
                         menuapis.Add(menuApi);
-                });
-            });
+                }
+                if (!menuapis.Any(m => m.Id == parentApi.Id))
+                    menuapis.Add(parentApi);
+            }
             try
             {
                 if (Consts.Mode == ProductMode.Dev)

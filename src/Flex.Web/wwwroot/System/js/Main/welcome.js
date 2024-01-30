@@ -18,6 +18,8 @@ function Init(mode_arr) {
             async: false,
             success: function (res) {
                 let box_str = '';
+                if (!res.content)
+                    return;
                 for (var i = 0; i < res.content.length; i++) {
                     box_str += '<div class="boxchart layui-anim hvr-grow-shadow">'
                         + '<div class="iconbox">'
@@ -212,7 +214,7 @@ function chooseShortCut(that) {
         url: api + 'SystemIndex/Update',
         dataType: 'json',
         async: false,
-        data: { mode: mode, Menu: idstr },
+        data: JSON.stringify({ mode: mode, Menu: idstr }),
         type: 'post',
         success: function (json) {
             if (json.code == 200) {
@@ -275,7 +277,7 @@ $('.operation').on('click', 'span', function () {
             url: api + 'SystemIndex/Delete',
             dataType: 'json',
             async: false,
-            data: { mode: mode, Menu: idstr },
+            data: JSON.stringify({ mode: mode, Menu: idstr }),
             type: 'post',
             success: function (json) {
                 if (json.code == 200) {
