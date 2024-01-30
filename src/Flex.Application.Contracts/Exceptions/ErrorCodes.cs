@@ -84,5 +84,9 @@ namespace Flex.Application.Contracts.Exceptions
         /// <summary> 登录已超时 </summary>
         [Description("登录已超时")]
         LoginTimeoutError = 215,
+
+        /// <summary> 未登录 </summary>
+        [Description("未登录")]
+        NotLogin = 216,
     }
 }

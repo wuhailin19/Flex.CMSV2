@@ -69,7 +69,10 @@ namespace Flex.Application.Services
             var list = (await coreRespository.GetAllAsync()).OrderBy(m => m.OrderId).ToList();
             if (!_claims.IsSystem)
             {
-
+                var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
+                var jObj = JsonConvert.DeserializeObject<DataPermissionDto>(currentrole.DataPermission);
+                var selectstr = jObj.sp.ToList("-");
+                list = list.Where(m => selectstr.Contains(m.Id.ToString())).ToList();
             }
             List<TreeColumnListDto> treeColumns = new List<TreeColumnListDto>();
             list.Where(m => m.ParentId == 0).Each(item =>
@@ -116,9 +119,8 @@ namespace Flex.Application.Services
             }
             else
             {
-                var roleresponsitory = _unitOfWork.GetRepository<SysRole>();
                 var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
-                var jObj = JsonConvert.DeserializeObject<List<DataPermissionDto>>(currentrole.DataPermission).FirstOrDefault();
+                var jObj = JsonConvert.DeserializeObject<DataPermissionDto>(currentrole.DataPermission);
                 var selectstr = jObj.sp.ToList("-");
                 treeColumns = treeColumns.Where(m => selectstr.Contains(m.Id.ToString())).ToList();
                 foreach (var tc in treeColumns)

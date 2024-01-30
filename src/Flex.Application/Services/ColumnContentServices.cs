@@ -4,8 +4,11 @@ using Flex.Dapper;
 using Flex.Domain;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
+using Flex.Domain.Dtos.Role;
 using Flex.Domain.HtmlHelper;
 using Microsoft.Data.SqlClient;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Crypto;
 using System.Collections;
 using System.Text;
 
@@ -14,16 +17,17 @@ namespace Flex.Application.Services
     public class ColumnContentServices : BaseService, IColumnContentServices
     {
         MyDBContext _dapperDBContext;
-
+        IRoleServices _roleServices;
         //默认加载字段
         private const string defaultFields = "IsTop,IsRecommend,IsHot,IsShow,IsSilde,SeoTitle,KeyWord,Description" +
             ",Title,Id,AddTime,StatusCode,AddUserName,LastEditUserName,OrderId,ParentId,";
         ISqlTableServices _sqlTableServices;
-        public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext, ISqlTableServices sqlTableServices)
+        public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext, ISqlTableServices sqlTableServices,IRoleServices roleServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _dapperDBContext = dapperDBContext;
             _sqlTableServices = sqlTableServices;
+            _roleServices = roleServices;
         }
         public async Task<IEnumerable<ModelTools<ColumnContentDto>>> GetTableThs(int ParentId)
         {
@@ -227,7 +231,13 @@ namespace Flex.Application.Services
                 throw;
             }
         }
-
+        private async Task<ProblemDetails<string>> CheckPermission(int ParentId) {
+            var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
+            if (currentrole == null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotLogin.GetEnumDescription());
+            var datapermission = JsonConvert.DeserializeObject<DataPermissionDto>(currentrole.DataPermission);
+            return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除条数据");
+        }
         public async Task<ProblemDetails<string>> Delete(int ParentId, string Id)
         {
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);

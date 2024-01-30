@@ -96,12 +96,12 @@ layui.config({
         let ids = '';
         $.each($('input[type=checkbox][name=select_all]'), function () {
             if (ids == '') {
-                ids = "[{" + getCheckListArray($(this).attr('lay-event'));
+                ids = "{" + getCheckListArray($(this).attr('lay-event'));
             } else {
                 ids += "," + getCheckListArray($(this).attr('lay-event'));
             }
         })
-        ids += "}]";
+        ids += "}";
         ajaxHttp({
             url: api + 'RolePermission/UpdateDataPermission',
             type: 'Post',
