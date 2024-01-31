@@ -20,6 +20,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             _fileServices = fileServices;
         }
         [HttpGet("Config")]
+        [AllowAnonymous]
         [Descriper(IsFilter = true)]
         public string Config()
         {

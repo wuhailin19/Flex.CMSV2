@@ -31,6 +31,13 @@
         <input type="checkbox" name="xxx" lay-skin="switch" lay-filter="searchstatusPxy" lay-text="启用|不启用" value="{{d.Id}}">
         {{#}}}
     </script>
+    <script type="text/html" id="tablethstatusPxy">
+        {{#if(d.ShowInTable==true){}}
+        <input type="checkbox" name="xxx" lay-skin="switch" lay-filter="tablethstatusPxy" lay-text="启用|不启用" checked value="{{d.Id}}">
+        {{#}else{}}
+        <input type="checkbox" name="xxx" lay-skin="switch" lay-filter="tablethstatusPxy" lay-text="启用|不启用" value="{{d.Id}}">
+        {{#}}}
+    </script>
     <script type="text/html" id="toolbarDemo">
         <div class="layui-btn-container">
             @* <button class="layui-btn layui-btn-sm" lay-event="addRole">添加</button>

@@ -99,6 +99,8 @@ namespace Flex.Application.Services
                 model.IsApiField = fieldQuickEditDto.IsApiField.CastTo<bool>();
             if (fieldQuickEditDto.IsSearch.IsNotNullOrEmpty())
                 model.IsSearch = fieldQuickEditDto.IsSearch.CastTo<bool>();
+            if (fieldQuickEditDto.ShowInTable.IsNotNullOrEmpty())
+                model.ShowInTable = fieldQuickEditDto.ShowInTable.CastTo<bool>();
             try
             {
                 UpdateStringEntityBasicInfo(model);

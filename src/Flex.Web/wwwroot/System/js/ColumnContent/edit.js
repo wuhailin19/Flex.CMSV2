@@ -78,7 +78,13 @@ layui.config(
                     colorpickers[i]["defaultValue"] = model[colorpickers[i].id];
             }
         }
-
+        var dateRanges = demojs.filter(item => item.tag == "dateRange");
+        if (dateRanges.length > 0) {
+            for (var i = 0; i < dateRanges.length; i++) {
+                if (model.hasOwnProperty(dateRanges[i].id))
+                    dateRanges[i]["dateRangeDefaultValue"] = model[dateRanges[i].id];
+            }
+        }
 
         render = formDesigner.render({
             elem: '#view',
@@ -116,6 +122,7 @@ layui.config(
         }
         var iceEditorObjects = render.geticeEditorObjects();
         var promises = [];
+
         for (let key in iceEditorObjects) {
             let editor = iceEditorObjects[key];
             // 使用 Promise 包装 editor.ready
@@ -164,6 +171,11 @@ layui.config(
             if (checkboxs.length > 0) {
                 for (var i = 0; i < checkboxs.length; i++) {
                     data.field[checkboxs[i].id] = getCheckboxValue(checkboxs[i].id);
+                }
+            }
+            if (dateRanges.length > 0) {
+                for (var i = 0; i < dateRanges.length; i++) {
+                    data.field[dateRanges[i].id] = data.field["start" + dateRanges[i].id] + " - " + data.field["end" + dateRanges[i].id];
                 }
             }
             delete data.field["editorValue_forUeditor"];

@@ -13,5 +13,6 @@ namespace Flex.Domain.Dtos.Field
         public string Id { set; get; }
         public string IsApiField { set; get; }
         public string IsSearch { get; set; }
+        public string ShowInTable { get; set; }
     }
 }

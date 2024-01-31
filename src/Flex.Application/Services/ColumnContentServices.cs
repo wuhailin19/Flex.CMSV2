@@ -36,7 +36,7 @@ namespace Flex.Application.Services
             _roleServices = roleServices;
             _caching = caching;
         }
-        public async Task<IEnumerable<ModelTools<ColumnContentDto>>> GetTableThs(int ParentId)
+        public async Task<ColumnPermissionAndTableHeadDto> GetTableThs(int ParentId)
         {
             var tableths = ModelTools<ColumnContentDto>.getColumnDescList();
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
@@ -52,7 +52,13 @@ namespace Flex.Application.Services
                     field = item.FieldName
                 });
             }
-            return tableths;
+            ColumnPermissionAndTableHeadDto columnPermission = new ColumnPermissionAndTableHeadDto();
+            columnPermission.TableHeads= tableths;
+            columnPermission.IsDelete =await CheckPermission(ParentId,nameof(DataPermissionDto.dp));
+            columnPermission.IsUpdate =await CheckPermission(ParentId, nameof(DataPermissionDto.ed));
+            columnPermission.IsAdd =await CheckPermission(ParentId, nameof(DataPermissionDto.ad));
+            columnPermission.IsSelect =await CheckPermission(ParentId, nameof(DataPermissionDto.sp));
+            return columnPermission;
         }
         public async Task<IEnumerable<ContentOptions>> GetContentOptions(int ParentId)
         {

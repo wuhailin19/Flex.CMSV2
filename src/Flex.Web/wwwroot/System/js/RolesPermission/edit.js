@@ -32,7 +32,7 @@ layui.config({
             datatype: 'json',
             data: JSON.stringify(json),
             async: false,
-            success: function (result) {
+            success: function (json) {
                 if (json.code == 200) {
                     tips.showSuccess(json.msg);
                     setTimeout(function () {

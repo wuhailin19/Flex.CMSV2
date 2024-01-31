@@ -19,7 +19,6 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
         [HttpGet("Column/{ParentId}")]
         [Descriper(IsFilter = true)]
-        [AllowAnonymous]
         public async Task<string> Column(int ParentId)
         {
             return Success(await _columnServices.GetTableThs(ParentId));

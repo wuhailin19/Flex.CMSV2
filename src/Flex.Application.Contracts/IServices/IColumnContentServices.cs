@@ -13,7 +13,7 @@ namespace Flex.Application.Contracts.IServices
         Task<dynamic> GetContentById(int ParentId, int Id);
         Task<IEnumerable<ContentOptions>> GetContentOptions(int ParentId);
         Task<ProblemDetails<string>> GetFormHtml(int ParentId);
-        Task<IEnumerable<ModelTools<ColumnContentDto>>> GetTableThs(int ParentId);
+        Task<ColumnPermissionAndTableHeadDto> GetTableThs(int ParentId);
         Task<Page> ListAsync(int pageindex, int pagesize, int ParentId);
         Task<ProblemDetails<string>> Update(Hashtable table);
     }

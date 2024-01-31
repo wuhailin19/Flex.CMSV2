@@ -52,6 +52,7 @@ layui.config(
                 })(i);
             }
         }
+        var dateRanges = demojs.filter(item => item.tag == "dateRange");
 
         render = formDesigner.render({
             elem: '#view',
@@ -107,6 +108,11 @@ layui.config(
             if (checkboxs.length > 0) { 
                 for (var i = 0; i < checkboxs.length; i++) {
                     data.field[checkboxs[i].id] = getCheckboxValue(checkboxs[i].id);
+                }
+            }
+            if (dateRanges.length > 0) {
+                for (var i = 0; i < dateRanges.length; i++) {
+                    data.field[dateRanges[i].id] = data.field["start" + dateRanges[i].id] + " - " + data.field["end" + dateRanges[i].id];
                 }
             }
             delete data.field["editorValue_forUeditor"];
