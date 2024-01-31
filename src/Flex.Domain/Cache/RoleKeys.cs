@@ -12,5 +12,9 @@ namespace Flex.Domain.Cache
         /// 角色可访问的接口缓存键
         /// </summary>
         public const string userRoleKey = "userRoleUrlKey";
+        /// <summary>
+        /// 角色可访问的栏目数据权限缓存键
+        /// </summary>
+        public const string userDataPermissionKey = "userDataPermissionKey";
     }
 }

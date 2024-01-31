@@ -11,6 +11,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Descriper(Name = "接口地址相关接口")]
     public class RoleUrlController : ApiBaseController
     {
         private IRoleUrlServices _roleUrlServices;
@@ -20,6 +21,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
         [HttpGet("GetRoleUrlListById")]
+        [Descriper(Name = "通过角色Id获取接口列表数据")]
         public async Task<string> GetRoleUrlListById(int Id) {
             var result = await _roleUrlServices.GetRoleUrlListById(Id);
             return Success(result);
@@ -42,7 +44,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [AllowAnonymous]
+        [Descriper(Name = "遍历所有接口地址并存入数据库")]
         public async Task<string> InitRoleUrl()
         {
             var result = await _roleUrlServices.CreateUrlList();

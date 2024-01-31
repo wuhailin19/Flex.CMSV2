@@ -1,5 +1,4 @@
 using Autofac;
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
 using Flex.Application.Aop;
@@ -10,16 +9,12 @@ using Flex.Application.Extensions.Register.AutoMapper;
 using Flex.Application.Extensions.Register.MemoryCacheExtension;
 using Flex.Application.Extensions.Register.WebCoreExtensions;
 using Flex.Application.Extensions.Swagger;
-using Flex.Application.SetupExtensions;
 using Flex.Core.Helper;
 using Flex.Dapper;
 using Flex.EFSqlServer;
 using Flex.EFSqlServer.Register;
 using Flex.Web.Jwt;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using NLog.Web;
 using System.Reflection;
 
@@ -76,13 +71,15 @@ app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
     var context = statusCodeContext.HttpContext;
     if (context.Response.StatusCode == 401 || context.Response.StatusCode == 403)
     {
-        context.Response.StatusCode = ErrorCodes.Unauthorized.ToInt();
+        context.Response.StatusCode = ErrorCodes.NoOperationPermission.ToInt();
         context.Response.ContentType = "application/json";
-        return context.Response.WriteAsync(JsonHelper.ToJson(new Message<string> { code = ErrorCodes.Unauthorized.ToInt(), msg = ErrorCodes.Unauthorized.GetEnumDescription() }));
+        return context.Response.WriteAsync(JsonHelper.ToJson(new Message<string> { code = ErrorCodes.NoOperationPermission.ToInt(), msg = ErrorCodes.NoOperationPermission.GetEnumDescription() }));
     }
 
     return Task.CompletedTask;
 });
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -93,6 +90,9 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{AssemblyName} v1");
         c.RoutePrefix = "swagger";
     });
+    // 初始化接口数据
+    var myService = app.Services.GetRequiredService<IRoleUrlServices>();
+    await myService.CreateUrlList();
 }
 
 app.UseStaticFiles();

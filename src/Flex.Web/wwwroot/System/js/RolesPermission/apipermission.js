@@ -41,6 +41,10 @@ layui.config({
             pidName: 'ParentId'
         },
         parseData: function (res) {
+            if (res.code != 200) {
+                tips.showFail(res.msg);
+                return false;
+            }
             return {
                 "code": res.code,
                 "count": res.content.TotalCount,
@@ -107,6 +111,10 @@ layui.config({
             pidName: 'ParentId'
         },
         parseData: function (res) {
+            if (res.code != 200) {
+                tips.showFail(res.msg);
+                return false;
+            }
             return {
                 "code": res.code,
                 "count": res.content.TotalCount,

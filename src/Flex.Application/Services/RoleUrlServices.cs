@@ -74,7 +74,7 @@ namespace Flex.Application.Services
             {
                 SysRoleUrl parentApi = new SysRoleUrl();
                 parentApi.Id = EncryptHelper.MD5(item.MenuLink);
-                parentApi.Url = item.MenuLink.ToLower();
+                parentApi.Url = item.MenuLink.ToLower().TrimEnd('/');
                 parentApi.Name = item.MenuName;
                 parentApi.Description = item.MenuName;
                 parentApi.MaxErrorCount = 10;

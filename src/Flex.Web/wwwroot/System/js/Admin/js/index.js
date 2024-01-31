@@ -32,13 +32,17 @@ layui.use(['table', 'form'], function () {
         , method: 'Get'
         , cols: [columnlist],
         parseData: function (res) {
+            if (res.code != 200) {
+                tips.showFail(res.msg);
+                return false;
+            }
             return {
                 "code": res.code, //数据状态的字段名称，默认：code
                 "count": res.content.TotalCount, //状态信息的字段名称，默认：msg
                 "data": res.content.Items//数据总数的字段名称，默认：count
             };
-        }
-        , done: function (res, pageindex, count) {
+        },
+         done: function (res, pageindex, count) {
             if (pageindex > 1 && res.data.length === 0) {
                 insTb.reload({
                     page: {

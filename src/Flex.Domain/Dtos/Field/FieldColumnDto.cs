@@ -24,7 +24,7 @@ namespace Flex.Domain.Dtos.ContentModel
         public bool IsApiField { set; get; }
         [ToolAttr(NameAttr = "搜索字段", Toolbar = "#searchstatusPxy", AlignAttr = AlignEnum.Center, maxWidth = "100")]
         public bool IsSearch { set; get; }
-        [ToolAttr(NameAttr = "操作", Toolbar = "#barDemo", AlignAttr = AlignEnum.Center, Fixed = AlignEnum.Right)]
+        [ToolAttr(NameAttr = "操作", Toolbar = "#barDemo", AlignAttr = AlignEnum.Center, Fixed = AlignEnum.Right, HideFiled = true)]
         public controlType Operation { get; set; }
     }
 }

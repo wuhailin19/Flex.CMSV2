@@ -33,7 +33,7 @@ namespace Flex.Web.Handlers
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
             HttpContext httpContext = _Context.HttpContext;
-            if (context.User.Identity.IsAuthenticated)
+            if (context.User.Identity?.IsAuthenticated ?? false)
             {
                 //当前接口链接
                 var nowurl = httpContext.Request.Path.ToString().ToLower();

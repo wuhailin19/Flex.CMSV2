@@ -7,7 +7,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 {
     [Route("api/[controller]")]
     [ApiController]
-
+    [Descriper(Name = "上传接口")]
     public class UploadController : ApiBaseController
     {
         IUploadServices uploadServices;
@@ -20,7 +20,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             _fileServices = fileServices;
         }
         [HttpGet("Config")]
-        [AllowAnonymous]
+        [Descriper(IsFilter = true)]
         public string Config()
         {
             var result = uploadServices.Config();
@@ -29,6 +29,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return result;
         }
         [HttpGet("TestOptions")]
+        [Descriper(IsFilter = true)]
         public string TestOptions()
         {
             List<Options> options = new List<Options>
@@ -43,6 +44,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(options);
         }
         [HttpPost("UploadFile")]
+        [Descriper(Name = "上传文件")]
         public string UploadFile(IFormFileCollection file)
         {
             var result = _fileServices.UploadFilesService(file);
@@ -62,7 +64,8 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
     }
 
-    public class Options { 
+    public class Options
+    {
         public string text { set; get; }
         public string value { set; get; }
         public bool @checked { set; get; }

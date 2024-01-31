@@ -1,7 +1,9 @@
-﻿using Dapper;
+﻿using Consul;
+using Dapper;
 using Flex.Application.Contracts.Exceptions;
 using Flex.Dapper;
 using Flex.Domain;
+using Flex.Domain.Cache;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Role;
@@ -9,7 +11,10 @@ using Flex.Domain.HtmlHelper;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Crypto;
+using ShardingCore.Extensions;
 using System.Collections;
+using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace Flex.Application.Services
@@ -18,16 +23,18 @@ namespace Flex.Application.Services
     {
         MyDBContext _dapperDBContext;
         IRoleServices _roleServices;
+        private ICaching _caching;
         //默认加载字段
         private const string defaultFields = "IsTop,IsRecommend,IsHot,IsShow,IsSilde,SeoTitle,KeyWord,Description" +
             ",Title,Id,AddTime,StatusCode,AddUserName,LastEditUserName,OrderId,ParentId,";
         ISqlTableServices _sqlTableServices;
-        public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext, ISqlTableServices sqlTableServices,IRoleServices roleServices)
+        public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext, ISqlTableServices sqlTableServices, IRoleServices roleServices, ICaching caching)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _dapperDBContext = dapperDBContext;
             _sqlTableServices = sqlTableServices;
             _roleServices = roleServices;
+            _caching = caching;
         }
         public async Task<IEnumerable<ModelTools<ColumnContentDto>>> GetTableThs(int ParentId)
         {
@@ -90,6 +97,8 @@ namespace Flex.Application.Services
 
         public async Task<dynamic> GetContentById(int ParentId, int Id)
         {
+            if (!await CheckPermission(ParentId.ToInt(), nameof(DataPermissionDto.sp)))
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
@@ -154,6 +163,8 @@ namespace Flex.Application.Services
 
         public async Task<ProblemDetails<string>> Add(Hashtable table)
         {
+            if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ad)))
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
@@ -194,6 +205,8 @@ namespace Flex.Application.Services
         }
         public async Task<ProblemDetails<string>> Update(Hashtable table)
         {
+            if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
@@ -231,15 +244,46 @@ namespace Flex.Application.Services
                 throw;
             }
         }
-        private async Task<ProblemDetails<string>> CheckPermission(int ParentId) {
-            var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
-            if (currentrole == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotLogin.GetEnumDescription());
-            var datapermission = JsonConvert.DeserializeObject<DataPermissionDto>(currentrole.DataPermission);
-            return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除条数据");
+        private async Task<bool> CheckPermission(int ParentId, string filedName)
+        {
+            if (_claims.IsSystem)
+                return true;
+            Dictionary<int, Dictionary<string, List<string>>> datapermissionList;
+            var cachekey = RoleKeys.userDataPermissionKey + _claims.UserRole;
+
+            if (_caching.Get(cachekey) == null)
+            {
+                var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
+                if (currentrole == null)
+                    return false;
+                var datapermission = JsonHelper.Json<DataPermissionDto>(currentrole.DataPermission ?? string.Empty);
+                if (datapermission == null)
+                    return false;
+                datapermissionList = new Dictionary<int, Dictionary<string, List<string>>>();
+                Dictionary<string, List<string>> filedvalue = new Dictionary<string, List<string>>
+                {
+                    { nameof(DataPermissionDto.sp), datapermission.sp.ToList("-") },
+                    { nameof(DataPermissionDto.ed), datapermission.ed.ToList("-") },
+                    { nameof(DataPermissionDto.ad), datapermission.ad.ToList("-") },
+                    { nameof(DataPermissionDto.dp), datapermission.dp.ToList("-") }
+                };
+                datapermissionList.Add(_claims.UserRole, filedvalue);
+                _caching.Set(cachekey, datapermissionList, new TimeSpan(1, 0, 0));
+            }
+            else
+            {
+                datapermissionList = _caching.Get(cachekey) as Dictionary<int, Dictionary<string, List<string>>>;
+            }
+            if (datapermissionList == null)
+                return false;
+            if (!datapermissionList.ContainsKey(_claims.UserRole))
+                return false;
+            return datapermissionList[_claims.UserRole][filedName].Contains(ParentId.ToString());
         }
         public async Task<ProblemDetails<string>> Delete(int ParentId, string Id)
         {
+            if (!await CheckPermission(ParentId, nameof(DataPermissionDto.dp)))
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)

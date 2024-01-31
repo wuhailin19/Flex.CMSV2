@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Flex.Core.Attributes;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Flex.Web.Areas.System.Controllers.ViewController
 {
     [Area("System")]
+    [Descriper(Name = "管理员页面")]
     public class AdminController : Controller
     {
         public IActionResult Index()

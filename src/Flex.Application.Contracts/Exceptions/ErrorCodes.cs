@@ -88,5 +88,13 @@ namespace Flex.Application.Contracts.Exceptions
         /// <summary> 未登录 </summary>
         [Description("未登录")]
         NotLogin = 216,
+
+        /// <summary> 没有操作权限 </summary>
+        [Description("没有操作权限")]
+        NoOperationPermission = 217,
+
+        /// <summary> 数据已存在 </summary>
+        [Description("数据已存在")]
+        DataExist = 218,
     }
 }

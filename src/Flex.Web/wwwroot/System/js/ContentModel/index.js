@@ -26,17 +26,15 @@ layui.use('table', function () {
             statusCode: 200
         },
         parseData: function (res) {
+            if (res.code != 200) {
+                tips.showFail(res.msg);
+                return false;
+            }
             return {
                 "code": res.code, //数据状态的字段名称，默认：code
-                "data": res.content//数据总数的字段名称，默认：count
+                "count": res.content.TotalCount, //状态信息的字段名称，默认：msg
+                "data": res.content.Items//数据总数的字段名称，默认：count
             };
-        },
-        error: function (e, msg) {
-        },
-        complete: function (xhr, ts) {
-            if (xhr.responseJSON.code != 200) {
-                tips.showFail(xhr.responseJSON.msg)
-            }
         }
         , done: function (res, pageindex, count) {
             if (pageindex > 1 && res.data.length === 0) {

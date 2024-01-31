@@ -87,18 +87,17 @@ namespace Flex.Application.Services
         /// </summary>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<DataPermissionDto>> GetDataPermissionListById(int Id)
+        public async Task<DataPermissionDto> GetDataPermissionListById(int Id)
         {
-            List<DataPermissionDto> permissionDtos = new List<DataPermissionDto>();
             var role = await _unitOfWork
                 .GetRepository<SysRole>()
                 .GetAllAsync(m => m.Id == Id);
             if (role.Count == 0)
-                return permissionDtos;
+                return default;
             var model = role.FirstOrDefault();
             if (model.DataPermission.IsEmpty())
-                return permissionDtos;
-            permissionDtos = JsonConvert.DeserializeObject<List<DataPermissionDto>>(model.DataPermission).ToList();
+                return default;
+            DataPermissionDto permissionDtos = JsonConvert.DeserializeObject<DataPermissionDto>(model.DataPermission);
             return permissionDtos;
         }
 
@@ -119,55 +118,72 @@ namespace Flex.Application.Services
         {
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.RolesName == role.RolesName);
             if (model != null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "该角色已存在");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataExist.GetEnumDescription());
             var result = await _unitOfWork.GetRepository<SysRole>().InsertAsync(_mapper.Map<SysRole>(role));
             await _unitOfWork.SaveChangesAsync();
             if (result.Entity.Id > 0)
-                return new ProblemDetails<string>(HttpStatusCode.OK, "添加成功");
-            return new ProblemDetails<string>(HttpStatusCode.BadRequest, "添加失败");
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
+            return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+        }
+        public async Task<ProblemDetails<string>> UpdateRole(InputUpdateRoleDto role)
+        {
+            var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.RolesName == role.RolesName);
+            if (model != null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataExist.GetEnumDescription());
+            try
+            {
+                _unitOfWork.GetRepository<SysRole>().Update(_mapper.Map<SysRole>(role));
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+            }
         }
 
         public async Task<ProblemDetails<string>> UpdateMenuPermission(InputRoleMenuDto role)
         {
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
             if (model == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "该角色不存在");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             try
             {
                 model.MenuPermissions = role.MenuPermissions;
                 UpdateIntEntityBasicInfo(model);
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改失败");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             }
         }
         public async Task<ProblemDetails<string>> UpdateDataPermission(InputRoleDatapermissionDto role)
         {
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
             if (model == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "该角色不存在");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             try
             {
                 model.DataPermission = role.chooseId;
                 UpdateIntEntityBasicInfo(model);
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+                _caching.Remove(RoleKeys.userDataPermissionKey + role.Id);
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改失败");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             }
         }
         public async Task<ProblemDetails<string>> UpdateApiPermission(InputRoleUrlDto role)
         {
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
             if (model == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "该角色不存在");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             try
             {
                 model.UrlPermission = role.sysapis;
@@ -175,11 +191,11 @@ namespace Flex.Application.Services
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
                 _caching.Remove(RoleKeys.userRoleKey + role.Id);
-                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改失败");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             }
         }
         public async Task<ProblemDetails<string>> Delete(string Id)
@@ -198,6 +214,8 @@ namespace Flex.Application.Services
                 {
                     item.StatusCode = StatusCode.Deleted;
                     UpdateIntEntityBasicInfo(item);
+                    _caching.Remove(RoleKeys.userDataPermissionKey + item.Id);
+                    _caching.Remove(RoleKeys.userRoleKey + item.Id);
                     softdels.Add(item);
                 }
                 adminRepository.Update(softdels);
@@ -249,11 +267,18 @@ namespace Flex.Application.Services
 
             var apiPermissionModel = JsonConvert.DeserializeObject<ApiPermissionDto>(currentRole.UrlPermission);
             var dataAndPageApiList = urlList
-                .Where(u => 
+                .Where(u =>
                             apiPermissionModel.dataapi.Split('-').Contains(u.Id.ToString()) ||
                             apiPermissionModel.pageapi.Split('-').Contains(u.Id.ToString()))
                 .OrderBy(m => m.Url)
                 .ToList();
+
+            var parentlist = dataAndPageApiList.Where(m => m.ParentId == "-1").ToList();
+            List<string> strings = new List<string>();
+            foreach (var item in parentlist)
+            {
+                dataAndPageApiList.RemoveAll(m => m.ParentId == item.Id);
+            }
 
             var urls = dataAndPageApiList
                 .Select(api => Regex.Replace(api.Url, pattern, ""))

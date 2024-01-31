@@ -1,6 +1,7 @@
 ﻿using Flex.Application.Contracts.IServices;
 using Flex.Application.Jwt;
 using Flex.Core.Admin.Application;
+using Flex.Core.Attributes;
 using Flex.Core.Helper;
 using Flex.Core.Helper.MemoryCacheHelper;
 using Flex.Domain.Dtos.Admin;
@@ -12,6 +13,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Descriper(Name = "登录相关接口", IsFilter = true)]
     public class AccountController : ApiBaseController
     {
         private IAdminServices _services;
@@ -58,7 +60,8 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// 测试获取所有Admin信息
         /// </summary>
         /// <returns></returns>
-        [AllowAnonymous, HttpGet]
+        [HttpGet]
+        [Descriper(IsFilter = true)]
         public async Task<string> GetAsync()
         {
             var list = await _services.GetAsync();
@@ -69,6 +72,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// </summary>
         /// <returns></returns>
         [HttpGet("List")]
+        [Descriper(IsFilter = true)]
         public async Task<string> GetPageListAsync(int pageSize = 10)
         {
             var list = await _services.GetPageListAsync(pageSize);
@@ -80,7 +84,8 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// </summary>
         /// <param name="refreshTokenDto"></param>
         /// <returns></returns>
-        [AllowAnonymous, HttpPut()]
+        [HttpPut()]
+        [Descriper(IsFilter = true)]
         public async Task<string> RefreshAccessTokenAsync([FromBody] AdminRefreshTokenDto refreshTokenDto)
         {
             var admin = await _services.GetAdminValidateInfoAsync(refreshTokenDto.Id);
@@ -105,7 +110,8 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// </summary>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        [AllowAnonymous, HttpGet("EcryptPwd")]
+        [HttpGet("EcryptPwd")]
+        [Descriper(IsFilter = true)]
         public string EcryptPwd(string pwd)
         => EncryptHelper.RsaEncrypt(pwd, RSAHepler.RSAPrivateKey);
         /// <summary>
@@ -114,6 +120,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// <param name="adminLoginDto"></param>
         /// <returns></returns>
         [AllowAnonymous, HttpPost("LoginAsync")]
+        [Descriper(IsFilter = true)]
         public async Task<string> LoginAsync([FromBody] AdminLoginDto adminLoginDto)
         {
             if (!_accountservices.CheckAuthCode(new AuthCodeInputDto()

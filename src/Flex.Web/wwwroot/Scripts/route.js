@@ -48,7 +48,7 @@ var HttpRequest = function (options) {
             o.beforeSend && o.beforeSend();
         },
         success: function (res) {
-            if (res.code != 200) {  tips.showFail(res.msg); return; }
+            if (res.code != 200) { tips.showFail(res.msg); return; }
             o.success && o.success(res);
         },
         complete: function () {
@@ -121,7 +121,8 @@ var tips = {
         })
     },
     message: function (msg, cate) {
-        global_notice[cate](msg);
+        if (global_notice != undefined)
+            global_notice[cate](msg);
     },
     uploadProgressInfo: function (fileid, msg) {
         fileid = fileid + "_progress_box";
@@ -137,7 +138,7 @@ var tips = {
             closeOnHover: false,
             setId: fileid
         }
-        global_notice.info(msg,"", options);
+        global_notice.info(msg, "", options);
     },
     showProgress(fileid, msg) {
         tips.uploadProgressInfo(fileid, msg);

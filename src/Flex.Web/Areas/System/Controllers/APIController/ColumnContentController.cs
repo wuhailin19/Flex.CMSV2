@@ -9,6 +9,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Descriper(Name = "栏目内容相关接口")]
     public class ColumnContentController : ApiBaseController
     {
         private IColumnContentServices _columnServices;
@@ -37,12 +38,14 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
         [HttpGet("ListAsync")]
+        [Descriper(Name = "栏目内容列表分页数据")]
         public async Task<string> ListAsync(int page, int limit, int ParentId)
         {
             return Success(await _columnServices.ListAsync(page, limit, ParentId));
         }
 
         [HttpGet("GetFormHtml/{ParentId}")]
+        [Descriper(Name = "通过ParentId获取模型结构代码")]
         public async Task<string> GetFormHtml(int ParentId)
         {
             var result = await _columnServices.GetFormHtml(ParentId);
@@ -52,12 +55,14 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
         [HttpGet("GetContentById/{ParentId}/{Id}")]
+        [Descriper(Name = "通过ParentId和Id获取栏目内容")]
         public async Task<string> GetContentById(int ParentId, int Id)
         {
             return Success(await _columnServices.GetContentById(ParentId, Id));
         }
 
         [HttpPut]
+        [Descriper(Name = "新增栏目内容")]
         public async Task<string> Add()
         {
             var model = await GetModel<Hashtable>();
@@ -68,6 +73,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
         [HttpPost]
+        [Descriper(Name = "修改栏目内容")]
         public async Task<string> Update()
         {
             var model = await GetModel<Hashtable>();
@@ -78,6 +84,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
         [HttpDelete("{ParentId}/{Id}")]
+        [Descriper(Name = "删除栏目内容")]
         public async Task<string> Delete(int ParentId,string Id)
         {
             var result = await _columnServices.Delete(ParentId,Id);

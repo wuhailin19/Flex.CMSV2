@@ -26,7 +26,7 @@ namespace Flex.Core.Extensions
         public static List<string> ToList(this string strs, string splitstr = ",")
         {
             if (string.IsNullOrEmpty(strs))
-                return default;
+                return new List<string>();
             string[] ids = strs.Split(new string[] { splitstr }, StringSplitOptions.RemoveEmptyEntries);
             return ids.ToList();
         }

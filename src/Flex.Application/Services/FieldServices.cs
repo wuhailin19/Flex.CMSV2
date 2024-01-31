@@ -89,7 +89,28 @@ namespace Flex.Application.Services
                 throw;
             }
         }
-        
+        public async Task<ProblemDetails<string>> QuickEditField(FiledQuickEditDto fieldQuickEditDto)
+        {
+            var fieldRepository = _unitOfWork.GetRepository<sysField>();
+            var model = await fieldRepository.GetFirstOrDefaultAsync(m => m.Id == fieldQuickEditDto.Id);
+            if (model is null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            if (fieldQuickEditDto.IsApiField.IsNotNullOrEmpty())
+                model.IsApiField = fieldQuickEditDto.IsApiField.CastTo<bool>();
+            if (fieldQuickEditDto.IsSearch.IsNotNullOrEmpty())
+                model.IsSearch = fieldQuickEditDto.IsSearch.CastTo<bool>();
+            try
+            {
+                UpdateStringEntityBasicInfo(model);
+                fieldRepository.Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public async Task<ProblemDetails<string>> Update(UpdateFieldDto updateFieldDto)
         {
             var model = await responsity.GetFirstOrDefaultAsync(m => m.Id == updateFieldDto.Id);

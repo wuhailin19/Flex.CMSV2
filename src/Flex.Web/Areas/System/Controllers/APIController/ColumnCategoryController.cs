@@ -8,6 +8,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Descriper(Name = "栏目管理相关接口")]
     public class ColumnCategoryController : ApiBaseController
     {
         private IColumnServices _columnServices;
@@ -33,6 +34,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// </summary>
         /// <returns></returns>
         [HttpGet("ListAsync")]
+        [Descriper(Name = "栏目管理页面列表数据")]
         public async Task<string> ListAsync() {
          return Success(await _columnServices.ListAsync());
         }
@@ -42,6 +44,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// </summary>
         /// <returns></returns>
         [HttpGet("DataPermissionListAsync")]
+        [Descriper(Name = "数据权限分配页面数据")]
         public async Task<string> DataPermissionListAsync()
         {
             var columns = (await _columnServices.ListAsync()).ToList();
@@ -65,6 +68,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetManageTreeListAsync")]
+        [Descriper(Name = "内容管理页面栏目树形数据")]
         public async Task<string> ManageTreeListAsync()
         {
             return Success(await _columnServices.GetManageTreeListAsync());
@@ -82,11 +86,13 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
         [HttpGet("GetColumnById/{Id}")]
+        [Descriper(Name = "通过Id获取栏目数据")]
         public async Task<string> GetColumnById(int Id) {
             return Success(await _columnServices.GetColumnById(Id));
         }
 
         [HttpPut]
+        [Descriper(Name = "新增栏目")]
         public async Task<string> AddColumn() {
             var validate = await ValidateModel<AddColumnDto>();
             if (!validate.IsSuccess)
@@ -98,6 +104,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
         
         [HttpPost]
+        [Descriper(Name = "修改栏目")]
         public async Task<string> UpdateColumn() {
             var validate = await ValidateModel<UpdateColumnDto>();
             if (!validate.IsSuccess)
@@ -109,6 +116,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
         [HttpDelete("{Id}")]
+        [Descriper(Name = "删除栏目")]
         public async Task<string> Delete(string Id)
         {
             var result = await _columnServices.Delete(Id);

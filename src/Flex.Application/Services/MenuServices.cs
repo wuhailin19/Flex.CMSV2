@@ -87,10 +87,10 @@ namespace Flex.Application.Services
         /// </summary>
         /// <param name="mode"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<MenuColumnDto>?> getMenuShortcutAsync(string mode)
+        public async Task<IEnumerable<MenuColumnDto>> getMenuShortcutAsync(string mode)
         {
             IEnumerable<SysMenu> list = await GetAllMenuList();
-            IEnumerable<SysMenu> menu_list = null;
+            IEnumerable<SysMenu> menu_list = new List<SysMenu>();
             //超管直接返回所有菜单
             if (_claims.IsSystem)
             {
@@ -100,18 +100,18 @@ namespace Flex.Application.Services
             {
                 var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
                 if (currentrole is null)
-                    return default(IEnumerable<MenuColumnDto>);
+                    return default;
                 menu_list = list.Where(m => m.isMenu == false && currentrole.MenuPermissions.ToList().Contains(m.Id.ToString()) && m.ShowStatus == true);
             }
             if (menu_list.IsNullOrEmpty())
-                return default(IEnumerable<MenuColumnDto>);
+                return default;
 
             var systemindexset = await _systemIndexSetServices.GetbyCurrentIdAsync();
             switch (mode)
             {
                 case "1":
                     if (systemindexset.SystemMenu.IsNullOrEmpty())
-                        return default(IEnumerable<MenuColumnDto>);
+                        return default;
                     return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.SystemMenu.ToList().Contains(m.Id.ToString())));
                 case "3":
                     if (systemindexset.SystemMenu.IsNullOrEmpty())
@@ -119,7 +119,7 @@ namespace Flex.Application.Services
                     return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.SystemMenu.ToList().Contains(m.Id.ToString()) == false));
                 case "2":
                     if (systemindexset.SiteMenu.IsNullOrEmpty())
-                        return default(IEnumerable<MenuColumnDto>);
+                        return default;
                     return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.SiteMenu.ToList().Contains(m.Id.ToString())));
                 case "4":
                     if (systemindexset.SiteMenu.IsNullOrEmpty())
@@ -127,14 +127,14 @@ namespace Flex.Application.Services
                     return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.SiteMenu.ToList().Contains(m.Id.ToString()) == false));
                 case "7":
                     if (systemindexset.FileManage.IsNullOrEmpty())
-                        return default(IEnumerable<MenuColumnDto>);
+                        return default;
                     return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.FileManage.ToList().Contains(m.Id.ToString())));
                 case "8":
                     if (systemindexset.FileManage.IsNullOrEmpty())
                         return _mapper.Map<List<MenuColumnDto>>(menu_list);
                     return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.FileManage.ToList().Contains(m.Id.ToString()) == false));
             }
-            return default(IEnumerable<MenuColumnDto>);
+            return default;
         }
         /// <summary>
         /// 获取当前角色菜单树

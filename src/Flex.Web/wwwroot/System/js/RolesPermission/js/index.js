@@ -26,6 +26,10 @@ layui.use('table', function () {
             statusCode: 200
         },
         parseData: function (res) {
+            if (res.code != 200) {
+                tips.showFail(res.msg);
+                return false;
+            }
             return {
                 "code": res.code, //数据状态的字段名称，默认：code
                 "count": res.content.TotalCount, //状态信息的字段名称，默认：msg
