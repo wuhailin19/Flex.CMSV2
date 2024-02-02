@@ -1,4 +1,5 @@
-﻿var lock = false;
+﻿
+var lock = false;
 var parent_json = parent.req_Data;
 //步骤和动作配置
 var actArray = new Array();
@@ -63,6 +64,17 @@ function init() {
     var stepRole = '';
     var stepMan = '';
 
+    var stepjson = JSON.parse(parent_json.stepDesign);
+    stepjson.forEach(function (obj, index, array) {
+        let currentkey = Object.keys(obj)[0];
+        stepArray[currentkey] = obj[currentkey];
+    })
+    var actjson = JSON.parse(parent_json.actDesign);
+    actjson.forEach(function (obj, index, array) {
+        let currentkey = Object.keys(obj)[0];
+        actArray[currentkey] = obj[currentkey];
+    })
+
     //解决设计器初始化action丢失
     $("tspan").each(function () {
         var ns = actionNS.split(',');
@@ -102,7 +114,7 @@ function openEditFlowStepDialog(flowId, step, stepName) {
         , scrollbar: false
         , shade: [0.3, '#393D49']
         , maxmin: false
-        , content: api + '/workflow/EditWorkflowManager?flowId=' + flowId + '&stepDesc=' + step
+        , content: '/system/workflow/EditWorkflowManager?flowId=' + flowId + '&stepDesc=' + step
         , area: ['850px', '80%']
         , end: function () {
             //window.location.reload();
@@ -214,12 +226,19 @@ function save(djson, sjson, ajson) {
             lock = false;
             return;
         }
-        layer.msg('正在执行...', {
-            icon: 16
-            , shade: 0.01
-            , time: 60 * 1000
-        });
+        //layer.msg('正在执行...', {
+        //    icon: 16
+        //    , shade: 0.01
+        //    , time: 60 * 1000
+        //});
         var url = api + "WorkFlow";
+        //var postData =
+        //{
+        //    Id: parent_json.Id,
+        //    design: djson,
+        //    stepDesign: sjson,
+        //    actDesign: ajson
+        //}
         var postData =
         {
             Id: parent_json.Id,
@@ -227,6 +246,7 @@ function save(djson, sjson, ajson) {
             stepDesign: encodeData(JSON.stringify(sjson)),
             actDesign: encodeData(JSON.stringify(ajson))
         }
+
         ajaxHttp({
             type: "Post",
             url: url,
@@ -239,6 +259,9 @@ function save(djson, sjson, ajson) {
                 else {
                     tips.showFail(json.msg);
                 }
+            }, complete: function () {
+                lock = false;
+                //layer.closeAll();
             }
         });
     }//锁结束

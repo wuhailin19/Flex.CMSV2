@@ -17,6 +17,14 @@ namespace Flex.Domain.Dtos.WorkFlow
         public string Name { get; set; }
         [ToolAttr(NameAttr = "流程描述")]
         public string? Introduction { get; set; }
+        [ToolAttr(NameAttr = "流程内容", HideFiled = true)]
+        public string? WorkFlowContent { get; set; }
+        [ToolAttr(NameAttr = "流程动作名称字符串", HideFiled = true)]
+        public string? actionString { get; set; }
+        [ToolAttr(NameAttr = "步骤字符串", HideFiled = true)]
+        public string? stepDesign { get; set; }
+        [ToolAttr(NameAttr = "动作字符串", HideFiled = true)]
+        public string? actDesign { get; set; }
         [ToolAttr(NameAttr = "添加时间")]
         public DateTime AddTime { get; set; }
         [ToolAttr(NameAttr = "创建人")]

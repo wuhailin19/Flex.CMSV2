@@ -1427,16 +1427,16 @@
 	                    +'</div></td></tr>');
 	                    
 	                    
-	                    _tb.append('<tr><td>主管</td><td><div id="p3'
-	                    + k + '" class="editor">'
+	                    //_tb.append('<tr><td>主管</td><td><div id="p3'
+	                    //+ k + '" class="editor">'
 	                    
-	                    +'<select class="lay-selet" id="select_zg_'+_src.getId()+'" style="width:100%;">'
+	                    //+'<select class="lay-selet" id="select_zg_'+_src.getId()+'" style="width:100%;">'
 	                    	
-	                    	+'<option value="0">机构主管无特殊审核权</option>'
-	                    	+'<option value="1">机构主管有直接通过权</option>'
-	                    +'</select>'
+	                    //	+'<option value="0">机构主管无特殊审核权</option>'
+	                    //	+'<option value="1">机构主管有直接通过权</option>'
+	                    //+'</select>'
 	                    
-	                    +'</div></td></tr>');
+	                    //+'</div></td></tr>');
 	                    
 	                    //init
 	                   	var actJson = actArray[_src.getId()];
@@ -1444,45 +1444,26 @@
 	                   	if('undefined' == typeof(actJson))
 						{
 							actArray[_src.getId()] = { "directMode":"", "conjunctManFlag":"", "orgBossMode":"", "actionId":"" };
-							
 							actJson = actArray[_src.getId()];
 						}
-						
 	                    $('#select_qz_'+_src.getId()).val(actJson.directMode);
-	                    
 	                    $('#select_hq_'+_src.getId()).val(actJson.conjunctManFlag);
 	                    	                    
-	                    $('#select_zg_'+_src.getId()).val(actJson.orgBossMode);
-	                    
-	                    
+	                    //$('#select_zg_'+_src.getId()).val(actJson.orgBossMode);
 	                    $('#select_qz_'+_src.getId()).change(function(){
-							 
 							var qzJson = actArray[_src.getId()];
-							
 							qzJson.directMode = $(this).val();
-							 
 						});
-						
-						
-						
 						$('#select_hq_'+_src.getId()).change(function(){
 							var hqJson = actArray[_src.getId()];
-							
 							hqJson.conjunctManFlag = $(this).val();
-							
-							 
 						});
 						
-						$('#select_zg_'+_src.getId()).change(function(){
-							var zgJson = actArray[_src.getId()];
-							
-							zgJson.orgBossMode = $(this).val();
-							 
-						});
-	             
-                
+						//$('#select_zg_'+_src.getId()).change(function(){
+						//	var zgJson = actArray[_src.getId()];
+						//	zgJson.orgBossMode = $(this).val();
+						//});
                 }   
-                    
                 if (props[k].editor)
                     props[k].editor().init(props, k, 'p' + k, src, _r);
                 // $('body').append(props[i].editor+'a');
@@ -1507,7 +1488,7 @@
 	             
 	             if(jsonv.indexOf("type:'task'") != -1 || jsonv.indexOf("type:'start'") != -1)
 	             { 
-	            	actTr += '<a onclick="javascript:openEditFlowStepDialog('+stepObj.flowId+',\''+_src.getId()+'\',\''+dataObj.text.text+'\');"  class="layui-btn layui-btn-radius layui-btn-primary layui-btn-xs"  ><i class="layui-icon layui-icon-user"></i>参与人</a>';	           
+	            	actTr += '<a onclick="javascript:openEditFlowStepDialog('+stepObj.Id+',\''+_src.getId()+'\',\''+dataObj.text.text+'\');"  class="layui-btn layui-btn-radius layui-btn-primary layui-btn-xs"  ><i class="layui-icon layui-icon-user"></i>参与人</a>';	           
 	             }
 	            
 	             actTr +=  
@@ -1755,7 +1736,7 @@
                 accept: '.state',
                 drop: function (event, ui) {
                     //console.log(ui.helper.context);
-                    var temp = ui.helper.context.innerHTML;
+                    var temp = ui.helper[0].innerHTML;
                     var id = temp.substring(temp.indexOf(">") + 1, temp.length).replace(/^\s\s*/, '').replace(/\s\s*$/, '');
                     $(_r).trigger('addrect', [ui.helper.attr('type'), {
                         attr: {

@@ -127,10 +127,14 @@ namespace Flex.Application.Services
         private async Task<bool> DeleteExistingEntities(int flowId)
         {
             var workflowstrp = _unitOfWork.GetRepository<sysWorkFlowStep>();
+            var workflowaction = _unitOfWork.GetRepository<sysWorkFlowAction>();
             try
             {
                 var steps = await workflowstrp.GetAllAsync(m => m.flowId == flowId);
                 workflowstrp.Delete(steps);
+                
+                var actions = await workflowaction.GetAllAsync(m => m.flowId == flowId);
+                workflowaction.Delete(actions);
                 return true;
             }
             catch

@@ -8,6 +8,7 @@ function getCheckboxValue(name) {
     });
     return arraybox.join(',');
 }
+
 function setCheckboxValue(name, value) {
     if (value == null || value == undefined || value == "")
         return;
