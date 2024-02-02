@@ -20,7 +20,7 @@ namespace Flex.Domain.Dtos.Menu
         public bool Status { get; set; }
         [ToolAttr(NameAttr = "目录状态", Toolbar = "#menuPxy", AlignAttr = AlignEnum.Center, Width = "100")]
         public bool isMenu { get; set; }
-        [ToolAttr(NameAttr = "链接类型", Toolbar = "#controllerPxy", AlignAttr = AlignEnum.Center, Width = "100")]
+        [ToolAttr(NameAttr = "链接类型", Toolbar = "#controllerPxy", AlignAttr = AlignEnum.Center, Width = "100", HideFiled = true)]
         public bool IsControllerUrl { get; set; }
         [ToolAttr(NameAttr = "链接地址")]
         public string LinkUrl { get; set; }

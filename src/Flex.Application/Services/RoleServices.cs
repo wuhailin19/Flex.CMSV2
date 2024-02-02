@@ -132,7 +132,9 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataExist.GetEnumDescription());
             try
             {
-                _unitOfWork.GetRepository<SysRole>().Update(_mapper.Map<SysRole>(role));
+                model=await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
+                _mapper.Map(role, model);
+                _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }

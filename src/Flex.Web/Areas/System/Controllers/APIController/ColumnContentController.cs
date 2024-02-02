@@ -54,7 +54,8 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
         [HttpGet("GetContentById/{ParentId}/{Id}")]
-        [Descriper(Name = "通过ParentId和Id获取栏目内容")]
+        [Descriper(Name = "通过ParentId和Id获取栏目内容",IsFilter =true)]
+        [AllowAnonymous]
         public async Task<string> GetContentById(int ParentId, int Id)
         {
             return Success(await _columnServices.GetContentById(ParentId, Id));

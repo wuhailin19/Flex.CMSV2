@@ -64,11 +64,14 @@ namespace Flex.Web.Handlers
                     var RoleList = await GetRoleUrlDictByRedisOrDataServer();
 
                     var result = false;
-                    foreach (var item in RoleList[_claims.UserRole])
+                    if (RoleList.ContainsKey(userrole))
                     {
-                        if (nowurl.Contains(item))
+                        foreach (var item in RoleList[userrole])
                         {
-                            result = true; break;
+                            if (nowurl.Contains(item))
+                            {
+                                result = true; break;
+                            }
                         }
                     }
                     if (result)

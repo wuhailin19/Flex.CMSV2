@@ -32,6 +32,7 @@ var HttpRequest = function (options) {
         setcontentType: true
     };
     var o = $.extend({}, defaults, options);
+
     $.ajax({
         url: o.url,
         type: o.type,
