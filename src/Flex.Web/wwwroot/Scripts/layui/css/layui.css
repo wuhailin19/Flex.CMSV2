@@ -1770,8 +1770,8 @@ html #layuicss-layer { display: none; position: absolute; width: 1989px }
     to { transform: rotate(360deg); }
 }
 
-@media screen and (max-width:800px) {
-    .layui-tab .layui-tab-title { width: 100%; left: 0; position: absolute; top: -40px; }
+@media screen and (max-width:768px) {
+    .layui-tab .layui-tab-title { width: 100%; left: 0; position: absolute; top: -40px; display: none; }
     .layui-form-item .layui-input-inline.choose_img { margin: unset; }
     .choose_img + .layui-form-mid { margin-left: 0 !important; }
     .layui-col-xs9.btn_opreation { width: 100%; }

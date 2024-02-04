@@ -1,4 +1,5 @@
-﻿using Flex.Application.Filters;
+﻿using Autofac.Core;
+using Flex.Application.Filters;
 using Flex.Core.Attributes;
 using Flex.Domain.Dtos.Admin;
 using Microsoft.AspNetCore.Authorization;
@@ -34,7 +35,17 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             return Success(await _adminServices.GetAdminListAsync(page, limit));
         }
-
+        /// <summary>
+        /// 所有Admin信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetStepAdminListAsync")]
+        [Descriper(IsFilter = true)]
+        public async Task<string> GetStepAdminListAsync()
+        {
+            var list = await _adminServices.GetAsync();
+            return Success(list);
+        }
         /// <summary>
         /// 根据Token获取当前角色权限
         /// </summary>

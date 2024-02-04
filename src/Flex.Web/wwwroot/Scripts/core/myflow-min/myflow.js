@@ -2,16 +2,17 @@
     var myflow = {};
     myflow.config = {
         editable: true,
-        allowStateMutiLine:true,
-        moving:{
-            flag:false,
-            prepdot:{x:0,y:0},
-            dots:[],
-            isNewDot:false,
-            temp:[],
-            preRect:null
+        allowStateMutiLine: true,
+        moving: {
+            flag: false,
+            prepdot: { x: 0, y: 0 },
+            dots: [],
+            isNewDot: false,
+            temp: [],
+            preRect: null
         },
-        historys:[],
+        flowId: 0,
+        historys: [],
         lineHeight: 15,
         basePath: '',
         rect: {// 状态
@@ -87,7 +88,7 @@
                     cursor: "move",
                     "stroke-width": 3
                 },
-                text: {                   
+                text: {
                     cursor: "move",
                     'background': '#000',
                     "font-size": 13
@@ -129,7 +130,7 @@
             attr: {
                 top: 30,
                 right: 30,
-                width:260
+                width: 260
             },
             props: {}
         },
@@ -182,7 +183,7 @@
         //         return ++uid;
         //     };
         // })(),
-        nextId:function(){
+        nextId: function () {
             return new Date().getTime();
         },
         connPoint: function (rect, p) {// 计算矩形中心到p的连线与矩形的交叉点
@@ -197,8 +198,8 @@
             var rectTag = rect.height / rect.width;
             // 计算箭头位置
             var xFlag = start.y < end.y ? -1 : 1, yFlag = start.x < end.x
-                    ? -1
-                    : 1, arrowTop, arrowLeft;
+                ? -1
+                : 1, arrowTop, arrowLeft;
             // 按角度判断箭头位置
             if (Math.abs(tag) > rectTag && xFlag == -1) {// top边
                 arrowTop = end.y - rect.height / 2;
@@ -234,19 +235,19 @@
                 x: x2,
                 y: y2
             }, {
-                x: x3,
-                y: y3
-            }];
+                    x: x3,
+                    y: y3
+                }];
         }
     }
 
-    myflow.rect = function (o, r,id) {
+    myflow.rect = function (o, r, id) {
         var _this = this, _uid = myflow.util.nextId(), _o = $.extend(true, {},
-            myflow.config.rect, o), _id =id || 'rect' + _uid, _r = r, // Raphael画笔
-    _rect, _img, // 图标
-    _name, // 状态名称
-    _text, // 显示文本
-    _ox, _oy; // 拖动时，保存起点位置;
+            myflow.config.rect, o), _id = id || 'rect' + _uid, _r = r, // Raphael画笔
+            _rect, _img, // 图标
+            _name, // 状态名称
+            _text, // 显示文本
+            _ox, _oy; // 拖动时，保存起点位置;
 
 
         _rect = _r.rect(_o.attr.x, _o.attr.y, _o.attr.width, _o.attr.height,
@@ -263,7 +264,7 @@
         _text = _r.text(
             _o.attr.x + _o.img.width + (_o.attr.width - _o.img.width) / 2,
             _o.attr.y + (_o.attr.height - myflow.config.lineHeight) / 2
-                    + myflow.config.lineHeight, _o.text.text).hide()
+            + myflow.config.lineHeight, _o.text.text).hide()
             .attr(_o.text); // 文本
 
         // 拖动处理----------------------------------------
@@ -351,7 +352,7 @@
             bdragMove(dx, dy, 't');
         }, function () {
             bdragStart(this.attr('x') + _bw / 2, this.attr('y') + _bw
-                                / 2, 't');
+                / 2, 't');
         }, function () {
         }); // 上
         _bdots['lt'] = _r.rect(0, 0, _bw, _bw).attr({
@@ -362,7 +363,7 @@
             bdragMove(dx, dy, 'lt');
         }, function () {
             bdragStart(this.attr('x') + _bw / 2, this.attr('y') + _bw
-                                / 2, 'lt');
+                / 2, 'lt');
         }, function () {
         }); // 左上
         _bdots['l'] = _r.rect(0, 0, _bw, _bw).attr({
@@ -373,7 +374,7 @@
             bdragMove(dx, dy, 'l');
         }, function () {
             bdragStart(this.attr('x') + _bw / 2, this.attr('y') + _bw
-                                / 2, 'l');
+                / 2, 'l');
         }, function () {
         }); // 左
         _bdots['lb'] = _r.rect(0, 0, _bw, _bw).attr({
@@ -384,7 +385,7 @@
             bdragMove(dx, dy, 'lb');
         }, function () {
             bdragStart(this.attr('x') + _bw / 2, this.attr('y') + _bw
-                                / 2, 'lb');
+                / 2, 'lb');
         }, function () {
         }); // 左下
         _bdots['b'] = _r.rect(0, 0, _bw, _bw).attr({
@@ -395,7 +396,7 @@
             bdragMove(dx, dy, 'b');
         }, function () {
             bdragStart(this.attr('x') + _bw / 2, this.attr('y') + _bw
-                                / 2, 'b');
+                / 2, 'b');
         }, function () {
         }); // 下
         _bdots['rb'] = _r.rect(0, 0, _bw, _bw).attr({
@@ -406,7 +407,7 @@
             bdragMove(dx, dy, 'rb');
         }, function () {
             bdragStart(this.attr('x') + _bw / 2, this.attr('y') + _bw
-                                / 2, 'rb');
+                / 2, 'rb');
         }, function () {
         }); // 右下
         _bdots['r'] = _r.rect(0, 0, _bw, _bw).attr({
@@ -417,7 +418,7 @@
             bdragMove(dx, dy, 'r');
         }, function () {
             bdragStart(this.attr('x') + _bw / 2, this.attr('y') + _bw
-                                / 2, 'r')
+                / 2, 'r')
         }, function () {
         }); // 右
         _bdots['rt'] = _r.rect(0, 0, _bw, _bw).attr({
@@ -428,7 +429,7 @@
             bdragMove(dx, dy, 'rt');
         }, function () {
             bdragStart(this.attr('x') + _bw / 2, this.attr('y') + _bw
-                                / 2, 'rt')
+                / 2, 'rt')
         }, function () {
         }); // 右上
         $([_bdots['t'].node, _bdots['lt'].node, _bdots['l'].node, _bdots['lb'].node, _bdots['b'].node, _bdots['rb'].node, _bdots['r'].node, _bdots['rt'].node]).click(function () { return false; });
@@ -488,7 +489,8 @@
                     return;
 
                 showBox();
-                myflow.config.tools.clickRect(_this.getId(),_this.toJson());
+
+                myflow.config.tools.clickRect(_this.getId(), _this.toJson());
                 var mod = $(_r).data('mod');
                 switch (mod) {
                     case 'pointer':
@@ -497,52 +499,52 @@
                     case 'path':
                         var pre = $(_r).data('currNode');
 
-                        var moving=myflow.config.moving;
+                        var moving = myflow.config.moving;
 
                         //处理：禁止两个状态间有重复的线
-                        if(myflow.config.allowStateMutiLine){
-                            var paths=myflow.config.tempData.paths,flag=false;
-                            for(var k in paths){
-                                if(paths[k]){
-                                    if((moving.preRect&&moving.preRect.getId()==paths[k].from().getId())&&(_this.getId()==paths[k].to().getId())){
-                                        flag=true;
+                        if (myflow.config.allowStateMutiLine) {
+                            var paths = myflow.config.tempData.paths, flag = false;
+                            for (var k in paths) {
+                                if (paths[k]) {
+                                    if ((moving.preRect && moving.preRect.getId() == paths[k].from().getId()) && (_this.getId() == paths[k].to().getId())) {
+                                        flag = true;
                                         break;
                                     }
                                 }
                             }
-                            if(flag){
+                            if (flag) {
                                 break;
                             }
                         }
 
-                        if((moving.preRect&&moving.preRect == _this)){
+                        if ((moving.preRect && moving.preRect == _this)) {
                             break;
                         }
 
-                        moving.flag=true;
-                        if(moving.preRect){
-                            $(_r).trigger('addpath', [moving.preRect, _this,moving.dots]);
-                            myflow.config.moving={
-                                flag:false,
-                                prepdot:{x:0,y:0},
-                                dots:[],
-                                isNewDot:false,
-                                preRect:null,
-                                temp:[]
+                        moving.flag = true;
+                        if (moving.preRect) {
+                            $(_r).trigger('addpath', [moving.preRect, _this, moving.dots]);
+                            myflow.config.moving = {
+                                flag: false,
+                                prepdot: { x: 0, y: 0 },
+                                dots: [],
+                                isNewDot: false,
+                                preRect: null,
+                                temp: []
                             };
 
-                            moving.temp.map(function(item,index){
+                            moving.temp.map(function (item, index) {
                                 item.remove();
                             })
-                            $(_r).data('currNode',null);
+                            $(_r).data('currNode', null);
                             break;
                         }
                         if (pre && pre.getId().substring(0, 4) == 'rect') {
-                            if(pre.getId() != _id){
+                            if (pre.getId() != _id) {
                                 $(_r).trigger('addpath', [pre, _this]);
                             }
                         }
-                        moving.preRect=_this;
+                        moving.preRect = _this;
                         $(_r).data('currNode', _this);
                         break;
                 }
@@ -554,15 +556,15 @@
             if (!myflow.config.editable)
                 return;
 
-            if(myflow.config.moving.flag){
-                if(src.getId().substring(0, 4) == '0000'){
-                    myflow.config.moving.isNewDot=true;
+            if (myflow.config.moving.flag) {
+                if (src.getId().substring(0, 4) == '0000') {
+                    myflow.config.moving.isNewDot = true;
                 }
 
-                if(myflow.config.moving.preRect == src&&myflow.config.moving.temp.length>2){
+                if (myflow.config.moving.preRect == src && myflow.config.moving.temp.length > 2) {
                     myflow.config.moving.temp.pop().remove();
                     myflow.config.moving.temp.pop().remove();
-                    myflow.config.moving.isNewDot=true;
+                    myflow.config.moving.isNewDot = true;
                 }
             }
 
@@ -748,14 +750,14 @@
         resize(); // 初始化位置
     };
 
-    myflow.path = function (o, r, from, to, guid, ec,dots,id) {
-        var _this = this, _r = r, _o = $.extend(true, {}, myflow.config.path), _path,_markpath, _arrow, _text, _textPos = _o.text.textPos, _ox, _oy, _from = from, _to = to, _id = id || 'path'
+    myflow.path = function (o, r, from, to, guid, ec, dots, id) {
+        var _this = this, _r = r, _o = $.extend(true, {}, myflow.config.path), _path, _markpath, _arrow, _text, _textPos = _o.text.textPos, _ox, _oy, _from = from, _to = to, _id = id || 'path'
             + myflow.util.nextId(), _dotList, _autoText = true; _o.lineID = guid; oec = (ec > 0 ? (parseInt(ec) == 1 ? 25 : parseInt(ec) * 9 + 22) : 0);
 
         // 点
         function dot(type, pos, left, right) {
             var _this = this, _t = type, _n, _lt = left, _rt = right, _ox, _oy, // 缓存移动前时位置
-            _pos = pos; // 缓存位置信息{x,y}, 注意：这是计算出中心点
+                _pos = pos; // 缓存位置信息{x,y}, 注意：这是计算出中心点
 
             switch (_t) {
                 case 'from':
@@ -871,7 +873,7 @@
                         if (_rt && _rt.right()) {
                             _rt
                                 .pos(myflow.util.center(_pos, _rt.right()
-                                                .pos()));
+                                    .pos()));
                         }
                         break;
                     case 'big':
@@ -882,12 +884,12 @@
                         }
                         if (_lt && _lt.left() && _lt.left().type() == 'from') {
                             _lt.left().pos(myflow.util.connPoint(_from
-                                        .getBBox(), _pos));
+                                .getBBox(), _pos));
                         }
                         if (_rt && _rt.right()) {
                             _rt
                                 .pos(myflow.util.center(_pos, _rt.right()
-                                                .pos()));
+                                    .pos()));
                         }
                         if (_lt && _lt.left()) {
                             _lt.pos(myflow.util.center(_pos, _lt.left().pos()));
@@ -898,7 +900,7 @@
                             y: _pos.y
                         };
                         if (myflow.util.isLine(_lt.left().pos(), pos, _rt
-                                    .right().pos())) {
+                            .right().pos())) {
                             _t = 'small';
                             _n.attr(_o.attr.smallDot);
                             this.pos(pos);
@@ -923,13 +925,13 @@
 
                             _n.attr(_o.attr.bigDot);
                             var lt = new dot('small', myflow.util.center(_lt
-                                                .pos(), _pos), _lt, _lt
-                                        .right());
+                                .pos(), _pos), _lt, _lt
+                                    .right());
                             _lt.right(lt);
                             _lt = lt;
 
                             var rt = new dot('small', myflow.util.center(_rt
-                                                .pos(), _pos), _rt.left(),
+                                .pos(), _pos), _rt.left(),
                                 _rt);
                             _rt.left(rt);
                             _rt = rt;
@@ -939,7 +941,7 @@
                     case 'to':
                         if (_lt && _lt.left() && _lt.left().type() == 'from') {
                             _lt.left().pos(myflow.util.connPoint(_from
-                                        .getBBox(), _pos));
+                                .getBBox(), _pos));
                         }
                         if (_lt && _lt.left()) {
                             _lt.pos(myflow.util.center(_pos, _lt.left().pos()));
@@ -1007,7 +1009,7 @@
                 var obj = data, d = _fromDot.right();
 
                 for (var i = 0; i < obj.length; i++) {
-                    if(!d){
+                    if (!d) {
                         break;
                     }
                     d.moveTo(obj[i].x, obj[i].y);
@@ -1063,15 +1065,15 @@
         // 初始化操作
         _o = $.extend(true, _o, o);
         _path = _r.path(_o.attr.path.path).attr(_o.attr.path);
-        _markpath=_r.path(_o.attr.path.path)
-            .attr({fill: "none",stroke: "white","stroke-miterlimit": 10,"stroke-width": 14,"-webkit-tap-highlight-color": "rgba(0, 0, 0, 0)","visibility":"hidden","pointer-events": "stroke","cursor": "crosshair"});
+        _markpath = _r.path(_o.attr.path.path)
+            .attr({ fill: "none", stroke: "white", "stroke-miterlimit": 10, "stroke-width": 14, "-webkit-tap-highlight-color": "rgba(0, 0, 0, 0)", "visibility": "hidden", "pointer-events": "stroke", "cursor": "crosshair" });
         _arrow = _r.path(_o.attr.arrow.path).attr(_o.attr.arrow);
 
         _dotList = new dotList();
         _dotList.hide();
 
         _text = _r.text(0, 0, _o.text.text || _o.text.patten.replace('{from}', _from.text()).replace('{to}',
-                _to.text())).attr(_o.attr.text);
+            _to.text())).attr(_o.attr.text);
         _text.drag(function (dx, dy) {
             if (!myflow.config.editable)
                 return;
@@ -1093,7 +1095,7 @@
         refreshpath(); // 初始化路径
 
         // 事件处理--------------------
-        $([_path.node,_markpath.node, _arrow.node, _text.node]).bind('click', function () {
+        $([_path.node, _markpath.node, _arrow.node, _text.node]).bind('click', function () {
             if (!myflow.config.editable)
                 return;
             $(_r).trigger('click', _this);
@@ -1117,10 +1119,10 @@
             var mod = $(_r).data('mod');
             switch (mod) {
                 case 'pointer':
-                        //console.log("点击的是点")  
+                    //console.log("点击的是点")  
                     break;
                 case 'path':
-                        //console.log("点击的是线")
+                    //console.log("点击的是线")
                     break;
             }
 
@@ -1186,14 +1188,14 @@
                     //$('body').append('change!!!');
                     _text.attr({
                         text: _o.text.patten.replace('{from}',
-                                    _from.text()).replace('{to}', v)
+                            _from.text()).replace('{to}', v)
                     });
                 }
                 else if (_from.getId() == src.getId()) {
                     //$('body').append('change!!!');
                     _text.attr({
                         text: _o.text.patten.replace('{from}', v)
-                                    .replace('{to}', _to.text())
+                            .replace('{to}', _to.text())
                     });
                 }
             }
@@ -1268,7 +1270,7 @@
                 path: p[0]
             });
             _markpath.attr({
-                path:p[0]
+                path: p[0]
             });
             _arrow.attr({
                 path: p[1]
@@ -1294,9 +1296,9 @@
             // $('body').append('aaaaaa');
         };
 
-        if(dots){
+        if (dots) {
             _dotList.restore(dots);
-            rectresizeHandler(null,_to);
+            rectresizeHandler(null, _to);
             $("#path").click();
             $(_r).data('currNode', null);
         }
@@ -1323,185 +1325,177 @@
 
             _tb.empty();
             _pdiv.show();
-              
-            for (var k in props) { 
-             
+
+            for (var k in props) {
+
                 _tb.append('<tr><td>' + props[k].label + '</td><td><div id="p'
                     + k + '" class="editor"></div></td></tr>');
-                    
-                if(_src.getId().startWith('rect')) //开始节点处理
+
+                if (_src.getId().startWith('rect')) //开始节点处理
                 {
-                		var actJson = actArray[_src.getId()];
-                		
-                		if('undefined' == typeof(actJson))
-						{
-							actArray[_src.getId()] = { "directMode":"", "conjunctManFlag":"", "orgBossMode":"", "actionId":"" };
-							
-							actJson = actArray[_src.getId()];
-						}
-						
-						if(_src.toJson().indexOf("type:'start'") != -1)
-	             		{
-	             			_tb.append('<tr><td>部门</td><td><div id="p1'
-			                    + k + '" class="editor">'
-			                    
-			                    +'<select class="lay-selet" id="select_bm_'+_src.getId()+'" style="width:100%;">'
-			                    	
-			                    	+'<option value="0">所有部门参与审核</option>'
-			                    	+'<option value="1">仅所属部门可审核</option>'
-			                    +'</select>'
-			                    
-			                    +'</div></td></tr>');
-			                    
-			                    
-			                    _tb.append('<tr><td>回避</td><td><div id="p2'
-			                    + k + '" class="editor">'
-			                    
-			                    +'<select class="lay-selet" id="select_hb_'+_src.getId()+'" style="width:100%;">'
-			                    	
-			                    	+'<option value="0">可审核自己内容</option>'
-			                    	+'<option value="1">不可审核自己内容</option>'
-			                    +'</select>'
-			                    
-			                    +'</div></td></tr>');
-			                    
-			                    
-			                    //init
-			                   	var stepJson = stepArray[_src.getId()];
-			                   	
-			                   	if('undefined' == typeof(stepJson))
-								{
-									stepArray[_src.getId()] = { "avoidFlag":"0", "orgMode":"0", "stepOrg":"", "stepRole":"", "stepMan":"",  "stepId":"-1", "flowId":"-1" } ;
-									
-									stepJson = stepArray[_src.getId()];
-								}	
-								 
-			                    $('#select_bm_'+_src.getId()).val(stepJson.orgMode);
-			                    
-			                    $('#select_hb_'+_src.getId()).val(stepJson.avoidFlag);
-			                       			                    
-			                    $('#select_bm_'+_src.getId()).change(function(){
-								 
-									var qzJson = stepArray[_src.getId()];
-									
-									qzJson.orgMode = $(this).val();
-									
-									 
-								});
-								
-								
-								
-								$('#select_hb_'+_src.getId()).change(function(){
-									var hqJson = stepArray[_src.getId()];
-									
-									hqJson.avoidFlag = $(this).val();
-									
-									 
-								});
-                
-	             		}
-					
-                }                   
-                else if(_src.getId().startWith('path')) //动作类型
+                    var actJson = actArray[_src.getId()];
+
+                    if ('undefined' == typeof (actJson)) {
+                        actArray[_src.getId()] = { "directMode": "", "conjunctManFlag": "", "orgBossMode": "", "actionId": "" };
+
+                        actJson = actArray[_src.getId()];
+                    }
+
+                    if (_src.toJson().indexOf("type:'start'") != -1) {
+                        _tb.append('<tr><td>部门</td><td><div id="p1'
+                            + k + '" class="editor">'
+
+                            + '<select class="lay-selet" id="select_bm_' + _src.getId() + '" style="width:100%;">'
+
+                            + '<option value="0">所有部门参与审核</option>'
+                            + '<option value="1">仅所属部门可审核</option>'
+                            + '</select>'
+
+                            + '</div></td></tr>');
+
+
+                        _tb.append('<tr><td>回避</td><td><div id="p2'
+                            + k + '" class="editor">'
+
+                            + '<select class="lay-selet" id="select_hb_' + _src.getId() + '" style="width:100%;">'
+
+                            + '<option value="0">可审核自己内容</option>'
+                            + '<option value="1">不可审核自己内容</option>'
+                            + '</select>'
+
+                            + '</div></td></tr>');
+
+
+                        //init
+                        var stepJson = stepArray[_src.getId()];
+
+                        if ('undefined' == typeof (stepJson)) {
+                            stepArray[_src.getId()] = { "avoidFlag": "0", "orgMode": "0", "stepOrg": "", "stepRole": "", "stepMan": "", "stepId": "-1", "flowId": myflow.config.flowId };
+
+                            stepJson = stepArray[_src.getId()];
+                        }
+
+                        $('#select_bm_' + _src.getId()).val(stepJson.orgMode);
+
+                        $('#select_hb_' + _src.getId()).val(stepJson.avoidFlag);
+
+                        $('#select_bm_' + _src.getId()).change(function () {
+
+                            var qzJson = stepArray[_src.getId()];
+
+                            qzJson.orgMode = $(this).val();
+
+
+                        });
+
+
+
+                        $('#select_hb_' + _src.getId()).change(function () {
+                            var hqJson = stepArray[_src.getId()];
+
+                            hqJson.avoidFlag = $(this).val();
+
+
+                        });
+
+                    }
+
+                }
+                else if (_src.getId().startWith('path')) //动作类型
                 {
-                	    
-	                	_tb.append('<tr><td>提交</td><td><div id="p1'
-	                    + k + '" class="editor">'
-	                    
-	                    +'<select class="lay-selet" id="select_qz_'+_src.getId()+'" style="width:100%;">'
-	                    	+'<option value="0">无须指定下一审核人</option>'
-	                    	+'<option value="1">强制指定下一审核人</option>'
-	                    +'</select>'
-	                    
-	                    +'</div></td></tr>');
-	                    
-	                    
-	                    _tb.append('<tr><td>会签</td><td><div id="p2'
-	                    + k + '" class="editor">'
-	                    
-	                    +'<select class="lay-selet" id="select_hq_'+_src.getId()+'" style="width:100%;">'
-	                    	+'<option value="0">任一审核人通过生效</option>'
-	                    	+'<option value="1">所有参与者通过生效</option>'
-	                    +'</select>'
-	                    
-	                    +'</div></td></tr>');
-	                    
-	                    
-	                    //_tb.append('<tr><td>主管</td><td><div id="p3'
-	                    //+ k + '" class="editor">'
-	                    
-	                    //+'<select class="lay-selet" id="select_zg_'+_src.getId()+'" style="width:100%;">'
-	                    	
-	                    //	+'<option value="0">机构主管无特殊审核权</option>'
-	                    //	+'<option value="1">机构主管有直接通过权</option>'
-	                    //+'</select>'
-	                    
-	                    //+'</div></td></tr>');
-	                    
-	                    //init
-	                   	var actJson = actArray[_src.getId()];
-	                   	
-	                   	if('undefined' == typeof(actJson))
-						{
-							actArray[_src.getId()] = { "directMode":"", "conjunctManFlag":"", "orgBossMode":"", "actionId":"" };
-							actJson = actArray[_src.getId()];
-						}
-	                    $('#select_qz_'+_src.getId()).val(actJson.directMode);
-	                    $('#select_hq_'+_src.getId()).val(actJson.conjunctManFlag);
-	                    	                    
-	                    //$('#select_zg_'+_src.getId()).val(actJson.orgBossMode);
-	                    $('#select_qz_'+_src.getId()).change(function(){
-							var qzJson = actArray[_src.getId()];
-							qzJson.directMode = $(this).val();
-						});
-						$('#select_hq_'+_src.getId()).change(function(){
-							var hqJson = actArray[_src.getId()];
-							hqJson.conjunctManFlag = $(this).val();
-						});
-						
-						//$('#select_zg_'+_src.getId()).change(function(){
-						//	var zgJson = actArray[_src.getId()];
-						//	zgJson.orgBossMode = $(this).val();
-						//});
-                }   
+
+                    _tb.append('<tr><td>提交</td><td><div id="p1'
+                        + k + '" class="editor">'
+
+                        + '<select class="lay-selet" id="select_qz_' + _src.getId() + '" style="width:100%;">'
+                        + '<option value="0">无须指定下一审核人</option>'
+                        + '<option value="1">强制指定下一审核人</option>'
+                        + '</select>'
+
+                        + '</div></td></tr>');
+
+
+                    _tb.append('<tr><td>会签</td><td><div id="p2'
+                        + k + '" class="editor">'
+
+                        + '<select class="lay-selet" id="select_hq_' + _src.getId() + '" style="width:100%;">'
+                        + '<option value="0">任一审核人通过生效</option>'
+                        + '<option value="1">所有参与者通过生效</option>'
+                        + '</select>'
+
+                        + '</div></td></tr>');
+
+
+                    //_tb.append('<tr><td>主管</td><td><div id="p3'
+                    //+ k + '" class="editor">'
+
+                    //+'<select class="lay-selet" id="select_zg_'+_src.getId()+'" style="width:100%;">'
+
+                    //	+'<option value="0">机构主管无特殊审核权</option>'
+                    //	+'<option value="1">机构主管有直接通过权</option>'
+                    //+'</select>'
+
+                    //+'</div></td></tr>');
+
+                    //init
+                    var actJson = actArray[_src.getId()];
+
+                    if ('undefined' == typeof (actJson)) {
+                        actArray[_src.getId()] = { "directMode": "", "conjunctManFlag": "", "orgBossMode": "", "actionId": "" };
+                        actJson = actArray[_src.getId()];
+                    }
+                    $('#select_qz_' + _src.getId()).val(actJson.directMode);
+                    $('#select_hq_' + _src.getId()).val(actJson.conjunctManFlag);
+
+                    //$('#select_zg_'+_src.getId()).val(actJson.orgBossMode);
+                    $('#select_qz_' + _src.getId()).change(function () {
+                        var qzJson = actArray[_src.getId()];
+                        qzJson.directMode = $(this).val();
+                    });
+                    $('#select_hq_' + _src.getId()).change(function () {
+                        var hqJson = actArray[_src.getId()];
+                        hqJson.conjunctManFlag = $(this).val();
+                    });
+
+                    //$('#select_zg_'+_src.getId()).change(function(){
+                    //	var zgJson = actArray[_src.getId()];
+                    //	zgJson.orgBossMode = $(this).val();
+                    //});
+                }
                 if (props[k].editor)
                     props[k].editor().init(props, k, 'p' + k, src, _r);
                 // $('body').append(props[i].editor+'a');
             }
-            
-            if('toJson' in _src)
-            {
-			     var jsonv = _src.toJson();
-                 
-                 var dataObj=eval("("+jsonv+")");
-                 
-	             var actTr = '<tr style="height:50px" id="myflowDelTR"><td></td><td>';
-	               
-	             var stepObj = stepArray[_src.getId()];
-	             
-	             if('undefined' == typeof(stepObj))
-				 {
-					stepArray[_src.getId()] = { "avoidFlag":"0", "orgMode":"0", "stepOrg":"", "stepRole":"", "stepMan":"",  "stepId":"-1", "flowId":"-1" } ;
-					
-					stepObj = stepArray[_src.getId()];
-				 }
-	             
-	             if(jsonv.indexOf("type:'task'") != -1 || jsonv.indexOf("type:'start'") != -1)
-	             { 
-	            	actTr += '<a onclick="javascript:openEditFlowStepDialog('+stepObj.Id+',\''+_src.getId()+'\',\''+dataObj.text.text+'\');"  class="layui-btn layui-btn-radius layui-btn-primary layui-btn-xs"  ><i class="layui-icon layui-icon-user"></i>参与人</a>';	           
-	             }
-	            
-	             actTr +=  
-	  
-	              '<a onclick="javascript:deleteNodeOrPath();" class="layui-btn layui-btn-radius layui-btn-primary layui-btn-xs"  ><i class="layui-icon layui-icon-delete"></i>删除</a>';	
-	                        
-	             +'</td></tr>';
-	            
-	             _tb.append(actTr);
-			}
-			 
-             
-            
+
+            if ('toJson' in _src) {
+                var jsonv = _src.toJson();
+
+                var dataObj = eval("(" + jsonv + ")");
+
+                var actTr = '<tr style="height:50px" id="myflowDelTR"><td></td><td>';
+
+                var stepObj = stepArray[_src.getId()];
+                if ('undefined' == typeof (stepObj)) {
+                    stepArray[_src.getId()] = { "avoidFlag": "0", "orgMode": "0", "stepOrg": "", "stepRole": "", "stepMan": "", "stepId": "-1", "flowId": myflow.config.flowId };
+
+                    stepObj = stepArray[_src.getId()];
+                }
+
+                if (jsonv.indexOf("type:'task'") != -1 || jsonv.indexOf("type:'start'") != -1) {
+                    actTr += '<a onclick="javascript:openEditFlowStepDialog(' + stepObj.flowId + ',\'' + _src.getId() + '\',\'' + dataObj.text.text + '\');"  class="layui-btn layui-btn-radius layui-btn-primary layui-btn-xs"  ><i class="layui-icon layui-icon-user"></i>参与人</a>';
+                }
+
+                actTr +=
+
+                    '<a onclick="javascript:deleteNodeOrPath();" class="layui-btn layui-btn-radius layui-btn-primary layui-btn-xs"  ><i class="layui-icon layui-icon-delete"></i>删除</a>';
+
+                +'</td></tr>';
+
+                _tb.append(actTr);
+            }
+
+
+
         };
         $(_r).bind('showprops', showpropsHandler);
 
@@ -1517,14 +1511,14 @@
                 _div = div;
                 _src = src;
                 _r = r;
- 
-                $('<input id="input_'+_div+'"  style="width:100%;" class="layui-input"/>').val(_src.text()).change(
+
+                $('<input id="input_' + _div + '"  style="width:100%;" class="layui-input"/>').val(_src.text()).change(
                     function () {
-                        props[_k].value = $(this).val(); 
-                        $(_r).trigger('textchange', [$(this).val(), _src]); 
-                         
+                        props[_k].value = $(this).val();
+                        $(_r).trigger('textchange', [$(this).val(), _src]);
+
                     }).appendTo('#' + _div);
-                
+
                 $('#' + _div).data('editor', this);
             };
             this.destroy = function () {
@@ -1540,7 +1534,7 @@
     // 初始化流程
     myflow.init = function (c, o) {
         var _w = $(window).width(), _h = $(window).height(), _r = Raphael(c, _w
-                    * 1.5, _h * 1.5), _states = {}, _paths = {};
+            * 1.5, _h * 1.5), _states = {}, _paths = {};
 
         $.extend(true, myflow.config, o);
 
@@ -1549,43 +1543,43 @@
         * 删除： 删除状态时，触发removerect事件，连接在这个状态上当路径监听到这个事件，触发removepath删除自身；
         * 删除路径时，触发removepath事件
         */
-        $(document).keydown(function (arg,byButton) {
+        $(document).keydown(function (arg, byButton) {
             if (!myflow.config.editable)
                 return;
-            if (arg.keyCode == 46 ||byButton ) {
+            if (arg.keyCode == 46 || byButton) {
                 var c = $(_r).data('currNode');
                 if (c) {
                     var cId = c.getId();
                     if (c.getId().substring(0, 4) == 'rect') {
                         //添加到历史记录
-                        myflow.config.historys.push({state:"removerect",object:c,data:getJson()});
-                       	
+                        myflow.config.historys.push({ state: "removerect", object: c, data: getJson() });
+
                         delete stepArray.cId;
- 						delete stepArray[cId];
- 												 
-                        myflow.config.tools.deleteRect(c.getId(),c.toJson());
+                        delete stepArray[cId];
+
+                        myflow.config.tools.deleteRect(c.getId(), c.toJson());
                         $(_r).trigger('removerect', c);
 
                         /*清除自定义轨迹*/
-                        myflow.config.moving.temp.map(function(item,index){
+                        myflow.config.moving.temp.map(function (item, index) {
                             item.remove();
                         })
-                        myflow.config.moving={
-                            flag:false,
-                            prepdot:{x:0,y:0},
-                            dots:[],
-                            isNewDot:false,
-                            preRect:null,
-                            temp:[]
+                        myflow.config.moving = {
+                            flag: false,
+                            prepdot: { x: 0, y: 0 },
+                            dots: [],
+                            isNewDot: false,
+                            preRect: null,
+                            temp: []
                         };
 
                     } else if (c.getId().substring(0, 4) == 'path') {
                         //添加到历史记录
-                        myflow.config.historys.push({state:"removepath",object:c,data:getJson()});
-                        
+                        myflow.config.historys.push({ state: "removepath", object: c, data: getJson() });
+
                         delete stepArray.cId;
- 						delete stepArray[cId];
-                       
+                        delete stepArray[cId];
+
                         myflow.config.tools.deletePath(c.getId());
                         $(_r).trigger('removepath', c);
                     }
@@ -1597,9 +1591,9 @@
         $(document).click(function () {
             $(_r).data('currNode', null);
 
-            myflow.config.tempData={
-                paths:_paths,
-                states:_states
+            myflow.config.tempData = {
+                paths: _paths,
+                states: _states
             }
 
             $(_r).trigger('click', {
@@ -1631,13 +1625,13 @@
 
         // 添加状态
         $(_r).bind('addrect', function (e, type, o) {
-            var data=getJson();
-            var rect = new myflow.rect($.extend(true, {},myflow.config.tools.states[type], o), _r);
-            myflow.config.tools.addRect(rect.getId(),rect.toJson());
+            var data = getJson();
+            var rect = new myflow.rect($.extend(true, {}, myflow.config.tools.states[type], o), _r);
+            myflow.config.tools.addRect(rect.getId(), rect.toJson());
             _states[rect.getId()] = rect;
 
             //添加到历史记录
-            myflow.config.historys.push({state:"addrect",object:rect,data:data});
+            myflow.config.historys.push({ state: "addrect", object: rect, data: data });
         });
 
 
@@ -1647,61 +1641,61 @@
             return str.substring(4, str.length - 1);
         }
         // 添加路径
-        var addpathHandler = function (e, from, to,dots) {
-            var data=getJson();
-            var path = new myflow.path({}, _r, from, to,null,null,dots,null);
-            myflow.config.tools.addPath(path.getId(),path.toJson());
+        var addpathHandler = function (e, from, to, dots) {
+            var data = getJson();
+            var path = new myflow.path({}, _r, from, to, null, null, dots, null);
+            myflow.config.tools.addPath(path.getId(), path.toJson());
             _paths[path.getId()] = path;
 
             //添加到历史记录
-            myflow.config.historys.push({state:"addpath",object:path,data:data});
+            myflow.config.historys.push({ state: "addpath", object: path, data: data });
         };
         $(_r).bind('addpath', addpathHandler);
 
 
-        var path,rect,circle;
-        $("#myflow").mousemove(function(e){
-            var moving=myflow.config.moving;
-            if(moving.flag){
+        var path, rect, circle;
+        $("#myflow").mousemove(function (e) {
+            var moving = myflow.config.moving;
+            if (moving.flag) {
                 var pre = $(_r).data('currNode');
-                
-                if(path&&!moving.isNewDot){
-                    path.remove();circle.remove();
-                }else{
-                    moving.isNewDot=false;
+
+                if (path && !moving.isNewDot) {
+                    path.remove(); circle.remove();
+                } else {
+                    moving.isNewDot = false;
                 }
 
                 var dot = moving.prepdot;
-                
-                if(pre&&pre.getBBox()){
-                    dot = myflow.util.connPoint(pre.getBBox(), {x:e.pageX,y:e.pageY});
+
+                if (pre && pre.getBBox()) {
+                    dot = myflow.util.connPoint(pre.getBBox(), { x: e.pageX, y: e.pageY });
                 }
-                var x = e.pageX-10, y = e.pageY-10;
-                circle=_r.circle(x, y, 6).attr({fill: 'red',stroke: '#fff',cursor: 'move'});
+                var x = e.pageX - 10, y = e.pageY - 10;
+                circle = _r.circle(x, y, 6).attr({ fill: 'red', stroke: '#fff', cursor: 'move' });
 
                 path = _r.path('M' + dot.x + ' ' + dot.y + 'L' + x + ' ' + y + 'z')
-                        .attr({stroke: '#808080',fill: "none","stroke-width": 2,cursor: "pointer"});
+                    .attr({ stroke: '#808080', fill: "none", "stroke-width": 2, cursor: "pointer" });
 
-                moving.temp.push(circle);       
-                moving.temp.push(path);     
+                moving.temp.push(circle);
+                moving.temp.push(path);
             }
 
         })
 
         // 取消描点
-        document.oncontextmenu = function(e){
+        document.oncontextmenu = function (e) {
             $("#pointer").click();
             $("#path").click();
             return false;
         }
 
-        $("#myflow").click(function(e){
-            if(myflow.config.moving.flag){
-                var dot={
-                    x:e.pageX-10,
-                    y:e.pageY-10
+        $("#myflow").click(function (e) {
+            if (myflow.config.moving.flag) {
+                var dot = {
+                    x: e.pageX - 10,
+                    y: e.pageY - 10
                 };
-                myflow.config.moving.prepdot=dot;
+                myflow.config.moving.prepdot = dot;
                 myflow.config.moving.dots.push(dot);
             }
         })
@@ -1749,12 +1743,12 @@
             });
 
             function getJson() {
-            
+
                 var data = '{states:{';
                 for (var k in _states) {
                     if (_states[k]) {
                         data += _states[k].getId() + ':'
-                                + _states[k].toJson() + ',';
+                            + _states[k].toJson() + ',';
                     }
                 }
                 if (data.substring(data.length - 1, data.length) == ',')
@@ -1763,14 +1757,14 @@
                 for (var k in _paths) {
                     if (_paths[k]) {
                         data += _paths[k].getId() + ':'
-                                + _paths[k].toJson() + ',';
+                            + _paths[k].toJson() + ',';
                     }
                 }
                 if (data.substring(data.length - 1, data.length) == ',')
                     data = data.substring(0, data.length - 1);
                 //data += '},props:{props:{';
                 data += '}}';
-                
+
                 return data;
             }
 
@@ -1780,10 +1774,10 @@
             $('#myflow_publish').click(function () {// 发布
                 myflow.config.tools.publish(getJson())
             });
-            $('#myflow_revoke').click(function(){//撤销
-                var temp=myflow.config.historys.pop();
-                if(temp){
-                    switch(temp.state){
+            $('#myflow_revoke').click(function () {//撤销
+                var temp = myflow.config.historys.pop();
+                if (temp) {
+                    switch (temp.state) {
                         case "addpath":
                             $(_r).trigger('removepath', temp.object);
                             break;
@@ -1797,49 +1791,49 @@
                             restore(eval("(" + temp.data + ")"));
                             break;
                     }
-                }else{
+                } else {
                     layer.alert("没有东西可以撤销！");
                 }
             });
 
-            $("#myflow_redraw").click(function(){ //重绘
-                if(_states){
-                    for(var k in _states){
+            $("#myflow_redraw").click(function () { //重绘
+                if (_states) {
+                    for (var k in _states) {
                         _states[k].remove();
                     }
                 }
-                if(_paths){
-                    for(var k in _paths){
+                if (_paths) {
+                    for (var k in _paths) {
                         _paths[k].remove();
                     }
                 }
-                _states={};
-                _paths={};
-                myflow.config.moving.temp.map(function(item,index){
+                _states = {};
+                _paths = {};
+                myflow.config.moving.temp.map(function (item, index) {
                     item.remove();
                 })
-                myflow.config.moving={
-                    flag:false,
-                    prepdot:{x:0,y:0},
-                    dots:[],
-                    isNewDot:false,
-                    preRect:null,
-                    temp:[]
+                myflow.config.moving = {
+                    flag: false,
+                    prepdot: { x: 0, y: 0 },
+                    dots: [],
+                    isNewDot: false,
+                    preRect: null,
+                    temp: []
                 };
 
             });
 
-            $("#pointer").click(function(){ //重绘
-                    myflow.config.moving.temp.map(function(item,index){
+            $("#pointer").click(function () { //重绘
+                myflow.config.moving.temp.map(function (item, index) {
                     item.remove();
                 })
-                myflow.config.moving={
-                    flag:false,
-                    prepdot:{x:0,y:0},
-                    dots:[],
-                    isNewDot:false,
-                    preRect:null,
-                    temp:[]
+                myflow.config.moving = {
+                    flag: false,
+                    prepdot: { x: 0, y: 0 },
+                    dots: [],
+                    isNewDot: false,
+                    preRect: null,
+                    temp: []
                 };
             })
 
@@ -1851,18 +1845,18 @@
             restore(o.restore);
         }
 
-        function restore(data){
+        function restore(data) {
             var rmap = {};
             if (data.states) {
                 for (var k in data.states) {
-                    if(!_states[k]){
+                    if (!_states[k]) {
                         var rect = new myflow.rect(
-                        $
+                            $
                                 .extend(
-                                        true,
-                                        {},
-                                        myflow.config.tools.states[data.states[k].type],
-                                        data.states[k]), _r,k);
+                                    true,
+                                    {},
+                                    myflow.config.tools.states[data.states[k].type],
+                                    data.states[k]), _r, k);
                         rect.restore(data.states[k]);
                         rmap[k] = rect;
                         _states[rect.getId()] = rect;
@@ -1871,12 +1865,12 @@
             }
             if (data.paths) {
                 for (var k in data.paths) {
-                    if(!_paths[k]){
-                        var from=rmap&&rmap[data.paths[k].from] || _states[data.paths[k].from];
-                        var to=rmap&&rmap[data.paths[k].to] || _states[data.paths[k].to];
+                    if (!_paths[k]) {
+                        var from = rmap && rmap[data.paths[k].from] || _states[data.paths[k].from];
+                        var to = rmap && rmap[data.paths[k].to] || _states[data.paths[k].to];
 
 
-                        var p = new myflow.path($.extend(true, {},myflow.config.tools.path, data.paths[k]), _r, from,to,null,null,null,k);
+                        var p = new myflow.path($.extend(true, {}, myflow.config.tools.path, data.paths[k]), _r, from, to, null, null, null, k);
                         p.restore(data.paths[k]);
                         _paths[p.getId()] = p;
                     }
@@ -1911,7 +1905,7 @@
                 for (var j = 0; j < hr.rects[i].paths.length; j++) {
                     if (rmap[hr.rects[i].name].paths[hr.rects[i].paths[j]]) {
                         rmap[hr.rects[i].name].paths[hr.rects[i].paths[j]]
-                        .attr(hr.pathAttr);
+                            .attr(hr.pathAttr);
                     }
                 }
             }
@@ -1922,7 +1916,7 @@
                 for (var j = 0; j < ar.rects[i].paths.length; j++) {
                     if (rmap[ar.rects[i].name].paths[ar.rects[i].paths[j]]) {
                         rmap[ar.rects[i].name].paths[ar.rects[i].paths[j]]
-                        .attr(ar.pathAttr);
+                            .attr(ar.pathAttr);
                     }
                 }
             }

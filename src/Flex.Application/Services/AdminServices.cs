@@ -18,7 +18,13 @@ namespace Flex.Application.Services
         public async Task<IEnumerable<AdminDto>> GetAsync()
         {
             var admin_list = await _unitOfWork.GetRepository<SysAdmin>().GetAllAsync();
-            return _mapper.Map<IEnumerable<AdminDto>>(admin_list);
+            var dtolist = _mapper.Map<IEnumerable<AdminDto>>(admin_list).ToList();
+            dtolist.Add(new AdminDto
+            {
+                Id = "00000",
+                UserName = "快捷选择"
+            });
+            return dtolist.OrderBy(m => m.Id);
         }
         public async Task<PagedList<AdminDto>> GetPageListAsync(int pagesize = 10)
         {
@@ -86,7 +92,7 @@ namespace Flex.Application.Services
 
             var saltvalue = SaltStringHelper.getSaltStr();
             model = _mapper.Map<SysAdmin>(insertAdmin);
-       
+
             model.SaltValue = saltvalue;
             model.Password = EncryptHelper.MD5Encoding(insertAdmin.Password, model.SaltValue);
             AddLongEntityBasicInfo(model);

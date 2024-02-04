@@ -12,7 +12,8 @@ namespace Flex.Web.Areas.System.Controllers.APIController
     public class ColumnCategoryController : ApiBaseController
     {
         private IColumnServices _columnServices;
-        public ColumnCategoryController(IColumnServices columnServices) {
+        public ColumnCategoryController(IColumnServices columnServices)
+        {
             _columnServices = columnServices;
         }
         [HttpGet("Column")]
@@ -35,8 +36,21 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// <returns></returns>
         [HttpGet("ListAsync")]
         [Descriper(Name = "栏目管理页面列表数据")]
-        public async Task<string> ListAsync() {
-         return Success(await _columnServices.ListAsync());
+        public async Task<string> ListAsync()
+        {
+            return Success(await _columnServices.ListAsync());
+        }
+
+        /// <summary>
+        /// 获取栏目快捷方式
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        [HttpGet("getColumnShortcut")]
+        [Descriper(IsFilter = true)]
+        public async Task<string> getColumnShortcut(string mode = "5")
+        {
+            return Success(await _columnServices.getColumnShortcut(mode));
         }
 
         /// <summary>
@@ -49,7 +63,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             var columns = (await _columnServices.ListAsync()).ToList();
             columns.Add(new ColumnListDto() { Id = -1, ParentId = -2, Name = "快捷选择" });
-            return Success(columns.OrderBy(m=>m.Id));
+            return Success(columns.OrderBy(m => m.Id));
         }
 
         /// <summary>
@@ -87,29 +101,32 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 
         [HttpGet("GetColumnById/{Id}")]
         [Descriper(Name = "通过Id获取栏目数据")]
-        public async Task<string> GetColumnById(int Id) {
+        public async Task<string> GetColumnById(int Id)
+        {
             return Success(await _columnServices.GetColumnById(Id));
         }
 
         [HttpPut]
         [Descriper(Name = "新增栏目")]
-        public async Task<string> AddColumn() {
+        public async Task<string> AddColumn()
+        {
             var validate = await ValidateModel<AddColumnDto>();
             if (!validate.IsSuccess)
                 return Fail(validate.Detail);
-            var result =await  _columnServices.AddColumn(validate.Content);
+            var result = await _columnServices.AddColumn(validate.Content);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
             return Success(result.Detail);
         }
-        
+
         [HttpPost]
         [Descriper(Name = "修改栏目")]
-        public async Task<string> UpdateColumn() {
+        public async Task<string> UpdateColumn()
+        {
             var validate = await ValidateModel<UpdateColumnDto>();
             if (!validate.IsSuccess)
                 return Fail(validate.Detail);
-            var result =await  _columnServices.UpdateColumn(validate.Content);
+            var result = await _columnServices.UpdateColumn(validate.Content);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
             return Success(result.Detail);

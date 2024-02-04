@@ -1,5 +1,4 @@
-﻿
-var lock = false;
+﻿var lock = false;
 var parent_json = parent.req_Data;
 //步骤和动作配置
 var actArray = new Array();
@@ -13,6 +12,7 @@ $(function () {
     $('#myflow').myflow({
         basePath: "",
         restore: eval("(" + jsonRes + ")"),
+        flowId: parent_json.Id,
         tools: {
             save: function (data) {
                 var sjson = [];
@@ -29,28 +29,20 @@ $(function () {
                     ajson.push(jsono);
                 }
                 save(data, sjson, ajson);
-                //window.localStorage.setItem("data",data)
             },
             publish: function (data) {
-                //console.log("发布",eval("("+data+")"));
             },
             addPath: function (id, data) {
-                //console.log("添加路径",id,eval("("+data+")"));
             },
             addRect: function (id, data) {
-                //console.log("添加状态",id,eval("("+data+")"));
             },
             clickPath: function (id) {
-                //console.log("点击线",id)
             },
             clickRect: function (id, data) {
-                //console.log("点击状态",id,eval("("+data+")"));
             },
             deletePath: function (id) {
-                //console.log("删除线",id);
             },
             deleteRect: function (id, data) {
-                //console.log("删除状态",id,eval("("+data+")"));
             },
             revoke: function (id) {
 
@@ -63,17 +55,20 @@ function init() {
     var stepOrg = '';
     var stepRole = '';
     var stepMan = '';
-
-    var stepjson = JSON.parse(parent_json.stepDesign);
-    stepjson.forEach(function (obj, index, array) {
-        let currentkey = Object.keys(obj)[0];
-        stepArray[currentkey] = obj[currentkey];
-    })
-    var actjson = JSON.parse(parent_json.actDesign);
-    actjson.forEach(function (obj, index, array) {
-        let currentkey = Object.keys(obj)[0];
-        actArray[currentkey] = obj[currentkey];
-    })
+    if (parent_json.stepDesign != undefined) {
+        var stepjson = JSON.parse(parent_json.stepDesign);
+        stepjson.forEach(function (obj, index, array) {
+            let currentkey = Object.keys(obj)[0];
+            stepArray[currentkey] = obj[currentkey];
+        })
+    }
+    if (parent_json.actDesign != undefined) {
+        var actjson = JSON.parse(parent_json.actDesign);
+        actjson.forEach(function (obj, index, array) {
+            let currentkey = Object.keys(obj)[0];
+            actArray[currentkey] = obj[currentkey];
+        })
+    }
 
     //解决设计器初始化action丢失
     $("tspan").each(function () {
@@ -95,17 +90,14 @@ function init() {
 function deleteNodeOrPath() {
     layer.confirm('您确认删除？', {
         btn: ['确认', '取消'] //按钮
-        // ,offset: [msgH+'px', msgW+'px']
         , icon: 7
     }, function () {
         $(document).trigger('keydown', true);
         layer.closeAll('dialog');
     }, function (index) {
         lock = false;
-        //layer.close(index);
     });
 }
-
 function openEditFlowStepDialog(flowId, step, stepName) {
     layer.open({
         type: 2
@@ -114,11 +106,9 @@ function openEditFlowStepDialog(flowId, step, stepName) {
         , scrollbar: false
         , shade: [0.3, '#393D49']
         , maxmin: false
-        , content: '/system/workflow/EditWorkflowManager?flowId=' + flowId + '&stepDesc=' + step
+        , content: '/system/workflow/EditWorkflowManager?flowId=' + parent_json.Id + '&stepDesc=' + step
         , area: ['850px', '80%']
         , end: function () {
-            //window.location.reload();
-            // $('#myflow_save').click();
         }
     });
 }
@@ -135,16 +125,13 @@ function save(djson, sjson, ajson) {
             var ob = dj.paths[keyp];
             for (var keys in dj.states) {
                 var obs = dj.states[keys];
-                //alert( JSON.stringify(obs.text.text))
                 stepNameArray.push(JSON.stringify(obs.text.text));
                 actNameArray.push(JSON.stringify(ob.text.text));
-                //alert( JSON.stringify(ob.text.text))
                 if (ob.from == keys && (obs.type == 'end' || obs.type == 'end-cancel' || obs.type == 'end-error')) {
                     layer.alert('结束状态节点不能指向任何步骤',
                         {
                             title: '提示'
                             , icon: 7
-                            //,offset: [msgH+'px' , msgW+'px']
                             , shadeClose: false
                             , shade: [0.05, '#393D49']
                             , closeBtn: 0
@@ -157,12 +144,10 @@ function save(djson, sjson, ajson) {
                     break;
                 }
                 if (obs.text.text == '') {
-                    //console.log(obs)
                     layer.alert('存在没有命名的步骤',
                         {
                             title: '提示'
                             , icon: 7
-                            //,offset: [msgH+'px' , msgW+'px']
                             , shadeClose: false
                             , shade: [0.05, '#393D49']
                             , closeBtn: 0
@@ -180,7 +165,6 @@ function save(djson, sjson, ajson) {
                     {
                         title: '提示'
                         , icon: 7
-                        //,offset: [msgH+'px' , msgW+'px']
                         , shadeClose: false
                         , shade: [0.05, '#393D49']
                         , closeBtn: 0
@@ -203,7 +187,6 @@ function save(djson, sjson, ajson) {
                         {
                             title: '提示'
                             , icon: 7
-                            //,offset: [msgH+'px' , msgW+'px']
                             , shadeClose: false
                             , shade: [0.05, '#393D49']
                             , closeBtn: 0
@@ -226,19 +209,12 @@ function save(djson, sjson, ajson) {
             lock = false;
             return;
         }
-        //layer.msg('正在执行...', {
-        //    icon: 16
-        //    , shade: 0.01
-        //    , time: 60 * 1000
-        //});
+        layer.msg('保存中...', {
+            icon: 16
+            , shade: 0.01
+            , time: 60 * 1000
+        });
         var url = api + "WorkFlow";
-        //var postData =
-        //{
-        //    Id: parent_json.Id,
-        //    design: djson,
-        //    stepDesign: sjson,
-        //    actDesign: ajson
-        //}
         var postData =
         {
             Id: parent_json.Id,
@@ -246,7 +222,11 @@ function save(djson, sjson, ajson) {
             stepDesign: encodeData(JSON.stringify(sjson)),
             actDesign: encodeData(JSON.stringify(ajson))
         }
-
+        //lock = false;
+        //console.log(djson)
+        //console.log(sjson)
+        //console.log(ajson)
+        //return false;
         ajaxHttp({
             type: "Post",
             url: url,
@@ -261,7 +241,7 @@ function save(djson, sjson, ajson) {
                 }
             }, complete: function () {
                 lock = false;
-                //layer.closeAll();
+                layer.closeAll();
             }
         });
     }//锁结束

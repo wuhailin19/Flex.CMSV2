@@ -59,7 +59,9 @@ namespace Flex.Application.Services
                 throw;
             }
         }
-        public async Task<ProblemDetails<string>> Add(InputWorkFlowAddDto inputWorkFlowContentDto) {
+        
+        public async Task<ProblemDetails<string>> Add(InputWorkFlowAddDto inputWorkFlowContentDto)
+        {
             var workflowresponsity = _unitOfWork.GetRepository<sysWorkFlow>();
             var model = _mapper.Map<sysWorkFlow>(inputWorkFlowContentDto);
             AddIntEntityBasicInfo(model);
@@ -74,6 +76,7 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
             }
         }
+        
         /// <summary>
         /// 修改流程图
         /// </summary>
@@ -214,6 +217,31 @@ namespace Flex.Application.Services
                 .Where(kvp => kvp.Key == key)
                 .Select(kvp => kvp.Value)
                 .FirstOrDefault();
+        }
+
+        public async Task<InputEditStepManagerDto> GetStepManagerById(string stepId)
+        {
+            var stepresponsity = _unitOfWork.GetRepository<sysWorkFlowStep>();
+            return _mapper.Map<InputEditStepManagerDto>(
+                await stepresponsity.GetFirstOrDefaultAsync(m => m.stepPathId == stepId));
+        }
+        public async Task<ProblemDetails<string>> UpdateStepManager(InputEditStepManagerDto inputEditStepManagerDto)
+        {
+            var workflowresponsity = _unitOfWork.GetRepository<sysWorkFlowStep>();
+            var model = await workflowresponsity.GetFirstOrDefaultAsync(m => m.stepPathId == inputEditStepManagerDto.Id);
+            UpdateStringEntityBasicInfo(model);
+            model.stepRole = inputEditStepManagerDto.stepRole;
+            model.stepMan = inputEditStepManagerDto.stepMan;
+            try
+            {
+                workflowresponsity.Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+            }
         }
     }
 }

@@ -56,17 +56,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             _caching.Set(codeid, str, 30);
             return Success(new AuthCodeOutputDto() { CodeId = codeid, ImageCode = codeimg, Publickey = RSAHepler.RSAPublicKey });
         }
-        /// <summary>
-        /// 测试获取所有Admin信息
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Descriper(IsFilter = true)]
-        public async Task<string> GetAsync()
-        {
-            var list = await _services.GetAsync();
-            return Success(list);
-        }
+
         /// <summary>
         /// 测试获取分页Admin信息
         /// </summary>

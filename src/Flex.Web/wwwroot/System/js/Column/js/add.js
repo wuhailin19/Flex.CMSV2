@@ -50,7 +50,7 @@ layui.config({
         , mark: NaN    //选取比例
         , area: '90%'  //弹窗宽度
         , readyimgelement: "input[name=ColumnImage]"
-        , url: api + 'Upload/Onload'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
+        , url: api + 'Upload/UploadImage'  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
         , done: function (data) { //上传完毕回调
             $("input[name=ColumnImage]").val(data);
             //$("#srcimgurl").attr('src', data);

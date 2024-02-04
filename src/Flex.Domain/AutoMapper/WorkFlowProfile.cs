@@ -21,6 +21,7 @@ namespace Flex.Domain.AutoMapper
                     .ForMember(a => a.actDesign, opt => opt.MapFrom(b => b.actDesign));
             CreateMap<sysWorkFlow, WorkFlowColumnDto>();
             CreateMap<PagedList<sysWorkFlow>, PagedList<WorkFlowColumnDto>>();
+            CreateMap<sysWorkFlowStep, InputEditStepManagerDto>();
 
         }
     }

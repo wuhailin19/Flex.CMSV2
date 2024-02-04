@@ -36,6 +36,13 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(await _roleServices.GetRoleListAsync());
         }
 
+        [HttpGet("StepPermissionList")]
+        [Descriper(Name = "工作流页面角色数据")]
+        public async Task<string> StepPermissionList()
+        {
+            return Success(await _roleServices.GetStepRoleListAsync());
+        }
+
         [HttpGet("GetDataPermissionListById")]
         [Descriper(Name = "传入角色Id获取栏目权限列表")]
         public async Task<string> GetDataPermissionListById(int Id)

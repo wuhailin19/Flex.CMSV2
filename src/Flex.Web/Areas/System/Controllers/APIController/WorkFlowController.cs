@@ -64,9 +64,28 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Fail(result.Detail);
         }
 
+        [HttpGet("GetStepManagerById")]
+        public async Task<string> GetStepManagerById(string Id) {
+            return Success(await _workFlowServices.GetStepManagerById(Id));
+        }
+        /// <summary>
+        /// 修改流程图
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("UpdateStepManager")]
+        [Descriper(Name = "编辑工作流步骤参与人")]
+        public async Task<string> UpdateStepManager()
+        {
+            var model = await GetModel<InputEditStepManagerDto>();
+            var result = await _workFlowServices.UpdateStepManager(model);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+
         [HttpDelete("{Id}")]
         [Descriper(Name = "删除工作流")]
-        private async Task<string> Delete(string Id)
+        public async Task<string> Delete(string Id)
         {
             var result = await _workFlowServices.Delete(Id);
             if (result.IsSuccess)

@@ -18,10 +18,12 @@ namespace Flex.Application.Services
     public class ColumnServices : BaseService, IColumnServices
     {
         IRoleServices _roleServices;
-        public ColumnServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IRoleServices roleServices)
+        private ISystemIndexSetServices _systemIndexSetServices;
+        public ColumnServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IRoleServices roleServices, ISystemIndexSetServices systemIndexSetServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _roleServices = roleServices;
+            _systemIndexSetServices = systemIndexSetServices;
         }
 
         /// <summary>
@@ -99,7 +101,36 @@ namespace Flex.Application.Services
             });
             return treeColumns;
         }
+        public async Task<IEnumerable<TreeColumnListDto>> getColumnShortcut(string mode = "5")
+        {
+            var lists = new List<TreeColumnListDto>();
+            var repository = _unitOfWork.GetRepository<SysColumn>();
+            if (_claims.IsSystem)
+            {
+                lists = _mapper.Map<List<TreeColumnListDto>>(await repository.GetAllAsync(m => m.ModelId != 0));
+            }
+            else
+            {
+                var roles = await _roleServices.GetCurrentRoldDtoAsync();
+                var datamission = roles.DataPermission;
+                var jObj = JsonConvert.DeserializeObject<List<DataPermissionDto>>(datamission).FirstOrDefault();
+                lists = _mapper.Map<List<TreeColumnListDto>>(await repository.GetAllAsync(m => jObj.sp.ToList("-").Contains(m.Id.ToString()) && m.ModelId != 0));
+            }
+            var systemindexset = await _systemIndexSetServices.GetbyCurrentIdAsync();
 
+            switch (mode)
+            {
+                case "5":
+                    if (systemindexset.Shortcut.IsEmpty())
+                        return new List<TreeColumnListDto>();
+                    return lists.Where(m => systemindexset.Shortcut.ToList().Contains(m.id.ToString()));
+                case "6":
+                    if (systemindexset.Shortcut.IsEmpty())
+                        return lists;
+                    return lists.Where(m => !systemindexset.Shortcut.ToList().Contains(m.id.ToString()));
+            }
+            return new List<TreeColumnListDto>();
+        }
         public async Task<IEnumerable<ColumnListDto>> ListAsync()
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();

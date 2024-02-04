@@ -12,11 +12,11 @@ namespace Flex.Domain.Dtos.Column
         public controlType checkbox { get; set; }
         [ToolAttr(NameAttr = "编号", AlignAttr = AlignEnum.Center, maxWidth = "80")]
         public int Id { set; get; }
-        [ToolAttr(NameAttr = "标题", SortAttr = true)]
+        [ToolAttr(NameAttr = "标题", SortAttr = true, minWidth = "200")]
         public string Title { set; get; }
         [ToolAttr(NameAttr = "发布时间", SortAttr = true)]
         public string AddTime { set; get; }
-        [ToolAttr(NameAttr = "排序号", SortAttr = true,AlignAttr ="center", maxWidth = "100")]
+        [ToolAttr(NameAttr = "排序号", SortAttr = true, AlignAttr = "center", maxWidth = "100")]
         public string OrderId { set; get; }
         [ToolAttr(NameAttr = "添加人")]
         public string AddUserName { set; get; }

@@ -16,6 +16,7 @@ namespace Flex.Application.Contracts.IServices
         Task<IEnumerable<SysRole>> GetRoleByRoleIdAsync(int roleId);
         Task<PagedList<RoleColumnDto>> GetRoleListAsync(int page, int pagesize);
         Task<IEnumerable<RoleSelectDto>> GetRoleListAsync();
+        Task<IEnumerable<RoleStepDto>> GetStepRoleListAsync();
         Task<Dictionary<string, List<string>>> PermissionDtosAsync();
         Task<ProblemDetails<string>> UpdateApiPermission(InputRoleUrlDto role);
         Task<ProblemDetails<string>> UpdateDataPermission(InputRoleDatapermissionDto role);

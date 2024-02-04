@@ -114,6 +114,25 @@ namespace Flex.Application.Services
             return _mapper.Map<IEnumerable<RoleSelectDto>>(rolelist);
         }
 
+        /// <summary>
+        /// 获取角色列表
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<RoleStepDto>> GetStepRoleListAsync()
+        {
+            var rolelist = await _unitOfWork
+                .GetRepository<SysRole>()
+                .GetAllAsync();
+            var dtolist = _mapper.Map<IEnumerable<RoleStepDto>>(rolelist).ToList();
+            dtolist.Add(new RoleStepDto
+            {
+                Id = "00000",
+                RolesName = "快速选择"
+            });
+            return dtolist.OrderBy(m => m.Id);
+        }
+
         public async Task<ProblemDetails<string>> AddNewRole(InputRoleDto role)
         {
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.RolesName == role.RolesName);
@@ -132,7 +151,7 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataExist.GetEnumDescription());
             try
             {
-                model=await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
+                model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
                 _mapper.Map(role, model);
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
