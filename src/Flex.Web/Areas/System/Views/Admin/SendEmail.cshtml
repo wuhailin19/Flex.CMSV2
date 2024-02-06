@@ -5,8 +5,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" /><link href="~/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
-    <script src="~/Scripts/layui/layui.js" type="text/javascript"></script><script src="~/Scripts/route.js" type="text/javascript"></script>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js" type="text/javascript"></script>
+    <script src="~/Scripts/route.js" type="text/javascript"></script>
     <script src="~/Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
     <script src="/Scripts/htmlEditor/_ueditor/editor_all.js"></script>
     <script src="/Scripts/htmlEditor/_ueditor/editor_config.js"></script>
@@ -99,10 +101,10 @@
             }
             //监听提交
             form.on('submit(formDemo)', function (data) {
-                var content = ue.getAllHtml();
-                var newcontent = content.substring(content.indexOf("<body"));
-                newcontent = newcontent.replace('<body >', '').replace('<body>', '').replace('</body>', '').replace('</html>', '')
-                newcontent = UnitHtml.unhtml(newcontent);
+                var content = ue.getContent();
+                // var newcontent = content.substring(content.indexOf("<body"));
+                // newcontent = newcontent.replace('<body >', '').replace('<body>', '').replace('</body>', '').replace('</html>', '')
+                var newcontent = UnitHtml.unhtml(content);
                 data.field['content'] = newcontent;
                 var json_data = JSON.stringify(data.field);
                 $.ajax({

@@ -106,7 +106,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// 新增账号
         /// </summary>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPost("CreateAccount")]
         [Descriper(Name = "新增账号")]
         public async Task<string> Add()
         {
@@ -166,7 +166,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Fail(result.Detail);
         }
 
-        [HttpDelete("{Id}")]
+        [HttpPost("{Id}")]
         [Descriper(Name = "删除账号")]
         public async Task<string> Delete(string Id)
         {

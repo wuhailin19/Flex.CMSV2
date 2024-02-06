@@ -74,7 +74,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Fail(result.Detail);
         }
 
-        [HttpPut]
+        [HttpPost("CreateMenu")]
         [Descriper(Name = "新增菜单")]
         public async Task<string> AddMenu()
         {
@@ -85,7 +85,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Fail(result.Detail);
         }
 
-        [HttpDelete("{Id}")]
+        [HttpPost("{Id}")]
         [Descriper(Name = "删除菜单")]
         public async Task<string> Delete(string Id)
         {

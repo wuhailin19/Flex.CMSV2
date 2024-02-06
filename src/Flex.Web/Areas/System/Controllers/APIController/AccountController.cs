@@ -1,5 +1,4 @@
-﻿using Flex.Application.Contracts.IServices;
-using Flex.Application.Jwt;
+﻿using Flex.Application.Jwt;
 using Flex.Core.Admin.Application;
 using Flex.Core.Attributes;
 using Flex.Core.Helper;
@@ -20,14 +19,12 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         private JwtService _jwtservice;
         private ICaching _caching;
         private IAccountServices _accountservices;
-        private IHttpContextAccessor _Context;
         public AccountController(IHttpContextAccessor Context, IAdminServices services, IAccountServices accountservices, JwtService jwtservice, ICaching caching)
         {
             _services = services;
             _jwtservice = jwtservice;
             _accountservices = accountservices;
             _caching = caching;
-            _Context = Context;
         }
         /// <summary>
         /// 验证码判断
@@ -74,7 +71,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// </summary>
         /// <param name="refreshTokenDto"></param>
         /// <returns></returns>
-        [HttpPut()]
+        [HttpPost("RefreshAccessTokenAsync")]
         [Descriper(IsFilter = true)]
         public async Task<string> RefreshAccessTokenAsync([FromBody] AdminRefreshTokenDto refreshTokenDto)
         {

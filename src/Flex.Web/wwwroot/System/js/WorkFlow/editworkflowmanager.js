@@ -3,7 +3,7 @@
     $(this).addClass('layui-this').siblings().removeClass('layui-this');
     $('.layui-tab-item').eq(t_index).addClass('layui-show').siblings().removeClass('layui-show');
 })
-var datamission = [];
+var datamission = { stepRole: "", stepMan: "" };
 var stepId = $.getUrlParam("stepDesc");
 
 ajaxHttp({
@@ -14,11 +14,13 @@ ajaxHttp({
     dataType: 'json',
     success: function (json) {
         if (json.code == 200) {
-            datamission = json.content;
+            if (json.content != undefined)
+                datamission = json.content;
         }
     },
     complete: function () { }
 })
+
 layui.config({
     base: '/Scripts/layui/module/'
 }).use(['layer', 'form', 'element', 'treeTable'], function () {
@@ -238,7 +240,7 @@ layui.config({
         var json = data.field;
         let stepRoleids = getCheckListArray('rolelist');
         let stepManids = getCheckListArray('userlist');
-        
+
         ajaxHttp({
             url: api + 'WorkFlow/UpdateStepManager',
             type: 'Post',

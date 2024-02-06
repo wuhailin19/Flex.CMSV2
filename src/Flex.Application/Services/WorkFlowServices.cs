@@ -32,6 +32,34 @@ namespace Flex.Application.Services
             PagedList<WorkFlowColumnDto> workflows = _mapper.Map<PagedList<WorkFlowColumnDto>>(list);
             return workflows;
         }
+        /// <summary>
+        /// 获取工作流下拉集合
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<WorkFlowSelectDto>> GetWorkFlowSelectDtoListAsync()
+        {
+            var list = await _unitOfWork.GetRepository<sysWorkFlow>().GetAllAsync();
+            var workflows = _mapper.Map<List<WorkFlowSelectDto>>(list);
+            return workflows;
+        }
+        /// <summary>
+        /// 获取栏目内容编辑处流程按钮
+        /// </summary>
+        /// <param name="stepDto"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<StepActionButtonDto>> GetStepActionButtonList(InputWorkFlowStepDto stepDto)
+        {
+            if (stepDto.stepPathId.IsNullOrEmpty())
+            {
+                var step = await _unitOfWork.GetRepository<sysWorkFlowStep>().GetFirstOrDefaultAsync(m => m.flowId == stepDto.flowId && m.isStart == StepProperty.Start);
+
+                return _mapper.Map<List<StepActionButtonDto>>(await _unitOfWork.GetRepository<sysWorkFlowAction>().GetAllAsync(m => m.stepFromId == step.stepPathId));
+
+            }
+            return _mapper.Map<List<StepActionButtonDto>>(await _unitOfWork.GetRepository<sysWorkFlowAction>().GetAllAsync(m => m.stepFromId == stepDto.stepPathId));
+        }
         public async Task<ProblemDetails<string>> Delete(string Id)
         {
             var adminRepository = _unitOfWork.GetRepository<sysWorkFlow>();
@@ -59,7 +87,7 @@ namespace Flex.Application.Services
                 throw;
             }
         }
-        
+
         public async Task<ProblemDetails<string>> Add(InputWorkFlowAddDto inputWorkFlowContentDto)
         {
             var workflowresponsity = _unitOfWork.GetRepository<sysWorkFlow>();
@@ -76,7 +104,24 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
             }
         }
-        
+        public async Task<ProblemDetails<string>> Update(InputWorkFlowUpdateDto updatedto)
+        {
+            var workflowresponsity = _unitOfWork.GetRepository<sysWorkFlow>();
+            var model = await workflowresponsity.GetFirstOrDefaultAsync(m => m.Id == updatedto.Id);
+            _mapper.Map(updatedto, model);
+            UpdateIntEntityBasicInfo(model);
+            try
+            {
+                workflowresponsity.Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+            }
+        }
+
         /// <summary>
         /// 修改流程图
         /// </summary>
@@ -135,7 +180,7 @@ namespace Flex.Application.Services
             {
                 var steps = await workflowstrp.GetAllAsync(m => m.flowId == flowId);
                 workflowstrp.Delete(steps);
-                
+
                 var actions = await workflowaction.GetAllAsync(m => m.flowId == flowId);
                 workflowaction.Delete(actions);
                 return true;
@@ -153,8 +198,7 @@ namespace Flex.Application.Services
             {
                 var currentpath = states[flowaction];
                 var actionstep = GetDictionaryValueOrDefault(step, flowaction) ?? new StepObject();
-
-                step_list.Add(new sysWorkFlowStep
+                var model = new sysWorkFlowStep
                 {
                     avoidFlag = actionstep.AvoidFlag,
                     stepOrg = actionstep.StepOrg,
@@ -166,7 +210,9 @@ namespace Flex.Application.Services
                     stepMan = actionstep.StepMan,
                     Id = _idWorker.NextId().ToString(),
                     isStart = currentpath.type == "start" ? StepProperty.Start : StepProperty.Other
-                });
+                };
+                AddStringEntityBasicInfo(model);
+                step_list.Add(model);
             }
 
             return step_list;
@@ -195,7 +241,7 @@ namespace Flex.Application.Services
                 };
                 flowAction.actionFromName = states[flowAction.stepFromId].text.text;
                 flowAction.actionToName = states[flowAction.stepToId].text.text;
-
+                AddStringEntityBasicInfo(flowAction);
                 if (actionstr.IsEmpty())
                     actionstr += flowAction.actionName;
                 else

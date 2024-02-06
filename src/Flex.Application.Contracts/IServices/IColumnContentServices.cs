@@ -10,7 +10,7 @@ namespace Flex.Application.Contracts.IServices
     {
         Task<ProblemDetails<string>> Add(Hashtable hashtable);
         Task<ProblemDetails<string>> Delete(int ParentId, string Id);
-        Task<dynamic> GetContentById(int ParentId, int Id);
+        Task<OutputContentAndWorkFlowDto> GetContentById(int ParentId, int Id);
         Task<IEnumerable<ContentOptions>> GetContentOptions(int ParentId);
         Task<ProblemDetails<string>> GetFormHtml(int ParentId);
         Task<ColumnPermissionAndTableHeadDto> GetTableThs(int ParentId);

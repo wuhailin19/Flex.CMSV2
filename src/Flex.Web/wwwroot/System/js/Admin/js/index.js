@@ -117,7 +117,7 @@ layui.use(['table', 'form'], function () {
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
                     ajaxHttp({
                         url: routeLink + nodeIds,
-                        type: 'Delete',
+                        type: 'Post',
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {
@@ -149,7 +149,7 @@ layui.use(['table', 'form'], function () {
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
                     ajaxHttp({
                         url: routeLink + indexid,
-                        type: 'Delete',
+                        type: 'Post',
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {

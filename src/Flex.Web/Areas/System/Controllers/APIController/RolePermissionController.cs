@@ -59,7 +59,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPost("CreateRole")]
         [Descriper(Name = "新增角色")]
         public async Task<string> Insert(InputRoleDto role)
         {
@@ -130,7 +130,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
 
-        [HttpDelete("{Id}")]
+        [HttpPost("{Id}")]
         [Descriper(Name = "删除角色")]
         public async Task<string> Delete(string Id)
         {

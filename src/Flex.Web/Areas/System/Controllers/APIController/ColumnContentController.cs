@@ -61,7 +61,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(await _columnServices.GetContentById(ParentId, Id));
         }
 
-        [HttpPut]
+        [HttpPost("CreateColumnContent")]
         [Descriper(Name = "新增栏目内容")]
         public async Task<string> Add()
         {
@@ -83,7 +83,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(result.Detail);
         }
 
-        [HttpDelete("{ParentId}/{Id}")]
+        [HttpPost("{ParentId}/{Id}")]
         [Descriper(Name = "删除栏目内容")]
         public async Task<string> Delete(int ParentId,string Id)
         {

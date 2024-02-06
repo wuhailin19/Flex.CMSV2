@@ -1,12 +1,14 @@
 ﻿using Consul;
 using Dapper;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Application.Contracts.IServices;
 using Flex.Dapper;
 using Flex.Domain;
 using Flex.Domain.Cache;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Role;
+using Flex.Domain.Dtos.WorkFlow;
 using Flex.Domain.HtmlHelper;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
@@ -23,18 +25,21 @@ namespace Flex.Application.Services
     {
         MyDBContext _dapperDBContext;
         IRoleServices _roleServices;
+        IWorkFlowServices _workFlowServices;
+
         private ICaching _caching;
         //默认加载字段
         private const string defaultFields = "IsTop,IsRecommend,IsHot,IsShow,IsSilde,SeoTitle,KeyWord,Description" +
-            ",Title,Id,AddTime,StatusCode,AddUserName,LastEditUserName,OrderId,ParentId,";
+            ",Title,Id,AddTime,StatusCode,AddUserName,LastEditUserName,OrderId,ParentId,ReviewStepId,";
         ISqlTableServices _sqlTableServices;
-        public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext, ISqlTableServices sqlTableServices, IRoleServices roleServices, ICaching caching)
+        public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext, ISqlTableServices sqlTableServices, IRoleServices roleServices, ICaching caching, IWorkFlowServices workFlowServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _dapperDBContext = dapperDBContext;
             _sqlTableServices = sqlTableServices;
             _roleServices = roleServices;
             _caching = caching;
+            _workFlowServices = workFlowServices;
         }
         public async Task<ColumnPermissionAndTableHeadDto> GetTableThs(int ParentId)
         {
@@ -53,11 +58,11 @@ namespace Flex.Application.Services
                 });
             }
             ColumnPermissionAndTableHeadDto columnPermission = new ColumnPermissionAndTableHeadDto();
-            columnPermission.TableHeads= tableths;
-            columnPermission.IsDelete =await CheckPermission(ParentId,nameof(DataPermissionDto.dp));
-            columnPermission.IsUpdate =await CheckPermission(ParentId, nameof(DataPermissionDto.ed));
-            columnPermission.IsAdd =await CheckPermission(ParentId, nameof(DataPermissionDto.ad));
-            columnPermission.IsSelect =await CheckPermission(ParentId, nameof(DataPermissionDto.sp));
+            columnPermission.TableHeads = tableths;
+            columnPermission.IsDelete = await CheckPermission(ParentId, nameof(DataPermissionDto.dp));
+            columnPermission.IsUpdate = await CheckPermission(ParentId, nameof(DataPermissionDto.ed));
+            columnPermission.IsAdd = await CheckPermission(ParentId, nameof(DataPermissionDto.ad));
+            columnPermission.IsSelect = await CheckPermission(ParentId, nameof(DataPermissionDto.sp));
             return columnPermission;
         }
         public async Task<IEnumerable<ContentOptions>> GetContentOptions(int ParentId)
@@ -101,10 +106,10 @@ namespace Flex.Application.Services
             return result;
         }
 
-        public async Task<dynamic> GetContentById(int ParentId, int Id)
+        public async Task<OutputContentAndWorkFlowDto> GetContentById(int ParentId, int Id)
         {
             if (!await CheckPermission(ParentId.ToInt(), nameof(DataPermissionDto.sp)))
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+                return default;
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
@@ -122,9 +127,20 @@ namespace Flex.Application.Services
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@Id", Id);
             parameters.Add("@ParentId", ParentId);
+            parameters.Add("@flowId", column.ReviewMode);
 
-            var result = await _dapperDBContext.GetDynamicAsync("select " + filed + " from " + contentmodel.TableName + " where ParentId=@ParentId and Id=@Id", parameters);
+            var result = (await _dapperDBContext.GetDynamicAsync("select " + filed + ",flowId=@flowId from " + contentmodel.TableName + " where ParentId=@ParentId and Id=@Id", parameters)).FirstOrDefault();
 
+            var model = new OutputContentAndWorkFlowDto
+            {
+                Content = result,
+                stepActionButtonDto = new List<StepActionButtonDto> { }
+            };
+            if (column.ReviewMode.ToInt() != 0)
+            {
+                model.stepActionButtonDto = await _workFlowServices.GetStepActionButtonList(new InputWorkFlowStepDto { flowId = column.ReviewMode.ToInt(), stepPathId= result.ReviewStepId });
+            }
+            
             #region 废弃
             //UpdateContentDto updateContentDto = new UpdateContentDto();
             //if (result.Count() != 1)
@@ -146,7 +162,7 @@ namespace Flex.Application.Services
             //updateContentDto.editorItem = editorItems;
             #endregion
 
-            return result.FirstOrDefault();
+            return model;
         }
 
         public async Task<ProblemDetails<string>> GetFormHtml(int ParentId)

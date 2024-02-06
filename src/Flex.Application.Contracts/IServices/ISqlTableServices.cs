@@ -20,5 +20,6 @@ namespace Flex.Application.Contracts.IServices
         string InsertTableField(string TableName, sysField model);
         string InsertTableField(string TableName, string filedName, string filedtype);
         string ReNameTableField(string TableName, string oldfiledName, string filedName);
+        string ReNameTableName(string TableName, string NewTableName);
     }
 }

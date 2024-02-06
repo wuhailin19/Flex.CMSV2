@@ -143,8 +143,8 @@ layui.config({
         const rolename = $('select[name="RoleId"] > option:selected').text();
         data.field.RoleName = rolename;
         ajaxHttp({
-            url: api + 'Admin',
-            type: 'Put',
+            url: api + 'Admin/CreateAccount',
+            type: 'Post',
             datatype: 'json',
             data: JSON.stringify(data.field),
             async: false,

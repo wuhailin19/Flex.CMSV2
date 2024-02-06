@@ -1,13 +1,22 @@
 ﻿var parent_json = parent.req_Data;
 //Demo
 var model = {};
+
 ajaxHttp({
     url: api + 'ColumnContent/GetContentById/' + parent_json.ParentId + "/" + parent_json.Id,
     type: 'Get',
     async: false,
     dataType: 'json',
     success: function (result) {
-        model = result.content;
+        model = result.content.Content;
+        if (result.content.stepActionButtonDto.length > 0) {
+            var buttons = result.content.stepActionButtonDto;
+            for (var i = 0; i < buttons.length; i++) {
+                $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm" onclick="return false;">' + buttons[i].actionName + '</button>');
+            }
+        } else {
+            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">立即提交</button>');
+        }
     },
     complete: function () { }
 })

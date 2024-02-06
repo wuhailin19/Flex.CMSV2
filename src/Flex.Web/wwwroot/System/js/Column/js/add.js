@@ -71,8 +71,8 @@ layui.config({
     //监听提交
     form.on('submit(formDemo)', function (data) {
         ajaxHttp({
-            url: api + 'ColumnCategory',
-            type: 'Put',
+            url: api + 'ColumnCategory/CreateColumn',
+            type: 'Post',
             data: JSON.stringify(data.field),
             async: false,
             success: function (json) {

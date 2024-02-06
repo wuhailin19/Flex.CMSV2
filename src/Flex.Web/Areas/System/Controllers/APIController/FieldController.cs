@@ -41,7 +41,6 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(await _services.GetFiledInfoById(Id));
         }
 
-        [HttpPut]
         [Descriper(IsFilter = true)]
         private async Task<string> Add() {
             var validate = await ValidateModel<AddFieldDto>();

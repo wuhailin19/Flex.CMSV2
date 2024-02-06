@@ -13,19 +13,13 @@
     <link href="~/system/css/uploader/webuploadercustom.css" rel="stylesheet" />
     <script src="~/system/js/uploader/webuploader.min.js"></script>
     <script src="~/system/js/uploader/uploadsingle.js"></script>
-    <style>
-        .layui-form-item .layui-form-label { text-align: center; }
-        .edui-editor.edui-default { width: 100% !important; }
-        .layui-input-block > .edui-default { width: 100% !important; }
-        .layui-select-title .layui-anim.layui-anim-upbit { display: none; }
-        .iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
-    </style>
+    <link href="~/system/css/columncontent/edit.css" rel="stylesheet" />
     <script>
         var editorarray = new Array();
     </script>
 </head>
 <body>
-    <form class="layui-form layui-form-pane" action="" style="padding: 2%;" lay-filter="formTest">
+    <form class="layui-form layui-form-pane" action="" style="padding: 2%;padding-bottom: 50px;" lay-filter="formTest">
         <div class="layui-form-item">
             <label class="layui-form-label" style="width:110px">标题</label>
             <div class="layui-input-block" style="width:calc(100% - 110px)">
@@ -61,10 +55,10 @@
                 <textarea placeholder="请输入描述" name="Description" class="layui-textarea"></textarea>
             </div>
         </div>
-        <div class="layui-form-item">
-            <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
+        <div class="layui-form-item bottomBtnbox">
+            <div class="layui-input-block" id="bottomBtnbox">
+                
+                @* <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button> *@
             </div>
         </div>
     </form>

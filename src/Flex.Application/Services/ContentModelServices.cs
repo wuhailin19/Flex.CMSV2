@@ -152,7 +152,7 @@ namespace Flex.Application.Services
                     foreach (var item in deletefiledlist)
                     {
                         item.StatusCode = StatusCode.Deleted;
-                        deletestring += _sqlServerServices.ReNameTableField(contentmodel.TableName,item.FieldName, (item.FieldName+item.Id).Replace("-","_"));
+                        deletestring += _sqlServerServices.ReNameTableField(contentmodel.TableName, item.FieldName, (item.FieldName + item.Id).Replace("-", "_"));
                     }
                     _unitOfWork.ExecuteSqlCommand(deletestring);
                     filedresponsity.Update(deletefiledlist);
@@ -203,12 +203,16 @@ namespace Flex.Application.Services
             try
             {
                 var softdels = new List<SysContentModel>();
+                string renametablesql = string.Empty;
                 foreach (var item in delete_list)
                 {
                     item.StatusCode = StatusCode.Deleted;
                     UpdateIntEntityBasicInfo(item);
                     softdels.Add(item);
+                    renametablesql += _sqlServerServices.ReNameTableName(item.TableName, item.TableName + _idWorker.NextId());
                 }
+                if (renametablesql.IsNotNullOrEmpty())
+                    _unitOfWork.ExecuteSqlCommand(renametablesql);
                 responsity.Update(softdels);
                 await _unitOfWork.SaveChangesAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");

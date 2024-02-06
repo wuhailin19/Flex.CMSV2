@@ -14,8 +14,11 @@ namespace Flex.Application.Contracts.IServices
     {
         Task<ProblemDetails<string>> Add(InputWorkFlowAddDto inputWorkFlowContentDto);
         Task<ProblemDetails<string>> Delete(string Id);
+        Task<IEnumerable<StepActionButtonDto>> GetStepActionButtonList(InputWorkFlowStepDto stepDto);
         Task<InputEditStepManagerDto> GetStepManagerById(string stepId);
         Task<PagedList<WorkFlowColumnDto>> GetWorkFlowListAsync(int page, int pagesize);
+        Task<IEnumerable<WorkFlowSelectDto>> GetWorkFlowSelectDtoListAsync();
+        Task<ProblemDetails<string>> Update(InputWorkFlowUpdateDto updatedto);
         Task<ProblemDetails<string>> UpdateFlowChat(InputWorkFlowContentDto inputWorkFlowContentDto);
         Task<ProblemDetails<string>> UpdateStepManager(InputEditStepManagerDto inputEditStepManagerDto);
     }

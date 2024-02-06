@@ -121,8 +121,8 @@ layui.config(
             }
             data.field.ParentId = parent.currentparentId;
             ajaxHttp({
-                url: api + 'ColumnContent',
-                type: 'Put',
+                url: api + 'ColumnContent/CreateColumnContent',
+                type: 'Post',
                 data: JSON.stringify(data.field),
                 async: false,
                 success: function (json) {

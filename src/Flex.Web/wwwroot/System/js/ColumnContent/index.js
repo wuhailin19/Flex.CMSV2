@@ -104,7 +104,7 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
                     ajaxHttp({
                         url: routeLink + currentparentId + "/" + nodeIds,
-                        type: 'Delete',
+                        type: 'Post',
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {

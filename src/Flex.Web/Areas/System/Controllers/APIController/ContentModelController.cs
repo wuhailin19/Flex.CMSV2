@@ -1,9 +1,7 @@
 ﻿using Flex.Core.Attributes;
-using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ContentModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace Flex.Web.Areas.System.Controllers.APIController
 {
@@ -44,7 +42,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(result.Detail);
         }
 
-        [HttpPut]
+        [HttpPost("CreateContentModel")]
         [Descriper(Name = "新增模型")]
         public async Task<string> Add() {
             var validate = await ValidateModel<AddContentModelDto>();
@@ -56,7 +54,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(result.Detail);
         }
 
-        [HttpDelete("{Id}")]
+        [HttpPost("{Id}")]
         [Descriper(Name = "删除模型")]
         public async Task<string> Delete(string Id)
         {

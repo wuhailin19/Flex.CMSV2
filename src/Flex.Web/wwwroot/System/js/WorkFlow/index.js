@@ -66,7 +66,7 @@ layui.use('table', function () {
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
                     ajaxHttp({
                         url: routeLink + nodeIds,
-                        type: 'Delete',
+                        type: 'Post',
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {
@@ -95,7 +95,7 @@ layui.use('table', function () {
                 layer.confirm('确定删除本行么', function (index) {
                     ajaxHttp({
                         url: routeLink + indexid,
-                        type: 'Delete',
+                        type: 'Post',
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {
@@ -119,7 +119,7 @@ layui.use('table', function () {
             case 'edit':
                 defaultOptions.editIframe(layer, insTb);
                 break;
-            case 'operationPermission':
+            case 'editWorkFlow':
                 defaultOptions.openOperaIframe(layer, insTb);
                 break;
         }

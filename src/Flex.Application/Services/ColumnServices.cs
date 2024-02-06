@@ -211,18 +211,7 @@ namespace Flex.Application.Services
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
             var model = await coreRespository.GetFirstOrDefaultAsync(m => m.Id == updateColumnDto.Id);
-            model.Id = updateColumnDto.Id;
-            model.Name = updateColumnDto.Name;
-            model.ColumnImage = updateColumnDto.ColumnImage;
-            model.ColumnUrl = updateColumnDto.ColumnUrl;
-            model.SeoDescription = updateColumnDto.SeoDescription;
-            model.SeoKeyWord = updateColumnDto.SeoKeyWord;
-            model.SeoTitle = updateColumnDto.SeoTitle;
-            model.OrderId = updateColumnDto.OrderId;
-            model.ModelId = updateColumnDto.ModelId;
-            model.ExtensionModelId = updateColumnDto.ExtensionModelId;
-            model.IsShow = updateColumnDto.IsShow;
-            model.ParentId = updateColumnDto.ParentId;
+            _mapper.Map(updateColumnDto, model);
             UpdateIntEntityBasicInfo(model);
             try
             {

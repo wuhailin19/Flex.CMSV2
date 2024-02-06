@@ -32,6 +32,7 @@ namespace Flex.Application.SqlServerSQLString
                                       "[IsSilde] [bit] NOT NULL default 0," +
                                       "[OrderId] [int] NOT NULL," +
                                       "[StatusCode] [int] NOT NULL default 1," +
+                                      "[ReviewStepId] [nvarchar](255) NULL," +
                                       "[AddUser] [bigint] NULL," +
                                       "[AddUserName] [nvarchar](100) NULL," +
                                       "[LastEditUser] [bigint] NULL," +
@@ -39,10 +40,11 @@ namespace Flex.Application.SqlServerSQLString
                                       "[LastEditDate] [datetime] NOT NULL default getdate()," +
                                       "[Version] [int] NOT NULL default 0 " +
                                       " )";
-        public string InsertTableField(string TableName, sysField model) => "ALTER TABLE [" + TableName + "]  ADD [" + model.FieldName + "]  " + ConvertDataType(model.FieldType)+";";
-        public string InsertTableField(string TableName, string filedName,string filedtype) => "ALTER TABLE [" + TableName + "]  ADD [" + filedName + "]  " + ConvertDataType(filedtype) +";";
-        public string AlertTableField(string TableName,string oldfiledName, string filedName, string filedtype) => "EXEC sp_rename '" + TableName + "." + oldfiledName + "', '"+filedName+"', 'COLUMN';ALTER TABLE "+TableName+" ALTER COLUMN "+filedName+" "+ ConvertDataType(filedtype) + ";";
-        public string ReNameTableField(string TableName,string oldfiledName, string filedName) => "EXEC sp_rename '" + TableName + "." + oldfiledName + "', '"+filedName+"', 'COLUMN';";
+        public string InsertTableField(string TableName, sysField model) => "ALTER TABLE [" + TableName + "]  ADD [" + model.FieldName + "]  " + ConvertDataType(model.FieldType) + ";";
+        public string InsertTableField(string TableName, string filedName, string filedtype) => "ALTER TABLE [" + TableName + "]  ADD [" + filedName + "]  " + ConvertDataType(filedtype) + ";";
+        public string AlertTableField(string TableName, string oldfiledName, string filedName, string filedtype) => "EXEC sp_rename '" + TableName + "." + oldfiledName + "', '" + filedName + "', 'COLUMN';ALTER TABLE " + TableName + " ALTER COLUMN " + filedName + " " + ConvertDataType(filedtype) + ";";
+        public string ReNameTableField(string TableName, string oldfiledName, string filedName) => "EXEC sp_rename '" + TableName + "." + oldfiledName + "', '" + filedName + "', 'COLUMN';";
+        public string ReNameTableName(string TableName, string NewTableName) => "EXEC sp_rename '" + TableName + "', '" + NewTableName + "';";
         public string DeleteTableField(string TableName, List<sysField> Fields)
         {
             string sql = string.Empty;
@@ -52,8 +54,9 @@ namespace Flex.Application.SqlServerSQLString
             }
             return sql;
         }
-        public string DeleteContentTableData(string TableName,string Ids) => "update " + TableName + " set StatusCode=0 where Id in(" + Ids + ")";
-        public StringBuilder CreateInsertSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters) {
+        public string DeleteContentTableData(string TableName, string Ids) => "update " + TableName + " set StatusCode=0 where Id in(" + Ids + ")";
+        public StringBuilder CreateInsertSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters)
+        {
             StringBuilder builder = new StringBuilder();
             builder.Append("insert into " + TableName + " (");
             string key = "";
@@ -74,7 +77,7 @@ namespace Flex.Application.SqlServerSQLString
             }
             return builder;
         }
-        public StringBuilder CreateUpdateSqlString(Hashtable table, string TableName,out SqlParameter[] commandParameters)
+        public StringBuilder CreateUpdateSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters)
         {
             StringBuilder builder = new StringBuilder();
             int Id = table["Id"].ToInt();

@@ -101,7 +101,7 @@ layui.config({
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
                     ajaxHttp({
                         url: api + 'Menu/' + nodeIds,
-                        type: 'Delete',
+                        type: 'Post',
                         //data: { Ids: nodeIds },
                         async: false,
                         success: function (json) {
@@ -134,7 +134,7 @@ layui.config({
             layer.confirm('确定删除本行么', function (index) {
                 ajaxHttp({
                     url: api + 'Menu/' + indexid,
-                    type: 'Delete',
+                    type: 'Post',
                     //data: { Ids: indexid },
                     async: false,
                     success: function (json) {

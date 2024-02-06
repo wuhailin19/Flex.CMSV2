@@ -25,8 +25,8 @@ layui.config({
     //监听提交
     form.on('submit(formDemo)', function (data) {
         ajaxHttp({
-            url: api + 'WorkFlow',
-            type: 'Put',
+            url: api + 'WorkFlow/CreateWorkFlow',
+            type: 'Post',
             datatype: 'json',
             data: JSON.stringify(data.field),
             async: false,

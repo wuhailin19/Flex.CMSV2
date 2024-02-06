@@ -9,6 +9,7 @@ namespace Flex.Web.Areas.System.Controllers.ViewController
     {
         public ActionResult Index() { return View(); }
         public ActionResult DesignFlowchart() { return View(); }
+        public ActionResult Edit() { return View(); }
         public ActionResult EditWorkflowManager()
         {
             return View();

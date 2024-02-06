@@ -1,11 +1,7 @@
-﻿using Autofac.Core;
-using Flex.Application.Contracts.IServices;
-using Flex.Application.Services;
-using Flex.Core.Attributes;
+﻿using Flex.Core.Attributes;
 using Flex.Domain.Dtos.WorkFlow;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace Flex.Web.Areas.System.Controllers.APIController
 {
@@ -33,11 +29,26 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             return Success(await _workFlowServices.GetWorkFlowListAsync(page, limit));
         }
+
+        [HttpGet("GetWorkFlowSelectDtoListAsync")]
+        [Descriper(Name = "获取工作流下拉集合")]
+        public async Task<string> GetWorkFlowSelectDtoListAsync()
+        {
+            return Success(await _workFlowServices.GetWorkFlowSelectDtoListAsync());
+        }
+
+        [HttpPost("GetStepActionButtonList")]
+        [Descriper(Name = "获取当前动作的审核按钮列表")]
+        public async Task<string> GetStepActionButtonList()
+        {
+            var model = await GetModel<InputWorkFlowStepDto>();
+            return Success(await _workFlowServices.GetStepActionButtonList(model));
+        }
         /// <summary>
         /// 添加工作流
         /// </summary>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPost("CreateWorkFlow")]
         [Descriper(Name = "添加工作流")]
         public async Task<string> Add()
         {
@@ -53,8 +64,23 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// 修改流程图
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("UpdateInfo")]
         [Descriper(Name = "编辑工作流")]
+        public async Task<string> UpdateInfo()
+        {
+            var model = await GetModel<InputWorkFlowUpdateDto>();
+            var result = await _workFlowServices.Update(model);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+
+        /// <summary>
+        /// 修改流程图
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Descriper(Name = "修改流程图")]
         public async Task<string> UpdateFlowChat()
         {
             var model = await GetModel<InputWorkFlowContentDto>();
@@ -65,8 +91,10 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
         [HttpGet("GetStepManagerById")]
-        public async Task<string> GetStepManagerById(string Id) {
-            return Success(await _workFlowServices.GetStepManagerById(Id));
+        public async Task<string> GetStepManagerById(string Id)
+        {
+            var result = await _workFlowServices.GetStepManagerById(Id);
+            return Success(result);
         }
         /// <summary>
         /// 修改流程图
@@ -83,7 +111,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Fail(result.Detail);
         }
 
-        [HttpDelete("{Id}")]
+        [HttpPost("{Id}")]
         [Descriper(Name = "删除工作流")]
         public async Task<string> Delete(string Id)
         {

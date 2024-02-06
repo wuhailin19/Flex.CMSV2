@@ -106,7 +106,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(await _columnServices.GetColumnById(Id));
         }
 
-        [HttpPut]
+        [HttpPost("CreateColumn")]
         [Descriper(Name = "新增栏目")]
         public async Task<string> AddColumn()
         {
@@ -132,7 +132,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(result.Detail);
         }
 
-        [HttpDelete("{Id}")]
+        [HttpPost("{Id}")]
         [Descriper(Name = "删除栏目")]
         public async Task<string> Delete(string Id)
         {

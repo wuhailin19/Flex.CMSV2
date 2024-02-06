@@ -22,11 +22,13 @@ layui.config({
     base: '/Scripts/layui/module/'
 }).use(['form', 'tree'], function () {
     var form = layui.form;
+    var parent_json = parent.req_Data;
     //监听提交
     form.on('submit(formDemo)', function (data) {
         var json = data.field;
+        data.field["Id"] = parent_json.Id;
         ajaxHttp({
-            url: api + 'RolePermission/CreateRole',
+            url: api + 'WorkFlow/UpdateInfo',
             type: 'Post',
             datatype: 'json',
             data: JSON.stringify(json),
@@ -48,8 +50,16 @@ layui.config({
         })
         return false;
     });
-    //$('#reset').click(function () {
-    //    insTb.reload();
-    //    return false;
-    //})
+    function formRender() {
+        form.val("formTest", {
+            'Name': parent_json.Name
+            , 'Introduction': parent_json.Introduction
+            , 'Id': parent_json.Id
+        });
+    }
+    formRender();
+    $('#reset').click(function () {
+        formRender();
+        return false;
+    })
 });

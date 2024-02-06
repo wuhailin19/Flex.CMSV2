@@ -36,6 +36,22 @@ ajaxHttp({
         }
     }
 })
+
+ajaxHttp({
+    url: api + 'WorkFlow/GetWorkFlowSelectDtoListAsync',
+    type: 'Get',
+    datatype: 'json',
+    async: false,
+    success: function (json) {
+        if (json.code == 200) {
+            for (var i = 0; i < json.content.length; i++) {
+                $('#ReviewMode').append('<option value="' + json.content[i].Id + '" ' + (parent_json.ReviewMode == json.content[i].Id ? "selected" : "") + '>' + json.content[i].Name + '</option>');
+            }
+        } else {
+            tips.showFail(json.msg);
+        }
+    }
+})
 //Demo
 ajaxHttp({
     url: api + 'ColumnCategory/GetTreeSelectListDtos',
