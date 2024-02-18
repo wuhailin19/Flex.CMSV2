@@ -70,7 +70,7 @@ layui.use('table', function () {
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {
-                                tips.showSuccess(json.msg)
+                                tips.showSuccess(json.msg);
                                 // 删除
                                 delete_index = [];
                                 defaultOptions.callBack(insTb);

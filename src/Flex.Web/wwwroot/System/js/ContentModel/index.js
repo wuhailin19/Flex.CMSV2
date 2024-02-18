@@ -21,7 +21,7 @@ layui.use('table', function () {
         , toolbar: '#toolbarDemo'
         , limits: [1, 5, 10, 15, 20]
         , limit: 15
-        , page: true //开启分页
+        , page: false //开启分页
         , response: {
             statusCode: 200
         },

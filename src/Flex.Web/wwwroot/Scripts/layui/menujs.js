@@ -110,7 +110,7 @@ layui.use('element', function () {
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: ['60%', '80%'],
-            content: api + "Admin/Email",
+            content: SystempageRoute + "Message/Index",
             success: function (layero, index) {
             }
         });

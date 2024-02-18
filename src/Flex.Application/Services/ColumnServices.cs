@@ -113,7 +113,7 @@ namespace Flex.Application.Services
             {
                 var roles = await _roleServices.GetCurrentRoldDtoAsync();
                 var datamission = roles.DataPermission;
-                var jObj = JsonConvert.DeserializeObject<List<DataPermissionDto>>(datamission).FirstOrDefault();
+                var jObj = JsonConvert.DeserializeObject<DataPermissionDto>(datamission);
                 lists = _mapper.Map<List<TreeColumnListDto>>(await repository.GetAllAsync(m => jObj.sp.ToList("-").Contains(m.Id.ToString()) && m.ModelId != 0));
             }
             var systemindexset = await _systemIndexSetServices.GetbyCurrentIdAsync();
