@@ -19,7 +19,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         private JwtService _jwtservice;
         private ICaching _caching;
         private IAccountServices _accountservices;
-        public AccountController(IHttpContextAccessor Context, IAdminServices services, IAccountServices accountservices, JwtService jwtservice, ICaching caching)
+        public AccountController(IAdminServices services, IAccountServices accountservices, JwtService jwtservice, ICaching caching)
         {
             _services = services;
             _jwtservice = jwtservice;

@@ -30,8 +30,4 @@
     <ProjectReference Include="..\Flex.EFSqlServer\Flex.EFSqlServer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Attributes\" />
-  </ItemGroup>
-
 </Project>
