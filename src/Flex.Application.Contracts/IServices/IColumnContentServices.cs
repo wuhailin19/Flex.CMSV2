@@ -2,6 +2,7 @@
 using Flex.Domain;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
+using Flex.Domain.Dtos.WorkFlow;
 using System.Collections;
 
 namespace Flex.Application.Contracts.IServices
@@ -10,6 +11,7 @@ namespace Flex.Application.Contracts.IServices
     {
         Task<ProblemDetails<string>> Add(Hashtable hashtable);
         Task<ProblemDetails<string>> Delete(int ParentId, string Id);
+        Task<IEnumerable<StepActionButtonDto>> GetButtonListByParentId(int ParentId);
         Task<OutputContentAndWorkFlowDto> GetContentById(int ParentId, int Id);
         Task<IEnumerable<ContentOptions>> GetContentOptions(int ParentId);
         Task<ProblemDetails<string>> GetFormHtml(int ParentId);

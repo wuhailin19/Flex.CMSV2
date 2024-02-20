@@ -12,7 +12,7 @@ ajaxHttp({
         if (result.content.stepActionButtonDto.length > 0) {
             var buttons = result.content.stepActionButtonDto;
             for (var i = 0; i < buttons.length; i++) {
-                $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm" onclick="return false;">' + buttons[i].actionName + '</button>');
+                $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm reviewbutton" onclick="return false;" data-id="' + buttons[i].stepToId + '">' + buttons[i].actionName + '</button>');
             }
         } else {
             $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">立即提交</button>');
@@ -39,6 +39,23 @@ layui.config(
         var croppers = layui.croppers;
         var render;
 
+        $(document).on('click', '.reviewbutton', function () {
+            //console.log($(this).attr('data-id'))
+            var that = $(this);
+            //iframe窗
+            layer.open({
+                type: 2,
+                title: that.text(),
+                shadeClose: true,
+                shade: false,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['80%', '60%'],
+                content: SystempageRoute + 'Message/SendMsg?stepId=' + that.attr('data-id'),
+                end: function () {
+                    
+                }
+            });
+        })
 
         ajaxHttp({
             url: api + 'ColumnContent/GetFormHtml/' + parent_json.ParentId,

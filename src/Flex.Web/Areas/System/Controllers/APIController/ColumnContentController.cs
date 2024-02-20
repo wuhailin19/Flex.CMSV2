@@ -54,10 +54,12 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
         [HttpGet("GetContentById/{ParentId}/{Id}")]
-        [Descriper(Name = "通过ParentId和Id获取栏目内容",IsFilter =true)]
+        [Descriper(Name = "通过ParentId和Id获取栏目内容", IsFilter = true)]
         [AllowAnonymous]
         public async Task<string> GetContentById(int ParentId, int Id)
         {
+            if (Id == 0)
+                return Success(await _columnServices.GetButtonListByParentId(ParentId));
             return Success(await _columnServices.GetContentById(ParentId, Id));
         }
 
@@ -85,9 +87,9 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 
         [HttpPost("{ParentId}/{Id}")]
         [Descriper(Name = "删除栏目内容")]
-        public async Task<string> Delete(int ParentId,string Id)
+        public async Task<string> Delete(int ParentId, string Id)
         {
-            var result = await _columnServices.Delete(ParentId,Id);
+            var result = await _columnServices.Delete(ParentId, Id);
             if (result.IsSuccess)
                 return Success(result.Detail);
             return Fail(result.Detail);

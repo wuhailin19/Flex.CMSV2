@@ -1,4 +1,5 @@
 ﻿using Flex.Core.Attributes;
+using Flex.Core.Config;
 using Flex.Domain.Dtos.IndexShortCut;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -51,7 +52,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             var result = _fileServices.UploadFilesService(file);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
-            return Success(result.Detail);
+            return Success(ServerConfig.FileServerUrl + result.Detail);
         }
 
         [HttpPost("UploadImage")]
@@ -59,6 +60,15 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         public string UploadImage(IFormFileCollection file)
         {
             var result = _pictureServices.UploadImgService(file);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(ServerConfig.ImageServerUrl + result.Detail);
+        }
+        [HttpPost("UploadPasteImage")]
+        [Descriper(Name = "上传粘贴板图片")]
+        public string UploadPasteImage(IFormFileCollection upfile)
+        {
+            var result = _pictureServices.UploadImgService(upfile);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
             return Success(result.Detail);

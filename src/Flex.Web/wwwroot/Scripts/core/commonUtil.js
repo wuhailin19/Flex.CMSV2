@@ -58,7 +58,28 @@ String.prototype.startWith = function (str) {
 
     return reg.test(this);
 }
-
+var UnitHtml = {
+    unhtml: function (str, reg) {
+        return str ? str.replace(reg || /[&<">]/g, function (m) {
+            return {
+                "<": "&lt;",
+                "&": "&amp;",
+                '"': "&quot;",
+                ">": "&gt;"
+            }[m]
+        }) : ""
+    },
+    html: function (str) {
+        return str ? str.replace(/&((g|l|quo)t|amp);/g, function (m) {
+            return {
+                "&lt;": "<",
+                "&amp;": "&",
+                "&quot;": '"',
+                "&gt;": ">"
+            }[m]
+        }) : ""
+    }
+}
 String.prototype.endWith = function (str) {
     var reg = new RegExp(str + "$");
     return reg.test(this);

@@ -11,6 +11,7 @@ using Flex.Domain.Dtos.Role;
 using Flex.Domain.Dtos.WorkFlow;
 using Flex.Domain.HtmlHelper;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Crypto;
 using ShardingCore.Extensions;
@@ -106,6 +107,19 @@ namespace Flex.Application.Services
             return result;
         }
 
+        public async Task<IEnumerable<StepActionButtonDto>> GetButtonListByParentId(int ParentId)
+        {
+            if (!await CheckPermission(ParentId.ToInt(), nameof(DataPermissionDto.sp)))
+                return default;
+            var stepActionButtonDto = new List<StepActionButtonDto> { };
+            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
+            if (column.ReviewMode.ToInt() != 0)
+            {
+                stepActionButtonDto = (await _workFlowServices.GetStepActionButtonList(new InputWorkFlowStepDto { flowId = column.ReviewMode.ToInt(), stepPathId = string.Empty })).ToList();
+            }
+            return stepActionButtonDto;
+        }
+
         public async Task<OutputContentAndWorkFlowDto> GetContentById(int ParentId, int Id)
         {
             if (!await CheckPermission(ParentId.ToInt(), nameof(DataPermissionDto.sp)))
@@ -138,9 +152,9 @@ namespace Flex.Application.Services
             };
             if (column.ReviewMode.ToInt() != 0)
             {
-                model.stepActionButtonDto = await _workFlowServices.GetStepActionButtonList(new InputWorkFlowStepDto { flowId = column.ReviewMode.ToInt(), stepPathId= result.ReviewStepId });
+                model.stepActionButtonDto = await _workFlowServices.GetStepActionButtonList(new InputWorkFlowStepDto { flowId = column.ReviewMode.ToInt(), stepPathId = result.ReviewStepId });
             }
-            
+
             #region 废弃
             //UpdateContentDto updateContentDto = new UpdateContentDto();
             //if (result.Count() != 1)

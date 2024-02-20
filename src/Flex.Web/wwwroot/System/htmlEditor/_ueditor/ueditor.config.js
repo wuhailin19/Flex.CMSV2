@@ -32,8 +32,11 @@
 
         // 服务器统一请求接口路径
         , serverUrl: "/api/Upload/Config"
-        , imageActionName: "uploadimage"
-        , imageAllowFiles: ["png","jpg","gif"]
+        , BaseUrl: "/api/Upload/"
+        , imageActionName: "UploadPasteImage"
+        , imageAllowFiles: [".png",".jpg",".gif"]
+        , imageFieldName: "upfile"
+        , imageUrlPrefix: "http://localhost:5003"
         //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的重新定义
         , toolbars: [
             ['fullscreen', 'source', '|', 'undo', 'redo', '|',
@@ -48,6 +51,12 @@
                 'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|',
                 'print', 'preview', 'searchreplace']
         ]
+        , simpleEdit: false
+        , simpletoolbars: [
+            ['fullscreen', 'source', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain',
+                'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', 'touppercase', 'tolowercase', 
+                'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', 'undo', 'redo', 'searchreplace']
+        ]
         //当鼠标放在工具栏上时显示的tooltip提示,留空支持自动多语言配置，否则以配置值为准
         //,labelMap:{
         //    'anchor':'', 'undo':''
@@ -60,8 +69,8 @@
 
         //主题配置项,默认是default。有需要的话也可以使用如下这样的方式来自动多主题切换，当然，前提条件是themes文件夹下存在对应的主题文件：
         //现有如下皮肤:default
-        //,theme:'default'
-        //,themePath:URL +"themes/"
+        ,theme:'default'
+        ,themePath:URL +"themes/"
 
         //,zIndex : 900     //编辑器层级的基数,默认是900
 
@@ -279,7 +288,7 @@
 
         //autoHeightEnabled
         // 是否自动长高,默认true
-        , autoHeightEnabled: false
+        , autoHeightEnabled: true
 
         //scaleEnabled
         //是否可以拉伸长高,默认true(当开启时，自动长高失效)

@@ -11,5 +11,9 @@ namespace Flex.Web.Areas.System.Controllers.ViewController
         {
             return View();
         }
+        public IActionResult SendMsg()
+        {
+            return View();
+        }
     }
 }
