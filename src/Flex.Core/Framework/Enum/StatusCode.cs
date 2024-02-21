@@ -22,7 +22,10 @@ namespace Flex.Core
         PendingRelease = 4,
         [Color(Color = "lightsalmon")]
         [Description("待审核")]
-        PendingApproval = 4,
+        PendingApproval = 5,
+        [Color(Color = "red")]
+        [Description("历史版本")]
+        HistoryVersion = 6,
 
     }
     

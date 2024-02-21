@@ -51,14 +51,48 @@ namespace Flex.Application.Services
         /// <returns></returns>
         public async Task<IEnumerable<StepActionButtonDto>> GetStepActionButtonList(InputWorkFlowStepDto stepDto)
         {
+            var actionlist = new List<StepActionButtonDto>();
+            var step = (await _unitOfWork
+                .GetRepository<sysWorkFlowStep>()
+                .GetAllAsync(m => m.flowId == stepDto.flowId)).ToList();
             if (stepDto.stepPathId.IsNullOrEmpty())
             {
-                var step = await _unitOfWork.GetRepository<sysWorkFlowStep>().GetFirstOrDefaultAsync(m => m.flowId == stepDto.flowId && m.isStart == StepProperty.Start);
-
-                return _mapper.Map<List<StepActionButtonDto>>(await _unitOfWork.GetRepository<sysWorkFlowAction>().GetAllAsync(m => m.stepFromId == step.stepPathId));
-
+                var stepstart = step.Where(m => m.isStart == StepProperty.Start).FirstOrDefault();
+                if (stepstart == null)
+                    return new List<StepActionButtonDto>();
+                actionlist = _mapper.Map<List<StepActionButtonDto>>(
+                    await _unitOfWork
+                    .GetRepository<sysWorkFlowAction>()
+                    .GetAllAsync(m => m.stepFromId == stepstart.stepPathId));
             }
-            return _mapper.Map<List<StepActionButtonDto>>(await _unitOfWork.GetRepository<sysWorkFlowAction>().GetAllAsync(m => m.stepFromId == stepDto.stepPathId));
+            else
+            {
+                step = step.Where(m =>
+                       (("," + m.stepMan + ",").Contains(_claims.UserId.ToString()) ||
+                       ("," + m.stepRole + ",").Contains(_claims.UserRole.ToString())) &&
+                       m.stepPathId == stepDto.stepPathId).ToList();
+                if (step.Count > 0)
+                {
+                    actionlist = _mapper.Map<List<StepActionButtonDto>>(
+                        await _unitOfWork
+                        .GetRepository<sysWorkFlowAction>()
+                        .GetAllAsync(m => m.stepFromId == stepDto.stepPathId));
+                }
+                else
+                {
+                    if (_claims.IsSystem)
+                    {
+                        actionlist = _mapper.Map<List<StepActionButtonDto>>(
+                        await _unitOfWork
+                        .GetRepository<sysWorkFlowAction>()
+                        .GetAllAsync(m => m.flowId == stepDto.flowId && m.stepToCate.Contains("end")))
+                            .ToList()
+                            .Distinct(m=>m.stepToCate)
+                            .ToList();
+                    }
+                }
+            }
+            return actionlist ?? new List<StepActionButtonDto>();
         }
         public async Task<ProblemDetails<string>> Delete(string Id)
         {
@@ -209,7 +243,8 @@ namespace Flex.Application.Services
                     orgMode = actionstep.OrgMode,
                     stepMan = actionstep.StepMan,
                     Id = _idWorker.NextId().ToString(),
-                    isStart = currentpath.type == "start" ? StepProperty.Start : StepProperty.Other
+                    isStart = currentpath.type == "start" ? StepProperty.Start : StepProperty.Other,
+                    stepCate = currentpath.type
                 };
                 AddStringEntityBasicInfo(model);
                 step_list.Add(model);
@@ -234,6 +269,7 @@ namespace Flex.Application.Services
                     flowId = flowId,
                     stepFromId = currentpath.from,
                     stepToId = currentpath.to,
+                    stepToCate = states[currentpath.to].type,
                     actionName = currentpath.text.text,
                     conjunctManFlag = actionstep.ConjunctManFlag,
                     directMode = actionstep.DirectMode,

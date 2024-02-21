@@ -1,23 +1,23 @@
 ﻿var demojs = [];
 var parent_json = parent.req_Data;
 
-ajaxHttp({
-    url: api + 'ColumnContent/GetContentById/' + parent.currentparentId + "/0",
-    type: 'Get',
-    async: false,
-    dataType: 'json',
-    success: function (result) {
-        if (result.content.length > 0) {
-            var buttons = result.content;
-            for (var i = 0; i < buttons.length; i++) {
-                $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm reviewbutton" onclick="return false;" data-id="' + buttons[i].stepToId + '">' + buttons[i].actionName + '</button>');
-            }
-        } else {
-            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">立即提交</button>');
-        }
-    },
-    complete: function () { }
-})
+//ajaxHttp({
+//    url: api + 'ColumnContent/GetContentById/' + parent.currentparentId + "/0",
+//    type: 'Get',
+//    async: false,
+//    dataType: 'json',
+//    success: function (result) {
+//        if (result.content.length > 0) {
+//            var buttons = result.content;
+//            for (var i = 0; i < buttons.length; i++) {
+//                $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm reviewbutton" onclick="return false;" data-id="' + buttons[i].stepToId + '">' + buttons[i].actionName + '</button>');
+//            }
+//        } else {
+//            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">立即提交</button>');
+//        }
+//    },
+//    complete: function () { }
+//})
 //JavaScript代码区域
 layui.config(
     { base: '/scripts/layui/module/formDesigner/' })

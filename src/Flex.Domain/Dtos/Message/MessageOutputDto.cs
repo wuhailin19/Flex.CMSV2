@@ -14,6 +14,6 @@ namespace Flex.Domain.Dtos.Message
         public string Title { set; get; }
         public string AddUserName { set; get; }
         public string? MsgContent { set; get; }
-        public MessageCate MessageCate { set; get; } = MessageCate.Nomal;
+        public MessageCate MessageCate { set; get; } = MessageCate.NormalTask;
     }
 }

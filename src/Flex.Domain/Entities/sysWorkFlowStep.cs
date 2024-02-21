@@ -16,6 +16,7 @@ namespace Flex.Domain.Entities
         public string? stepMan { set; get; }
         public string? stepOrg { set; get; }
         public string? stepRole { set; get; }
+        public string? stepCate { set; get; }
         public StepProperty isStart { set; get; }
     }
 }

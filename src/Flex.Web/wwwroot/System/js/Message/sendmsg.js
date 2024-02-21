@@ -16,7 +16,10 @@ layui.config({
     form.on('submit(formDemo)', function (data) {
         var content = ue.getContent();
         var newcontent = UnitHtml.unhtml(content);
-        data.field['stepId'] = $.getUrlParam("stepId");
+        data.field['ToPathId'] = $.getUrlParam("stepToId");
+        data.field['FromPathId'] = $.getUrlParam("stepFromId");
+        data.field['ParentId'] = $.getUrlParam("parentId");
+        data.field['ContentId'] = $.getUrlParam("contentId");
         data.field['MsgContent'] = newcontent;
         var json_data = JSON.stringify(data.field);
         ajaxHttp({

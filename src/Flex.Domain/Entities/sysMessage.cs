@@ -14,7 +14,19 @@ namespace Flex.Domain.Entities
         public string? RabbitMqQueueName { set; get; }
         public string? ToUserId { set; get; }
         public string? ToRoleId { set; get; }
+        public string? FromPathId { set; get; }
+        public string? ToPathId { set; get; }
         public bool IsRead { set; get; } = false;
+        public string? TableName { set; get; }
+        public int ContentId { set; get; }
+        public int ParentId { set; get; }
+        public bool IsStart { set; get; } = false;
+
+        /// <summary>
+        /// 消息分组Id，用于区分不同工作流
+        /// </summary>
+        [JsonConverter(typeof(IdToStringConverter))]
+        public long MsgGroupId { set; get; }
         /// <summary>
         /// 回复ID
         /// </summary>
@@ -22,6 +34,6 @@ namespace Flex.Domain.Entities
         /// <summary>
         /// 消息类型
         /// </summary>
-        public MessageCate MessageCate { set; get; } = MessageCate.Nomal;
+        public MessageCate MessageCate { set; get; } = MessageCate.NormalTask;
     }
 }

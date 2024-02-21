@@ -3,6 +3,7 @@ using Flex.Domain;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.WorkFlow;
+using Flex.Domain.Entities;
 using System.Collections;
 
 namespace Flex.Application.Contracts.IServices
@@ -15,6 +16,7 @@ namespace Flex.Application.Contracts.IServices
         Task<OutputContentAndWorkFlowDto> GetContentById(int ParentId, int Id);
         Task<IEnumerable<ContentOptions>> GetContentOptions(int ParentId);
         Task<ProblemDetails<string>> GetFormHtml(int ParentId);
+        Task<SysContentModel> GetSysContentModelByColumnId(int ParentId);
         Task<ColumnPermissionAndTableHeadDto> GetTableThs(int ParentId);
         Task<Page> ListAsync(int pageindex, int pagesize, int ParentId);
         Task<ProblemDetails<string>> Update(Hashtable table);

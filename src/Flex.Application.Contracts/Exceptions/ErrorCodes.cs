@@ -49,6 +49,7 @@ namespace Flex.Application.Contracts.Exceptions
         [Description("修改失败")]
          DataUpdateError = 10007,
 
+
         /// <summary> 修改成功 </summary>
         [Description("修改成功")]
          DataUpdateSuccess = 10008,
@@ -80,6 +81,17 @@ namespace Flex.Application.Contracts.Exceptions
         /// <summary>上传文件格式不正确 </summary>
         [Description("上传文件格式不正确")]
         UploadTypeDenied = 10015,
+
+        /// <summary>审批创建成功 </summary>
+        [Description("审批流程创建成功")]
+        ReviewCreateSuccess = 10016,
+        /// <summary>审批创建失败 </summary>
+        [Description("审批流程创建失败")]
+        ReviewCreateError = 10017,
+
+        /// <summary> 修改失败 </summary>
+        [Description("当前栏目信息需审核")]
+        DataNeedReview = 10018,
 
         /// <summary> 登录已超时 </summary>
         [Description("登录已超时")]

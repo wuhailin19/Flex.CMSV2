@@ -23,7 +23,6 @@ layui.use(function () {
     var laypage = layui.laypage;
     var layer = layui.layer;
     pageClick(1);
-
     laypage.render({
         elem: 'pager',
         count: totalCount, // 数据总数，从后端得到
@@ -42,6 +41,7 @@ function pageClick(page) {
     ajaxHttp({
         url: api + 'Message/GetMessageTitleListDtoAsync?page=' + page,
         type: 'get',
+        async: false,
         dataType: 'json',
         success: function (res) {
             if (res.code == 200) {

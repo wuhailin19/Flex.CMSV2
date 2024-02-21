@@ -15,5 +15,6 @@ namespace Flex.Domain.Dtos.WorkFlow
         public string stepToId { set; get; }
         public string actionFromName { set; get; }
         public string actionToName { set; get; }
+        public string stepToCate { set; get; }
     }
 }

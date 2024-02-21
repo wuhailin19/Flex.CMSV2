@@ -9,13 +9,18 @@ ajaxHttp({
     dataType: 'json',
     success: function (result) {
         model = result.content.Content;
+        if (!result.content.NeedReview) {
+            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">立即提交</button>');
+            return false;
+        }
         if (result.content.stepActionButtonDto.length > 0) {
             var buttons = result.content.stepActionButtonDto;
             for (var i = 0; i < buttons.length; i++) {
-                $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm reviewbutton" onclick="return false;" data-id="' + buttons[i].stepToId + '">' + buttons[i].actionName + '</button>');
+                let layui_class = buttons[i].stepToCate == "end-error" ? "layui-btn-warm" : buttons[i].stepToCate == "end-cancel" ? "layui-btn-danger" : "";
+                $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm reviewbutton ' + layui_class + '" data-event="' + buttons[i].stepToCate + '" onclick="return false;" data-fromid="' + buttons[i].stepFromId + '" data-toid="' + buttons[i].stepToId + '">' + buttons[i].actionName + '</button>');
             }
         } else {
-            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">立即提交</button>');
+            $('#bottomBtnbox').append('<span class="layui-btn layui-btn-warm layui-btn-sm">信息审核中</span>');
         }
     },
     complete: function () { }
@@ -42,6 +47,7 @@ layui.config(
         $(document).on('click', '.reviewbutton', function () {
             //console.log($(this).attr('data-id'))
             var that = $(this);
+
             //iframe窗
             layer.open({
                 type: 2,
@@ -49,10 +55,10 @@ layui.config(
                 shadeClose: true,
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
-                area: ['80%', '60%'],
-                content: SystempageRoute + 'Message/SendMsg?stepId=' + that.attr('data-id'),
+                area: ['80%', '80%'],
+                content: SystempageRoute + 'Message/SendMsg?stepToId=' + that.attr('data-toid') + '&stepFromId=' + that.attr('data-fromid') + '&parentId=' + parent_json.ParentId + '&contentId=' + parent_json.Id,
                 end: function () {
-                    
+
                 }
             });
         })
@@ -210,6 +216,7 @@ layui.config(
             }
             data.field.ParentId = parent_json.ParentId;
             data.field.Id = parent_json.Id;
+            data.field.ContentGroupId = parent_json.ContentGroupId;
             ajaxHttp({
                 url: api + 'ColumnContent',
                 type: 'Post',

@@ -33,6 +33,7 @@ namespace Flex.Application.SqlServerSQLString
                                       "[OrderId] [int] NOT NULL," +
                                       "[StatusCode] [int] NOT NULL default 1," +
                                       "[ReviewStepId] [nvarchar](255) NULL," +
+                                      "[ContentGroupId] [bigint] NULL," +
                                       "[AddUser] [bigint] NULL," +
                                       "[AddUserName] [nvarchar](100) NULL," +
                                       "[LastEditUser] [bigint] NULL," +
@@ -45,6 +46,8 @@ namespace Flex.Application.SqlServerSQLString
         public string AlertTableField(string TableName, string oldfiledName, string filedName, string filedtype) => "EXEC sp_rename '" + TableName + "." + oldfiledName + "', '" + filedName + "', 'COLUMN';ALTER TABLE " + TableName + " ALTER COLUMN " + filedName + " " + ConvertDataType(filedtype) + ";";
         public string ReNameTableField(string TableName, string oldfiledName, string filedName) => "EXEC sp_rename '" + TableName + "." + oldfiledName + "', '" + filedName + "', 'COLUMN';";
         public string ReNameTableName(string TableName, string NewTableName) => "EXEC sp_rename '" + TableName + "', '" + NewTableName + "';";
+        public string UpdateContentStatus(string TableName, int ContentId, StatusCode statusCode) => $"update {TableName} set StatusCode={statusCode.ToInt()} where Id={ContentId}";
+        public string UpdateContentReviewStatus(string TableName, int ContentId, StatusCode statusCode, string ReviewStepId) => $"update {TableName} set StatusCode={statusCode.ToInt()},ReviewStepId='{ReviewStepId}' where Id={ContentId}";
         public string DeleteTableField(string TableName, List<sysField> Fields)
         {
             string sql = string.Empty;
@@ -55,6 +58,24 @@ namespace Flex.Application.SqlServerSQLString
             return sql;
         }
         public string DeleteContentTableData(string TableName, string Ids) => "update " + TableName + " set StatusCode=0 where Id in(" + Ids + ")";
+        public StringBuilder CreateInsertCopyContentSqlString(Hashtable table, string TableName)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("insert into " + TableName + " (");
+            string key = "";
+            string keyvar = "";
+            table.Remove("StatusCode");
+            table.Add("OrderId",0);
+            foreach (DictionaryEntry myDE in table)
+            {
+                if (myDE.Key.ToString().ToLower() == "id")
+                    continue;
+                key += "[" + myDE.Key.ToString() + "],";
+                keyvar += "" + myDE.Key.ToString() + ",";
+            }
+            builder.Append(key.Substring(0, key.Length - 1) + ",StatusCode) select " + keyvar.Substring(0, keyvar.Length - 1) + ",6 from " + TableName + " where Id=" + table["Id"]);
+            return builder;
+        }
         public StringBuilder CreateInsertSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters)
         {
             StringBuilder builder = new StringBuilder();

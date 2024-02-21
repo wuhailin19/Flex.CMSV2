@@ -31,7 +31,7 @@ namespace Flex.Application.Services
         private ICaching _caching;
         //默认加载字段
         private const string defaultFields = "IsTop,IsRecommend,IsHot,IsShow,IsSilde,SeoTitle,KeyWord,Description" +
-            ",Title,Id,AddTime,StatusCode,AddUserName,LastEditUserName,OrderId,ParentId,ReviewStepId,";
+            ",Title,Id,AddTime,StatusCode,AddUserName,LastEditUserName,OrderId,ParentId,ReviewStepId,ContentGroupId,";
         ISqlTableServices _sqlTableServices;
         public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext, ISqlTableServices sqlTableServices, IRoleServices roleServices, ICaching caching, IWorkFlowServices workFlowServices)
             : base(unitOfWork, mapper, idWorker, claims)
@@ -98,7 +98,7 @@ namespace Flex.Application.Services
                 filed += item.FieldName + ",";
             }
             filed = filed.TrimEnd(',');
-            var result = await _dapperDBContext.PageAsync(pageindex, pagesize, "select " + filed + " from " + contentmodel.TableName + " where StatusCode<>0");
+            var result = await _dapperDBContext.PageAsync(pageindex, pagesize, "select " + filed + " from " + contentmodel.TableName + " where StatusCode not in (0,6)");
             result.Items.Each(item =>
             {
                 item.StatusColor = ((StatusCode)item.StatusCode).GetEnumColorDescription();
@@ -148,7 +148,8 @@ namespace Flex.Application.Services
             var model = new OutputContentAndWorkFlowDto
             {
                 Content = result,
-                stepActionButtonDto = new List<StepActionButtonDto> { }
+                stepActionButtonDto = new List<StepActionButtonDto> { },
+                NeedReview = column.ReviewMode.ToInt() != 0
             };
             if (column.ReviewMode.ToInt() != 0)
             {
@@ -187,7 +188,7 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, "没有选择有效模型");
             return new ProblemDetails<string>(HttpStatusCode.OK, contentmodel.FormHtmlString);
         }
-        private void InitTable(Hashtable table)
+        private void InitCreateTable(Hashtable table)
         {
             table["AddUser"] = _claims.UserId;
             table["AddUserName"] = _claims.UserName;
@@ -196,13 +197,24 @@ namespace Flex.Application.Services
             table["LastEditDate"] = Clock.Now;
             table["OrderId"] = 0;
         }
-
+        private void InitUpdateTable(Hashtable table)
+        {
+            table["LastEditUser"] = _claims.UserId;
+            table["LastEditUserName"] = _claims.UserName;
+            table["LastEditDate"] = Clock.Now;
+        }
+        public async Task<SysContentModel> GetSysContentModelByColumnId(int ParentId)
+        {
+            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            return contentmodel;
+        }
         public async Task<ProblemDetails<string>> Add(Hashtable table)
         {
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ad)))
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
-            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            var contentmodel = await GetSysContentModelByColumnId(column.Id);
             if (contentmodel == null)
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             var filedmodel = await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId);
@@ -219,7 +231,14 @@ namespace Flex.Application.Services
             {
                 table.Remove(key);
             }
-            InitTable(table);
+            InitCreateTable(table);
+
+            //生成内容组Id
+            table["ContentGroupId"] = _idWorker.NextId();
+            if (column.ReviewMode != 0)
+            {
+                table.Add("StatusCode", StatusCode.PendingApproval);
+            }
             StringBuilder builder = new StringBuilder();
             SqlParameter[] commandParameters = new SqlParameter[] { };
             builder = _sqlTableServices.CreateInsertSqlString(table, contentmodel.TableName, out commandParameters);
@@ -244,6 +263,9 @@ namespace Flex.Application.Services
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
+            //栏目需审核则不允许正常修改
+            if (column.ReviewMode != 0)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
@@ -261,7 +283,11 @@ namespace Flex.Application.Services
             {
                 table.Remove(key);
             }
-            InitTable(table);
+            InitUpdateTable(table);
+            //创建历史副本
+            var createcopysql = _sqlTableServices.CreateInsertCopyContentSqlString(table, contentmodel.TableName);
+            _unitOfWork.ExecuteSqlCommand(createcopysql.ToString());
+
             StringBuilder builder = new StringBuilder();
             SqlParameter[] commandParameters = new SqlParameter[] { };
             builder = _sqlTableServices.CreateUpdateSqlString(table, contentmodel.TableName, out commandParameters);
@@ -271,6 +297,7 @@ namespace Flex.Application.Services
                 if (result > 0)
                 {
                     await _unitOfWork.SaveChangesAsync();
+
                     return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
                 }
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());

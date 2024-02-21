@@ -13,14 +13,19 @@ namespace Flex.Domain.Enums.Message
     public enum MessageCate
     {
         /// <summary>
-        /// 审核类
+        /// 审核通过
         /// </summary>
-        [Description("审核消息")]
-        Review = 1,
+        [Description("审核通过")]
+        Approved = 1,
         /// <summary>
-        /// 普通消息
+        /// 退稿
         /// </summary>
-        [Description("普通消息")]
-        Nomal = 2
+        [Description("退稿")]
+        Rejected = 0,
+        /// <summary>
+        /// 普通流程
+        /// </summary>
+        [Description("普通流程")]
+        NormalTask = 2
     }
 }
