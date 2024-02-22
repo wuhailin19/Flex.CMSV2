@@ -1,11 +1,12 @@
-﻿using Flex.Core.Attributes;
+﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Core.Attributes;
 using Flex.Domain.Dtos.Message;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flex.Web.Areas.System.Controllers.APIController
 {
     [ApiController]
-    [Route("api/{controller}")]
+    [Route("api/[controller]")]
     [Descriper(Name = "消息相关接口")]
     public class MessageController : ApiBaseController
     {
@@ -25,7 +26,10 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         [Descriper(Name = "获取信息内容")]
         public async Task<string> GetMessageById(int id)
         {
-            return Success(await _messageServices.GetMessageById(id));
+            var result = await _messageServices.GetMessageById(id);
+            if (result.IsSuccess)
+                return Success(result.Content);
+            return Fail(result.Detail);
         }
 
         [HttpPost("SendReviewMessage")]

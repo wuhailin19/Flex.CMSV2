@@ -89,9 +89,17 @@ namespace Flex.Application.Contracts.Exceptions
         [Description("审批流程创建失败")]
         ReviewCreateError = 10017,
 
-        /// <summary> 修改失败 </summary>
+        /// <summary> 当前栏目信息需审核 </summary>
         [Description("当前栏目信息需审核")]
         DataNeedReview = 10018,
+
+        /// <summary> 审批工作流出错，已重置审批 </summary>
+        [Description("审批工作流出错，已重置审批")]
+        ReviewRest = 10019,
+
+        /// <summary> 审批通过 </summary>
+        [Description("审批通过")]
+        ReviewSuccess = 10020,
 
         /// <summary> 登录已超时 </summary>
         [Description("登录已超时")]

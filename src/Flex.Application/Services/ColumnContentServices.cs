@@ -107,9 +107,9 @@ namespace Flex.Application.Services
             return result;
         }
 
-        public async Task<IEnumerable<StepActionButtonDto>> GetButtonListByParentId(int ParentId)
+        public async Task<OutputContentAndWorkFlowDto> GetButtonListByParentId(int ParentId)
         {
-            if (!await CheckPermission(ParentId.ToInt(), nameof(DataPermissionDto.sp)))
+            if (!await CheckPermission(ParentId.ToInt(), nameof(DataPermissionDto.ad)))
                 return default;
             var stepActionButtonDto = new List<StepActionButtonDto> { };
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
@@ -117,7 +117,13 @@ namespace Flex.Application.Services
             {
                 stepActionButtonDto = (await _workFlowServices.GetStepActionButtonList(new InputWorkFlowStepDto { flowId = column.ReviewMode.ToInt(), stepPathId = string.Empty })).ToList();
             }
-            return stepActionButtonDto;
+            var model = new OutputContentAndWorkFlowDto
+            {
+                Content = null,
+                stepActionButtonDto = stepActionButtonDto,
+                NeedReview = column.ReviewMode.ToInt() != 0
+            };
+            return model;
         }
 
         public async Task<OutputContentAndWorkFlowDto> GetContentById(int ParentId, int Id)
@@ -209,14 +215,17 @@ namespace Flex.Application.Services
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             return contentmodel;
         }
-        public async Task<ProblemDetails<string>> Add(Hashtable table)
+        public async Task<ProblemDetails<int>> Add(Hashtable table, bool IsReview = false)
         {
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ad)))
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+                return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
+            //栏目需审核则不允许正常修改
+            if (column.ReviewMode != 0 && !IsReview)
+                return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataNeedReview.GetEnumDescription());
             var contentmodel = await GetSysContentModelByColumnId(column.Id);
             if (contentmodel == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataUpdateError.GetEnumDescription());
             var filedmodel = await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId);
             var keysToRemove = new List<object>();
             var white_fileds = defaultFields.ToList();
@@ -235,40 +244,34 @@ namespace Flex.Application.Services
 
             //生成内容组Id
             table["ContentGroupId"] = _idWorker.NextId();
-            if (column.ReviewMode != 0)
-            {
-                table.Add("StatusCode", StatusCode.PendingApproval);
-            }
-            StringBuilder builder = new StringBuilder();
-            SqlParameter[] commandParameters = new SqlParameter[] { };
-            builder = _sqlTableServices.CreateInsertSqlString(table, contentmodel.TableName, out commandParameters);
+
+            DynamicParameters parameters = new DynamicParameters();
+            StringBuilder builder = _sqlTableServices.CreateDapperInsertSqlString(table, contentmodel.TableName, out parameters);
             try
             {
-                var result = _unitOfWork.ExecuteSqlCommand(builder.ToString(), commandParameters);
-
+                var result = _dapperDBContext.ExecuteScalar(builder.ToString(), parameters);
                 if (result > 0)
                 {
-                    await _unitOfWork.SaveChangesAsync();
-                    return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
+                    return new ProblemDetails<int>(HttpStatusCode.OK, result, ErrorCodes.DataInsertSuccess.GetEnumDescription());
                 }
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+                return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataInsertError.GetEnumDescription());
             }
             catch
             {
                 throw;
             }
         }
-        public async Task<ProblemDetails<string>> Update(Hashtable table)
+        public async Task<ProblemDetails<int>> Update(Hashtable table, bool IsReview = false)
         {
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+                return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
             //栏目需审核则不允许正常修改
-            if (column.ReviewMode != 0)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
+            if (column.ReviewMode != 0 && !IsReview)
+                return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             var filedmodel = await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId);
             var keysToRemove = new List<object>();
             var white_fileds = defaultFields.ToList();
@@ -284,23 +287,27 @@ namespace Flex.Application.Services
                 table.Remove(key);
             }
             InitUpdateTable(table);
-            //创建历史副本
-            var createcopysql = _sqlTableServices.CreateInsertCopyContentSqlString(table, contentmodel.TableName);
-            _unitOfWork.ExecuteSqlCommand(createcopysql.ToString());
-
+            var fileds = white_fileds.ToList();
+            foreach (var item in filedmodel)
+            {
+                fileds.Add(item.FieldName);
+            }
             StringBuilder builder = new StringBuilder();
             SqlParameter[] commandParameters = new SqlParameter[] { };
             builder = _sqlTableServices.CreateUpdateSqlString(table, contentmodel.TableName, out commandParameters);
             try
             {
                 var result = _unitOfWork.ExecuteSqlCommand(builder.ToString(), commandParameters);
+                //创建历史副本
+                var createcopysql = _sqlTableServices.CreateInsertCopyContentSqlString(fileds, contentmodel.TableName, table["Id"].ToInt());
+                _unitOfWork.ExecuteSqlCommand(createcopysql.ToString());
                 if (result > 0)
                 {
                     await _unitOfWork.SaveChangesAsync();
 
-                    return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                    return new ProblemDetails<int>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
                 }
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             }
             catch
             {

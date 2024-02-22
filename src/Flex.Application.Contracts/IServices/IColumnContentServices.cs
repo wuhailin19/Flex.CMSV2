@@ -10,15 +10,15 @@ namespace Flex.Application.Contracts.IServices
 {
     public interface IColumnContentServices
     {
-        Task<ProblemDetails<string>> Add(Hashtable hashtable);
+        Task<ProblemDetails<int>> Add(Hashtable hashtable, bool IsReview = false);
         Task<ProblemDetails<string>> Delete(int ParentId, string Id);
-        Task<IEnumerable<StepActionButtonDto>> GetButtonListByParentId(int ParentId);
+        Task<OutputContentAndWorkFlowDto> GetButtonListByParentId(int ParentId);
         Task<OutputContentAndWorkFlowDto> GetContentById(int ParentId, int Id);
         Task<IEnumerable<ContentOptions>> GetContentOptions(int ParentId);
         Task<ProblemDetails<string>> GetFormHtml(int ParentId);
         Task<SysContentModel> GetSysContentModelByColumnId(int ParentId);
         Task<ColumnPermissionAndTableHeadDto> GetTableThs(int ParentId);
         Task<Page> ListAsync(int pageindex, int pagesize, int ParentId);
-        Task<ProblemDetails<string>> Update(Hashtable table);
+        Task<ProblemDetails<int>> Update(Hashtable table, bool IsReview = false);
     }
 }

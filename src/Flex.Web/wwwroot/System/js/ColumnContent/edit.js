@@ -20,13 +20,15 @@ ajaxHttp({
                 $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm reviewbutton ' + layui_class + '" data-event="' + buttons[i].stepToCate + '" onclick="return false;" data-fromid="' + buttons[i].stepFromId + '" data-toid="' + buttons[i].stepToId + '">' + buttons[i].actionName + '</button>');
             }
         } else {
-            $('#bottomBtnbox').append('<span class="layui-btn layui-btn-warm layui-btn-sm">信息审核中</span>');
+            $('#bottomBtnbox').append('<span class="layui-btn layui-btn-warm layui-btn-sm">内容审批中</span>');
+            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-danger layui-btn-sm">取消审批</button>');
         }
     },
     complete: function () { }
 })
 
 var demojs = [];
+var parentformData;
 //JavaScript代码区域
 layui.config(
     { base: '/scripts/layui/module/formDesigner/' })
@@ -47,7 +49,9 @@ layui.config(
         $(document).on('click', '.reviewbutton', function () {
             //console.log($(this).attr('data-id'))
             var that = $(this);
-
+            var data = form.val('formTest');
+            collectData(data)
+            parentformData = data;
             //iframe窗
             layer.open({
                 type: 2,
@@ -192,31 +196,34 @@ layui.config(
             form.val("formTest", model);
         }
         formRender();
-        //监听提交
-        form.on('submit(formDemo)', function (data) {
+        function collectData(data) {
             $('input[data-group=datastatus]').each(function () {
                 if ($(this)[0].checked)
-                    data.field[$(this).attr('name')] = true;
+                    data[$(this).attr('name')] = true;
                 else
-                    data.field[$(this).attr('name')] = false;
+                    data[$(this).attr('name')] = false;
             });
             if (checkboxs.length > 0) {
                 for (var i = 0; i < checkboxs.length; i++) {
-                    data.field[checkboxs[i].id] = getCheckboxValue(checkboxs[i].id);
+                    data[checkboxs[i].id] = getCheckboxValue(checkboxs[i].id);
                 }
             }
             if (dateRanges.length > 0) {
                 for (var i = 0; i < dateRanges.length; i++) {
-                    data.field[dateRanges[i].id] = data.field["start" + dateRanges[i].id] + " - " + data.field["end" + dateRanges[i].id];
+                    data[dateRanges[i].id] = data["start" + dateRanges[i].id] + " - " + data["end" + dateRanges[i].id];
                 }
             }
-            delete data.field["editorValue_forUeditor"];
+            delete data["editorValue_forUeditor"];
             for (let key in iceEditorObjects) {
-                data.field[key] = iceEditorObjects[key].getContent();
+                data[key] = iceEditorObjects[key].getContent();
             }
-            data.field.ParentId = parent_json.ParentId;
-            data.field.Id = parent_json.Id;
-            data.field.ContentGroupId = parent_json.ContentGroupId;
+            data.ParentId = parent_json.ParentId;
+            data.Id = parent_json.Id;
+            data.ContentGroupId = parent_json.ContentGroupId;
+        }
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            collectData(data.field);
             ajaxHttp({
                 url: api + 'ColumnContent',
                 type: 'Post',

@@ -1,4 +1,4 @@
-﻿
+﻿var req_Data;
 $('.email_title').on('click', 'li', function () {
     $(this).addClass('active').siblings().removeClass('active');
     var that = $(this);
@@ -6,19 +6,52 @@ $('.email_title').on('click', 'li', function () {
         url: api + 'Message/GetMessage/' + $(this).data('id'),
         type: 'get',
         dataType: 'json',
+        async: false,
         success: function (res) {
             if (res.code == 200) {
                 that.removeClass('new');
                 var json = res.content;
+                $('.right_box_title').addClass('active');
                 $('._title').html(json.Title);
                 $('._sender').html(json.AddUserName);
                 $('._addTime').html(json.AddTime);
                 $('.content_desc').html(UnitHtml.html(json.MsgContent));
+                parentformData = {
+                    Id: json.ContentId,
+                    ParentId: json.ParentId
+                }
+                req_Data = parentformData;
+                $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm viewcontent">查看内容</button>');
+
             }
         }
     })
 })
+function Initbutton(model) {
+    var stepinfo = {
+        flowId: model.FlowId,
+        stepPathId: model.ToPathId
+    };
+    ajaxHttp({
+        url: api + 'WorkFlow/GetStepActionButtonList',
+        type: 'Post',
+        data: JSON.stringify(stepinfo),
+        async: false,
+        dataType: 'json',
+        success: function (result) {
+            if (result.content.length > 0) {
+                var buttons = result.content;
+                for (var i = 0; i < buttons.length; i++) {
+                    let layui_class = buttons[i].stepToCate == "end-error" ? "layui-btn-warm" : buttons[i].stepToCate == "end-cancel" ? "layui-btn-danger" : "";
+                    $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm reviewbutton ' + layui_class + '" data-event="' + buttons[i].stepToCate + '" onclick="return false;" data-fromid="' + buttons[i].stepFromId + '" data-toid="' + buttons[i].stepToId + '">' + buttons[i].actionName + '</button>');
+                }
+            }
+        },
+        complete: function () { }
+    })
+}
 var totalCount = 0;
+var parentformData = {};
 layui.use(function () {
     var laypage = layui.laypage;
     var layer = layui.layer;
@@ -35,6 +68,41 @@ layui.use(function () {
             }
         }
     });
+
+    $(document).on('click', '.reviewbutton', function () {
+        //console.log($(this).attr('data-id'))
+        var that = $(this);
+        //iframe窗
+        layer.open({
+            type: 2,
+            title: that.text(),
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['80%', '80%'],
+            content: SystempageRoute + 'Message/SendMsg?stepToId=' + that.attr('data-toid') + '&stepFromId=' + that.attr('data-fromid') + '&parentId=' + parentformData.ParentId + '&contentId=' + parentformData.Id,
+            end: function () {
+
+            }
+        });
+    })
+    $(document).on('click', '.viewcontent', function () {
+        //console.log($(this).attr('data-id'))
+        var that = $(this);
+        //iframe窗
+        layer.open({
+            type: 2,
+            title: that.text(),
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['90%', '90%'],
+            content: SystempageRoute + 'ColumnContent/Edit',
+            end: function () {
+
+            }
+        });
+    })
 });
 
 function pageClick(page) {

@@ -1,11 +1,5 @@
-﻿using Flex.Core.JsonConvertExtension;
-using Flex.Domain.Enums.Message;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Flex.Domain.Enums.Message;
+using System.Collections;
 
 namespace Flex.Domain.Dtos.Message
 {
@@ -17,6 +11,7 @@ namespace Flex.Domain.Dtos.Message
         public string FromPathId { set; get; }
         public int ParentId { set; get; }
         public int ContentId { set; get; }
+        public Hashtable BaseFormContent { set; get; }
         public MessageCate MessageCate { set; get; } = MessageCate.NormalTask;
         /// <summary>
         /// 回复ID

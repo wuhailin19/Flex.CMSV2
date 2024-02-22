@@ -1,4 +1,5 @@
-﻿using Flex.Domain.Dtos.Field;
+﻿using Dapper;
+using Flex.Domain.Dtos.Field;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Org.BouncyCastle.Crypto;
@@ -58,22 +59,39 @@ namespace Flex.Application.SqlServerSQLString
             return sql;
         }
         public string DeleteContentTableData(string TableName, string Ids) => "update " + TableName + " set StatusCode=0 where Id in(" + Ids + ")";
-        public StringBuilder CreateInsertCopyContentSqlString(Hashtable table, string TableName)
+        public StringBuilder CreateInsertCopyContentSqlString(List<string> table, string TableName, int contentId)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("insert into " + TableName + " (");
             string key = "";
             string keyvar = "";
             table.Remove("StatusCode");
-            table.Add("OrderId",0);
+            table.Remove("OrderId");
+            foreach (var item in table)
+            {
+                if (item.ToString().ToLower() == "id")
+                    continue;
+                key += "[" + item + "],";
+                keyvar += "" + item + ",";
+            }
+            builder.Append(key.Substring(0, key.Length - 1) + ",StatusCode,OrderId) select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,0 from " + TableName + " where Id=" + contentId);
+            return builder;
+        }
+        public StringBuilder CreateDapperInsertSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("insert into " + TableName + " (");
+            string key = "";
+            string keyvar = "";
+            commandParameters = new DynamicParameters();
             foreach (DictionaryEntry myDE in table)
             {
-                if (myDE.Key.ToString().ToLower() == "id")
-                    continue;
                 key += "[" + myDE.Key.ToString() + "],";
-                keyvar += "" + myDE.Key.ToString() + ",";
+                keyvar += "@" + myDE.Key.ToString() + ",";
+                commandParameters.Add(myDE.Key.ToString(), myDE.Value);
             }
-            builder.Append(key.Substring(0, key.Length - 1) + ",StatusCode) select " + keyvar.Substring(0, keyvar.Length - 1) + ",6 from " + TableName + " where Id=" + table["Id"]);
+            builder.Append(key.Substring(0, key.Length - 1) + " ) values(" + keyvar.Substring(0, keyvar.Length - 1) + " )");
+            builder.Append(";SELECT SCOPE_IDENTITY();");
             return builder;
         }
         public StringBuilder CreateInsertSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters)
@@ -96,6 +114,7 @@ namespace Flex.Application.SqlServerSQLString
                 commandParameters[num] = new SqlParameter("@" + myDE.Key.ToString(), myDE.Value);
                 num++;
             }
+            builder.Append(";SELECT SCOPE_IDENTITY();");
             return builder;
         }
         public StringBuilder CreateUpdateSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters)
@@ -118,6 +137,7 @@ namespace Flex.Application.SqlServerSQLString
                 commandParameters[num] = new SqlParameter("@" + myDE.Key.ToString(), myDE.Value);
                 num++;
             }
+            table.Add("Id", Id);
             builder.Append(" where Id=" + Id);
             return builder;
         }

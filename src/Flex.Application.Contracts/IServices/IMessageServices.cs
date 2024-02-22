@@ -10,7 +10,7 @@ namespace Flex.Application.Contracts.IServices
 {
     public interface IMessageServices
     {
-        Task<MessageOutputDto> GetMessageById(int id);
+        Task<ProblemDetails<MessageOutputDto>> GetMessageById(int id);
         Task<PagedList<MessageTitleListDto>> GetMessageTitleListDtoAsync(int page, int pagesize);
         Task<ProblemDetails<string>> SendReviewMessage(SendReviewMessageDto model);
     }

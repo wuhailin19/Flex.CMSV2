@@ -21,6 +21,7 @@ layui.config({
         data.field['ParentId'] = $.getUrlParam("parentId");
         data.field['ContentId'] = $.getUrlParam("contentId");
         data.field['MsgContent'] = newcontent;
+        data.field['BaseFormContent'] = parent.parentformData;
         var json_data = JSON.stringify(data.field);
         ajaxHttp({
             url: api + 'Message/SendReviewMessage',

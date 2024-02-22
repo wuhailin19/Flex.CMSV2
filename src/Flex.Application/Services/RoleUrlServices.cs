@@ -87,7 +87,7 @@ namespace Flex.Application.Services
                 parentApi.AddTime = Clock.Now;
                 parentApi.LastEditDate = Clock.Now;
                 parentApi.LastEditUserName = "system";
-                
+
                 foreach (var items in item.ActionList)
                 {
                     SysRoleUrl menuApi = new SysRoleUrl();
@@ -119,9 +119,9 @@ namespace Flex.Application.Services
                 if (Consts.Mode == ProductMode.Dev)
                 {
                     _unitOfWork.ExecuteSqlCommand("delete from tbl_core_roleurl");
+                    await _unitOfWork.GetRepository<SysRoleUrl>().InsertAsync(menuapis);
+                    await _unitOfWork.SaveChangesAsync();
                 }
-                await _unitOfWork.GetRepository<SysRoleUrl>().InsertAsync(menuapis);
-                await _unitOfWork.SaveChangesAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, "共添加" + menuapis.Count + "条数据");
             }
             catch (Exception ex)

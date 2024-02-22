@@ -1,4 +1,5 @@
-﻿using Flex.Core;
+﻿using Dapper;
+using Flex.Core;
 using Flex.Domain.Entities;
 using Microsoft.Data.SqlClient;
 using System;
@@ -14,7 +15,8 @@ namespace Flex.Application.Contracts.IServices
     {
         string AlertTableField(string TableName, string oldfiledName, string filedName, string filedtype);
         string CreateContentTableSql(string TableName);
-        StringBuilder CreateInsertCopyContentSqlString(Hashtable table, string TableName);
+        StringBuilder CreateDapperInsertSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters);
+        StringBuilder CreateInsertCopyContentSqlString(List<string> table, string TableName, int contentId);
         StringBuilder CreateInsertSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters);
         StringBuilder CreateUpdateSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters);
         string DeleteContentTableData(string TableName, string Ids);
