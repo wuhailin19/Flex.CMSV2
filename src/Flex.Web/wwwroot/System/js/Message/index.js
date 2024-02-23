@@ -21,7 +21,7 @@ $('.email_title').on('click', 'li', function () {
                     ParentId: json.ParentId
                 }
                 req_Data = parentformData;
-                $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm viewcontent">查看内容</button>');
+                $('#bottomBtnbox').html('<button class="layui-btn layui-btn-sm viewcontent">查看内容</button>');
 
             }
         }
