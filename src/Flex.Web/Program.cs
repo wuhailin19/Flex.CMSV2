@@ -60,6 +60,7 @@ builder.Services.AddJwtService(builder.Configuration);
 builder.Services.AddWebCoreService(builder.Configuration);
 //×¢²á»º´æ
 builder.Services.AddMemoryCacheSetup();
+builder.Services.AddLogging();
 
 builder.Host.UseNLog();
 

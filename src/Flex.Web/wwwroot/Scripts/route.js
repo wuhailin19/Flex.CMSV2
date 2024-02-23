@@ -79,14 +79,14 @@ var ajaxHttp = function (options) {
     }
 
     // 每次请求携带token
-    options.token = localStorage.getItem('access_token');
-    options.refreshtoken = localStorage.getItem('refresh_token');
+    options.token = sessionStorage.getItem('access_token');
+    options.refreshtoken = sessionStorage.getItem('refresh_token');
     HttpRequest(options);
 }
 
 var httpTokenHeaders = {
-    'Authorization': "Bearer " + localStorage.getItem('access_token'),
-    'Refresh_token': "Bearer " + localStorage.getItem('refresh_token')
+    'Authorization': "Bearer " + sessionStorage.getItem('access_token'),
+    'Refresh_token': "Bearer " + sessionStorage.getItem('refresh_token')
 }
 
 var global_notice;

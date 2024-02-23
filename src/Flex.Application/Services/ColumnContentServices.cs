@@ -1,7 +1,6 @@
-﻿using Consul;
+﻿using Castle.Core.Internal;
 using Dapper;
 using Flex.Application.Contracts.Exceptions;
-using Flex.Application.Contracts.IServices;
 using Flex.Dapper;
 using Flex.Domain;
 using Flex.Domain.Cache;
@@ -9,15 +8,8 @@ using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Role;
 using Flex.Domain.Dtos.WorkFlow;
-using Flex.Domain.HtmlHelper;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Newtonsoft.Json;
-using Org.BouncyCastle.Crypto;
-using ShardingCore.Extensions;
 using System.Collections;
-using System.ComponentModel;
-using System.Linq;
 using System.Text;
 
 namespace Flex.Application.Services
@@ -73,7 +65,7 @@ namespace Flex.Application.Services
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             string filed = "Title,Id";
             var options = new List<ContentOptions>();
-            var result = await _dapperDBContext.GetDynamicAsync("select " + filed + " from " + contentmodel.TableName + " where ParentId=" + ParentId + " and StatusCode<>0");
+            var result = await _dapperDBContext.GetDynamicAsync("select " + filed + " from " + contentmodel.TableName + " where ParentId=" + ParentId + " and StatusCode=1");
             result.Each(item =>
             {
                 options.Add(new ContentOptions()
@@ -221,7 +213,7 @@ namespace Flex.Application.Services
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
             //栏目需审核则不允许正常修改
-            if (column.ReviewMode != 0 && !IsReview)
+            if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataNeedReview.GetEnumDescription());
             var contentmodel = await GetSysContentModelByColumnId(column.Id);
             if (contentmodel == null)
@@ -261,20 +253,28 @@ namespace Flex.Application.Services
                 throw;
             }
         }
-        public async Task<ProblemDetails<int>> Update(Hashtable table, bool IsReview = false)
+        /// <summary>
+        /// 修改数据内容
+        /// </summary>
+        /// <param name="table">前端传入字段</param>
+        /// <param name="IsReview">当前修改模式是否为审核</param>
+        /// <param name="white_fileds">本次修改的字段白名单</param>
+        /// <returns></returns>
+        public async Task<ProblemDetails<int>> Update(Hashtable table, bool IsReview = false, List<string> white_fileds = null)
         {
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
             //栏目需审核则不允许正常修改
-            if (column.ReviewMode != 0 && !IsReview)
+            if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             var filedmodel = await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId);
             var keysToRemove = new List<object>();
-            var white_fileds = defaultFields.ToList();
+            if (white_fileds.IsNullOrEmpty())
+                white_fileds = defaultFields.ToList();
             foreach (var item in table.Keys)
             {
                 if (white_fileds.Any(m => m.Equals(item.ToString(), StringComparison.OrdinalIgnoreCase)))
@@ -287,7 +287,8 @@ namespace Flex.Application.Services
                 table.Remove(key);
             }
             InitUpdateTable(table);
-            var fileds = white_fileds.ToList();
+            //当前表中字段
+            var fileds = defaultFields.ToList();
             foreach (var item in filedmodel)
             {
                 fileds.Add(item.FieldName);
@@ -314,7 +315,7 @@ namespace Flex.Application.Services
                 throw;
             }
         }
-        private async Task<bool> CheckPermission(int ParentId, string filedName)
+        private async Task<bool> CheckPermission(int ParentId, string permissioncate)
         {
             if (_claims.IsSystem)
                 return true;
@@ -348,7 +349,7 @@ namespace Flex.Application.Services
                 return false;
             if (!datapermissionList.ContainsKey(_claims.UserRole))
                 return false;
-            return datapermissionList[_claims.UserRole][filedName].Contains(ParentId.ToString());
+            return datapermissionList[_claims.UserRole][permissioncate].Contains(ParentId.ToString());
         }
         public async Task<ProblemDetails<string>> Delete(int ParentId, string Id)
         {

@@ -85,6 +85,17 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(result.Detail);
         }
 
+        [HttpPost("CancelReview")]
+        [Descriper(Name = "取消审批")]
+        public async Task<string> CancelReview()
+        {
+            var model = await GetModel<Hashtable>();
+            var result = await _columnServices.Update(model, true, new List<string> { "ParentId", "Id", "StatusCode", "ReviewStepId" });
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
+        }
+
         [HttpPost("{ParentId}/{Id}")]
         [Descriper(Name = "删除栏目内容")]
         public async Task<string> Delete(int ParentId, string Id)

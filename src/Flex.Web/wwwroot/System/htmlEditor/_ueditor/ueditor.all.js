@@ -24560,8 +24560,8 @@
             fd.append('type', 'ajax');
             xhr.open("post", url, true);
             xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-            xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('access_token'));
-            xhr.setRequestHeader("Refresh_token", "Bearer " + localStorage.getItem('refresh_token'));
+            xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('access_token'));
+            xhr.setRequestHeader("Refresh_token", "Bearer " + sessionStorage.getItem('refresh_token'));
             xhr.addEventListener('load', function (e) {
                 try {
                     var json = (new Function("return " + utils.trim(e.target.response)))();

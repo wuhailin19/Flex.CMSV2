@@ -44,6 +44,20 @@ namespace Flex.Application.Services
             return model;
         }
 
+        /// <summary>
+        /// 获取未读消息数量
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public int GetNotReadMessageCount()
+        {
+            var exp = GetExpression();
+            exp = exp.And(m => m.IsRead == false);
+            var count =  _unitOfWork.GetRepository<sysMessage>().Count(exp);
+            return count;
+        }
+
         public async Task<ProblemDetails<MessageOutputDto>> GetMessageById(int id)
         {
             var exp = GetExpression();

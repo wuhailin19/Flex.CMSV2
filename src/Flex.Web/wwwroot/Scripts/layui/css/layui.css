@@ -1789,4 +1789,5 @@ html #layuicss-layer { display: none; position: absolute; width: 1989px }
     .password_box { width: calc(100% - 114px) !important }
     .img-preview { width: 100px !important; height: 100px !important; }
     .layui-laydate-content td > div { font-size: 14px; }
+    .layui-btn + .layui-btn{margin-left:0px;}
 }

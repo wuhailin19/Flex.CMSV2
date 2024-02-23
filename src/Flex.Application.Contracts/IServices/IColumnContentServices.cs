@@ -19,6 +19,6 @@ namespace Flex.Application.Contracts.IServices
         Task<SysContentModel> GetSysContentModelByColumnId(int ParentId);
         Task<ColumnPermissionAndTableHeadDto> GetTableThs(int ParentId);
         Task<Page> ListAsync(int pageindex, int pagesize, int ParentId);
-        Task<ProblemDetails<int>> Update(Hashtable table, bool IsReview = false);
+        Task<ProblemDetails<int>> Update(Hashtable table, bool IsReview = false, List<string> white_fileds = null);
     }
 }

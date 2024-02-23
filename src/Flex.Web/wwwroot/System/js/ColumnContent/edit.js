@@ -21,7 +21,7 @@ ajaxHttp({
             }
         } else {
             $('#bottomBtnbox').append('<span class="layui-btn layui-btn-warm layui-btn-sm">内容审批中</span>');
-            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-danger layui-btn-sm">取消审批</button>');
+            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-danger layui-btn-sm cancelreview">取消审批</button>');
         }
     },
     complete: function () { }
@@ -62,9 +62,31 @@ layui.config(
                 area: ['80%', '80%'],
                 content: SystempageRoute + 'Message/SendMsg?stepToId=' + that.attr('data-toid') + '&stepFromId=' + that.attr('data-fromid') + '&parentId=' + parent_json.ParentId + '&contentId=' + parent_json.Id,
                 end: function () {
-
+                    window.location.reload();
                 }
             });
+        })
+
+        $(document).on('click', '.cancelreview', function () {
+            var that = $(this);
+            var data = {
+                ParentId: parent_json.ParentId,
+                Id: parent_json.Id,
+                StatusCode: 5,
+                ReviewStepId: ''
+            };
+            ajaxHttp({
+                url: api + 'ColumnContent/CancelReview',
+                type: 'Post',
+                async: false,
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function (result) {
+                    if (result.code == 200)
+                        tips.showSuccess(res.msg);
+                },
+                complete: function () { }
+            })
         })
 
         ajaxHttp({
@@ -224,6 +246,7 @@ layui.config(
         //监听提交
         form.on('submit(formDemo)', function (data) {
             collectData(data.field);
+            data.field.StatusCode = 1;
             ajaxHttp({
                 url: api + 'ColumnContent',
                 type: 'Post',
