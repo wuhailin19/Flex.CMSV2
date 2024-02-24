@@ -83,7 +83,7 @@ layui.config(
                 dataType: 'json',
                 success: function (result) {
                     if (result.code == 200)
-                        tips.showSuccess(res.msg);
+                        tips.showSuccess(result.msg);
                 },
                 complete: function () { }
             })

@@ -41,7 +41,8 @@
             async: false,
             dataType: 'json',
             success: function (result) {
-                json_data = JSON.parse(result.msg);
+                if (result.msg != null && !result.msg)
+                    json_data = JSON.parse(result.msg);
             },
             complete: function () { }
         })
@@ -49,7 +50,6 @@
         layui.config(
             { base: '/Scripts/layui/module/FormDesigner/' }).use(['layer', 'formDesigner'], function () {
                 var formDesigner = layui.formDesigner;
-                
                 var render = formDesigner.render({
                     data: json_data.slice(),
                     elem: '#formdesigner'
