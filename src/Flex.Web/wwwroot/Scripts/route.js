@@ -10,7 +10,7 @@ function getCheckboxValue(name) {
 }
 function setCheckboxValue(name, value) {
     if (value == '')
-        return;
+        return false;
     var arraybox = value.split(',');
     for (var i = 0; i < arraybox.length; i++) {
         $('input[name=' + name + '][value=' + arraybox[i] + ']').attr('checked', true)

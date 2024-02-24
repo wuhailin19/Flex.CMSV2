@@ -81,6 +81,7 @@ layui.config(
             viewOrDesign: true,
             //formData: model
         });
+        console.log(checkboxs)
         for (var i = 0; i < checkboxs.length; i++) {
             setCheckboxValue(checkboxs[i].id, model[checkboxs[i].id]);
         }
@@ -152,6 +153,7 @@ layui.config(
                 else
                     data.field[$(this).attr('name')] = false;
             });
+
             if (checkboxs.length > 0) {
                 for (var i = 0; i < checkboxs.length; i++) {
                     data.field[checkboxs[i].id] = getCheckboxValue(checkboxs[i].id);

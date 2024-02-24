@@ -12,7 +12,7 @@
         autoupload: false,
         serverUrl: '/api/Upload/UploadImage',
         imageExtensions: 'jpg,jpeg,gif,png,bmp,svg',
-        FileExtensions: 'txt,doc,docx,xls,xlsx,mp4,zip',
+        FileExtensions: 'txt,doc,docx,xls,xlsx,mp4,zip,pdf',
         valueElement: undefined
     }, options)
 
