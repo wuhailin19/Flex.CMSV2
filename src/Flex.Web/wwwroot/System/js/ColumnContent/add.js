@@ -57,7 +57,10 @@ layui.config(
                 area: ['80%', '80%'],
                 content: SystempageRoute + 'Message/SendMsg?stepToId=' + that.attr('data-toid') + '&stepFromId=' + that.attr('data-fromid') + '&parentId=' + parent.currentparentId + '&contentId=0',
                 end: function () {
-
+                    setTimeout(function () {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    }, 300)
                 }
             });
         })
