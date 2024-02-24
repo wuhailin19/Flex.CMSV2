@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flex.Core.Config;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace Flex.Application.Services
         {
             return 
              "{"
-          + "\"imageActionName\": \"uploadimage\","
+          + "\"imageActionName\": \"UploadPasteImage\","
           + "\"imageFieldName\": \"upfile\","
           + "\"imageMaxSize\": 2048000,"
           + "\"imageAllowFiles\": ["
@@ -25,7 +26,7 @@ namespace Flex.Application.Services
           + "\"imageCompressEnable\": true,"
           + "\"imageCompressBorder\": 1600,"
           + "\"imageInsertAlign\": \"none\","
-          + "\"imageUrlPrefix\": \"/\","
+          + $"\"imageUrlPrefix\": \"{ServerConfig.ImageServerUrl}\","
           + "\"imageSaveAbsolutePath\": \"\","
           + "\"imageFtpUpload\": false,"
           + "\"imagePathFormat\": \"upload/image/{yyyy}{mm}{dd}/{time}{rand:6}\","

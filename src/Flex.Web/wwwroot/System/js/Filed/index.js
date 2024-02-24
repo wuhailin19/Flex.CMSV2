@@ -11,8 +11,9 @@ $.ajax({
     },
     complete: function () { }
 })
-layui.use('table', function () {
+layui.use(['table','form'], function () {
     var table = layui.table;
+    var form = layui.form;
     //JS 调用：
     var insTb = table.render({
         elem: '#demo'
@@ -27,6 +28,10 @@ layui.use('table', function () {
             statusCode: 200
         },
         parseData: function (res) {
+            if (res.code != 200) {
+                tips.showFail(res.msg);
+                return false;
+            }
             return {
                 "code": res.code, //数据状态的字段名称，默认：code
                 "data": res.content//数据总数的字段名称，默认：count
@@ -56,6 +61,63 @@ layui.use('table', function () {
             delete delete_index[index]
         }
     });
+    form.on('switch(apistatusPxy)', function (data) {
+        // 得到开关的value值，实际是需要修改的ID值。
+        var status = this.checked ? 'true' : 'false';
+        const model = { Id: data.value, IsApiField: status };
+        ajaxHttp({
+            url: routeLink + "QuickEdit",
+            data: JSON.stringify(model),
+            type: 'Post',
+            async: false,
+            success: function (json) {
+                if (json.code == 200) {
+                    tips.showSuccess(json.msg);
+                } else {
+                    tips.showFail(json.msg);
+                }
+            },
+            complete: function () { }
+        })
+    })
+    form.on('switch(searchstatusPxy)', function (data) {
+        // 得到开关的value值，实际是需要修改的ID值。
+        var status = this.checked ? 'true' : 'false';
+        const model = { Id: data.value, IsSearch: status };
+        ajaxHttp({
+            url: routeLink + "QuickEdit",
+            data: JSON.stringify(model),
+            type: 'Post',
+            async: false,
+            success: function (json) {
+                if (json.code == 200) {
+                    tips.showSuccess(json.msg);
+                } else {
+                    tips.showFail(json.msg);
+                }
+            },
+            complete: function () { }
+        })
+    })
+    form.on('switch(tablethstatusPxy)', function (data) {
+        // 得到开关的value值，实际是需要修改的ID值。
+        var status = this.checked ? 'true' : 'false';
+        const model = { Id: data.value, ShowInTable: status };
+        ajaxHttp({
+            url: routeLink + "QuickEdit",
+            data: JSON.stringify(model),
+            type: 'Post',
+            async: false,
+            success: function (json) {
+                if (json.code == 200) {
+                    tips.showSuccess(json.msg);
+                } else {
+                    tips.showFail(json.msg);
+                }
+            },
+            complete: function () { }
+        })
+    })
     //监听事件
     table.on('toolbar(test)', function (obj) {
         var data = table.checkStatus(obj.config.id).data;

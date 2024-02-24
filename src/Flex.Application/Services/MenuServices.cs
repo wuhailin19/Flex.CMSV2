@@ -7,12 +7,13 @@ namespace Flex.Application.Services
     public class MenuServices : BaseService, IMenuServices
     {
 
-
+        private IRoleServices _roleServices;
         private ISystemIndexSetServices _systemIndexSetServices;
-        public MenuServices(IUnitOfWork unitOfWork, ISystemIndexSetServices systemIndexSetServices, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims) :
+        public MenuServices(IUnitOfWork unitOfWork, ISystemIndexSetServices systemIndexSetServices, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IRoleServices roleServices) :
             base(unitOfWork, mapper, idWorker, claims)
         {
             _systemIndexSetServices = systemIndexSetServices;
+            _roleServices = roleServices;
         }
         private List<MenuDto> Main = new List<MenuDto>();
         private List<SysMenu> treelist = new List<SysMenu>(); //菜单编辑数据树、左侧菜单树
@@ -62,7 +63,7 @@ namespace Flex.Application.Services
             }
             else
             {
-                var currentrole = await GetCurrentRoldDtoAsync();
+                var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
                 if (currentrole is null)
                     return default;
                 var children = list.Where(m => currentrole.MenuPermissions.Split(',').Contains(m.Id.ToString()));
@@ -86,10 +87,10 @@ namespace Flex.Application.Services
         /// </summary>
         /// <param name="mode"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<MenuColumnDto>?> getMenuShortcutAsync(string mode)
+        public async Task<IEnumerable<MenuColumnDto>> getMenuShortcutAsync(string mode)
         {
             IEnumerable<SysMenu> list = await GetAllMenuList();
-            IEnumerable<SysMenu> menu_list = null;
+            IEnumerable<SysMenu> menu_list = new List<SysMenu>();
             //超管直接返回所有菜单
             if (_claims.IsSystem)
             {
@@ -97,20 +98,20 @@ namespace Flex.Application.Services
             }
             else
             {
-                var currentrole = await GetCurrentRoldDtoAsync();
+                var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
                 if (currentrole is null)
-                    return default(IEnumerable<MenuColumnDto>);
+                    return default;
                 menu_list = list.Where(m => m.isMenu == false && currentrole.MenuPermissions.ToList().Contains(m.Id.ToString()) && m.ShowStatus == true);
             }
             if (menu_list.IsNullOrEmpty())
-                return default(IEnumerable<MenuColumnDto>);
+                return default;
 
             var systemindexset = await _systemIndexSetServices.GetbyCurrentIdAsync();
             switch (mode)
             {
                 case "1":
                     if (systemindexset.SystemMenu.IsNullOrEmpty())
-                        return default(IEnumerable<MenuColumnDto>);
+                        return default;
                     return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.SystemMenu.ToList().Contains(m.Id.ToString())));
                 case "3":
                     if (systemindexset.SystemMenu.IsNullOrEmpty())
@@ -118,7 +119,7 @@ namespace Flex.Application.Services
                     return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.SystemMenu.ToList().Contains(m.Id.ToString()) == false));
                 case "2":
                     if (systemindexset.SiteMenu.IsNullOrEmpty())
-                        return default(IEnumerable<MenuColumnDto>);
+                        return default;
                     return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.SiteMenu.ToList().Contains(m.Id.ToString())));
                 case "4":
                     if (systemindexset.SiteMenu.IsNullOrEmpty())
@@ -126,14 +127,14 @@ namespace Flex.Application.Services
                     return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.SiteMenu.ToList().Contains(m.Id.ToString()) == false));
                 case "7":
                     if (systemindexset.FileManage.IsNullOrEmpty())
-                        return default(IEnumerable<MenuColumnDto>);
+                        return default;
                     return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.FileManage.ToList().Contains(m.Id.ToString())));
                 case "8":
                     if (systemindexset.FileManage.IsNullOrEmpty())
                         return _mapper.Map<List<MenuColumnDto>>(menu_list);
                     return _mapper.Map<List<MenuColumnDto>>(menu_list.Where(m => systemindexset.FileManage.ToList().Contains(m.Id.ToString()) == false));
             }
-            return default(IEnumerable<MenuColumnDto>);
+            return default;
         }
         /// <summary>
         /// 获取当前角色菜单树
@@ -150,7 +151,7 @@ namespace Flex.Application.Services
             }
             else
             {
-                var currentrole = await GetCurrentRoldDtoAsync();
+                var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
                 if (currentrole is null)
                     return default;
                 if (!string.IsNullOrEmpty(currentrole.MenuPermissions))
@@ -185,26 +186,28 @@ namespace Flex.Application.Services
         {
             IEnumerable<SysMenu> list = await _unitOfWork.GetRepository<SysMenu>().GetAllAsync();
             string[] menus = null;
+
             //超管直接返回所有菜单
             if (_claims.IsSystem)
             {
             }
             else
             {
-                var currentrole = await GetRoleByIdAsync(Id);
-                if (currentrole is null)
+                var loginrole = await _roleServices.GetRoleByIdAsync(_claims.UserRole);
+                if (loginrole is null)
                     return default;
-                if (!string.IsNullOrEmpty(currentrole.MenuPermissions))
-                    menus = currentrole.MenuPermissions.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-                else
-                    menus = new string[] { };
-                var children = list.Where(m => currentrole.MenuPermissions.Split(',').Contains(m.Id.ToString()));
+                var children = list.Where(m => loginrole.MenuPermissions.Split(',').Contains(m.Id.ToString()));
                 treelist.Add(list.Where(x => x.ParentID == 0).FirstOrDefault());
                 AddMenuTreeTable(list, children);
                 list = treelist;
             }
             if (list.IsNullOrEmpty())
                 return default;
+            var currentrole =await _roleServices.GetRoleByIdAsync(Id);
+            if (!string.IsNullOrEmpty(currentrole.MenuPermissions))
+                menus = currentrole.MenuPermissions.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            else
+                menus = new string[] { };
             var query = _mapper.Map<List<MenuDto>>(list.OrderBy(m => m.OrderId));
             query.Each(item =>
             {
@@ -217,30 +220,7 @@ namespace Flex.Application.Services
             AddMenu(query, query.Where(x => x.parentid == 0).FirstOrDefault());
             return Main;
         }
-        /// <summary>
-        /// 获取当前角色实体
-        /// </summary>
-        /// <returns></returns>
-        public async Task<SysRole> GetCurrentRoldDtoAsync()
-        {
-            var currentrole = await _unitOfWork.GetRepository<SysRole>()
-                        .GetFirstOrDefaultAsync(m => _claims.UserRole == m.Id.ToString(), null, null, true, false);
-            if (currentrole is null)
-                return default(SysRole);
-            return currentrole;
-        }
-        /// <summary>
-        /// 获取角色实体ById
-        /// </summary>
-        /// <returns></returns>
-        public async Task<SysRole> GetRoleByIdAsync(long Id)
-        {
-            var currentrole = await _unitOfWork.GetRepository<SysRole>()
-                        .GetFirstOrDefaultAsync(m => Id == m.Id, null, null, true, false);
-            if (currentrole is null)
-                return default(SysRole);
-            return currentrole;
-        }
+        
         /// <summary>
         /// 获取主界面菜单树
         /// </summary>
@@ -255,7 +235,7 @@ namespace Flex.Application.Services
             }
             else
             {
-                var currentrole = await GetCurrentRoldDtoAsync();
+                var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
                 if (currentrole is null)
                     return default;
                 var children = list.Where(m => currentrole.MenuPermissions.Split(',').Contains(m.Id.ToString()));

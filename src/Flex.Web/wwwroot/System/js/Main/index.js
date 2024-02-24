@@ -6,6 +6,30 @@ layui.use(['element', 'layer'], function () {
     Init();
 
 })
+$('.loginout').on('click', function () {
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('refresh_token');
+    window.location.href = '/system/login'
+})
+function GetMsgCount() {
+    ajaxHttp({
+        url: api + "Message/GetNotReadMessageCount",
+        type:'Get',
+        dataType: 'json',
+        success: function (res) {
+            if (res.code == 200) {
+                if (res.content != 0) {
+                    $('.email_extension').html('<span class="email_num">' + res.content + '</span>');
+                } else {
+                    $('.email_extension').html('');
+                }
+            }
+        }, complete: function () {
+            setTimeout(function () { GetMsgCount() }, 5000)
+        }
+    })
+}
+GetMsgCount()
 function InitAdmin() {
     ajaxHttp({
         url: api + 'Admin/getLoginInfo',

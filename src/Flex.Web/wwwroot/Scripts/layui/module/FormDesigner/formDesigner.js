@@ -2314,6 +2314,7 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                         format: json.dateFormat,
                         min: json.dataMinValue,
                         max: json.dataMaxValue,
+                        rangeLinked: true,
                         range: ['#start-' + json.tag + json.id, '#end-' + json.tag + json.id]
                     });
                     if (json.dateRangeDefaultValue !== null && json.dateRangeDefaultValue !== ""

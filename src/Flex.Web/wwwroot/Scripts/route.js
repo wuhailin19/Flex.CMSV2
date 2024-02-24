@@ -1,6 +1,7 @@
 ﻿var route_href = window.location.href;
 //var api = route_href.split('/')[0] + "//" + route_href.split('/')[2]+"/";
 var api = "http://127.0.01:5003/api/";
+var SystempageRoute = "/System/";
 function getCheckboxValue(name) {
     var arraybox = [];
     $('input[name=' + name + ']:checked').each(function () {
@@ -8,14 +9,16 @@ function getCheckboxValue(name) {
     });
     return arraybox.join(',');
 }
+
 function setCheckboxValue(name, value) {
-    if (value == '')
-        return false;
+    if (value == null || value == undefined || value == "")
+        return;
     var arraybox = value.split(',');
     for (var i = 0; i < arraybox.length; i++) {
         $('input[name=' + name + '][value=' + arraybox[i] + ']').attr('checked', true)
     }
 }
+
 var HttpRequest = function (options) {
     var defaults = {
         type: 'get',
@@ -32,6 +35,7 @@ var HttpRequest = function (options) {
         setcontentType: true
     };
     var o = $.extend({}, defaults, options);
+
     $.ajax({
         url: o.url,
         type: o.type,
@@ -48,6 +52,7 @@ var HttpRequest = function (options) {
             o.beforeSend && o.beforeSend();
         },
         success: function (res) {
+            if (res.code != 200) { tips.showFail(res.msg); return; }
             o.success && o.success(res);
         },
         complete: function () {
@@ -74,14 +79,14 @@ var ajaxHttp = function (options) {
     }
 
     // 每次请求携带token
-    options.token = localStorage.getItem('access_token');
-    options.refreshtoken = localStorage.getItem('refresh_token');
+    options.token = sessionStorage.getItem('access_token');
+    options.refreshtoken = sessionStorage.getItem('refresh_token');
     HttpRequest(options);
 }
 
 var httpTokenHeaders = {
-    'Authorization': "Bearer " + localStorage.getItem('access_token'),
-    'Refresh_token': "Bearer " + localStorage.getItem('refresh_token')
+    'Authorization': "Bearer " + sessionStorage.getItem('access_token'),
+    'Refresh_token': "Bearer " + sessionStorage.getItem('refresh_token')
 }
 
 var global_notice;
@@ -120,7 +125,8 @@ var tips = {
         })
     },
     message: function (msg, cate) {
-        global_notice[cate](msg);
+        if (global_notice != undefined)
+            global_notice[cate](msg);
     },
     uploadProgressInfo: function (fileid, msg) {
         fileid = fileid + "_progress_box";
@@ -136,7 +142,7 @@ var tips = {
             closeOnHover: false,
             setId: fileid
         }
-        global_notice.info(msg,"", options);
+        global_notice.info(msg, "", options);
     },
     showProgress(fileid, msg) {
         tips.uploadProgressInfo(fileid, msg);

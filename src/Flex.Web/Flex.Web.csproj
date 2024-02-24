@@ -7,12 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Scripts\core\laypro\layuiadmin\**" />
     <Compile Remove="wwwroot\System\htmlEditor\ueditor\**" />
     <Compile Remove="wwwroot\System\htmlEditor\_ueditor\dialogs111\**" />
+    <Content Remove="wwwroot\Scripts\core\laypro\layuiadmin\**" />
     <Content Remove="wwwroot\System\htmlEditor\ueditor\**" />
     <Content Remove="wwwroot\System\htmlEditor\_ueditor\dialogs111\**" />
+    <EmbeddedResource Remove="wwwroot\Scripts\core\laypro\layuiadmin\**" />
     <EmbeddedResource Remove="wwwroot\System\htmlEditor\ueditor\**" />
     <EmbeddedResource Remove="wwwroot\System\htmlEditor\_ueditor\dialogs111\**" />
+    <None Remove="wwwroot\Scripts\core\laypro\layuiadmin\**" />
     <None Remove="wwwroot\System\htmlEditor\ueditor\**" />
     <None Remove="wwwroot\System\htmlEditor\_ueditor\dialogs111\**" />
   </ItemGroup>
@@ -54,6 +58,13 @@
   </ItemGroup>
   
   <ItemGroup>
+    <None Include="wwwroot\Scripts\core\commonUtil.js" />
+    <None Include="wwwroot\Scripts\core\myflow-min\lib\jquery-ui-1.8.4.custom\js\jquery-1.4.2.min.js" />
+    <None Include="wwwroot\Scripts\core\myflow-min\lib\jquery-ui-1.8.4.custom\js\jquery-ui-1.8.4.custom.min.js" />
+    <None Include="wwwroot\Scripts\core\myflow-min\lib\raphael-min.js" />
+    <None Include="wwwroot\Scripts\core\myflow-min\myflow.editors.js" />
+    <None Include="wwwroot\Scripts\core\myflow-min\myflow.jpdl4.js" />
+    <None Include="wwwroot\Scripts\core\myflow-min\myflow.js" />
     <None Include="wwwroot\Scripts\layui\module\notice\.DS_Store" />
     <None Include="wwwroot\Scripts\layui\module\notice\notice.js" />
     <None Include="wwwroot\Scripts\layui\module\FormDesigner\Sortable.js" />
@@ -62,6 +73,8 @@
     <None Include="wwwroot\System\htmlEditor\_ueditor\themes\default\fonts\iconfont.svg" />
     <None Include="wwwroot\System\js\uploader\uploadsingle.js" />
     <None Include="wwwroot\System\js\uploader\webuploader.min.js" />
+    <None Include="wwwroot\System\js\WorkFlow\index.js" />
+    <None Include="wwwroot\System\js\WorkFlow\openPageOptions.js" />
   </ItemGroup>
   
   <ItemGroup>

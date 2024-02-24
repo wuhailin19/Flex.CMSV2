@@ -6,9 +6,11 @@
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>菜单管理</title>
-    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" /><link href="~/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
-    <script src="~/Scripts/layui/layui.js" type="text/javascript"></script><script src="~/Scripts/route.js" type="text/javascript"></script>
-    <script src="~/Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <link href="~/Scripts/layui/css/layui2.5.7.css" rel="stylesheet" />
+    <link href="~/Scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui2.5.7.js" type="text/javascript"></script>
+    <script src="~/Scripts/route.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery-3.4.1.js" type="text/javascript"></script>
     <style>
         th[data-key='0-0'] .ew-tree-table-cell { display: none; }
         tr[data-index='0'] td[data-key='0-0'] .ew-tree-table-cell-content { display: none; }
@@ -26,246 +28,50 @@
         </div>
     </form>
     <script type="text/html" id="barDemo">
-        {{#if(d.ColumnId==-1){}}
+        {{#if(d.Id==-1){}}
         <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="sp">
-        <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="add">
-        <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="edit">
+        <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="ad">
+        <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="ed">
         <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="dp">
         {{#}else{}}
 
         {{#if(d.IsSelect){}}
         @*查看*@
-        {{#if(('-'+datamission.sp+'-').indexOf(('-'+d.ColumnId+'-'))!=-1){}}
-        <input type="checkbox" name="sp" title="查看" data-id="{{d.ColumnId}}" lay-skin="primary" checked>
+        {{#if(('-'+datamission.sp+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
+        <input type="checkbox" name="sp" title="查看" data-id="{{d.Id}}" lay-skin="primary" checked>
         {{#}else{}}
-        <input type="checkbox" name="sp" title="查看" data-id="{{d.ColumnId}}" lay-skin="primary">
+        <input type="checkbox" name="sp" title="查看" data-id="{{d.Id}}" lay-skin="primary">
         {{#}}}
         {{#}}}
 
         {{#if(d.IsAdd){}}
         @*添加*@
-        {{#if(('-'+datamission.add+'-').indexOf(('-'+d.ColumnId+'-'))!=-1){}}
-        <input type="checkbox" name="add" title="添加" data-id="{{d.ColumnId}}" lay-skin="primary" checked>
+        {{#if(('-'+datamission.ad+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
+        <input type="checkbox" name="ad" title="添加" data-id="{{d.Id}}" lay-skin="primary" checked>
         {{#}else{}}
-        <input type="checkbox" name="add" title="添加" data-id="{{d.ColumnId}}" lay-skin="primary">
+        <input type="checkbox" name="ad" title="添加" data-id="{{d.Id}}" lay-skin="primary">
         {{#}}}
         {{#}}}
 
         {{#if(d.IsEdit){}}
         @*编辑*@
-        {{#if(('-'+datamission.edit+'-').indexOf(('-'+d.ColumnId+'-'))!=-1){}}
-        <input type="checkbox" name="edit" title="编辑" data-id="{{d.ColumnId}}" lay-skin="primary" checked>
+        {{#if(('-'+datamission.ed+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
+        <input type="checkbox" name="ed" title="编辑" data-id="{{d.Id}}" lay-skin="primary" checked>
         {{#}else{}}
-        <input type="checkbox" name="edit" title="编辑" data-id="{{d.ColumnId}}" lay-skin="primary">
+        <input type="checkbox" name="ed" title="编辑" data-id="{{d.Id}}" lay-skin="primary">
         {{#}}}
         {{#}}}
 
         {{#if(d.IsDelete){}}
         @*删除*@
-        {{#if(('-'+datamission.dp+'-').indexOf(('-'+d.ColumnId+'-'))!=-1){}}
-        <input type="checkbox" name="dp" title="删除" data-id="{{d.ColumnId}}" lay-skin="primary" checked>
+        {{#if(('-'+datamission.dp+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
+        <input type="checkbox" name="dp" title="删除" data-id="{{d.Id}}" lay-skin="primary" checked>
         {{#}else{}}
-        <input type="checkbox" name="dp" title="删除" data-id="{{d.ColumnId}}" lay-skin="primary">
+        <input type="checkbox" name="dp" title="删除" data-id="{{d.Id}}" lay-skin="primary">
         {{#}}}
         {{#}}}
 
         {{#}}}
     </script>
-    <script>
-        var columnlist;
-        var datamission = [];
-        var parent_json = parent.req_Data;
-        $.ajax({
-            url: api + 'ColumnCategory/Column',
-            type: 'Post',
-            async: false,
-            success: function (result) {
-                columnlist = JSON.parse(result).data;
-            },
-            complete: function () { }
-        })
-        $.ajax({
-            url: api + 'DataPermission/List',
-            data: { Id: parent_json.RolesID },
-            type: 'Post',
-            async: false,
-            success: function (result) {
-                var json = JSON.parse(result);
-                if (json.code == 200) {
-                    datamission = json.data[0];
-                }
-            },
-            complete: function () { }
-        })
-        layui.config({
-            base: '/Scripts/layui/module/'
-        }).use(['layer', 'treeTable', 'form'], function () {
-            var form = layui.form;
-            var $ = layui.jquery;
-            var treeTable = layui.treeTable;
-            // 渲染表格
-            var insTb = treeTable.render({
-                elem: '#demo_tree',
-                url: api + 'ColumnCategory/List',
-                method: 'Post',
-                height: 'full',
-                tree: {
-                    iconIndex: 1,
-                    isPidData: true,
-                    openName: 'Name',
-                    idName: 'ColumnId',
-                    pidName: 'ParentId'
-                },
-                defaultToolbar: ['filter', 'print', 'exports', {
-                    title: '提示',
-                    layEvent: 'LAYTABLE_TIPS',
-                    icon: 'layui-icon-tips'
-                }],
-                cols: [
-                    columnlist
-                ],
-                style: 'margin-top:0;',
-                done: function () {
-                    $('input[type=checkbox][name=select_all]').next().click(function () {
-                        let event = $(this).prev().attr('lay-event');
-                        var checkbox = $('input[type=checkbox][name=' + event + ']');
-                        var next = checkbox.next();
-                        let checkclass = 'layui-form-checked';
-                        let count = 0;
-                        $.each(next, function () {
-                            if ($(this).hasClass(checkclass)) {
-                                count++;
-                            }
-                        })
-                        if (next.length == count) {
-                            next.removeClass(checkclass)
-                            checkbox.attr('checked', false);
-                            $(this).removeClass(checkclass);
-                        } else {
-                            next.addClass(checkclass);
-                            checkbox.attr('checked', true);
-                            $(this).addClass(checkclass);
-                        }
-                    })
-
-                    $('td[data-key=0-2] .layui-form-checkbox').click(function () {
-                        if ($(this).hasClass('layui-form-checked')) {
-                            $(this).prev().attr('checked', true);
-                        } else {
-                            $(this).prev().attr('checked', false);
-                        }
-                    })
-                }
-            });
-            //监听提交
-            form.on('submit(formDemo)', function (data) {
-                var json = data.field;
-                let ids = '';
-                $.each($('input[type=checkbox][name=select_all]'), function () {
-                    if (ids == '') {
-                        ids = "[{" + getCheckListArray($(this).attr('lay-event'));
-                    } else {
-                        ids += "," + getCheckListArray($(this).attr('lay-event'));
-                    }
-                })
-                ids += "}]";
-                console.log(ids)
-                $.ajax({
-                    url: api + 'RolesPermission/UpdateDataPermission',
-                    type: 'Post',
-                    datatype: 'json',
-                    data: { Id: parent_json.RolesID, chooseId: ids },
-                    async: false,
-                    success: function (result) {
-                        let json = JSON.parse(result);
-                        if (json.code == 200) {
-                            layer.msg(json.msg, { icon: 6, time: 300 }, function () {
-                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                                parent.layer.close(index); //再执行关闭
-                            });
-                        } else {
-                            layer.msg(json.msg, { icon: 5, time: 1000 });
-                        }
-                    },
-                    complete: function () {
-
-                    }
-                })
-                return false;
-            });
-            $('#reset').click(function () {
-                insTb.refresh();
-                return false;
-            })
-            var delete_index = [];
-            //监听表格复选框选择
-            treeTable.on('checkbox(demo_tree)', function (obj) { // layui 内置方法
-                var data = insTb.checkStatus();
-                console.log(data)
-                if (obj.checked == true) {
-                    for (var i = 0; i < data.length; i++) {
-                        if (data[i].isIndeterminate == false) {
-                            $('.layui-table tr[data-index=' + data[i].LAY_INDEX + '] td[data-key=0-2] input[type=checkbox]').next().addClass('layui-form-checked');
-                            $('.layui-table tr[data-index=' + data[i].LAY_INDEX + '] td[data-key=0-2] input[type=checkbox]').attr('checked', true);
-                        } else {
-                            $('.layui-table tr[data-index=' + data[i].LAY_INDEX + '] td[data-key=0-2] input[type=checkbox][name=select]').next().addClass('layui-form-checked');
-                            $('.layui-table tr[data-index=' + data[i].LAY_INDEX + '] td[data-key=0-2] input[type=checkbox][name=select]').attr('checked', true);
-                        }
-                    }
-                } else {
-                    console.log(obj.data)
-                    setCheckboxstatus(obj.data);
-                }
-            });
-            function getCheckListArray(event) {
-                var checkbox = $('input[type=checkbox][name=' + event + '][checked]');
-                let id = '';
-                for (var i = 0; i < checkbox.length; i++) {
-                    if (id != '') {
-                        id += '-' + $(checkbox[i]).data('id');
-                    }
-                    else {
-                        id = $(checkbox[i]).data('id');
-                    }
-                }
-                return '"' + event + '":"' + id + '"';
-            }
-
-            function setCheckboxstatus(datas) {
-                if (datas == null || datas == undefined)
-                    return;
-                $('.layui-table tr[data-index=' + datas.LAY_INDEX + '] td[data-key=0-2] input[type=checkbox]').next().removeClass('layui-form-checked');
-                $('.layui-table tr[data-index=' + datas.LAY_INDEX + '] td[data-key=0-2] input[type=checkbox]').attr('checked', false);
-                if (datas.children == null || datas.children == undefined) {
-                    return;
-                }
-                for (var i = 0; i < datas.children.length; i++) {
-                    $('.layui-table tr[data-index=' + datas.children[i].LAY_INDEX + '] td[data-key=0-2] input[type=checkbox]').next().removeClass('layui-form-checked');
-                    $('.layui-table tr[data-index=' + datas.children[i].LAY_INDEX + '] td[data-key=0-2] input[type=checkbox]').attr('checked', false);
-                    setCheckboxstatus(datas.children[i]);
-                }
-            }
-            //获取所有选中的节点id
-            function getCheckedId(data) {
-                var delete_index = [];
-                var id = "";
-                $.each(data, function (index, item) {
-                    if (item.ID != "") {
-                        delete_index.push(item.ID)
-                    }
-                });
-                if (delete_index.length > 0) {
-                    for (var i = 0; i < delete_index.length; i++) {
-                        if (id != "") {
-                            id += '-' + delete_index[i];
-                        }
-                        else {
-                            id = delete_index[i];
-                        }
-                    }
-                }
-                return id;
-            }
-        });
-    </script>
+    <script src="~/system/js/rolespermission/datapermission.js"></script>
 </body>

@@ -1,6 +1,7 @@
 ﻿using Flex.Core.Attributes;
 using Flex.Core.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Flex.Core.Reflection
@@ -15,7 +16,7 @@ namespace Flex.Core.Reflection
         {
             Type T = typeof(HttpMethodAttribute);
             List<ReflectMenuModel> controls = new List<ReflectMenuModel>();
-            var assemblies = DAssemblyFinder.Instance.FindAll().Where(m => m.GetName().Name.EndsWith("WebApi"));
+            var assemblies = DAssemblyFinder.Instance.FindAll().Where(m => m.GetName().Name.EndsWith("Web"));
             List<Type> typeList = new List<Type>();
             assemblies.Foreach(asm =>
             {
@@ -65,6 +66,12 @@ namespace Flex.Core.Reflection
                         continue;
                     rm.MenuController = controller;
                     string url = "/api/" + controller + "/";
+                    bool isViewAction = false;
+                    if (type.GetAttribute<AreaAttribute>() != null)
+                    {
+                        url = "/system/" + controller + "/";
+                        isViewAction = true;
+                    }
                     rm.MenuLink = url;
                     foreach (var m in members)
                     {
@@ -75,7 +82,8 @@ namespace Flex.Core.Reflection
                         string action = m.Name;
                         rma.ActionCode = action;
 
-                        if (m.GetCustomAttributes(typeof(IAllowAnonymous), false).Count() > 0) {
+                        if (m.GetCustomAttributes(typeof(IAllowAnonymous), false).Count() > 0)
+                        {
                             rma.ActionPermission = false;
                         }
 
@@ -84,18 +92,23 @@ namespace Flex.Core.Reflection
                             if (item.AttributeType.BaseType.Name == T.Name)
                             {
                                 rma.ActionType = item.AttributeType.Name.Replace("Attribute", "");
-                                if (item.ConstructorArguments.Count <= 0) { 
+                                if (item.ConstructorArguments.Count <= 0)
+                                {
                                     continue;
                                 }
                                 var argumentname = item.ConstructorArguments.FirstOrDefault().Value.ToString();
-                                if (!argumentname.IsNullOrEmpty()) {
+                                if (!argumentname.IsNullOrEmpty())
+                                {
                                     rma.ActionCode = argumentname;
                                 }
                             }
                         }
 
                         if (action.Contains("<") || action.Contains(">")) continue;
-
+                        rma.Cate = 1;
+                        if (isViewAction) {
+                            rma.Cate = 2;
+                        }
                         bool isNeedAdd = true;
                         //反射系统自己带的其它属性
                         //System.Reflection.TypeAttributes attrs = m.DeclaringType.Attributes;
@@ -113,7 +126,7 @@ namespace Flex.Core.Reflection
                                 }
                                 rma.ActionId = da.cateEnum;
                                 rma.ActionDesc = da.Desc;
-                                rma.ActionName = da.Name;
+                                rma.ActionName = da.Name.ToLower();
                                 break;
                             }
                         }

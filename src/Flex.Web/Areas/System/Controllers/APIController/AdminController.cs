@@ -1,6 +1,8 @@
-﻿using Flex.Application.Filters;
+﻿using Autofac.Core;
+using Flex.Application.Filters;
 using Flex.Core.Attributes;
 using Flex.Domain.Dtos.Admin;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,6 +10,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Descriper(Name = "账号相关接口")]
     public class AdminController : ApiBaseController
     {
         private IRoleServices _roleServices;
@@ -20,23 +23,35 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             _pictureServices = pictureServices;
         }
         [HttpGet("Column")]
+        [AllowAnonymous]
         [Descriper(IsFilter = true)]
         public string Column()
         {
             return Success(ModelTools<AdminColumnDto>.getColumnDescList());
         }
         [HttpGet("ListAsync")]
-        [Descriper(Name = "获取AdminList")]
+        [Descriper(Name = "获取账号列表")]
         public async Task<string> ListAsync(int page, int limit)
         {
             return Success(await _adminServices.GetAdminListAsync(page, limit));
         }
-
+        /// <summary>
+        /// 所有Admin信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetStepAdminListAsync")]
+        [Descriper(IsFilter = true)]
+        public async Task<string> GetStepAdminListAsync()
+        {
+            var list = await _adminServices.GetAsync();
+            return Success(list);
+        }
         /// <summary>
         /// 根据Token获取当前角色权限
         /// </summary>
         /// <returns></returns>
         [HttpGet("Permissions")]
+        [Descriper(Name = "根据Token获取当前角色权限")]
         public async Task<string> GetCurrenAdminPermissions()
         {
             var RoleList = await _roleServices.GetCurrentAdminRoleByTokenAsync();
@@ -91,7 +106,8 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// 新增账号
         /// </summary>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPost("CreateAccount")]
+        [Descriper(Name = "新增账号")]
         public async Task<string> Add()
         {
             var validate =await ValidateModel<AdminAddDto>();
@@ -108,6 +124,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet("GetEditDtoInfoById/{Id}")]
+        [Descriper(Name = "通过账号Id获取账号信息")]
         public async Task<string> GetEditDtoInfo(string Id)
         {
             var model = await _adminServices.GetEditDtoInfoByIdAsync(Id.ToLong());
@@ -120,6 +137,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// </summary>
         /// <returns></returns>
         [HttpPost]
+        [Descriper(Name = "修改账号信息")]
         public async Task<string> Update()
         {
             var validate =await ValidateModel<AdminEditDto>();
@@ -136,6 +154,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         /// </summary>
         /// <returns></returns>
         [HttpPost("UpdatePassword")]
+        [Descriper(Name = "修改账号密码")]
         public async Task<string> UpdatePassword()
         {
             var validate =await ValidateModel<AccountAndPasswordDto>();
@@ -147,7 +166,8 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Fail(result.Detail);
         }
 
-        [HttpDelete("{Id}")]
+        [HttpPost("{Id}")]
+        [Descriper(Name = "删除账号")]
         public async Task<string> Delete(string Id)
         {
             var result = await _adminServices.DeleteAccountListByIdArray(Id);
@@ -156,6 +176,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Fail(result.Detail);
         }
         [HttpPost("QuickEdit")]
+        [Descriper(Name = "快速修改账号状态")]
         public async Task<string> QuickEdit()
         {
             AdminQuickEditDto adminQuickEdit = await GetModel<AdminQuickEditDto>();

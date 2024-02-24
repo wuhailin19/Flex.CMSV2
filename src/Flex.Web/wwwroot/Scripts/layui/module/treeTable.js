@@ -1257,6 +1257,12 @@ layui.define(['laytpl', 'form', 'util'], function (exports) {
         this.bindEvents();  // 绑定事件
     };
 
+    /** 表格信息搜索 */
+    TreeTable.prototype.search = function (opt) {
+        this.initOptions(this.options ? $.extend(true, this.options, opt) : opt);
+        this.init();  // 初始化表格
+    };
+
     /** 获取当前选中行 */
     TreeTable.prototype.checkStatus = function (needIndeterminate) {
         if (needIndeterminate === undefined) needIndeterminate = true;

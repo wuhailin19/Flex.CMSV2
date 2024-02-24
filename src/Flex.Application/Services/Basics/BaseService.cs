@@ -24,7 +24,29 @@ namespace Flex.Application.Services
             _idWorker = idWorker;
             _claims = claims;
         }
+        protected string DecodeData(string data)
+        {
+            string temp = data;
 
+            temp = temp.Replace("**!1**", "'");
+            temp = temp.Replace("**!2**", "(");
+            temp = temp.Replace("**!3**", ")");
+            temp = temp.Replace("**!4**", "..");
+            temp = temp.Replace("**!6**", "\"");
+            temp = temp.Replace("**!8**", "<");
+            temp = temp.Replace("**!9**", ">");
+            temp = temp.Replace("**!10**", "|");
+            temp = temp.Replace("**!11**", "\\");
+            temp = temp.Replace("**!12**", "+");
+            temp = temp.Replace("**!14**", "@");
+            temp = temp.Replace("**!15**", "$");
+            temp = temp.Replace("**!16**", ":");
+            temp = temp.Replace("**!18**", " a");
+            temp = temp.Replace("**!19**", " A");
+            temp = temp.Replace("**!20**", "/**/");
+
+            return temp;
+        }
         public virtual void AddIntEntityBasicInfo<T>(T model) where T : BaseIntEntity  {
             model.AddUser = _claims.UserId;
             model.AddUserName= _claims.UserName;

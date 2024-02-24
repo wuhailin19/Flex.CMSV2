@@ -1,4 +1,4 @@
-﻿body{background-color: #f2f2f2;}
+﻿body { background-color: #f2f2f2; }
 /*.iframe_contents { width: 100%; height: 700px; border: none; }*/
 .iframe_contents.contents { border-bottom: 1px solid #ccc; border-top: 1px solid #ccc; }
 .boxchart { width: 33.333%; height: 180px; border: 5px solid #f1f1f1; position: relative; box-sizing: border-box; background-color: #fff; }
@@ -40,7 +40,9 @@
 .typess .boxchart::-webkit-scrollbar { width: 0 !important }
 .typess { min-height: 240px; }
 
-@media screen and (max-width:800px) {
+@media screen and (max-width:768px) {
     .leftbox { width: 100% !important; }
     .rightbox { width: 100% !important; }
+    .typess .boxchart { width: 33.333%; }
+    .layui-layer-content .layui-card-box { height: 80vh; }
 }

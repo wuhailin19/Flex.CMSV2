@@ -1,14 +1,13 @@
 ﻿using Flex.Core.Attributes;
-using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ContentModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace Flex.Web.Areas.System.Controllers.APIController
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Descriper(Name ="内容模型相关接口")]
     public class ContentModelController : ApiBaseController
     {
         private IContentModelServices _services;
@@ -23,16 +22,19 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(ModelTools<ContentModelColumnDto>.getColumnDescList());
         }
         [HttpGet("ListAsync")]
+        [Descriper(Name = "内容模型列表数据")]
         public async Task<string> ListAsync() {
          return Success(await _services.ListAsync());
         }
 
         [HttpGet("GetSelectItem")]
+        [Descriper(Name = "栏目管理内容模型选择项数据")]
         public async Task<string> GetSelectItem() {
             return Success(await _services.GetSelectItem());
         }
         
         [HttpGet("GetFormHtml/{modelId}")]
+        [Descriper(Name = "通过模型Id获取模型结构代码")]
         public async Task<string> GetFormHtml(int modelId) {
             var result = await _services.GetFormHtml(modelId);
             if (!result.IsSuccess)
@@ -40,7 +42,8 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(result.Detail);
         }
 
-        [HttpPut]
+        [HttpPost("CreateContentModel")]
+        [Descriper(Name = "新增模型")]
         public async Task<string> Add() {
             var validate = await ValidateModel<AddContentModelDto>();
             if (!validate.IsSuccess)
@@ -51,7 +54,8 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(result.Detail);
         }
 
-        [HttpDelete("{Id}")]
+        [HttpPost("{Id}")]
+        [Descriper(Name = "删除模型")]
         public async Task<string> Delete(string Id)
         {
             var result = await _services.Delete(Id);
@@ -61,6 +65,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
         [HttpPost]
+        [Descriper(Name = "修改模型名和描述")]
         public async Task<string> Update()
         {
             var validate = await ValidateModel<UpdateContentModelDto>();
@@ -73,6 +78,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
         
         [HttpPost("UpdateFormString")]
+        [Descriper(Name = "修改模型结构代码")]
         public async Task<string> UpdateFormString()
         {
             var validate = await ValidateModel<UpdateFormHtmlStringDto>();

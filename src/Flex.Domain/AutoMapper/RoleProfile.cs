@@ -12,7 +12,12 @@ namespace Flex.Domain.AutoMapper
             CreateMap<SysRole, RoleDto>();
             CreateMap<SysRole, RoleColumnDto>();
             CreateMap<SysRole, RoleSelectDto>();
+            CreateMap<SysRole, RoleStepDto>();
             CreateMap<InputRoleDto, SysRole>()
+                .ForMember(dest => dest.RolesName, opt => opt.MapFrom(src => src.RolesName))
+                .ForMember(dest => dest.RolesDesc, opt => opt.MapFrom(src => src.RolesDesc));
+            CreateMap<InputUpdateRoleDto, SysRole>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.RolesName, opt => opt.MapFrom(src => src.RolesName))
                 .ForMember(dest => dest.RolesDesc, opt => opt.MapFrom(src => src.RolesDesc));
             CreateMap<InputRoleMenuDto, SysRole>()

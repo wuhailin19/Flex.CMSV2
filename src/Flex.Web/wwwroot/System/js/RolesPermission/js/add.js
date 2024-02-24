@@ -26,8 +26,8 @@ layui.config({
     form.on('submit(formDemo)', function (data) {
         var json = data.field;
         ajaxHttp({
-            url: api + 'RolePermission',
-            type: 'Put',
+            url: api + 'RolePermission/CreateRole',
+            type: 'Post',
             datatype: 'json',
             data: JSON.stringify(json),
             async: false,

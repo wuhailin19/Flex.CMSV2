@@ -89,25 +89,51 @@ namespace Flex.Application.Services
                 throw;
             }
         }
+        public async Task<ProblemDetails<string>> QuickEditField(FiledQuickEditDto fieldQuickEditDto)
+        {
+            var fieldRepository = _unitOfWork.GetRepository<sysField>();
+            var model = await fieldRepository.GetFirstOrDefaultAsync(m => m.Id == fieldQuickEditDto.Id);
+            if (model is null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            if (fieldQuickEditDto.IsApiField.IsNotNullOrEmpty())
+                model.IsApiField = fieldQuickEditDto.IsApiField.CastTo<bool>();
+            if (fieldQuickEditDto.IsSearch.IsNotNullOrEmpty())
+                model.IsSearch = fieldQuickEditDto.IsSearch.CastTo<bool>();
+            if (fieldQuickEditDto.ShowInTable.IsNotNullOrEmpty())
+                model.ShowInTable = fieldQuickEditDto.ShowInTable.CastTo<bool>();
+            try
+            {
+                UpdateStringEntityBasicInfo(model);
+                fieldRepository.Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public async Task<ProblemDetails<string>> Update(UpdateFieldDto updateFieldDto)
         {
             var model = await responsity.GetFirstOrDefaultAsync(m => m.Id == updateFieldDto.Id);
             model.Name = updateFieldDto.Name;
-            model.FieldName = updateFieldDto.FieldName;
-            model.FieldType = updateFieldDto.FieldType;
-            var validatemodel = new FiledValidateModel()
-            {
-                ValidateEmpty = updateFieldDto.ValidateEmpty,
-                ValidateNumber = updateFieldDto.ValidateNumber
-            };
-            model.Validation = JsonHelper.ToJson(validatemodel);
-            var fieldattritudemodel = new FieldAttritudeModel()
-            {
-                Width = updateFieldDto.Width,
-                Height = updateFieldDto.Height
-            };
-            model.FieldAttritude = JsonHelper.ToJson(fieldattritudemodel);
-            model.FieldDescription = updateFieldDto.FieldDescription;
+            #region 废弃
+            //model.FieldName = updateFieldDto.FieldName;
+            //model.FieldType = updateFieldDto.FieldType;
+            //var validatemodel = new FiledValidateModel()
+            //{
+            //    ValidateEmpty = updateFieldDto.ValidateEmpty,
+            //    ValidateNumber = updateFieldDto.ValidateNumber
+            //};
+            //model.Validation = JsonHelper.ToJson(validatemodel);
+            //var fieldattritudemodel = new FieldAttritudeModel()
+            //{
+            //    Width = updateFieldDto.Width,
+            //    Height = updateFieldDto.Height
+            //};
+            //model.FieldAttritude = JsonHelper.ToJson(fieldattritudemodel);
+            //model.FieldDescription = updateFieldDto.FieldDescription;
+            #endregion
             model.ApiName = updateFieldDto.ApiName;
             model.IsApiField = updateFieldDto.IsApiField;
             model.IsSearch = updateFieldDto.IsSearch;

@@ -1894,9 +1894,9 @@
         usemap: "useMap",
         frameborder: "frameBorder"
     } : {
-            tabindex: "tabIndex",
-            readonly: "readOnly"
-        },
+        tabindex: "tabIndex",
+        readonly: "readOnly"
+    },
         styleBlock = utils.listToMap([
             '-webkit-box', '-moz-box', 'block',
             'list-item', 'table', 'table-row-group',
@@ -2276,7 +2276,7 @@
          * </script>
          * ```
          */
-        remove: function (node, keepChildren,range) {
+        remove: function (node, keepChildren, range) {
             var parent = node.parentNode,
                 child;
             if (parent) {
@@ -2287,21 +2287,21 @@
                          * 0603 by qpf
                          * add:如果是去掉加效果，但节点又有加粗效果时，去不成功
                          */
-                        if(child.nodeType==3&&node.tagName&&node.tagName.toLowerCase()=='strong'){
-                            if(range.ueStyleUtils.isParentHasFontWeightStyle(node.parentNode)){
-                                var span=ue.document.createElement('span');
-                                span.style.fontWeight='normal';
-                                span.appendChild(child) 
+                        if (child.nodeType == 3 && node.tagName && node.tagName.toLowerCase() == 'strong') {
+                            if (range.ueStyleUtils.isParentHasFontWeightStyle(node.parentNode)) {
+                                var span = ue.document.createElement('span');
+                                span.style.fontWeight = 'normal';
+                                span.appendChild(child)
                                 parent.insertBefore(span, node);
-                            }else{
+                            } else {
                                 parent.insertBefore(child, node);
                             }
                         }
-                        else{
+                        else {
                             parent.insertBefore(child, node);
                         }
                         /************************** */
-                       
+
                     }
                 }
                 parent.removeChild(node);
@@ -3354,14 +3354,14 @@
                              * 0617 by qpf
                              * add:针对单元格的对齐处理
                              */
-                            if(attr=='align'||attr =='vAlign'){  
-                                var styleText=node.style.cssText;
-                                if(styleText.indexOf('text-align')>-1){
-                                    node.style.textAlign=''; 
-                                }else if(styleText.indexOf('vertical-align')>-1){
-                                    node.style.verticalAlign=''; 
+                            if (attr == 'align' || attr == 'vAlign') {
+                                var styleText = node.style.cssText;
+                                if (styleText.indexOf('text-align') > -1) {
+                                    node.style.textAlign = '';
+                                } else if (styleText.indexOf('vertical-align') > -1) {
+                                    node.style.verticalAlign = '';
                                 }
-                               
+
                             }
                             /********************* */
                             node.setAttribute(attrFix[attr] || attr, value);
@@ -5528,60 +5528,60 @@
              * 0603 by qpf
              * add:ueditor 添加样式辅助类
              */
-            ueStyleUtils:{
-                applyChildStyle:function(elm,attrs){
-                    for(var i=0;i<elm.children.length;i++){
-                        var node=elm.children[i];
-                        var nodeStyle=node.style.cssText;
-                        var newStyle=attrs.style;
-                        if(newStyle){
-                            node.style.cssText=nodeStyle+newStyle;
+            ueStyleUtils: {
+                applyChildStyle: function (elm, attrs) {
+                    for (var i = 0; i < elm.children.length; i++) {
+                        var node = elm.children[i];
+                        var nodeStyle = node.style.cssText;
+                        var newStyle = attrs.style;
+                        if (newStyle) {
+                            node.style.cssText = nodeStyle + newStyle;
                         }
-                        this.applyChildStyle(node,attrs)
+                        this.applyChildStyle(node, attrs)
                     }
                 },
-                isAddFontWeight:function(){
+                isAddFontWeight: function () {
 
                 },
-                isRemoveFontWeight:function(tagNames){
-                    return tagNames&&((tagNames.indexOf('strong')>-1)||(tagNames.indexOf('b')>-1))
+                isRemoveFontWeight: function (tagNames) {
+                    return tagNames && ((tagNames.indexOf('strong') > -1) || (tagNames.indexOf('b') > -1))
                 },
-                hasFontWeightStyle:function(elm){
-                    var result=false;
-                    if(elm&&elm.style.cssText&&elm.style.cssText.indexOf('font-weight')>-1){
+                hasFontWeightStyle: function (elm) {
+                    var result = false;
+                    if (elm && elm.style.cssText && elm.style.cssText.indexOf('font-weight') > -1) {
                         //本身有加粗效果
-                        result= true;
-                    }else if(elm&&elm.children&&elm.children.length>0){ 
+                        result = true;
+                    } else if (elm && elm.children && elm.children.length > 0) {
                         //子节点有加粗效果
-                            for(var i=0;i<elm.children.length;i++){
-                                var node=elm.children[i];
-                                var nodeStyle=node.style.cssText;
-                                if(nodeStyle&&nodeStyle.indexOf('font-weight')>-1){
-                                    result=true;
-                                    break;
-                                }
-                            } 
+                        for (var i = 0; i < elm.children.length; i++) {
+                            var node = elm.children[i];
+                            var nodeStyle = node.style.cssText;
+                            if (nodeStyle && nodeStyle.indexOf('font-weight') > -1) {
+                                result = true;
+                                break;
+                            }
+                        }
                     }
                     return result;
                 },
-                isParentHasFontWeightStyle:function(parent){
-                    var result=false; 
-                    if(parent&&parent.tagName&&parent.tagName.toLowerCase()!='body'){
-                        if(parent&&parent.style.cssText&&parent.style.cssText.indexOf('font-weight')>-1){
-                            result=true;
-                        }else{
-                            var parentNode=parent.parentNode;
-                            result =this.isParentHasFontWeightStyle(parentNode);
+                isParentHasFontWeightStyle: function (parent) {
+                    var result = false;
+                    if (parent && parent.tagName && parent.tagName.toLowerCase() != 'body') {
+                        if (parent && parent.style.cssText && parent.style.cssText.indexOf('font-weight') > -1) {
+                            result = true;
+                        } else {
+                            var parentNode = parent.parentNode;
+                            result = this.isParentHasFontWeightStyle(parentNode);
                         }
                     }
-                    return result;  
+                    return result;
                 },
-                removeChildFontWeight:function(elm){
-                    for(var i=0;i<elm.children.length;i++){
-                        var node=elm.children[i];
-                        var nodeStyle=node.style.cssText;
-                        var newStyle="font-weight: normal;"; 
-                        node.style.cssText=(nodeStyle||'')+newStyle; 
+                removeChildFontWeight: function (elm) {
+                    for (var i = 0; i < elm.children.length; i++) {
+                        var node = elm.children[i];
+                        var nodeStyle = node.style.cssText;
+                        var newStyle = "font-weight: normal;";
+                        node.style.cssText = (nodeStyle || '') + newStyle;
                         this.removeChildFontWeight(node)
                     }
                 },
@@ -5655,14 +5655,14 @@
                         /**
                          * 0603 by qpf
                          * add:给所有子节点都加上改变后样式
-                         */ 
+                         */
                         //添加普通样式
-                        if(attrs&&elm.childElementCount>0){
-                            this.ueStyleUtils.applyChildStyle(elm,attrs)
+                        if (attrs && elm.childElementCount > 0) {
+                            this.ueStyleUtils.applyChildStyle(elm, attrs)
                         }
                         //添加加粗样式
-                        if(!attrs&&tagName&&tagName=='strong'&&elm&&elm.tagName.toLowerCase()=='strong'&&elm.children&&elm.children.length>0){
-                            this.ueStyleUtils.applyChildStyle(elm,{style:"font-weight: bold"});
+                        if (!attrs && tagName && tagName == 'strong' && elm && elm.tagName.toLowerCase() == 'strong' && elm.children && elm.children.length > 0) {
+                            this.ueStyleUtils.applyChildStyle(elm, { style: "font-weight: bold" });
                         }
                         /********************* */
 
@@ -5761,26 +5761,26 @@
                     next = domUtils.getNextDomNode(current, true, function (node) {
                         return node.nodeType == 1;
                     });
-                       
+
                     // if (utils.indexOf(tagNames, current.tagName.toLowerCase()) > -1) { 
                     //     domUtils.remove(current, true);
                     // }
-                      /**
-                      * 0603 by qpf
-                      * add:移除加粗时，要把字节点里的style里的font-weight一起移除掉
-                      */ 
-                      //如果是strong标签,去掉本身加粗样式及子节点的font-weight
-                       if (utils.indexOf(tagNames, current.tagName.toLowerCase()) > -1){ 
-                            if(this.ueStyleUtils.isRemoveFontWeight(tagNames)){
-                                this.ueStyleUtils.removeChildFontWeight(current)
-                            }
-                            domUtils.remove(current, true,this);
-                       } 
-                       //非strong 标签，移除本身及子节点的font-weight
-                       if(this.ueStyleUtils.isRemoveFontWeight(tagNames)&&this.ueStyleUtils.hasFontWeightStyle(current)){
-                          this.ueStyleUtils.removeChildFontWeight(current)
-                       }
-                       /***************************** */
+                    /**
+                    * 0603 by qpf
+                    * add:移除加粗时，要把字节点里的style里的font-weight一起移除掉
+                    */
+                    //如果是strong标签,去掉本身加粗样式及子节点的font-weight
+                    if (utils.indexOf(tagNames, current.tagName.toLowerCase()) > -1) {
+                        if (this.ueStyleUtils.isRemoveFontWeight(tagNames)) {
+                            this.ueStyleUtils.removeChildFontWeight(current)
+                        }
+                        domUtils.remove(current, true, this);
+                    }
+                    //非strong 标签，移除本身及子节点的font-weight
+                    if (this.ueStyleUtils.isRemoveFontWeight(tagNames) && this.ueStyleUtils.hasFontWeightStyle(current)) {
+                        this.ueStyleUtils.removeChildFontWeight(current)
+                    }
+                    /***************************** */
                     current = next;
                 }
                 return this.moveToBookmark(bookmark);
@@ -6876,7 +6876,7 @@
             me.setOpt(Editor.defaultOptions(me));
 
             /* 尝试异步加载后台配置 */
-            me.loadServerConfig();
+            //me.loadServerConfig();
 
             if (!utils.isEmptyObject(UE.I18N)) {
                 //修改默认的语言类型
@@ -8145,16 +8145,19 @@
              * ```
              */
             getActionUrl: function (action) {
+
                 var actionName = this.getOpt(action) || action,
                     imageUrl = this.getOpt('imageUrl'),
-                    serverUrl = this.getOpt('serverUrl');
+                    serverUrl = this.getOpt('serverUrl'),
+                    BaseUrl = this.getOpt('BaseUrl');
 
                 if (!serverUrl && imageUrl) {
                     serverUrl = imageUrl.replace(/^(.*[\/]).+([\.].+)$/, '$1controller$2');
                 }
 
                 if (serverUrl) {
-                    serverUrl = serverUrl + (serverUrl.indexOf('?') == -1 ? '?' : '&') + 'action=' + (actionName || '');
+                    serverUrl = BaseUrl + actionName;
+
                     return utils.formatUrl(serverUrl);
                 } else {
                     return '';
@@ -11619,7 +11622,7 @@
             while (parent = node.parentNode) {
                 if (parent.tagName == 'SPAN' && domUtils.getChildCount(parent, function (child) {
                     return !domUtils.isBookmarkNode(child) && !domUtils.isBr(child)
-                }) === 1) { 
+                }) === 1) {
                     domUtils.remove(node, true);
                     node = parent;
 
@@ -14689,8 +14692,8 @@
             /*
             *0428 by qpf
             *add:添加判断是否是从Excel表格复制的内容，如果是还原Excel的格式
-            * ************************************************************/ 
-            if (typeof(e)!='undefined'&&typeof(CKEDITOR)!='undefined') {
+            * ************************************************************/
+            if (typeof (e) != 'undefined' && typeof (CKEDITOR) != 'undefined') {
                 // if office content set officecontent to new var officeHtml  
                 var mswordHtml = e.clipboardData.getData('text/html');
                 var generatorName = CKEDITOR.plugins.pastetools.getContentGeneratorName(mswordHtml);
@@ -14704,12 +14707,12 @@
 
                 //只转换Excel，Word的效果用原来的
                 if (isOfficeContent && isExcel) {
- 
+
                     var officeHtml = CKEDITOR.plugins.pastetools.filters.common.styles.inliner.inline(mswordHtml).getBody().getHtml();
                     officeHtml = officeHtml.replace(/<!\[/g, '<!--[').replace(/\]>/g, ']-->');
 
                     editor.config = editor.config || CKEDITOR.config;
-                    editor.plugins = editor.plugins || CKEDITOR.plugins; 
+                    editor.plugins = editor.plugins || CKEDITOR.plugins;
 
                     var writer = new CKEDITOR.htmlParser.basicWriter(),
                         filter = new CKEDITOR.htmlParser.filter(),
@@ -14729,8 +14732,8 @@
                     var finalHtml = writer.getHtml();
 
                     //去掉td上的 white-space: nowrap;
-                    if(finalHtml.indexOf('white-space:nowrap;')>-1){
-                       finalHtml = finalHtml.replace(/white-space:nowrap;/gi,'white-space: pre-wrap;')
+                    if (finalHtml.indexOf('white-space:nowrap;') > -1) {
+                        finalHtml = finalHtml.replace(/white-space:nowrap;/gi, 'white-space: pre-wrap;')
                     }
 
                     pastebin.isOfficeContent = true;
@@ -14750,7 +14753,7 @@
                             /*
                             *0428 by qpf
                             *add:是否从excel复制过来的，如果取还原后的html
-                            ***************************************/ 
+                            ***************************************/
                             if (pastebin.isOfficeContent) {
                                 pastebin.innerHTML = pastebin.officeHtml;
                             }
@@ -14908,13 +14911,13 @@
                      * 0428 by qpf
                      * add:粘贴后，如果是从excel过来为后续按百分比调整作标记
                      */
-                    if(div&&div.isOfficeContent&&div.officeHtml){
-                        html.isOfficeContent=div.isOfficeContent
-                        html.officeHtml=div.officeHtml
+                    if (div && div.isOfficeContent && div.officeHtml) {
+                        html.isOfficeContent = div.isOfficeContent
+                        html.officeHtml = div.officeHtml
                     }
                     /****************** */
                 }
-                me.fireEvent("afterpaste", html); 
+                me.fireEvent("afterpaste", html);
             }
         }
 
@@ -14995,7 +14998,7 @@
         });
 
         me.addListener('ready', function () {
-            var editor=this;
+            var editor = this;
             domUtils.on(me.body, 'cut', function () {
                 var range = me.selection.getRange();
                 if (!range.collapsed && me.undoManger) {
@@ -18202,8 +18205,8 @@
                 /**
                 * 0428 by qpf
                 * fix:处理异常
-                */ 
-                if(!this.table.rows||this.table.rows.length<=0) return maxLen;
+                */
+                if (!this.table.rows || this.table.rows.length <= 0) return maxLen;
                 var rows = this.table.rows, maxLen = 1;
                 for (var i = 0, row; row = rows[i]; i++) {
                     var currentMax = 1;
@@ -18219,14 +18222,14 @@
              */
             getMaxCols: function () {
                 var rows = this.table.rows, maxLen = 0, cellRows = {};
-                 /**
-                 * 0428 by qpf
-                 * 处理异常情况
-                 */
-                if(!rows){
+                /**
+                * 0428 by qpf
+                * 处理异常情况
+                */
+                if (!rows) {
                     return
-                } 
-                 /******************* */
+                }
+                /******************* */
                 for (var i = 0, row; row = rows[i]; i++) {
                     var cellsNum = 0;
                     for (var j = 0, cj; cj = row.cells[j++];) {
@@ -18377,7 +18380,7 @@
                 this.selectedTds = [];
                 this.cellsRange = {};
                 this.indexTable = [];
-                if(!this.table.rows) return;
+                if (!this.table.rows) return;
                 var rows = this.table.rows,
                     rowsNum = this.getMaxRows(),
                     dNum = rowsNum - rows.length,
@@ -20490,19 +20493,19 @@
             });
 
             me.addListener('afterpaste', function () {
-                var pasteArguments=arguments
+                var pasteArguments = arguments
                 utils.each(domUtils.getElementsByTagName(me.body, "table"), function (table) {
                     /*
                     *0428 by qpf
                     *add:取消粘贴后的表格调整大小，改用百分比调整
-                    **********************************/  
-                    if(pasteArguments&& pasteArguments.length==2 && pasteArguments[0]=='afterpaste'){
-                        var html=pasteArguments[1]
-                        if(html.isOfficeContent&&html.officeHtml){
-                            if($(html.html)[0].textContent==$(table)[0].textContent){
-                                var firstCell=$(table).find('tbody tr:eq(0) td:eq(0)');
-                                if(firstCell&&firstCell.length>0){
-                                    changeColWidth(firstCell[0],0)
+                    **********************************/
+                    if (pasteArguments && pasteArguments.length == 2 && pasteArguments[0] == 'afterpaste') {
+                        var html = pasteArguments[1]
+                        if (html.isOfficeContent && html.officeHtml) {
+                            if ($(html.html)[0].textContent == $(table)[0].textContent) {
+                                var firstCell = $(table).find('tbody tr:eq(0) td:eq(0)');
+                                if (firstCell && firstCell.length > 0) {
+                                    changeColWidth(firstCell[0], 0)
                                 }
                             }
                         }
@@ -20653,7 +20656,7 @@
 
             domUtils.on(me.document, "mousemove", mouseMoveEvent);
 
-            domUtils.on(me.document, "mouseout", function (evt) { 
+            domUtils.on(me.document, "mouseout", function (evt) {
                 var target = evt.target || evt.srcElement;
                 if (target.tagName == "TABLE") {
                     toggleDraggableState(me, false, "", null);
@@ -20667,7 +20670,7 @@
                     dragLineHideTimer = setTimeout(function () {
                         hideDragLine(editor)
                     }, 30)
-                } 
+                }
                 /*************************************** */
             });
             /**
@@ -21242,7 +21245,7 @@
         }
 
         function mouseDownEvent(type, evt) {
-        
+
             if (isEditorDisabled()) {
                 return;
             }
@@ -21499,7 +21502,7 @@
         }
 
         function mouseUpEvent(type, evt) {
-         
+
             if (isEditorDisabled()) {
                 return;
             }
@@ -21666,103 +21669,103 @@
          * 0428 by qpf
          * add:表格工具类
          */
-        var resizeUtil={
-            getColGroup:function(table){
-                var colGroup=table.getElementsByTagName('colgroup');
-                return colGroup&&colGroup.length>0?colGroup[0]:null
+        var resizeUtil = {
+            getColGroup: function (table) {
+                var colGroup = table.getElementsByTagName('colgroup');
+                return colGroup && colGroup.length > 0 ? colGroup[0] : null
             },
-            getCols:function(table){
+            getCols: function (table) {
 
             },
-            getTbody:function(table){
-                var tbody=table.getElementsByTagName('tbody');
-                return tbody&&tbody.length>0?tbody[0]:null
+            getTbody: function (table) {
+                var tbody = table.getElementsByTagName('tbody');
+                return tbody && tbody.length > 0 ? tbody[0] : null
             },
-            getTfoot:function(table){
-                var tfooter=table.getElementsByTagName('tfoot');
-                return tfooter&&tfooter.length>0?tfooter[0]:null
+            getTfoot: function (table) {
+                var tfooter = table.getElementsByTagName('tfoot');
+                return tfooter && tfooter.length > 0 ? tfooter[0] : null
             },
-            getTrs:function(table){
-                var tbody=this.getTbody(table);
-                if(tbody){
-                    var trs=tbody.getElementsByTagName('tr');
-                    return trs||null;
+            getTrs: function (table) {
+                var tbody = this.getTbody(table);
+                if (tbody) {
+                    var trs = tbody.getElementsByTagName('tr');
+                    return trs || null;
                 }
                 return null;
             },
-            getTdIndex:function(table,cell,maxColCount){
-                var index=-1;
-                if(cell&&maxColCount){ 
-                  var position=cell.getBoundingClientRect();
-                  var trs=$(table).find('tr');
-                  if(trs&&trs.length>0){
-                      var maxColTr;
-                      for(var i=0;i<trs.length;i++){
-                          var tr=trs.eq(i);
-                          var colCount=tr.find('th,td').length;
-                          if(colCount==maxColCount){
-                              maxColTr=tr;
-                              break;
-                          }
-                      }
-                      if(maxColTr){
-                          var cols=maxColTr.find('th,td');
-                          if(cols&&cols.length>0){
-                            for(var i=0;i<cols.length;i++){
-                                var col=cols.eq(i)[0];
-                                var colPosition=col.getBoundingClientRect();
-                                if(colPosition.right==position.right){
-                                    index=i;
-                                    break;
+            getTdIndex: function (table, cell, maxColCount) {
+                var index = -1;
+                if (cell && maxColCount) {
+                    var position = cell.getBoundingClientRect();
+                    var trs = $(table).find('tr');
+                    if (trs && trs.length > 0) {
+                        var maxColTr;
+                        for (var i = 0; i < trs.length; i++) {
+                            var tr = trs.eq(i);
+                            var colCount = tr.find('th,td').length;
+                            if (colCount == maxColCount) {
+                                maxColTr = tr;
+                                break;
+                            }
+                        }
+                        if (maxColTr) {
+                            var cols = maxColTr.find('th,td');
+                            if (cols && cols.length > 0) {
+                                for (var i = 0; i < cols.length; i++) {
+                                    var col = cols.eq(i)[0];
+                                    var colPosition = col.getBoundingClientRect();
+                                    if (colPosition.right == position.right) {
+                                        index = i;
+                                        break;
+                                    }
                                 }
                             }
-                          }
-                      }
-                  }
+                        }
+                    }
                 }
                 return index;
             },
-            getColsWidth:function(table,maxColCount,isFirst){
-                var result=[];
-                var trs=this.getTrs(table);
+            getColsWidth: function (table, maxColCount, isFirst) {
+                var result = [];
+                var trs = this.getTrs(table);
                 var maxTr;
-                if(trs){
-                    for(var i=0;i<trs.length;i++){
-                        var tr=trs[i];
-                        var tds=tr.children;
-                        if(tds&&tds.length==maxColCount){
-                            maxTr=tr;
+                if (trs) {
+                    for (var i = 0; i < trs.length; i++) {
+                        var tr = trs[i];
+                        var tds = tr.children;
+                        if (tds && tds.length == maxColCount) {
+                            maxTr = tr;
                             break;
                         }
-                    } 
+                    }
                     var tds;
-                    if(maxTr){
+                    if (maxTr) {
                         //没有合并单元格式的
-                        tds=maxTr.children;
-                    }else{
+                        tds = maxTr.children;
+                    } else {
                         //有合并单元格式的
                         //需要构造tfooter
-                        var tfoot=me.document.createElement('tfoot');
-                        
-                        for(var i=0;i<maxColCount;i++){
-                            var td=me.document.createElement('td');
+                        var tfoot = me.document.createElement('tfoot');
+
+                        for (var i = 0; i < maxColCount; i++) {
+                            var td = me.document.createElement('td');
                             tfoot.appendChild(td);
                         }
                         table.appendChild(tfoot);
-                        tds=tfoot.children;
+                        tds = tfoot.children;
                     }
 
-                    if(tds&&tds.length>0){
-                        for(var i=0;i<maxColCount;i++){
-                            var td=tds[i];
+                    if (tds && tds.length > 0) {
+                        for (var i = 0; i < maxColCount; i++) {
+                            var td = tds[i];
                             // var q=isFirst?td.getBoundingClientRect().width:td.clientWidth;
-                            var q=td.getBoundingClientRect();
+                            var q = td.getBoundingClientRect();
                             result.push(q)
                         }
-                        if(tfoot){
+                        if (tfoot) {
                             tfoot.remove();
                         }
-                        
+
                     }
                 }
                 return result;
@@ -21777,144 +21780,144 @@
                 *0428 by qpf
                 *modify:只调整当前单元格，不影响其他单元格
                 **********************************************/
-               var table = ut.table,
-               cells = getCellsByMoveBorder(cell, table);
+                var table = ut.table,
+                    cells = getCellsByMoveBorder(cell, table);
 
-               var isSuccess=false;
-               try{
-                   if(table&&table.nodeName.toLowerCase()!='table') return;
+                var isSuccess = false;
+                try {
+                    if (table && table.nodeName.toLowerCase() != 'table') return;
                     changeValue;
 
-                    var bodyWidth=me.body.clientWidth;
+                    var bodyWidth = me.body.clientWidth;
 
                     var tableWidth = table.clientWidth;
-                    var tableFinalWidth=(tableWidth + changeValue);
+                    var tableFinalWidth = (tableWidth + changeValue);
 
-                    var tr=cell.parentNode;
-                    var tdIndex=cell.cellIndex;
+                    var tr = cell.parentNode;
+                    var tdIndex = cell.cellIndex;
 
-                    var maxColCount=ut.getMaxCols();
+                    var maxColCount = ut.getMaxCols();
 
-                    var colIndex=resizeUtil.getTdIndex(table,cell,maxColCount);
+                    var colIndex = resizeUtil.getTdIndex(table, cell, maxColCount);
 
                     var colgroup = table.getElementsByTagName('colgroup');
-                    var tbody= table.getElementsByTagName('tbody');
-                    var trs= tbody[0].getElementsByTagName('tr');
+                    var tbody = table.getElementsByTagName('tbody');
+                    var trs = tbody[0].getElementsByTagName('tr');
 
                     //是否需要重建colGroup
-                    var reBuildColGroup=true;  
+                    var reBuildColGroup = true;
 
                     if (colgroup && colgroup.length > 0) {
-                        var cols=colgroup[0].getElementsByTagName('col');
+                        var cols = colgroup[0].getElementsByTagName('col');
                         //不需要重建是否需要重建colGroup
 
-                        var tdArray=resizeUtil.getColsWidth(table,maxColCount,true);
+                        var tdArray = resizeUtil.getColsWidth(table, maxColCount, true);
 
-                        if(cols&&cols.length==maxColCount){
-                          
-                            for(var i=0;i<cols.length;i++){
-                                var col=cols[i];
-                                if(col){
-                                    var width,left,right,percent,widthPercent;
-                                    if(col.hasAttribute('data-resize-pixel')){
-                                        width=col.getAttribute('data-resize-pixel');
-                                    //     percent=col.getAttribute('data-resize-percent');
-                                    //     left=col.getAttribute('data-offset-left');
-                                    //     right=col.getAttribute('data-offset-right');
+                        if (cols && cols.length == maxColCount) {
 
-                                        if(i==colIndex){
-                                           var width=parseInt(width)+changeValue;
-                                           var percent=(width/tableWidth * 100);
-                                           var widthPercent=percent.toFixed(4);
-                                           col.style.width= (widthPercent +'%');
+                            for (var i = 0; i < cols.length; i++) {
+                                var col = cols[i];
+                                if (col) {
+                                    var width, left, right, percent, widthPercent;
+                                    if (col.hasAttribute('data-resize-pixel')) {
+                                        width = col.getAttribute('data-resize-pixel');
+                                        //     percent=col.getAttribute('data-resize-percent');
+                                        //     left=col.getAttribute('data-offset-left');
+                                        //     right=col.getAttribute('data-offset-right');
+
+                                        if (i == colIndex) {
+                                            var width = parseInt(width) + changeValue;
+                                            var percent = (width / tableWidth * 100);
+                                            var widthPercent = percent.toFixed(4);
+                                            col.style.width = (widthPercent + '%');
                                         }
 
                                     }
                                     // else{
 
                                     // }
-                                } 
+                                }
                             }
 
-                        table.style.width = (tableFinalWidth+ 'px');
-                        // table.style.width= (((tableFinalWidth/bodyWidth)*100).toFixed(4) +'%');  
-                        table.style['table-layout']='fixed'; 
-                        table.removeAttribute('width');
-                        // table.setAttribute('width', (tableFinalWidth + 'px'));
-                        // table.setAttribute('table-layout','fixed'); 
+                            table.style.width = (tableFinalWidth + 'px');
+                            // table.style.width= (((tableFinalWidth/bodyWidth)*100).toFixed(4) +'%');  
+                            table.style['table-layout'] = 'fixed';
+                            table.removeAttribute('width');
+                            // table.setAttribute('width', (tableFinalWidth + 'px'));
+                            // table.setAttribute('table-layout','fixed'); 
 
-                        for(var i=0;i<cols.length;i++){
-                            var col=cols[i];
-                            var td=tdArray[i];
-                            var width=td.width;
-                            var left=td.left;
-                            var right=td.right;
-                            var percent=(width/tableFinalWidth * 100);
-                            var widthPercent=percent.toFixed(4);
-                            
-                            //调整的是当前列
-                            if(i==colIndex){
-                                width=width+changeValue;
-                                right=right+changeValue; 
-                                percent=(width/tableFinalWidth * 100);
-                                widthPercent=percent.toFixed(4);
+                            for (var i = 0; i < cols.length; i++) {
+                                var col = cols[i];
+                                var td = tdArray[i];
+                                var width = td.width;
+                                var left = td.left;
+                                var right = td.right;
+                                var percent = (width / tableFinalWidth * 100);
+                                var widthPercent = percent.toFixed(4);
+
+                                //调整的是当前列
+                                if (i == colIndex) {
+                                    width = width + changeValue;
+                                    right = right + changeValue;
+                                    percent = (width / tableFinalWidth * 100);
+                                    widthPercent = percent.toFixed(4);
+                                }
+
+                                col.style.width = (widthPercent + '%');
+                                col.setAttribute('data-offset-left', left);
+                                col.setAttribute('data-offset-right', right);
+                                col.setAttribute('data-resize-pixel', width);
+                                col.setAttribute('data-resize-percent', percent);
                             }
-        
-                            col.style.width= (widthPercent +'%'); 
-                            col.setAttribute('data-offset-left', left);
-                            col.setAttribute('data-offset-right', right); 
-                            col.setAttribute('data-resize-pixel', width);
-                            col.setAttribute('data-resize-percent', percent);
-                        } 
-                         reBuildColGroup=false; 
-                    } 
-                     
-                    }else{
-                            // colgroup[0].remove()
-                            reBuildColGroup=true;
+                            reBuildColGroup = false;
+                        }
+
+                    } else {
+                        // colgroup[0].remove()
+                        reBuildColGroup = true;
                     }
-                    
-                    if(reBuildColGroup){
+
+                    if (reBuildColGroup) {
                         //重建colGroup
-                        var tdArray=resizeUtil.getColsWidth(table,maxColCount,true);
-                         //重建colGroup
-                         var newColGroup=me.document.createElement('colgroup');
-                         for(var i=0;i<maxColCount;i++){
-                            var newCol=me.document.createElement('col');
-                            var td=tdArray[i];
+                        var tdArray = resizeUtil.getColsWidth(table, maxColCount, true);
+                        //重建colGroup
+                        var newColGroup = me.document.createElement('colgroup');
+                        for (var i = 0; i < maxColCount; i++) {
+                            var newCol = me.document.createElement('col');
+                            var td = tdArray[i];
 
-                            var width=td.width;
-                            var left=td.left;
-                            var right=td.right;
+                            var width = td.width;
+                            var left = td.left;
+                            var right = td.right;
 
-                            if(i==colIndex){
-                                width=width+changeValue;
-                                right=right+changeValue; 
+                            if (i == colIndex) {
+                                width = width + changeValue;
+                                right = right + changeValue;
                             }
 
-                            newCol.style.width= (width +'px'); 
+                            newCol.style.width = (width + 'px');
                             newCol.setAttribute('data-offset-left', left);
-                            newCol.setAttribute('data-offset-right', right); 
-                            newCol.setAttribute('data-resize-pixel', width); 
+                            newCol.setAttribute('data-offset-right', right);
+                            newCol.setAttribute('data-resize-pixel', width);
 
                             newColGroup.appendChild(newCol)
-                         }
+                        }
 
-                         if(tbody&&tbody.length>0){
-                             //移除旧的
-                             if(colgroup&&colgroup.length>0){
+                        if (tbody && tbody.length > 0) {
+                            //移除旧的
+                            if (colgroup && colgroup.length > 0) {
                                 colgroup[0].remove();
-                             }
-                            $('theader th,tbody td',$(table)).css({width:''}).removeAttr('width');
+                            }
+                            $('theader th,tbody td', $(table)).css({ width: '' }).removeAttr('width');
                             //添加新的
-                            table.insertBefore(newColGroup,tbody[0]);
-                        } 
-                               
-                        tdArray=resizeUtil.getColsWidth(table,maxColCount,true);
+                            table.insertBefore(newColGroup, tbody[0]);
+                        }
 
-                        table.style.width = (tableFinalWidth+ 'px');
+                        tdArray = resizeUtil.getColsWidth(table, maxColCount, true);
+
+                        table.style.width = (tableFinalWidth + 'px');
                         // table.style.width= (((tableFinalWidth/bodyWidth)*100).toFixed(4) +'%');
-                        table.style['table-layout']='fixed'; 
+                        table.style['table-layout'] = 'fixed';
                         table.removeAttribute('width');
                         // table.setAttribute('width', (tableFinalWidth + 'px'));
                         // table.setAttribute('table-layout','fixed'); 
@@ -21922,41 +21925,41 @@
 
                         // table.style.width = ((tableFinalWidth/bodyWidth * 100).toFixed(4)+ '%');
                         // table.setAttribute('table-layout','fixed'); 
-                 
+
                         //转换为百分比
-                        var newCols=newColGroup.children;
-                        for(var i=0;i<newCols.length;i++){
-                            var newCol=newCols[i];
-                            var td=tdArray[i];
+                        var newCols = newColGroup.children;
+                        for (var i = 0; i < newCols.length; i++) {
+                            var newCol = newCols[i];
+                            var td = tdArray[i];
 
-                            var width=td.width;
-                            var left=td.left;
-                            var right=td.right;
-                            var percent=(width/tableFinalWidth * 100);
-                            var widthPercent=percent.toFixed(4);
+                            var width = td.width;
+                            var left = td.left;
+                            var right = td.right;
+                            var percent = (width / tableFinalWidth * 100);
+                            var widthPercent = percent.toFixed(4);
 
-                            newCol.style.width= (widthPercent +'%'); 
+                            newCol.style.width = (widthPercent + '%');
                             newCol.setAttribute('data-offset-left', left);
-                            newCol.setAttribute('data-offset-right', right); 
+                            newCol.setAttribute('data-offset-right', right);
                             newCol.setAttribute('data-resize-pixel', width);
                             newCol.setAttribute('data-resize-percent', percent);
-                        } 
-                   
+                        }
+
                     }
-               
-                    isSuccess=true;
-               }
-               catch(ex){
-                throw ex;
-               }
-               finally{
-                //成功后返回,否则执行原来的逻辑
-                 if(isSuccess) return;
-               }
-               /**********************************************/
+
+                    isSuccess = true;
+                }
+                catch (ex) {
+                    throw ex;
+                }
+                finally {
+                    //成功后返回,否则执行原来的逻辑
+                    if (isSuccess) return;
+                }
+                /**********************************************/
 
 
-                
+
                 //根据当前移动的边框获取相关的单元格
                 var table = ut.table,
                     cells = getCellsByMoveBorder(cell, table);
@@ -21967,7 +21970,7 @@
                 //修正改变量
                 // changeValue = correctChangeValue(changeValue, cell, cells);
 
-                
+
                 /**
                 *0428 by qpf
                 *modify:只调整当前单元格，不影响其他单元格
@@ -21989,7 +21992,7 @@
                 cell.style.width = (cellClientWidth + changeValue) + 'px';
                 cell.setAttribute('width', ((cellClientWidth + changeValue) + 'px'));
                 return
- 
+
                 /**********************************************/
 
                 if (cell.nextSibling) {
@@ -22012,7 +22015,7 @@
                 }
             }
 
-             
+
             var ut = getUETable(cell);
             if (ut) {
 
@@ -22046,7 +22049,7 @@
                 // cell.style.width = (cellClientWidth + changeValue) + 'px';
                 // cell.setAttribute('width', (cellClientWidth + changeValue) + 'px');
                 // return
- 
+
                 /**********************************************/
 
                 if (cell.nextSibling) {
@@ -22327,24 +22330,24 @@
                 'onselectstart': 'return false',
                 style: "background-color:blue;position:absolute;padding:0;margin:0;background-image:none;border:0px none;opacity:0;filter:alpha(opacity=0)"
             });
-    
+
             /*
             *0428 by qpf
             *add:清除dragLine上的鼠标事件对自身的影响
             * ****************************************/
-            dragLine.addEventListener('mouseenter', function () { 
-                clearTimeout(dragLineHideTimer) 
-            }) 
-            dragLine.addEventListener('mouseout', function () { 
-                clearTimeout(dragLineHideTimer) 
-                dragLineHideTimer=setTimeout(function(){
+            dragLine.addEventListener('mouseenter', function () {
+                clearTimeout(dragLineHideTimer)
+            })
+            dragLine.addEventListener('mouseout', function () {
+                clearTimeout(dragLineHideTimer)
+                dragLineHideTimer = setTimeout(function () {
                     hideDragLine(editor);
-                },60)
-            }) 
-            dragLine.addEventListener('mousedown', function (e) { 
+                }, 60)
+            })
+            dragLine.addEventListener('mousedown', function (e) {
                 // e.stopPropagation()
                 // e.preventDefault()
-            }) 
+            })
             /************************************** */
 
             editor.body.appendChild(dragLine);
@@ -24498,13 +24501,13 @@
                     me.options.themePath + me.options.theme +
                     '/images/spacer.gif" title="' + (me.getLang('autoupload.loading') || '') + '" >';
                 successHandler = function (data) {
-                    var link = urlPrefix + data.url,
+                    var link = urlPrefix + data.msg,
                         loader = me.document.getElementById(loadingId);
                     if (loader) {
                         loader.setAttribute('src', link);
                         loader.setAttribute('_src', link);
-                        loader.setAttribute('title', data.title || '');
-                        loader.setAttribute('alt', data.original || '');
+                        //loader.setAttribute('title', data.title || '');
+                        //loader.setAttribute('alt', data.original || '');
                         loader.removeAttribute('id');
                         domUtils.removeClasses(loader, 'loadingclass');
                     }
@@ -24516,7 +24519,7 @@
                     '/images/spacer.gif" title="' + (me.getLang('autoupload.loading') || '') + '" >' +
                     '</p>';
                 successHandler = function (data) {
-                    var link = urlPrefix + data.url,
+                    var link = urlPrefix + data.msg,
                         loader = me.document.getElementById(loadingId);
 
                     var rng = me.selection.getRange(),
@@ -24557,13 +24560,15 @@
             fd.append('type', 'ajax');
             xhr.open("post", url, true);
             xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('access_token'));
+            xhr.setRequestHeader("Refresh_token", "Bearer " + sessionStorage.getItem('refresh_token'));
             xhr.addEventListener('load', function (e) {
                 try {
                     var json = (new Function("return " + utils.trim(e.target.response)))();
-                    if (json.state == 'SUCCESS' && json.url) {
+                    if (json.code == 200 && json.msg) {
                         successHandler(json);
                     } else {
-                        errorHandler(json.state);
+                        errorHandler(json.code);
                     }
                 } catch (er) {
                     errorHandler(me.getLang('autoupload.loadError'));
@@ -29686,7 +29691,7 @@
             },
             _initToolbars: function () {
                 var editor = this.editor;
-                var toolbars = this.toolbars || [];
+                var toolbars = this.simpleEdit ? this.simpletoolbars : this.toolbars || [];
                 var toolbarUis = [];
                 for (var i = 0; i < toolbars.length; i++) {
                     var toolbar = toolbars[i];

@@ -14,4 +14,5 @@
     .layui-form-item .layui-input-inline { margin: 0 0 10px 80px; }
     .layui-form-item .layui-inline { clear: none; }
     .layui-laydate-range { width: calc(100% - 12px); }
+    .laydate-set-ym span{padding:0;}
 }

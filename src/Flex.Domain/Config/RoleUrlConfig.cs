@@ -10,7 +10,7 @@ namespace Flex.Domain.Config
         {
             builder.ToTable("tbl_core_roleurl");
 
-            base.ConfigureIntId(builder);
+            base.ConfigureStringId(builder);
         }
     }
 }

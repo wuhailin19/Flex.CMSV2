@@ -16,6 +16,10 @@ namespace Flex.Domain.Entities
         /// 可扩展的栏目模型
         /// </summary>
         public int? ExtensionModelId { get; set; }
+        /// <summary>
+        /// 审核模式
+        /// </summary>
+        public int? ReviewMode { get; set; }
         public int ParentId { set; get; }
         public bool IsShow { set; get; }
         public string? ColumnUrl { set; get; }

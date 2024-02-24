@@ -15,8 +15,7 @@
         <table id="demo" lay-filter="test"></table>
     </div>
     <script type="text/html" id="barDemo">
-        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        
     </script>
     <script type="text/html" id="apistatusPxy">
         {{#if(d.IsApiField==true){}}
@@ -32,10 +31,17 @@
         <input type="checkbox" name="xxx" lay-skin="switch" lay-filter="searchstatusPxy" lay-text="启用|不启用" value="{{d.Id}}">
         {{#}}}
     </script>
+    <script type="text/html" id="tablethstatusPxy">
+        {{#if(d.ShowInTable==true){}}
+        <input type="checkbox" name="xxx" lay-skin="switch" lay-filter="tablethstatusPxy" lay-text="启用|不启用" checked value="{{d.Id}}">
+        {{#}else{}}
+        <input type="checkbox" name="xxx" lay-skin="switch" lay-filter="tablethstatusPxy" lay-text="启用|不启用" value="{{d.Id}}">
+        {{#}}}
+    </script>
     <script type="text/html" id="toolbarDemo">
         <div class="layui-btn-container">
-            <button class="layui-btn layui-btn-sm" lay-event="addRole">添加</button>
-            <button class="layui-btn layui-btn-sm" lay-event="deleteAll">删除选中</button>
+            @* <button class="layui-btn layui-btn-sm" lay-event="addRole">添加</button>
+            <button class="layui-btn layui-btn-sm" lay-event="deleteAll">删除选中</button> *@
         </div>
     </script>
     <script>

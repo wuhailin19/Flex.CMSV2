@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Flex.Core.Extensions;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace Flex.Application.Authorize
@@ -49,17 +50,17 @@ namespace Flex.Application.Authorize
                 return UserPrincipal.Claims.First(x => x.Type == UserClaimType.Account).Value;
             }
         }
-        public string UserRole
+        public int UserRole
         {
             get
             {
-                return UserPrincipal.Claims.First(x => x.Type == UserClaimType.RoleId).Value;
+                return UserPrincipal.Claims.First(x => x.Type == UserClaimType.RoleId).Value.ToInt();
             }
         }
         /// <summary>
         /// 判断是不是系统管理员
         /// </summary>
-        public bool IsSystem { get { return UserRole == "0"; } }
+        public bool IsSystem { get { return UserRole == 0; } }
         public string UserRoleDisplayName
         {
             get

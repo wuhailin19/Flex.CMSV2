@@ -1,22 +1,20 @@
 using Autofac;
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
 using Flex.Application.Aop;
+using Flex.Application.Contracts.Exceptions;
 using Flex.Application.Exceptions;
 using Flex.Application.Extensions.AutoFacExtension;
 using Flex.Application.Extensions.Register.AutoMapper;
 using Flex.Application.Extensions.Register.MemoryCacheExtension;
 using Flex.Application.Extensions.Register.WebCoreExtensions;
 using Flex.Application.Extensions.Swagger;
-using Flex.Application.SetupExtensions;
+using Flex.Core.Helper;
 using Flex.Dapper;
 using Flex.EFSqlServer;
 using Flex.EFSqlServer.Register;
 using Flex.Web.Jwt;
-using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Diagnostics;
 using NLog.Web;
 using System.Reflection;
 
@@ -40,7 +38,7 @@ builder.Services.AddAutomapperService();
 //跨域配置
 builder.Services.AddCorsPolicy(builder.Configuration);
 
-builder.Services.HtmlTemplateDictInit();
+//builder.Services.HtmlTemplateDictInit();
 //注册autofac
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
     ConfigureContainer<ContainerBuilder>(builder =>
@@ -62,10 +60,27 @@ builder.Services.AddJwtService(builder.Configuration);
 builder.Services.AddWebCoreService(builder.Configuration);
 //注册缓存
 builder.Services.AddMemoryCacheSetup();
+builder.Services.AddLogging();
 
 builder.Host.UseNLog();
 
 var app = builder.Build();
+
+
+app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
+{
+    var context = statusCodeContext.HttpContext;
+    if (context.Response.StatusCode == 401 || context.Response.StatusCode == 403)
+    {
+        context.Response.StatusCode = ErrorCodes.NoOperationPermission.ToInt();
+        context.Response.ContentType = "application/json";
+        return context.Response.WriteAsync(JsonHelper.ToJson(new Message<string> { code = ErrorCodes.NoOperationPermission.ToInt(), msg = ErrorCodes.NoOperationPermission.GetEnumDescription() }));
+    }
+
+    return Task.CompletedTask;
+});
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -76,43 +91,12 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{AssemblyName} v1");
         c.RoutePrefix = "swagger";
     });
+    // 初始化接口数据
+    var myService = app.Services.GetRequiredService<IRoleUrlServices>();
+    await myService.CreateUrlList();
 }
 
 app.UseStaticFiles();
-////配置新的文件夹白名单
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "filemanage")),
-//    RequestPath = "/filemanage"
-//});
-
-//FileExtensionContentTypeProvider provider = new FileExtensionContentTypeProvider();
-//// add new mapping.
-//provider.Mappings[".myapp"] = "application/x-msdownload";
-//provider.Mappings[".htm3"] = "text/html";
-//provider.Mappings[".gitignore"] = "text/html";
-//provider.Mappings[".yml"] = "text/html";
-//provider.Mappings[".config"] = "text/html";
-//provider.Mappings[".image"] = "image/png";
-//provider.Mappings[".png"] = "image/png";
-
-//app.UseStaticFiles(new StaticFileOptions()
-//{
-//    FileProvider = new PhysicalFileProvider(@"E:\"),  // 指定静态文件目录
-//    RequestPath = "/server",
-//    ServeUnknownFileTypes = true,
-//    ContentTypeProvider = provider,
-//    DefaultContentType = "application/x-msdownload", // 设置未识别的MIME类型一个默认z值
-//});
-//// replace an existing mepping.
-
-//app.UseDirectoryBrowser();
-//app.UseDirectoryBrowser(new DirectoryBrowserOptions
-//{
-//    FileProvider = new PhysicalFileProvider(@"E:\"),
-//    RequestPath = "/server"
-//});
-
 app.UseRouting();
 app.UseAuthentication();
 

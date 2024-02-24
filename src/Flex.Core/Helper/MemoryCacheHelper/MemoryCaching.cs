@@ -41,5 +41,9 @@ namespace Flex.Core.Helper.MemoryCacheHelper
         {
             _cache.Set(cacheKey, cacheValue, TimeSpan.FromSeconds(timeSpan * 60));
         }
+        public void Set(string cacheKey, object cacheValue, TimeSpan timeSpan)
+        {
+            _cache.Set(cacheKey, cacheValue, timeSpan);
+        }
     }
 }

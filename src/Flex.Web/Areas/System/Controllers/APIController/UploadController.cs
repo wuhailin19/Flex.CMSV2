@@ -1,4 +1,5 @@
 ﻿using Flex.Core.Attributes;
+using Flex.Core.Config;
 using Flex.Domain.Dtos.IndexShortCut;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 {
     [Route("api/[controller]")]
     [ApiController]
-
+    [Descriper(Name = "上传接口")]
     public class UploadController : ApiBaseController
     {
         IUploadServices uploadServices;
@@ -21,6 +22,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
         [HttpGet("Config")]
         [AllowAnonymous]
+        [Descriper(IsFilter = true)]
         public string Config()
         {
             var result = uploadServices.Config();
@@ -29,6 +31,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return result;
         }
         [HttpGet("TestOptions")]
+        [Descriper(IsFilter = true)]
         public string TestOptions()
         {
             List<Options> options = new List<Options>
@@ -43,12 +46,13 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             return Success(options);
         }
         [HttpPost("UploadFile")]
+        [Descriper(Name = "上传文件")]
         public string UploadFile(IFormFileCollection file)
         {
             var result = _fileServices.UploadFilesService(file);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
-            return Success(result.Detail);
+            return Success(ServerConfig.FileServerUrl + result.Detail);
         }
 
         [HttpPost("UploadImage")]
@@ -58,11 +62,21 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             var result = _pictureServices.UploadImgService(file);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
+            return Success(ServerConfig.ImageServerUrl + result.Detail);
+        }
+        [HttpPost("UploadPasteImage")]
+        [Descriper(Name = "上传粘贴板图片")]
+        public string UploadPasteImage(IFormFileCollection upfile)
+        {
+            var result = _pictureServices.UploadImgService(upfile);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
             return Success(result.Detail);
         }
     }
 
-    public class Options { 
+    public class Options
+    {
         public string text { set; get; }
         public string value { set; get; }
         public bool @checked { set; get; }

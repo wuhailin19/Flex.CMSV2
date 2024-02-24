@@ -21,13 +21,18 @@ layui.use('table', function () {
         , toolbar: '#toolbarDemo'
         , limits: [1, 5, 10, 15, 20]
         , limit: 15
-        , page: true //开启分页
+        , page: false //开启分页
         , response: {
             statusCode: 200
         },
         parseData: function (res) {
+            if (res.code != 200) {
+                tips.showFail(res.msg);
+                return false;
+            }
             return {
                 "code": res.code, //数据状态的字段名称，默认：code
+                "count": res.content.TotalCount, //状态信息的字段名称，默认：msg
                 "data": res.content//数据总数的字段名称，默认：count
             };
         }
@@ -70,7 +75,7 @@ layui.use('table', function () {
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
                     ajaxHttp({
                         url: routeLink + nodeIds,
-                        type: 'Delete',
+                        type: 'Post',
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {
@@ -101,7 +106,7 @@ layui.use('table', function () {
                 layer.confirm('确定删除本行么', function (index) {
                     ajaxHttp({
                         url: routeLink +indexid,
-                        type: 'Delete',
+                        type: 'Post',
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {

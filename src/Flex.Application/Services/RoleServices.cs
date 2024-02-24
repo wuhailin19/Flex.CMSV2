@@ -1,14 +1,23 @@
 ﻿using Consul;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Domain.Cache;
 using Flex.Domain.Dtos.Role;
+using Flex.Domain.Dtos.RoleUrl;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Tls;
+using ShardingCore.Extensions;
+using System.Data;
+using System.Text.RegularExpressions;
 
 namespace Flex.Application.Services
 {
     public class RoleServices : BaseService, IRoleServices
     {
-        public RoleServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims)
+        ICaching _caching;
+        public RoleServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, ICaching caching)
             : base(unitOfWork, mapper, idWorker, claims)
         {
+            _caching = caching;
         }
 
         /// <summary>
@@ -39,12 +48,57 @@ namespace Flex.Application.Services
         /// </summary>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<SysRole>> GetRoleByRoleIdAsync(string roleId)
+        public async Task<IEnumerable<SysRole>> GetRoleByRoleIdAsync(int roleId)
         {
-            var rolelist = roleId.ToList();
             return await _unitOfWork
                 .GetRepository<SysRole>()
-                .GetAllAsync(m => rolelist.Contains(m.Id.ToString()), null, null, true, false);
+                .GetAllAsync(m => m.Id == roleId);
+        }
+
+        #region 获取单角色
+        /// <summary>
+        /// 获取当前角色实体
+        /// </summary>
+        /// <returns></returns>
+        public async Task<SysRole> GetCurrentRoldDtoAsync()
+        {
+            var currentrole = await _unitOfWork.GetRepository<SysRole>()
+                        .GetFirstOrDefaultAsync(m => _claims.UserRole == m.Id, null, null, true, false);
+            if (currentrole is null)
+                return default(SysRole);
+            return currentrole;
+        }
+        /// <summary>
+        /// 获取角色实体ById
+        /// </summary>
+        /// <returns></returns>
+        public async Task<SysRole> GetRoleByIdAsync(int Id)
+        {
+            var currentrole = await _unitOfWork.GetRepository<SysRole>()
+                        .GetFirstOrDefaultAsync(m => m.Id == Id);
+            if (currentrole is null)
+                return default(SysRole);
+            return currentrole;
+        }
+        #endregion
+
+        /// <summary>
+        /// 传入roleId获取栏目权限列表
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
+        public async Task<DataPermissionDto> GetDataPermissionListById(int Id)
+        {
+            var role = await _unitOfWork
+                .GetRepository<SysRole>()
+                .GetAllAsync(m => m.Id == Id);
+            if (role.Count == 0)
+                return default;
+            var model = role.FirstOrDefault();
+            if (model.DataPermission.IsEmpty())
+                return default;
+            DataPermissionDto permissionDtos = JsonConvert.DeserializeObject<DataPermissionDto>(model.DataPermission);
+            return permissionDtos;
         }
 
         /// <summary>
@@ -60,38 +114,109 @@ namespace Flex.Application.Services
             return _mapper.Map<IEnumerable<RoleSelectDto>>(rolelist);
         }
 
+        /// <summary>
+        /// 获取角色列表
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<RoleStepDto>> GetStepRoleListAsync()
+        {
+            var rolelist = await _unitOfWork
+                .GetRepository<SysRole>()
+                .GetAllAsync();
+            var dtolist = _mapper.Map<IEnumerable<RoleStepDto>>(rolelist).ToList();
+            dtolist.Add(new RoleStepDto
+            {
+                Id = "00000",
+                RolesName = "快速选择"
+            });
+            return dtolist.OrderBy(m => m.Id);
+        }
+
         public async Task<ProblemDetails<string>> AddNewRole(InputRoleDto role)
         {
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.RolesName == role.RolesName);
             if (model != null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "该角色已存在");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataExist.GetEnumDescription());
             var result = await _unitOfWork.GetRepository<SysRole>().InsertAsync(_mapper.Map<SysRole>(role));
             await _unitOfWork.SaveChangesAsync();
             if (result.Entity.Id > 0)
-                return new ProblemDetails<string>(HttpStatusCode.OK, "添加成功");
-            return new ProblemDetails<string>(HttpStatusCode.BadRequest, "添加失败");
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
+            return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+        }
+        public async Task<ProblemDetails<string>> UpdateRole(InputUpdateRoleDto role)
+        {
+            var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.RolesName == role.RolesName);
+            if (model != null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataExist.GetEnumDescription());
+            try
+            {
+                model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
+                _mapper.Map(role, model);
+                _unitOfWork.GetRepository<SysRole>().Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+            }
         }
 
         public async Task<ProblemDetails<string>> UpdateMenuPermission(InputRoleMenuDto role)
         {
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
             if (model == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "该角色不存在");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             try
             {
                 model.MenuPermissions = role.MenuPermissions;
-                model.LastEditUser = _claims.UserId;
-                model.LastEditUserName= _claims.UserName;
-                model.LastEditDate = Clock.Now;
-                model.Version += 1;
-                
+                UpdateIntEntityBasicInfo(model);
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改失败");
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+            }
+        }
+        public async Task<ProblemDetails<string>> UpdateDataPermission(InputRoleDatapermissionDto role)
+        {
+            var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
+            if (model == null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            try
+            {
+                model.DataPermission = role.chooseId;
+                UpdateIntEntityBasicInfo(model);
+                _unitOfWork.GetRepository<SysRole>().Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                _caching.Remove(RoleKeys.userDataPermissionKey + role.Id);
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+            }
+        }
+        public async Task<ProblemDetails<string>> UpdateApiPermission(InputRoleUrlDto role)
+        {
+            var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
+            if (model == null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            try
+            {
+                model.UrlPermission = role.sysapis;
+                UpdateIntEntityBasicInfo(model);
+                _unitOfWork.GetRepository<SysRole>().Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                _caching.Remove(RoleKeys.userRoleKey + role.Id);
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             }
         }
         public async Task<ProblemDetails<string>> Delete(string Id)
@@ -110,6 +235,8 @@ namespace Flex.Application.Services
                 {
                     item.StatusCode = StatusCode.Deleted;
                     UpdateIntEntityBasicInfo(item);
+                    _caching.Remove(RoleKeys.userDataPermissionKey + item.Id);
+                    _caching.Remove(RoleKeys.userRoleKey + item.Id);
                     softdels.Add(item);
                 }
                 adminRepository.Update(softdels);
@@ -123,14 +250,10 @@ namespace Flex.Application.Services
         }
         public async Task<Dictionary<string, List<string>>> PermissionDtosAsync()
         {
-
             var result = new Dictionary<string, List<string>>();
             var RoleList = await _unitOfWork.GetRepository<SysRole>().GetAllAsync();
-
             var UrlList = await _unitOfWork.GetRepository<SysRoleUrl>().GetAllAsync();
-
             //var permisslists = new List<PermissionDto>();
-
             RoleList.Foreach(item =>
             {
                 if (!item.UrlPermission.IsNullOrEmpty())
@@ -150,7 +273,39 @@ namespace Flex.Application.Services
                     //permisslists.Add(model);
                 }
             });
+            return result;
+        }
+        private const string pattern = "{[a-zA-Z]+}/?";
 
+        public async Task<Dictionary<int, List<string>>> CurrentPermissionDtosAsync()
+        {
+            var result = new Dictionary<int, List<string>>();
+            var currentRole = await GetCurrentRoldDtoAsync();
+            var urlList = await _unitOfWork.GetRepository<SysRoleUrl>().GetAllAsync();
+
+            if (currentRole?.UrlPermission.IsNullOrEmpty() ?? true)
+                return result;
+
+            var apiPermissionModel = JsonConvert.DeserializeObject<ApiPermissionDto>(currentRole.UrlPermission);
+            var dataAndPageApiList = urlList
+                .Where(u =>
+                            apiPermissionModel.dataapi.Split('-').Contains(u.Id.ToString()) ||
+                            apiPermissionModel.pageapi.Split('-').Contains(u.Id.ToString()))
+                .OrderBy(m => m.Url)
+                .ToList();
+
+            var parentlist = dataAndPageApiList.Where(m => m.ParentId == "-1").ToList();
+            List<string> strings = new List<string>();
+            foreach (var item in parentlist)
+            {
+                dataAndPageApiList.RemoveAll(m => m.ParentId == item.Id);
+            }
+
+            var urls = dataAndPageApiList
+                .Select(api => Regex.Replace(api.Url, pattern, ""))
+                .ToList();
+
+            result.Add(currentRole.Id, urls);
             return result;
         }
     }

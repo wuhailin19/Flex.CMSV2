@@ -18,6 +18,8 @@ function Init(mode_arr) {
             async: false,
             success: function (res) {
                 let box_str = '';
+                if (!res.content)
+                    return;
                 for (var i = 0; i < res.content.length; i++) {
                     box_str += '<div class="boxchart layui-anim hvr-grow-shadow">'
                         + '<div class="iconbox">'
@@ -50,12 +52,13 @@ function InitCoumnShortcut(mode_arr) {
             success: function (res) {
                 let box_str = '';
                 for (var i = 0; i < res.content.length; i++) {
+                    console.log(res.content[i].Id)
                     box_str += '<div class="boxchart layui-anim hvr-grow-shadow types">'
                         + '<div class="iconbox">'
                         + '<i class="iconfont leftconfig iconwendang"></i>'
                         + '</div>'
-                        + '<span class="icon_title">' + res.content[i].Name + '</span>'
-                        + '<a class="addnewIframe LinkA iconfont" data-href="' + res.content[i].LinkUrl + '" data-id="' + res.content[i].ColumnId + '" data-cite="' + res.content[i].Name + '" data-linkstatus="ture" ></a>'
+                        + '<span class="icon_title">' + res.content[i].title + '</span>'
+                        + '<a class="addnewIframe LinkA iconfont" data-href="' + res.content[i].href + '" data-id="' + res.content[i].id + '" data-cite="' + res.content[i].title + '" data-linkstatus="ture" ></a>'
                         + '</div>';
                 }
                 parent.html(box_str);
@@ -156,8 +159,8 @@ var add_more = {
                         + '<div class="iconbox">'
                         + '<i class="iconfont leftconfig iconwendang"></i>'
                         + '</div>'
-                        + '<span class="icon_title">' + res.content[i].Name + '</span>'
-                        + '<a class="addnewIframe LinkA iconfont" data-href="' + res.content[i].LinkUrl + '" data-id="' + res.content[i].ColumnId + '" data-cite="' + res.content[i].Name + '" data-linkstatus="true" ></a>'
+                        + '<span class="icon_title">' + res.content[i].title + '</span>'
+                        + '<a class="addnewIframe LinkA iconfont" data-href="' + res.content[i].href + '" data-id="' + res.content[i].id + '" data-cite="' + res.content[i].title + '" data-linkstatus="true" ></a>'
                         + '</div>';
                 }
                 $('.Popup .layui-card-box').html(box_str);
@@ -212,7 +215,7 @@ function chooseShortCut(that) {
         url: api + 'SystemIndex/Update',
         dataType: 'json',
         async: false,
-        data: { mode: mode, Menu: idstr },
+        data: JSON.stringify({ mode: mode, Menu: idstr }),
         type: 'post',
         success: function (json) {
             if (json.code == 200) {
@@ -275,7 +278,7 @@ $('.operation').on('click', 'span', function () {
             url: api + 'SystemIndex/Delete',
             dataType: 'json',
             async: false,
-            data: { mode: mode, Menu: idstr },
+            data: JSON.stringify({ mode: mode, Menu: idstr }),
             type: 'post',
             success: function (json) {
                 if (json.code == 200) {

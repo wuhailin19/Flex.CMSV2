@@ -300,7 +300,6 @@ layui.define(['layer'], function (exports) {
                 tagIcon: 'dateRange',
                 labelWidth: 110,
                 //width:"100%",
-                dateRangeDefaultValue: "2021-06-19 - 2021-07-17",
                 clearable: true,
                 maxlength: null,
                 dateType: "date",//year month date time datetime

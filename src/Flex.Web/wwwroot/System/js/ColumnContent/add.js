@@ -1,6 +1,29 @@
 ﻿var demojs = [];
 var parent_json = parent.req_Data;
 
+ajaxHttp({
+    url: api + 'ColumnContent/GetContentById/' + parent.currentparentId+"/0",
+    type: 'Get',
+    async: false,
+    dataType: 'json',
+    success: function (result) {
+        if (!result.content.NeedReview) {
+            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">立即提交</button>');
+            return false;
+        }
+        if (result.content.stepActionButtonDto.length > 0) {
+            var buttons = result.content.stepActionButtonDto;
+            for (var i = 0; i < buttons.length; i++) {
+                let layui_class = buttons[i].stepToCate == "end-error" ? "layui-btn-warm" : buttons[i].stepToCate == "end-cancel" ? "layui-btn-danger" : "";
+                $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm reviewbutton ' + layui_class + '" data-event="' + buttons[i].stepToCate + '" onclick="return false;" data-fromid="' + buttons[i].stepFromId + '" data-toid="' + buttons[i].stepToId + '">' + buttons[i].actionName + '</button>');
+            }
+        } else {
+            $('#bottomBtnbox').append('<span class="layui-btn layui-btn-warm layui-btn-sm">信息审核中</span>');
+        }
+    },
+    complete: function () { }
+})
+var parentformData;
 //JavaScript代码区域
 layui.config(
     { base: '/scripts/layui/module/formDesigner/' })
@@ -17,6 +40,27 @@ layui.config(
         var element = layui.element;
         var croppers = layui.croppers;
         var render;
+
+        $(document).on('click', '.reviewbutton', function () {
+            //console.log($(this).attr('data-id'))
+            var that = $(this);
+            var data = form.val('formTest');
+            collectData(data)
+            parentformData = data;
+            //iframe窗
+            layer.open({
+                type: 2,
+                title: that.text(),
+                shadeClose: true,
+                shade: false,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['80%', '80%'],
+                content: SystempageRoute + 'Message/SendMsg?stepToId=' + that.attr('data-toid') + '&stepFromId=' + that.attr('data-fromid') + '&parentId=' + parent.currentparentId + '&contentId=0',
+                end: function () {
+
+                }
+            });
+        })
 
         ajaxHttp({
             url: api + 'ColumnContent/GetFormHtml/' + parent.currentparentId,
@@ -52,6 +96,7 @@ layui.config(
                 })(i);
             }
         }
+        var dateRanges = demojs.filter(item => item.tag == "dateRange");
 
         render = formDesigner.render({
             elem: '#view',
@@ -95,28 +140,35 @@ layui.config(
 
             ___initUpload("#uploader-show_" + id, options);
         }
-        //监听提交
-        form.on('submit(formDemo)', function (data) {
+        function collectData(data) {
             $('input[data-group=datastatus]').each(function () {
                 if ($(this)[0].checked)
-                    data.field[$(this).attr('name')] = true;
+                    data[$(this).attr('name')] = true;
                 else
-                    data.field[$(this).attr('name')] = false;
+                    data[$(this).attr('name')] = false;
             });
-
-            if (checkboxs.length > 0) { 
+            if (checkboxs.length > 0) {
                 for (var i = 0; i < checkboxs.length; i++) {
-                    data.field[checkboxs[i].id] = getCheckboxValue(checkboxs[i].id);
+                    data[checkboxs[i].id] = getCheckboxValue(checkboxs[i].id);
                 }
             }
-            delete data.field["editorValue_forUeditor"];
-            for (let key in iceEditorObjects) {
-                data.field[key] = iceEditorObjects[key].getContent();
+            if (dateRanges.length > 0) {
+                for (var i = 0; i < dateRanges.length; i++) {
+                    data[dateRanges[i].id] = data["start" + dateRanges[i].id] + " - " + data["end" + dateRanges[i].id];
+                }
             }
-            data.field.ParentId = parent.currentparentId;
+            delete data["editorValue_forUeditor"];
+            for (let key in iceEditorObjects) {
+                data[key] = iceEditorObjects[key].getContent();
+            }
+            data.ParentId = parent.currentparentId;
+        }
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            collectData(data.field);
             ajaxHttp({
-                url: api + 'ColumnContent',
-                type: 'Put',
+                url: api + 'ColumnContent/CreateColumnContent',
+                type: 'Post',
                 data: JSON.stringify(data.field),
                 async: false,
                 success: function (json) {

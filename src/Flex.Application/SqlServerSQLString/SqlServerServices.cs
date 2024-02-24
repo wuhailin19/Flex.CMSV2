@@ -1,4 +1,5 @@
-﻿using Flex.Domain.Dtos.Field;
+﻿using Dapper;
+using Flex.Domain.Dtos.Field;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Org.BouncyCastle.Crypto;
@@ -32,6 +33,8 @@ namespace Flex.Application.SqlServerSQLString
                                       "[IsSilde] [bit] NOT NULL default 0," +
                                       "[OrderId] [int] NOT NULL," +
                                       "[StatusCode] [int] NOT NULL default 1," +
+                                      "[ReviewStepId] [nvarchar](255) NULL," +
+                                      "[ContentGroupId] [bigint] NULL," +
                                       "[AddUser] [bigint] NULL," +
                                       "[AddUserName] [nvarchar](100) NULL," +
                                       "[LastEditUser] [bigint] NULL," +
@@ -39,10 +42,13 @@ namespace Flex.Application.SqlServerSQLString
                                       "[LastEditDate] [datetime] NOT NULL default getdate()," +
                                       "[Version] [int] NOT NULL default 0 " +
                                       " )";
-        public string InsertTableField(string TableName, sysField model) => "ALTER TABLE [" + TableName + "]  ADD [" + model.FieldName + "]  " + ConvertDataType(model.FieldType)+";";
-        public string InsertTableField(string TableName, string filedName,string filedtype) => "ALTER TABLE [" + TableName + "]  ADD [" + filedName + "]  " + ConvertDataType(filedtype) +";";
-        public string AlertTableField(string TableName,string oldfiledName, string filedName, string filedtype) => "EXEC sp_rename '" + TableName + "." + oldfiledName + "', '"+filedName+"', 'COLUMN';ALTER TABLE "+TableName+" ALTER COLUMN "+filedName+" "+ ConvertDataType(filedtype) + ";";
-        public string ReNameTableField(string TableName,string oldfiledName, string filedName) => "EXEC sp_rename '" + TableName + "." + oldfiledName + "', '"+filedName+"', 'COLUMN';";
+        public string InsertTableField(string TableName, sysField model) => "ALTER TABLE [" + TableName + "]  ADD [" + model.FieldName + "]  " + ConvertDataType(model.FieldType) + ";";
+        public string InsertTableField(string TableName, string filedName, string filedtype) => "ALTER TABLE [" + TableName + "]  ADD [" + filedName + "]  " + ConvertDataType(filedtype) + ";";
+        public string AlertTableField(string TableName, string oldfiledName, string filedName, string filedtype) => "EXEC sp_rename '" + TableName + "." + oldfiledName + "', '" + filedName + "', 'COLUMN';ALTER TABLE " + TableName + " ALTER COLUMN " + filedName + " " + ConvertDataType(filedtype) + ";";
+        public string ReNameTableField(string TableName, string oldfiledName, string filedName) => "EXEC sp_rename '" + TableName + "." + oldfiledName + "', '" + filedName + "', 'COLUMN';";
+        public string ReNameTableName(string TableName, string NewTableName) => "EXEC sp_rename '" + TableName + "', '" + NewTableName + "';";
+        public string UpdateContentStatus(string TableName, int ContentId, StatusCode statusCode) => $"update {TableName} set StatusCode={statusCode.ToInt()} where Id={ContentId}";
+        public string UpdateContentReviewStatus(string TableName, int ContentId, StatusCode statusCode, string ReviewStepId) => $"update {TableName} set StatusCode={statusCode.ToInt()},ReviewStepId='{ReviewStepId}' where Id={ContentId}";
         public string DeleteTableField(string TableName, List<sysField> Fields)
         {
             string sql = string.Empty;
@@ -52,8 +58,44 @@ namespace Flex.Application.SqlServerSQLString
             }
             return sql;
         }
-        public string DeleteContentTableData(string TableName,string Ids) => "update " + TableName + " set StatusCode=0 where Id in(" + Ids + ")";
-        public StringBuilder CreateInsertSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters) {
+        public string DeleteContentTableData(string TableName, string Ids) => "update " + TableName + " set StatusCode=0 where Id in(" + Ids + ")";
+        public StringBuilder CreateInsertCopyContentSqlString(List<string> table, string TableName, int contentId)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("insert into " + TableName + " (");
+            string key = "";
+            string keyvar = "";
+            table.Remove("StatusCode");
+            table.Remove("OrderId");
+            foreach (var item in table)
+            {
+                if (item.ToString().ToLower() == "id")
+                    continue;
+                key += "[" + item + "],";
+                keyvar += "" + item + ",";
+            }
+            builder.Append(key.Substring(0, key.Length - 1) + ",StatusCode,OrderId) select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId from " + TableName + " where Id=" + contentId);
+            return builder;
+        }
+        public StringBuilder CreateDapperInsertSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("insert into " + TableName + " (");
+            string key = "";
+            string keyvar = "";
+            commandParameters = new DynamicParameters();
+            foreach (DictionaryEntry myDE in table)
+            {
+                key += "[" + myDE.Key.ToString() + "],";
+                keyvar += "@" + myDE.Key.ToString() + ",";
+                commandParameters.Add(myDE.Key.ToString(), myDE.Value);
+            }
+            builder.Append(key.Substring(0, key.Length - 1) + " ) values(" + keyvar.Substring(0, keyvar.Length - 1) + " )");
+            builder.Append(";SELECT SCOPE_IDENTITY();");
+            return builder;
+        }
+        public StringBuilder CreateInsertSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters)
+        {
             StringBuilder builder = new StringBuilder();
             builder.Append("insert into " + TableName + " (");
             string key = "";
@@ -72,9 +114,10 @@ namespace Flex.Application.SqlServerSQLString
                 commandParameters[num] = new SqlParameter("@" + myDE.Key.ToString(), myDE.Value);
                 num++;
             }
+            builder.Append(";SELECT SCOPE_IDENTITY();");
             return builder;
         }
-        public StringBuilder CreateUpdateSqlString(Hashtable table, string TableName,out SqlParameter[] commandParameters)
+        public StringBuilder CreateUpdateSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters)
         {
             StringBuilder builder = new StringBuilder();
             int Id = table["Id"].ToInt();
@@ -94,6 +137,7 @@ namespace Flex.Application.SqlServerSQLString
                 commandParameters[num] = new SqlParameter("@" + myDE.Key.ToString(), myDE.Value);
                 num++;
             }
+            table.Add("Id", Id);
             builder.Append(" where Id=" + Id);
             return builder;
         }

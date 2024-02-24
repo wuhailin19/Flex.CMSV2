@@ -1,5 +1,6 @@
 ﻿using Flex.Application.Authorize;
 using Flex.Application.Contracts.Authorize;
+using Flex.Application.Contracts.Exceptions;
 using Flex.Application.Jwt;
 using Flex.Core.Helper;
 using Flex.Web.Handlers;
@@ -47,10 +48,10 @@ namespace Flex.Web.Jwt
                         OnChallenge = context =>
                         {
                             context.HandleResponse();
-                            context.Response.StatusCode = StatusCodes.Status200OK;
+                            context.Response.StatusCode = ErrorCodes.NoOperationPermission.ToInt();
                             context.Response.ContentType = "application/json";
                             //无授权返回自定义信息
-                            context.Response.WriteAsync(JsonHelper.ToJson(new Message<string> { code = 401, msg = "无权限" }));
+                            context.Response.WriteAsync(JsonHelper.ToJson(new Message<string> { code = ErrorCodes.NoOperationPermission.ToInt(), msg = ErrorCodes.NoOperationPermission.GetEnumDescription() }));
                             return Task.CompletedTask;
                         }
                     };

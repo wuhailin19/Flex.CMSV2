@@ -7,6 +7,7 @@ layui.config({
 }).define(['jquery', 'layer', 'cropper'], function (exports) {
     var $ = layui.jquery
         , layer = layui.layer;
+    var fileName='head.jpg';
     var html = "<link rel=\"stylesheet\" href=\"/Scripts/layui/module/cropper/cropper.css\">\n" +
         "<div class=\"layui-fluid showImgEdit\" style=\"display: none\">\n" +
         "    <div class=\"layui-form-item\" style=\"padding-top:10px;\">\n" +
@@ -119,7 +120,7 @@ layui.config({
                         height: saveH
                     }).toBlob(function (blob) {
                         var formData = new FormData();
-                        formData.append('file', blob, 'head.jpg');
+                        formData.append('file', blob, fileName);
                         formData.append('adminId', self.adminid);
                         ajaxHttp({
                             type: "post",
@@ -162,6 +163,7 @@ layui.config({
                 file.change(function () {
                     var r = new FileReader();
                     var f = this.files[0];
+                    // 获取文件名
                     r.readAsDataURL(f);
                     r.onload = function (e) {
                         image.cropper('destroy').attr('src', this.result).cropper(options);

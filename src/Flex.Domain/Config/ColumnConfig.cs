@@ -14,6 +14,7 @@ namespace Flex.Domain.Config
             builder.Property(m => m.SiteId).HasDefaultValue(1);
             builder.Property(m => m.ParentId).HasDefaultValue(0);
             builder.Property(m => m.ModelId).HasDefaultValue(0);
+            builder.Property(m => m.ReviewMode).HasDefaultValue(0);
             builder.Property(m => m.ExtensionModelId).HasDefaultValue(0);
             builder.Property(m => m.SeoTitle).HasMaxLength(250);
             builder.Property(m => m.SeoKeyWord).HasMaxLength(500);

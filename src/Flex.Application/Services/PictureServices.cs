@@ -43,8 +43,8 @@ namespace Flex.Application.Services
             bool IsSuccess = false;
             try
             {
-                using FileStream fileStream = new FileStream(savepath, FileMode.Create);
-                file.CopyTo(fileStream);
+                using (FileStream fileStream = new FileStream(savepath, FileMode.Create))
+                { file.CopyTo(fileStream); }
                 //ImgFile imgFile = new ImgFile();
                 //imgFile.DeafultImgPath = savepath;
                 //await _repository.InsertAsync(imgFile);

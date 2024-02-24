@@ -1,18 +1,34 @@
 ﻿var parent_json = parent.req_Data;
 //Demo
 var model = {};
+
 ajaxHttp({
     url: api + 'ColumnContent/GetContentById/' + parent_json.ParentId + "/" + parent_json.Id,
     type: 'Get',
     async: false,
     dataType: 'json',
     success: function (result) {
-        model = result.content;
+        model = result.content.Content;
+        if (!result.content.NeedReview) {
+            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">立即提交</button>');
+            return false;
+        }
+        if (result.content.stepActionButtonDto.length > 0) {
+            var buttons = result.content.stepActionButtonDto;
+            for (var i = 0; i < buttons.length; i++) {
+                let layui_class = buttons[i].stepToCate == "end-error" ? "layui-btn-warm" : buttons[i].stepToCate == "end-cancel" ? "layui-btn-danger" : "";
+                $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm reviewbutton ' + layui_class + '" data-event="' + buttons[i].stepToCate + '" onclick="return false;" data-fromid="' + buttons[i].stepFromId + '" data-toid="' + buttons[i].stepToId + '">' + buttons[i].actionName + '</button>');
+            }
+        } else {
+            $('#bottomBtnbox').append('<span class="layui-btn layui-btn-warm layui-btn-sm">内容审批中</span>');
+            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-danger layui-btn-sm cancelreview">取消审批</button>');
+        }
     },
     complete: function () { }
 })
 
 var demojs = [];
+var parentformData;
 //JavaScript代码区域
 layui.config(
     { base: '/scripts/layui/module/formDesigner/' })
@@ -30,6 +46,48 @@ layui.config(
         var croppers = layui.croppers;
         var render;
 
+        $(document).on('click', '.reviewbutton', function () {
+            //console.log($(this).attr('data-id'))
+            var that = $(this);
+            var data = form.val('formTest');
+            collectData(data)
+            parentformData = data;
+            //iframe窗
+            layer.open({
+                type: 2,
+                title: that.text(),
+                shadeClose: true,
+                shade: false,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['80%', '80%'],
+                content: SystempageRoute + 'Message/SendMsg?stepToId=' + that.attr('data-toid') + '&stepFromId=' + that.attr('data-fromid') + '&parentId=' + parent_json.ParentId + '&contentId=' + parent_json.Id,
+                end: function () {
+                    window.location.reload();
+                }
+            });
+        })
+
+        $(document).on('click', '.cancelreview', function () {
+            var that = $(this);
+            var data = {
+                ParentId: parent_json.ParentId,
+                Id: parent_json.Id,
+                StatusCode: 5,
+                ReviewStepId: ''
+            };
+            ajaxHttp({
+                url: api + 'ColumnContent/CancelReview',
+                type: 'Post',
+                async: false,
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function (result) {
+                    if (result.code == 200)
+                        tips.showSuccess(res.msg);
+                },
+                complete: function () { }
+            })
+        })
 
         ajaxHttp({
             url: api + 'ColumnContent/GetFormHtml/' + parent_json.ParentId,
@@ -71,6 +129,20 @@ layui.config(
                 })(i);
             }
         }
+        var colorpickers = demojs.filter(item => item.tag == "colorpicker");
+        if (colorpickers.length > 0) {
+            for (var i = 0; i < colorpickers.length; i++) {
+                if (model.hasOwnProperty(colorpickers[i].id))
+                    colorpickers[i]["defaultValue"] = model[colorpickers[i].id];
+            }
+        }
+        var dateRanges = demojs.filter(item => item.tag == "dateRange");
+        if (dateRanges.length > 0) {
+            for (var i = 0; i < dateRanges.length; i++) {
+                if (model.hasOwnProperty(dateRanges[i].id))
+                    dateRanges[i]["dateRangeDefaultValue"] = model[dateRanges[i].id];
+            }
+        }
 
         render = formDesigner.render({
             elem: '#view',
@@ -81,7 +153,7 @@ layui.config(
             viewOrDesign: true,
             //formData: model
         });
-        console.log(checkboxs)
+
         for (var i = 0; i < checkboxs.length; i++) {
             setCheckboxValue(checkboxs[i].id, model[checkboxs[i].id]);
         }
@@ -108,6 +180,7 @@ layui.config(
         }
         var iceEditorObjects = render.geticeEditorObjects();
         var promises = [];
+
         for (let key in iceEditorObjects) {
             let editor = iceEditorObjects[key];
             // 使用 Promise 包装 editor.ready
@@ -145,26 +218,35 @@ layui.config(
             form.val("formTest", model);
         }
         formRender();
-        //监听提交
-        form.on('submit(formDemo)', function (data) {
+        function collectData(data) {
             $('input[data-group=datastatus]').each(function () {
                 if ($(this)[0].checked)
-                    data.field[$(this).attr('name')] = true;
+                    data[$(this).attr('name')] = true;
                 else
-                    data.field[$(this).attr('name')] = false;
+                    data[$(this).attr('name')] = false;
             });
-
             if (checkboxs.length > 0) {
                 for (var i = 0; i < checkboxs.length; i++) {
-                    data.field[checkboxs[i].id] = getCheckboxValue(checkboxs[i].id);
+                    data[checkboxs[i].id] = getCheckboxValue(checkboxs[i].id);
                 }
             }
-            delete data.field["editorValue_forUeditor"];
-            for (let key in iceEditorObjects) {
-                data.field[key] = iceEditorObjects[key].getContent();
+            if (dateRanges.length > 0) {
+                for (var i = 0; i < dateRanges.length; i++) {
+                    data[dateRanges[i].id] = data["start" + dateRanges[i].id] + " - " + data["end" + dateRanges[i].id];
+                }
             }
-            data.field.ParentId = parent_json.ParentId;
-            data.field.Id = parent_json.Id;
+            delete data["editorValue_forUeditor"];
+            for (let key in iceEditorObjects) {
+                data[key] = iceEditorObjects[key].getContent();
+            }
+            data.ParentId = parent_json.ParentId;
+            data.Id = parent_json.Id;
+            data.ContentGroupId = parent_json.ContentGroupId;
+        }
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            collectData(data.field);
+            data.field.StatusCode = 1;
             ajaxHttp({
                 url: api + 'ColumnContent',
                 type: 'Post',
