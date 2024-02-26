@@ -94,12 +94,17 @@ namespace Flex.Application.Contracts.Exceptions
         DataNeedReview = 10018,
 
         /// <summary> 审批工作流出错，已重置审批 </summary>
-        [Description("审批工作流出错，已重置审批")]
+        [Description("审批工作流出错或已取消，已重置审批")]
         ReviewRest = 10019,
 
         /// <summary> 审批通过 </summary>
         [Description("审批通过")]
         ReviewSuccess = 10020,
+
+
+        /// <summary> 审批已结束 </summary>
+        [Description("审批已结束")]
+        ReviewAlreadyComplete = 10021,
 
         /// <summary> 登录已超时 </summary>
         [Description("登录已超时")]

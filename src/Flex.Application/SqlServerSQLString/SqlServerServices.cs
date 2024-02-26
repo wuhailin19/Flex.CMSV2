@@ -35,6 +35,8 @@ namespace Flex.Application.SqlServerSQLString
                                       "[StatusCode] [int] NOT NULL default 1," +
                                       "[ReviewStepId] [nvarchar](255) NULL," +
                                       "[ContentGroupId] [bigint] NULL," +
+                                      "[MsgGroupId] [bigint] NULL," +
+                                      "[ReviewAddUser] [bigint] NULL," +
                                       "[AddUser] [bigint] NULL," +
                                       "[AddUserName] [nvarchar](100) NULL," +
                                       "[LastEditUser] [bigint] NULL," +
@@ -67,6 +69,8 @@ namespace Flex.Application.SqlServerSQLString
             string keyvar = "";
             table.Remove("StatusCode");
             table.Remove("OrderId");
+            table.Remove("MsgGroupId");
+            table.Remove("ReviewStepId");
             foreach (var item in table)
             {
                 if (item.ToString().ToLower() == "id")
@@ -74,7 +78,7 @@ namespace Flex.Application.SqlServerSQLString
                 key += "[" + item + "],";
                 keyvar += "" + item + ",";
             }
-            builder.Append(key.Substring(0, key.Length - 1) + ",StatusCode,OrderId) select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId from " + TableName + " where Id=" + contentId);
+            builder.Append(key.Substring(0, key.Length - 1) + ",StatusCode,OrderId,ReviewStepId,MsgGroupId) select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId,'',0 from " + TableName + " where Id=" + contentId);
             return builder;
         }
         public StringBuilder CreateDapperInsertSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters)

@@ -42,12 +42,12 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="addRole">添加</button>';
     if (btnpermission.IsUpdate) {
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Edit">编辑</button>';
-        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="History">历史版本</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Top">置顶</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Recommend">推荐</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Hot">热门</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Focus">焦点</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Hide">隐藏</button>';
+        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="History">修改历史</button>';
     }
     if (btnpermission.IsDelete)
         toolbarhtml += '<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteAll">删除</button>';

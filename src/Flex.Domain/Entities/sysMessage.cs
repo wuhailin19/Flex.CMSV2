@@ -22,6 +22,7 @@ namespace Flex.Domain.Entities
         public int ParentId { set; get; }
         public int FlowId { set; get; }
         public bool IsStart { set; get; } = false;
+        public bool IsEnd { set; get; } = false;
 
         /// <summary>
         /// 消息分组Id，用于区分不同工作流

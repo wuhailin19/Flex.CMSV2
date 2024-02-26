@@ -12,5 +12,9 @@ namespace Flex.Domain.Dtos.ColumnContent
         public IEnumerable<StepActionButtonDto> stepActionButtonDto { set; get; }
         public dynamic Content{ set; get; }
         public bool NeedReview{ set; get; }
+        /// <summary>
+        /// 判断归属
+        /// </summary>
+        public bool OwnerShip { set; get; }
     }
 }

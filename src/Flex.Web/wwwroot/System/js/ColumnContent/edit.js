@@ -1,7 +1,13 @@
-﻿var parent_json = parent.req_Data;
+﻿var parent_json = {};
 //Demo
 var model = {};
 
+function InitParams() {
+    parent_json.ParentId = $.getUrlParam("ParentId");
+    parent_json.Id = $.getUrlParam("Id");
+}
+InitParams();
+var NeedReview = false;
 ajaxHttp({
     url: api + 'ColumnContent/GetContentById/' + parent_json.ParentId + "/" + parent_json.Id,
     type: 'Get',
@@ -13,6 +19,7 @@ ajaxHttp({
             $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">立即提交</button>');
             return false;
         }
+        NeedReview = true;
         if (result.content.stepActionButtonDto.length > 0) {
             var buttons = result.content.stepActionButtonDto;
             for (var i = 0; i < buttons.length; i++) {
@@ -21,7 +28,8 @@ ajaxHttp({
             }
         } else {
             $('#bottomBtnbox').append('<span class="layui-btn layui-btn-warm layui-btn-sm">内容审批中</span>');
-            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-danger layui-btn-sm cancelreview">取消审批</button>');
+            if (result.content.OwnerShip)
+                $('#bottomBtnbox').append('<button class="layui-btn layui-btn-danger layui-btn-sm cancelreview">取消审批</button>');
         }
     },
     complete: function () { }
@@ -52,6 +60,7 @@ layui.config(
             var data = form.val('formTest');
             collectData(data)
             parentformData = data;
+            console.log(parentformData)
             //iframe窗
             layer.open({
                 type: 2,
@@ -84,6 +93,7 @@ layui.config(
                 success: function (result) {
                     if (result.code == 200)
                         tips.showSuccess(result.msg);
+                    window.location.reload();
                 },
                 complete: function () { }
             })
@@ -217,6 +227,7 @@ layui.config(
             }
             form.val("formTest", model);
         }
+        
         formRender();
         function collectData(data) {
             $('input[data-group=datastatus]').each(function () {
@@ -241,7 +252,6 @@ layui.config(
             }
             data.ParentId = parent_json.ParentId;
             data.Id = parent_json.Id;
-            data.ContentGroupId = parent_json.ContentGroupId;
         }
         //监听提交
         form.on('submit(formDemo)', function (data) {

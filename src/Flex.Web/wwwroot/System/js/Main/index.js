@@ -25,11 +25,11 @@ function GetMsgCount() {
                 }
             }
         }, complete: function () {
-            setTimeout(function () { GetMsgCount() }, 5000)
+            //setTimeout(function () { GetMsgCount() }, 5000)
         }
     })
 }
-GetMsgCount()
+GetMsgCount();
 function InitAdmin() {
     ajaxHttp({
         url: api + 'Admin/getLoginInfo',

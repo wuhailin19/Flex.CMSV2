@@ -90,9 +90,11 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         public async Task<string> CancelReview()
         {
             var model = await GetModel<Hashtable>();
-            var result = await _columnServices.Update(model, true, new List<string> { "ParentId", "Id", "StatusCode", "ReviewStepId" });
+            model["ReviewAddUser"] = string.Empty;
+            model["MsgGroupId"] = string.Empty;
+            var result = await _columnServices.UpdateReviewContent(model, true, true);
             if (!result.IsSuccess)
-                return Fail(result.Detail);
+                return Fail("审批取消成功");
             return Success(result.Detail);
         }
 
