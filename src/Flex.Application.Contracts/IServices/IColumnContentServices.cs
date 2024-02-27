@@ -19,7 +19,7 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<string>> GetFormHtml(int ParentId);
         Task<SysContentModel> GetSysContentModelByColumnId(int ParentId);
         Task<ColumnPermissionAndTableHeadDto> GetTableThs(int ParentId);
-        Task<Page> ListAsync(int pageindex, int pagesize, int ParentId);
+        Task<Page> ListAsync(ContentPageListParamDto contentPageListParam);
         Task<ProblemDetails<int>> Update(Hashtable table, bool IsReview = false, List<string> white_fileds = null, bool IsCancelReview = false);
         Task<ProblemDetails<int>> UpdateReviewContent(Hashtable table, bool IsReview = true, bool IsCancelReview = false);
     }

@@ -101,8 +101,8 @@
             img: { src: '/Content/myflow-min/img/48/task_empty.png', width: 48, height: 48 },
             props: {
                 text: { name: 'text', label: '名称', value: '', editor: function () { return new myflow.editors.textEditor(); }, value: '步骤' },
-                org: { name: 'org', label: '部门', value: '', editor: function () { return new myflow.editors.selectEditor([{ name: '所有部门参与审核', value: 0 }, { name: '仅所属部门可审核', value: 1 }]); } },
-                avoid: { name: 'avoid', label: '回避', value: '', editor: function () { return new myflow.editors.selectEditor([{ name: '可审核自己内容', value: 0 }, { name: '不可审核自己内容', value: 1 }]); } }
+                //org: { name: 'org', label: '部门', value: '', editor: function () { return new myflow.editors.selectEditor([{ name: '所有部门参与审核', value: 0 }, { name: '仅所属部门可审核', value: 1 }]); } },
+                //avoid: { name: 'avoid', label: '回避', value: '', editor: function () { return new myflow.editors.selectEditor([{ name: '可审核自己内容', value: 0 }, { name: '不可审核自己内容', value: 1 }]); } }
 
             }
         }

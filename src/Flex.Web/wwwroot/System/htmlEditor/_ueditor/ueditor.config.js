@@ -333,7 +333,7 @@
 
         //tableDragable
         //表格是否可以拖拽
-        //,tableDragable: true
+        //tableDragable: true
 
 
 
@@ -429,7 +429,7 @@
             strong: ['class', 'style'],
             table: ['width', 'border', 'align', 'valign', 'class', 'style'],
             tbody: ['align', 'valign', 'class', 'style'],
-            td: ['width', 'rowspan', 'colspan', 'align', 'valign', 'class', 'style'],
+            td: ['width', 'rowspan', 'colspan', 'align', 'valign', 'class', 'style','height'],
             tfoot: ['align', 'valign', 'class', 'style'],
             th: ['width', 'rowspan', 'colspan', 'align', 'valign', 'class', 'style'],
             thead: ['align', 'valign', 'class', 'style'],

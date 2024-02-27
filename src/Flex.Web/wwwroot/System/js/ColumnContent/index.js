@@ -4,6 +4,9 @@ var columnlist;
 var req_Data;
 var currentparentId = getParameterFromUrl();
 var btnpermission;
+var dateRanage = ['', ''];
+var keyword = $('#keyword');
+
 function getParameterFromUrl() {
     var url = window.location.href.toLowerCase();
     var match = url.match(/\/system\/columncontent\/index\/(\d+)/);
@@ -37,6 +40,21 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
         elem: '#ID-laydate-range',
         range: ['#ID-laydate-start-date', '#ID-laydate-end-date'],
         rangeLinked: true,
+        done: function (value, date, startdate) {
+            dateRanage = value.split(' - ');
+            //执行重载
+            table.reload('testReloadf', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                , where: {
+                    ParentId: currentparentId,
+                    k: keyword.val(),
+                    timefrom: dateRanage[0],
+                    timeto: dateRanage[1]
+                }
+            });
+        }
     });
     if (btnpermission.IsAdd)
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="addRole">添加</button>';
@@ -56,7 +74,8 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
     var insTb = table.render({
         elem: '#demo_tree'
         , url: routeLink + 'ListAsync'
-        , height: 'full-120'
+        , height: 'full-80'
+        , id: 'testReloadf'
         , headers: httpTokenHeaders
         , toolbar: toolbarhtml
         , limits: [1, 5, 10, 15, 20]
@@ -66,7 +85,8 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
             statusCode: 200
         },
         where: {
-            ParentId: currentparentId
+            ParentId: currentparentId,
+            k: ' '
         },
         parseData: function (res) {
             return {
@@ -88,6 +108,27 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
         , cols: [columnlist]
     });
 
+    var $ = layui.$, active = {
+        reload: function () {
+            var tableid = 'testReloadf';
+            //执行重载
+            table.reload(tableid, {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                , where: {
+                    ParentId: currentparentId,
+                    k: keyword.val(),
+                    timefrom: dateRanage[0],
+                    timeto: dateRanage[1]
+                }
+            });
+        }
+    };
+    $('.listsearch_box .layui-btn').on('click', function () {
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+    });
     //监听事件
     table.on('toolbar(test)', function (obj) {
         var data = table.checkStatus(obj.config.id).data;

@@ -220,7 +220,6 @@ layui.config({
             var demoReload = $('#demoReload');
             var tableid = $('.layui-tab-title .layui-this').data('tableid');
             var model = insTb;
-            console.log(tableid)
             if (tableid == "testReloadf")
                 model = insTb;
             else

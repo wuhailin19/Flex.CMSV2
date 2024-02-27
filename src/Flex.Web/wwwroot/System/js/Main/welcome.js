@@ -52,7 +52,7 @@ function InitCoumnShortcut(mode_arr) {
             success: function (res) {
                 let box_str = '';
                 for (var i = 0; i < res.content.length; i++) {
-                    console.log(res.content[i].Id)
+                    //console.log(res.content[i].Id)
                     box_str += '<div class="boxchart layui-anim hvr-grow-shadow types">'
                         + '<div class="iconbox">'
                         + '<i class="iconfont leftconfig iconwendang"></i>'

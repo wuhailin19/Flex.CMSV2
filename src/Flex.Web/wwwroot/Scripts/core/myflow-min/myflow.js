@@ -1404,26 +1404,26 @@
                 else if (_src.getId().startWith('path')) //动作类型
                 {
 
-                    _tb.append('<tr><td>提交</td><td><div id="p1'
-                        + k + '" class="editor">'
+                    //_tb.append('<tr><td>提交</td><td><div id="p1'
+                    //    + k + '" class="editor">'
 
-                        + '<select class="lay-selet" id="select_qz_' + _src.getId() + '" style="width:100%;">'
-                        + '<option value="0">无须指定下一审核人</option>'
-                        + '<option value="1">强制指定下一审核人</option>'
-                        + '</select>'
+                    //    + '<select class="lay-selet" id="select_qz_' + _src.getId() + '" style="width:100%;">'
+                    //    + '<option value="0">无须指定下一审核人</option>'
+                    //    + '<option value="1">强制指定下一审核人</option>'
+                    //    + '</select>'
 
-                        + '</div></td></tr>');
+                    //    + '</div></td></tr>');
 
 
-                    _tb.append('<tr><td>会签</td><td><div id="p2'
-                        + k + '" class="editor">'
+                    //_tb.append('<tr><td>会签</td><td><div id="p2'
+                    //    + k + '" class="editor">'
 
-                        + '<select class="lay-selet" id="select_hq_' + _src.getId() + '" style="width:100%;">'
-                        + '<option value="0">任一审核人通过生效</option>'
-                        + '<option value="1">所有参与者通过生效</option>'
-                        + '</select>'
+                    //    + '<select class="lay-selet" id="select_hq_' + _src.getId() + '" style="width:100%;">'
+                    //    + '<option value="0">任一审核人通过生效</option>'
+                    //    + '<option value="1">所有参与者通过生效</option>'
+                    //    + '</select>'
 
-                        + '</div></td></tr>');
+                    //    + '</div></td></tr>');
 
 
                     //_tb.append('<tr><td>主管</td><td><div id="p3'

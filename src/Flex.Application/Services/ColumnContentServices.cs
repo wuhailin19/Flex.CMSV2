@@ -81,9 +81,9 @@ namespace Flex.Application.Services
             });
             return options;
         }
-        public async Task<Page> ListAsync(int pageindex, int pagesize, int ParentId)
+        public async Task<Page> ListAsync(ContentPageListParamDto contentPageListParam)
         {
-            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
+            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == contentPageListParam.ParentId);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
                 return new Page();
@@ -94,7 +94,27 @@ namespace Flex.Application.Services
                 filed += item.FieldName + ",";
             }
             filed = filed.TrimEnd(',');
-            var result = await _dapperDBContext.PageAsync(pageindex, pagesize, "select " + filed + " from " + contentmodel.TableName + " where StatusCode not in (0,6)");
+            DynamicParameters parameters = new DynamicParameters();
+            string swhere = string.Empty;
+            if (contentPageListParam.k.IsNotNullOrEmpty())
+            {
+                parameters.Add("@k", contentPageListParam.k);
+                if (contentPageListParam.k.ToInt() != 0)
+                    swhere += " and (Title like '%'+@k+'%' or Id=cast(@k as int))";
+                else
+                    swhere += " and Title like '%'+@k+'%'";
+            }
+            if (contentPageListParam.timefrom.IsNotNullOrEmpty())
+            {
+                parameters.Add("@timefrom", contentPageListParam.timefrom);
+                swhere += " and AddTime>=@timefrom";
+            }
+            if (contentPageListParam.timeto.IsNotNullOrEmpty())
+            {
+                parameters.Add("@timeto", contentPageListParam.timeto);
+                swhere += " and AddTime>=@timeto";
+            }
+            var result = await _dapperDBContext.PageAsync(contentPageListParam.page, contentPageListParam.limit, "select " + filed + " from " + contentmodel.TableName + " where StatusCode not in (0,6)" + swhere, parameters);
             result.Items.Each(item =>
             {
                 item.StatusColor = ((StatusCode)item.StatusCode).GetEnumColorDescription();

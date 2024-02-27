@@ -20936,7 +20936,7 @@
                     me.body.style.webkitUserSelect = 'none';
                     me.selection.getNative()[browser.ie9below ? 'empty' : 'removeAllRanges']();
                     pos = mouseCoords(evt);
-                    console.log(555)
+                    //console.log(555)
                     toggleDraggableState(me, true, onDrag, pos, target);
                     if (onDrag == "h") {
                         dragLine.style.left = getPermissionX(dragTd, evt) + "px";
@@ -21803,7 +21803,6 @@
                     var colgroup = table.getElementsByTagName('colgroup');
                     var tbody = table.getElementsByTagName('tbody');
                     var trs = tbody[0].getElementsByTagName('tr');
-
                     //是否需要重建colGroup
                     var reBuildColGroup = true;
 
@@ -21821,10 +21820,6 @@
                                     var width, left, right, percent, widthPercent;
                                     if (col.hasAttribute('data-resize-pixel')) {
                                         width = col.getAttribute('data-resize-pixel');
-                                        //     percent=col.getAttribute('data-resize-percent');
-                                        //     left=col.getAttribute('data-offset-left');
-                                        //     right=col.getAttribute('data-offset-right');
-
                                         if (i == colIndex) {
                                             var width = parseInt(width) + changeValue;
                                             var percent = (width / tableWidth * 100);
@@ -21833,18 +21828,12 @@
                                         }
 
                                     }
-                                    // else{
-
-                                    // }
                                 }
                             }
-
-                            table.style.width = (tableFinalWidth + 'px');
-                            // table.style.width= (((tableFinalWidth/bodyWidth)*100).toFixed(4) +'%');  
+                            let result = (((tableFinalWidth / bodyWidth) * 100).toFixed(4));
+                            table.style.width = ((result > 100 ? 100 : result) +'%');  
                             table.style['table-layout'] = 'fixed';
                             table.removeAttribute('width');
-                            // table.setAttribute('width', (tableFinalWidth + 'px'));
-                            // table.setAttribute('table-layout','fixed'); 
 
                             for (var i = 0; i < cols.length; i++) {
                                 var col = cols[i];
@@ -21859,15 +21848,14 @@
                                 if (i == colIndex) {
                                     width = width + changeValue;
                                     right = right + changeValue;
-                                    percent = (width / tableFinalWidth * 100);
-                                    widthPercent = percent.toFixed(4);
                                 }
-
+                                if (i == (colIndex + 1)) {
+                                    width = width - changeValue;
+                                    right = right - changeValue;
+                                } 
+                                percent = (width / tableFinalWidth * 100);
+                                widthPercent = percent.toFixed(4);
                                 col.style.width = (widthPercent + '%');
-                                col.setAttribute('data-offset-left', left);
-                                col.setAttribute('data-offset-right', right);
-                                col.setAttribute('data-resize-pixel', width);
-                                col.setAttribute('data-resize-percent', percent);
                             }
                             reBuildColGroup = false;
                         }
@@ -21894,12 +21882,9 @@
                                 width = width + changeValue;
                                 right = right + changeValue;
                             }
+                            
 
                             newCol.style.width = (width + 'px');
-                            newCol.setAttribute('data-offset-left', left);
-                            newCol.setAttribute('data-offset-right', right);
-                            newCol.setAttribute('data-resize-pixel', width);
-
                             newColGroup.appendChild(newCol)
                         }
 
@@ -21914,17 +21899,9 @@
                         }
 
                         tdArray = resizeUtil.getColsWidth(table, maxColCount, true);
-
-                        table.style.width = (tableFinalWidth + 'px');
-                        // table.style.width= (((tableFinalWidth/bodyWidth)*100).toFixed(4) +'%');
+                        let result = (((tableFinalWidth / bodyWidth) * 100).toFixed(4));
+                        table.style.width = ((result > 100 ? 100 : result) + '%');
                         table.style['table-layout'] = 'fixed';
-                        table.removeAttribute('width');
-                        // table.setAttribute('width', (tableFinalWidth + 'px'));
-                        // table.setAttribute('table-layout','fixed'); 
-                        // var bodyWidth=me.body.clientWidth;
-
-                        // table.style.width = ((tableFinalWidth/bodyWidth * 100).toFixed(4)+ '%');
-                        // table.setAttribute('table-layout','fixed'); 
 
                         //转换为百分比
                         var newCols = newColGroup.children;
@@ -21933,20 +21910,23 @@
                             var td = tdArray[i];
 
                             var width = td.width;
-                            var left = td.left;
                             var right = td.right;
+                            if (i == colIndex) {
+                                width = width + changeValue;
+                                right = right + changeValue;
+                            } 
+                            if (i == (colIndex + 1)) {
+                                width = width - changeValue;
+                                right = right - changeValue;
+                            } 
+                            
+                            var left = td.left;
                             var percent = (width / tableFinalWidth * 100);
                             var widthPercent = percent.toFixed(4);
 
                             newCol.style.width = (widthPercent + '%');
-                            newCol.setAttribute('data-offset-left', left);
-                            newCol.setAttribute('data-offset-right', right);
-                            newCol.setAttribute('data-resize-pixel', width);
-                            newCol.setAttribute('data-resize-percent', percent);
                         }
-
                     }
-
                     isSuccess = true;
                 }
                 catch (ex) {
@@ -21985,8 +21965,8 @@
                 }
 
                 var tbClientWidth = table.clientWidth;
-                table.style.width = tbClientWidth + changeValue;
-                table.setAttribute('width', ((tbClientWidth + changeValue) + 'px'));
+                //table.style.width = tbClientWidth + changeValue;
+                //table.setAttribute('width', ((tbClientWidth + changeValue) + 'px'));
 
                 var cellClientWidth = cell.clientWidth;
                 cell.style.width = (cellClientWidth + changeValue) + 'px';
@@ -22003,7 +21983,6 @@
 
                         cellGroup.left.width = (+cellGroup.left.width) + changeValue;
                         cellGroup.right && (cellGroup.right.width = (+cellGroup.right.width) - changeValue);
-
                     });
 
                 } else {
@@ -22014,7 +21993,6 @@
 
                 }
             }
-
 
             var ut = getUETable(cell);
             if (ut) {
@@ -22022,56 +22000,18 @@
                 //根据当前移动的边框获取相关的单元格
                 var table = ut.table,
                     cells = getCellsByMoveBorder(cell, table);
-
-                // table.style.width = "";
-                // table.removeAttribute("width");
-
-                //修正改变量
-                // changeValue = correctChangeValue( changeValue, cell, cells );
-
-                /**
-                *0428 by qpf
-                *modify:只调整当前单元格，不影响其他单元格
-                **********************************************/
-                // changeValue -= getTabcellSpace();
-
-                // var colgroup = table.getElementsByTagName('colgroup');
-                // if (colgroup && colgroup.length > 0) {
-                //     colgroup[0].remove()
-                // } else {
-                // }
-
-                // var tbClientWidth = table.clientWidth;
-                // table.style.width = tbClientWidth + changeValue;
-                // table.setAttribute('width', (tbClientWidth + changeValue) + 'px');
-
-                // var cellClientWidth = cell.clientWidth;
-                // cell.style.width = (cellClientWidth + changeValue) + 'px';
-                // cell.setAttribute('width', (cellClientWidth + changeValue) + 'px');
-                // return
-
-                /**********************************************/
-
                 if (cell.nextSibling) {
-
                     var i = 0;
-
                     utils.each(cells, function (cellGroup) {
-
                         cellGroup.left.width = (+cellGroup.left.width) + changeValue;
                         cellGroup.right && (cellGroup.right.width = (+cellGroup.right.width) - changeValue);
-
                     });
-
                 } else {
-
                     utils.each(cells, function (cellGroup) {
                         cellGroup.left.width -= -changeValue;
                     });
-
                 }
             }
-
         }
 
         function isEditorDisabled() {

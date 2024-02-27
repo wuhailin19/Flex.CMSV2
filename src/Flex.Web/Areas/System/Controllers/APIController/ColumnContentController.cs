@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Flex.Dapper;
 using System.Collections;
+using Flex.Domain.Dtos.ColumnContent;
 
 namespace Flex.Web.Areas.System.Controllers.APIController
 {
@@ -38,9 +39,11 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 
         [HttpGet("ListAsync")]
         [Descriper(Name = "栏目内容列表分页数据")]
-        public async Task<string> ListAsync(int page, int limit, int ParentId)
+        public async Task<string> ListAsync([FromQuery] ContentPageListParamDto model)
         {
-            return Success(await _columnServices.ListAsync(page, limit, ParentId));
+            if (model == null)
+                return Fail("无数据");
+            return Success(await _columnServices.ListAsync(model));
         }
 
         [HttpGet("GetFormHtml/{ParentId}")]
