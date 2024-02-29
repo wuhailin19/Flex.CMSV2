@@ -24,6 +24,13 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             return Success(await _columnServices.GetTableThs(ParentId));
         }
+        
+        [HttpGet("HistoryColumn/{ParentId}")]
+        [Descriper(IsFilter = true)]
+        public async Task<string> HistoryColumn(int ParentId)
+        {
+            return Success(await _columnServices.GetHistoryTableThs(ParentId));
+        }
 
         /// <summary>
         /// 多选checkbox数据用此接口
@@ -45,6 +52,15 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                 return Fail("无数据");
             return Success(await _columnServices.ListAsync(model));
         }
+        
+        [HttpGet("HistoryListAsync")]
+        [Descriper(Name = "历史内容列表分页数据")]
+        public async Task<string> HistoryListAsync([FromQuery] ContentPageListParamDto model)
+        {
+            if (model == null)
+                return Fail("无数据");
+            return Success(await _columnServices.HistoryListAsync(model));
+        }
 
         [HttpGet("GetFormHtml/{ParentId}")]
         [Descriper(Name = "通过ParentId获取模型结构代码")]
@@ -63,7 +79,10 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             if (Id == 0)
                 return Success(await _columnServices.GetButtonListByParentId(ParentId));
-            return Success(await _columnServices.GetContentById(ParentId, Id));
+            var result = await _columnServices.GetContentById(ParentId, Id);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Content);
         }
 
         [HttpPost("CreateColumnContent")]
@@ -83,6 +102,17 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             var model = await GetModel<Hashtable>();
             var result = await _columnServices.Update(model);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
+        }
+
+        [HttpPost("UpdateStatus")]
+        [Descriper(Name = "修改栏目内容状态")]
+        public async Task<string> UpdateStatus()
+        {
+            var model = await GetModel<Hashtable>();
+            var result = await _columnServices.UpdateContentStatus(model);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
             return Success(result.Detail);

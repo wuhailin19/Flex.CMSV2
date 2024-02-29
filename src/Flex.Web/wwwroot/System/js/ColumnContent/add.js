@@ -1,6 +1,6 @@
 ﻿var demojs = [];
 var parent_json = parent.req_Data;
-
+var IsAdd = true;
 ajaxHttp({
     url: api + 'ColumnContent/GetContentById/' + parent.currentparentId+"/0",
     type: 'Get',

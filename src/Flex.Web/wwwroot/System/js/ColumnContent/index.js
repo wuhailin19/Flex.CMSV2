@@ -2,10 +2,12 @@
 var routePageLink = '/system/ColumnContent/';
 var columnlist;
 var req_Data;
+var parentjson;
 var currentparentId = getParameterFromUrl();
 var btnpermission;
 var dateRanage = ['', ''];
 var keyword = $('#keyword');
+var tableid = 'testReloadf';
 
 function getParameterFromUrl() {
     var url = window.location.href.toLowerCase();
@@ -30,10 +32,12 @@ ajaxHttp({
     complete: function () { }
 })
 columnlist = btnpermission.TableHeads;
-layui.use(['form', 'laydate', 'util', "table"], function () {
+layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
     var form = layui.form;
     var laydate = layui.laydate;
     var table = layui.table;
+    var dropdown = layui.dropdown;
+
     var toolbarhtml = '<div class="layui-btn-container">';
     // 日期范围 - 左右面板独立选择模式
     laydate.render({
@@ -60,22 +64,21 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="addRole">添加</button>';
     if (btnpermission.IsUpdate) {
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Edit">编辑</button>';
-        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Top">置顶</button>';
-        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Recommend">推荐</button>';
-        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Hot">热门</button>';
-        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Focus">焦点</button>';
-        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Hide">隐藏</button>';
+        toolbarhtml += '<button class="layui-btn layui-btn-sm" id="setProperty">设置属性<i class="layui-icon layui-icon-down layui-font-12"></i></button>';
+        toolbarhtml += '<button class="layui-btn layui-btn-sm" id="cacelProperty">取消属性<i class="layui-icon layui-icon-down layui-font-12"></i></button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="History">修改历史</button>';
     }
     if (btnpermission.IsDelete)
         toolbarhtml += '<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteAll">删除</button>';
     toolbarhtml += '</div>';
+
+
     //JS 调用：
     var insTb = table.render({
         elem: '#demo_tree'
         , url: routeLink + 'ListAsync'
         , height: 'full-80'
-        , id: 'testReloadf'
+        , id: tableid
         , headers: httpTokenHeaders
         , toolbar: toolbarhtml
         , limits: [1, 5, 10, 15, 20]
@@ -95,6 +98,8 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
                 "data": res.content.Items//数据总数的字段名称，默认：count
             };
         }
+        , method: 'Get'
+        , cols: [columnlist]
         , done: function (res, pageindex, count) {
             if (pageindex > 1 && res.data.length === 0) {
                 insTb.reload({
@@ -103,14 +108,97 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
                     },
                 });
             }
+
+            var id = this.id;
+            // 设置属性
+            dropdown.render({
+                elem: '#setProperty', // 可绑定在任意元素中，此处以上述按钮为例
+                data: [
+                    { id: 'IsTop', title: '置顶' },
+                    { id: 'IsRecommend', title: '推荐' },
+                    { id: 'IsHot', title: '热门' },
+                    { id: 'IsSlide', title: '焦点' },
+                    { id: 'IsHide', title: '隐藏' }
+                ],
+                // 菜单被点击的事件
+                click: function (obj) {
+                    var checkStatus = table.checkStatus(id)
+                    var data = checkStatus.data; // 获取选中的数据
+                    let ids = getIdsFromList(data);
+                    UpdateStatus(ids, obj.id, true);
+                }
+            });
+            // 取消属性
+            dropdown.render({
+                elem: '#cacelProperty', // 可绑定在任意元素中，此处以上述按钮为例
+                data: [
+                    { id: 'IsTop', title: '取消置顶' },
+                    { id: 'IsRecommend', title: '取消推荐' },
+                    { id: 'IsHot', title: '取消热门' },
+                    { id: 'IsSlide', title: '取消焦点' },
+                    { id: 'IsHide', title: '显示' }
+                ],
+                // 菜单被点击的事件
+                click: function (obj) {
+                    var checkStatus = table.checkStatus(id)
+                    var data = checkStatus.data; // 获取选中的数据
+                    let ids = getIdsFromList(data);
+                    UpdateStatus(ids, obj.id, false);
+                }
+            });
         }
-        , method: 'Get'
-        , cols: [columnlist]
     });
 
+    function getIdsFromList(data) {
+        let ids = '';
+        $.each(data, function (index, item) {
+            if (ids == '')
+                ids += item.Id;
+            else
+                ids += ',' + item.Id;
+        })
+        return ids;
+    }
+
+    // 复选框事件
+    table.on('checkbox(test)', function (obj) {
+
+    });
+    function UpdateStatus(ids, event, result) {
+        if (ids == "") {
+            layer.msg("选择一条数据", { icon: 5, time: 1000 })
+            return;
+        }
+        var model = { ParentId: currentparentId, Ids: ids, };
+        model[event] = result;
+        ajaxHttp({
+            url: routeLink + 'UpdateStatus',
+            type: 'Post',
+            data: JSON.stringify(model),
+            async: false,
+            dataType: 'json',
+            success: function (result) {
+                if (result.code == 200) {
+                    //执行重载
+                    table.reload(tableid, {
+                        page: {
+                            curr: insTb.config.page.curr //刷新当前页码
+                        }
+                        , where: {
+                            ParentId: currentparentId,
+                            k: keyword.val(),
+                            timefrom: dateRanage[0],
+                            timeto: dateRanage[1]
+                        }
+                    });
+                    tips.showSuccess(result.msg);
+                }
+            },
+            complete: function () { }
+        })
+    }
     var $ = layui.$, active = {
         reload: function () {
-            var tableid = 'testReloadf';
             //执行重载
             table.reload(tableid, {
                 page: {
@@ -135,6 +223,14 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
         switch (obj.event) {
             case 'addRole':
                 defaultOptions.setAddIframe(layer, insTb);
+                break;
+            case 'History':
+                if (data.length != 1) {
+                    layer.msg("选择一条数据", { icon: 5, time: 1000 })
+                    return;
+                }
+                req_Data = data[0];
+                defaultOptions.openDataPermissionIframe(layer, insTb);
                 break;
             case 'Edit':
                 if (data.length != 1) {
@@ -170,7 +266,6 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
                     layer.close(index)
                 })
                 break;
-
         };
     });
 })

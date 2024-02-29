@@ -723,6 +723,7 @@ hr.layui-border-black, hr.layui-border-blue, hr.layui-border-cyan, hr.layui-bord
     .layui-form-item .layui-inline { display: block; margin-right: 0; margin-bottom: 20px; clear: both }
     .layui-form-item .layui-inline:after { content: '\20'; clear: both; display: block; height: 0 }
     .layui-form-item .layui-input-inline { display: block; float: none; left: -3px; width: auto !important; margin: 0 0 10px 112px }
+    .layui-form-pane .layui-form-text .layui-input-inline { left: 0px; }
     .layui-form-item .layui-input-inline + .layui-form-mid { margin-left: 110px; top: -5px; padding: 0 }
     .layui-form-item .layui-form-checkbox { margin-right: 5px; margin-bottom: 5px }
 }
@@ -1790,4 +1791,5 @@ html #layuicss-layer { display: none; position: absolute; width: 1989px }
     .img-preview { width: 100px !important; height: 100px !important; }
     .layui-laydate-content td > div { font-size: 14px; }
     .layui-btn + .layui-btn{margin-left:0px;}
+    .layui-form-pane .layui-input-block{left:0px;}
 }

@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Flex.Core.Extensions.CommonExtensions;
 using Flex.Domain.Dtos.Field;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -29,7 +30,7 @@ namespace Flex.Application.SqlServerSQLString
                                       "[IsTop] [bit] NOT NULL default 0," +
                                       "[IsRecommend] [bit] NOT NULL default 0," +
                                       "[IsHot] [bit] NOT NULL default 0," +
-                                      "[IsShow] [bit] NOT NULL default 0," +
+                                      "[IsHide] [bit] NOT NULL default 0," +
                                       "[IsSilde] [bit] NOT NULL default 0," +
                                       "[OrderId] [int] NOT NULL," +
                                       "[StatusCode] [int] NOT NULL default 1," +
@@ -61,16 +62,12 @@ namespace Flex.Application.SqlServerSQLString
             return sql;
         }
         public string DeleteContentTableData(string TableName, string Ids) => "update " + TableName + " set StatusCode=0 where Id in(" + Ids + ")";
-        public StringBuilder CreateInsertCopyContentSqlString(List<string> table, string TableName, int contentId)
+        public StringBuilder CreateInsertCopyContentSqlString(Hashtable data,List<string> table, string TableName, int contentId)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("insert into " + TableName + " (");
             string key = "";
             string keyvar = "";
-            table.Remove("StatusCode");
-            table.Remove("OrderId");
-            table.Remove("MsgGroupId");
-            table.Remove("ReviewStepId");
             foreach (var item in table)
             {
                 if (item.ToString().ToLower() == "id")
@@ -78,7 +75,8 @@ namespace Flex.Application.SqlServerSQLString
                 key += "[" + item + "],";
                 keyvar += "" + item + ",";
             }
-            builder.Append(key.Substring(0, key.Length - 1) + ",StatusCode,OrderId,ReviewStepId,MsgGroupId) select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId,'',0 from " + TableName + " where Id=" + contentId);
+            builder.Append(key.Substring(0, key.Length - 1) + ",StatusCode,OrderId,ReviewStepId,MsgGroupId,LastEditUser,LastEditUserName,LastEditDate) " +
+                "select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId,'',0,"+ data["LastEditUser"] + ",'"+ data["LastEditUserName"] + "','"+ data["LastEditDate"] + "' from " + TableName + " where Id=" + contentId);
             return builder;
         }
         public StringBuilder CreateDapperInsertSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters)
@@ -87,6 +85,7 @@ namespace Flex.Application.SqlServerSQLString
             builder.Append("insert into " + TableName + " (");
             string key = "";
             string keyvar = "";
+            table.Remove("OrderId");
             commandParameters = new DynamicParameters();
             foreach (DictionaryEntry myDE in table)
             {
@@ -94,7 +93,7 @@ namespace Flex.Application.SqlServerSQLString
                 keyvar += "@" + myDE.Key.ToString() + ",";
                 commandParameters.Add(myDE.Key.ToString(), myDE.Value);
             }
-            builder.Append(key.Substring(0, key.Length - 1) + " ) values(" + keyvar.Substring(0, keyvar.Length - 1) + " )");
+            builder.Append(key.Substring(0, key.Length - 1) + ",OrderId) values(" + keyvar.Substring(0, keyvar.Length - 1) + ",(select (MAX(OrderId)+1) from "+ TableName + "))");
             builder.Append(";SELECT SCOPE_IDENTITY();");
             return builder;
         }
@@ -125,7 +124,10 @@ namespace Flex.Application.SqlServerSQLString
         {
             StringBuilder builder = new StringBuilder();
             int Id = table["Id"].ToInt();
+            var Ids = table.GetStringValue("Ids");
+
             table.Remove("Id");
+            table.Remove("Ids");
             builder.Append("Update " + TableName + " set ");
             string keyvar = "";
             foreach (DictionaryEntry myDE in table)
@@ -142,7 +144,13 @@ namespace Flex.Application.SqlServerSQLString
                 num++;
             }
             table.Add("Id", Id);
-            builder.Append(" where Id=" + Id);
+            if (Ids.IsNullOrEmpty())
+            {
+                builder.Append(" where Id=" + Id);
+            }
+            else { 
+                builder.Append(" where Id in(" + Ids+")");
+            }
             return builder;
         }
 

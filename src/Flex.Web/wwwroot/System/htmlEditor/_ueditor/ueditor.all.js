@@ -7034,7 +7034,7 @@
                         options.initialFrameHeight = options.minFrameHeight = container.offsetHeight;
                     }
 
-                    container.style.width = /%$/.test(options.initialFrameWidth) ? '100%' : options.initialFrameWidth -
+                    container.style.width = /%$/.test(options.initialFrameWidth) ? 'calc(100% - 2px)' : options.initialFrameWidth -
                         getStyleValue("padding-left") - getStyleValue("padding-right") + 'px';
                     container.style.height = /%$/.test(options.initialFrameHeight) ? '100%' : options.initialFrameHeight -
                         getStyleValue("padding-top") - getStyleValue("padding-bottom") + 'px';

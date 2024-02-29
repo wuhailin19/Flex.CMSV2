@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Flex.Domain.Dtos.ColumnContent
 {
-    public class ColumnPermissionAndTableHeadDto
+    public class ColumnPermissionAndTableHeadDto<T>
     {
-        public IEnumerable<ModelTools<ColumnContentDto>> TableHeads { get; set; }
+        public IEnumerable<ModelTools<T>> TableHeads { get; set; }
         public bool IsAdd { get; set; }
         public bool IsSelect { get; set; }
         public bool IsUpdate { get; set; }

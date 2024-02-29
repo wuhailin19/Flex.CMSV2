@@ -1,7 +1,10 @@
 ﻿using Castle.Core.Internal;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Core;
+using Flex.Core.Extensions.CommonExtensions;
 using Flex.Domain.Dtos.Message;
 using Flex.Domain.Enums.Message;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections;
 using System.Linq.Expressions;
 
@@ -79,13 +82,13 @@ namespace Flex.Application.Services
         }
         private void InitReviewer(Hashtable table)
         {
-            table["ReviewAddUser"] = _claims.UserId;
+            table.SetValue("ReviewAddUser", _claims.UserId);
         }
         private void InitContentReviewInfo(Hashtable table, long MsgGroupId, StatusCode statusCode, string ReviewStepId)
         {
-            table.Add("StatusCode", statusCode.ToInt());
-            table.Add("ReviewStepId", ReviewStepId);
-            table.Add("MsgGroupId", MsgGroupId);
+            table.SetValue("StatusCode", statusCode.ToInt());
+            table.SetValue("ReviewStepId", ReviewStepId);
+            table.SetValue("MsgGroupId", MsgGroupId);
         }
         public async Task<ProblemDetails<string>> SendReviewMessage(SendReviewMessageDto model)
         {
@@ -161,7 +164,7 @@ namespace Flex.Application.Services
                 messagemodel.IsEnd = true;
                 messagemodel.ToUserId = AddUser;
                 messagemodel.MessageCate = MessageCate.Approved;
-
+                model.BaseFormContent.SetValue("ReviewAddUser",0);
                 InitContentReviewInfo(model.BaseFormContent, 0, StatusCode.Enable, string.Empty);
             }
             //审批驳回 设置内容为草稿
@@ -170,7 +173,7 @@ namespace Flex.Application.Services
                 messagemodel.IsEnd = true;
                 messagemodel.ToUserId = AddUser;
                 messagemodel.MessageCate = MessageCate.Rejected;
-
+                model.BaseFormContent.SetValue("ReviewAddUser", 0);
                 InitContentReviewInfo(model.BaseFormContent, 0, StatusCode.Draft, string.Empty);
             }
             //退稿 设置内容为待审核，并重置流程
@@ -179,7 +182,7 @@ namespace Flex.Application.Services
                 messagemodel.IsEnd = true;
                 messagemodel.ToUserId = AddUser;
                 messagemodel.MessageCate = MessageCate.Rejected;
-
+                model.BaseFormContent.SetValue("ReviewAddUser", 0);
                 InitContentReviewInfo(model.BaseFormContent, 0, StatusCode.PendingApproval, string.Empty);
             }
             else

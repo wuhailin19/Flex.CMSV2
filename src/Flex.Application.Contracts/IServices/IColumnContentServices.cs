@@ -13,14 +13,17 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<int>> Add(Hashtable hashtable, bool IsReview = false);
         Task<ProblemDetails<string>> Delete(int ParentId, string Id);
         Task<OutputContentAndWorkFlowDto> GetButtonListByParentId(int ParentId);
-        Task<OutputContentAndWorkFlowDto> GetContentById(int ParentId, int Id);
+        Task<ProblemDetails<OutputContentAndWorkFlowDto>> GetContentById(int ParentId, int Id);
         Task<Dictionary<object, object>> GetContentForReviewById(int ParentId, int Id);
         Task<IEnumerable<ContentOptions>> GetContentOptions(int ParentId);
         Task<ProblemDetails<string>> GetFormHtml(int ParentId);
+        Task<ColumnPermissionAndTableHeadDto<HistoryColumnDto>> GetHistoryTableThs(int ParentId);
         Task<SysContentModel> GetSysContentModelByColumnId(int ParentId);
-        Task<ColumnPermissionAndTableHeadDto> GetTableThs(int ParentId);
+        Task<ColumnPermissionAndTableHeadDto<ColumnContentDto>> GetTableThs(int ParentId);
+        Task<Page> HistoryListAsync(ContentPageListParamDto contentPageListParam);
         Task<Page> ListAsync(ContentPageListParamDto contentPageListParam);
         Task<ProblemDetails<int>> Update(Hashtable table, bool IsReview = false, List<string> white_fileds = null, bool IsCancelReview = false);
+        Task<ProblemDetails<int>> UpdateContentStatus(Hashtable table, bool IsReview = true);
         Task<ProblemDetails<int>> UpdateReviewContent(Hashtable table, bool IsReview = true, bool IsCancelReview = false);
     }
 }

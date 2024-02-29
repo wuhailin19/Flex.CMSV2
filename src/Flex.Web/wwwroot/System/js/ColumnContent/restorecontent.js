@@ -1,7 +1,7 @@
 ﻿var parent_json = {};
 //Demo
 var model = {};
-var IsAdd = false;
+
 function InitParams() {
     parent_json.ParentId = $.getUrlParam("ParentId");
     parent_json.Id = $.getUrlParam("Id");
@@ -54,49 +54,6 @@ layui.config(
         var croppers = layui.croppers;
         var render;
 
-        $(document).on('click', '.reviewbutton', function () {
-            //console.log($(this).attr('data-id'))
-            var that = $(this);
-            var data = form.val('formTest');
-            collectData(data)
-            parentformData = data;
-            //iframe窗
-            layer.open({
-                type: 2,
-                title: that.text(),
-                shadeClose: true,
-                shade: false,
-                maxmin: true, //开启最大化最小化按钮
-                area: ['80%', '80%'],
-                content: SystempageRoute + 'Message/SendMsg?stepToId=' + that.attr('data-toid') + '&stepFromId=' + that.attr('data-fromid') + '&parentId=' + parent_json.ParentId + '&contentId=' + parent_json.Id,
-                end: function () {
-                    //window.location.reload();
-                }
-            });
-        })
-
-        $(document).on('click', '.cancelreview', function () {
-            var that = $(this);
-            var data = {
-                ParentId: parent_json.ParentId,
-                Id: parent_json.Id,
-                StatusCode: 5,
-                ReviewStepId: ''
-            };
-            ajaxHttp({
-                url: api + 'ColumnContent/CancelReview',
-                type: 'Post',
-                async: false,
-                data: JSON.stringify(data),
-                dataType: 'json',
-                success: function (result) {
-                    if (result.code == 200)
-                        tips.showSuccess(result.msg);
-                    window.location.reload();
-                },
-                complete: function () { }
-            })
-        })
 
         ajaxHttp({
             url: api + 'ColumnContent/GetFormHtml/' + parent_json.ParentId,
@@ -252,38 +209,5 @@ layui.config(
             data.ParentId = parent_json.ParentId;
             data.Id = parent_json.Id;
         }
-        //监听提交
-        form.on('submit(formDemo)', function (data) {
-            collectData(data.field);
-            data.field.StatusCode = 1;
-            ajaxHttp({
-                url: api + 'ColumnContent',
-                type: 'Post',
-                data: JSON.stringify(data.field),
-                async: false,
-                success: function (json) {
-                    if (json.code == 200) {
-                        tips.showSuccess(json.msg);
-                        setTimeout(function () {
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            parent.layer.close(index); //再执行关闭
-                        }, 300)
-                    } else {
-                        tips.showFail(json.msg);
-                    }
-                },
-                complete: function () {
-
-                }
-            })
-            //layer.msg(JSON.stringify(data.field), { icon: 6 });
-            return false;
-        });
-        $('#globalDisable').on('click', function () {
-            render.globalDisable();
-        });
-        $('#globalNoDisable').on('click', function () {
-            render.globalNoDisable();
-        });
     });
 

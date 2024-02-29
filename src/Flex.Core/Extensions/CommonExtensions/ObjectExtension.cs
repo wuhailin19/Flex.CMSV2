@@ -21,7 +21,6 @@ namespace Flex.Core.Extensions
         {
             return obj.CastTo(default(T));
         }
-
         /// <summary>
         /// 对象转换为泛型
         /// </summary>

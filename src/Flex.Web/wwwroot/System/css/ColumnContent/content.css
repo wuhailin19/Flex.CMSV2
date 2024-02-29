@@ -6,7 +6,7 @@
 .layui-btn-sm { padding: 0 18px; }
 .layui-form-label { width: auto; max-width:80px;}
 .layui-laydate-content td > div{font-size:14px;}
-
+.Property{padding:2%;background:#ccc;font-size:12px;}
 @media screen and (max-width:800px) {
     .layui-form-label { width: 80px; }
     .search-box { overflow-y: scroll; }
