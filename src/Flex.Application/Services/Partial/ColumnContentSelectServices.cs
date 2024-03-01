@@ -5,6 +5,7 @@ using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Role;
 using Flex.Domain.Dtos.WorkFlow;
+using Flex.Domain.WhiteFileds;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,7 +85,7 @@ namespace Flex.Application.Services
             if (contentmodel == null)
                 return new Page();
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
-            string filed = defaultFields;
+            string filed = ColumnContentUpdateFiledConfig.defaultFields;
             foreach (var item in fieldmodel)
             {
                 filed += item.FieldName + ",";
@@ -114,7 +115,7 @@ namespace Flex.Application.Services
             if (contentmodel == null)
                 return new Page();
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
-            string filed = defaultFields;
+            string filed = ColumnContentUpdateFiledConfig.defaultFields;
             foreach (var item in fieldmodel)
             {
                 filed += item.FieldName + ",";
@@ -201,7 +202,7 @@ namespace Flex.Application.Services
             if (contentmodel == null)
                 return new ProblemDetails<OutputContentAndWorkFlowDto>(HttpStatusCode.NotFound, ErrorCodes.DataNotFound.GetEnumDescription());
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
-            string filed = defaultFields;
+            string filed = ColumnContentUpdateFiledConfig.defaultFields;
             //List<string> editors = new List<string>();
             foreach (var item in fieldmodel)
             {

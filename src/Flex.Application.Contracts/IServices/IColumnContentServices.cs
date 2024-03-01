@@ -23,7 +23,7 @@ namespace Flex.Application.Contracts.IServices
         Task<Page> HistoryListAsync(ContentPageListParamDto contentPageListParam);
         Task<Page> ListAsync(ContentPageListParamDto contentPageListParam);
         Task<ProblemDetails<int>> Update(Hashtable table, bool IsReview = false, List<string> white_fileds = null, bool IsCancelReview = false);
-        Task<ProblemDetails<int>> UpdateContentStatus(Hashtable table, bool IsReview = true);
+        Task<ProblemDetails<int>> SimpleUpdateContent(Hashtable table, bool IsReview = true, List<string> white_fileds = null);
         Task<ProblemDetails<int>> UpdateReviewContent(Hashtable table, bool IsReview = true, bool IsCancelReview = false);
     }
 }

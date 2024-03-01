@@ -1,6 +1,7 @@
 ﻿using Castle.Core.Internal;
 using Dapper;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Core.Extensions.CommonExtensions;
 using Flex.Dapper;
 using Flex.Domain;
 using Flex.Domain.Cache;
@@ -8,6 +9,7 @@ using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Role;
 using Flex.Domain.Dtos.WorkFlow;
+using Flex.Domain.WhiteFileds;
 using Microsoft.Data.SqlClient;
 using System.Collections;
 using System.Text;
@@ -21,14 +23,7 @@ namespace Flex.Application.Services
         protected IWorkFlowServices _workFlowServices;
 
         protected ICaching _caching;
-        //默认加载字段
-        protected const string defaultFields = "IsTop,IsRecommend,IsHot,IsHide,IsSilde,SeoTitle,KeyWord,Description" +
-            ",Title,Id,AddTime,LastEditDate,StatusCode,ReviewAddUser,AddUserName,LastEditUserName,OrderId,ParentId,ReviewStepId,ContentGroupId,MsgGroupId,";
-
-        //修改历史版本字段
-        protected const string updatehistoryFields = "IsTop,IsRecommend,IsHot,IsHide,IsSilde,SeoTitle,KeyWord,Description" +
-            ",Title,Id,AddTime,AddUser,AddUserName,ParentId,ContentGroupId,";
-
+    
         ISqlTableServices _sqlTableServices;
         public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext, ISqlTableServices sqlTableServices, IRoleServices roleServices, ICaching caching, IWorkFlowServices workFlowServices)
             : base(unitOfWork, mapper, idWorker, claims)
@@ -50,6 +45,12 @@ namespace Flex.Application.Services
         }
         private void InitUpdateTable(Hashtable table)
         {
+            if (table.GetValue("StatusCode").ToInt() != 5) 
+            {
+                table["ReviewStepId"] = string.Empty;
+                table["ReviewAddUser"] = string.Empty;
+                table["MsgGroupId"] = string.Empty;
+            }
             table["LastEditUser"] = _claims.UserId;
             table["LastEditUserName"] = _claims.UserName;
             table["LastEditDate"] = Clock.Now;
@@ -67,7 +68,7 @@ namespace Flex.Application.Services
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataUpdateError.GetEnumDescription());
             var filedmodel = await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId);
             var keysToRemove = new List<object>();
-            var white_fileds = defaultFields.ToList();
+            var white_fileds = ColumnContentUpdateFiledConfig.defaultFields.ToList();
             foreach (var item in table.Keys)
             {
                 if (white_fileds.Any(m => m.Equals(item.ToString(), StringComparison.OrdinalIgnoreCase)))

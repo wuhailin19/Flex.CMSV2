@@ -46,6 +46,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 
         [HttpGet("ListAsync")]
         [Descriper(Name = "栏目内容列表分页数据")]
+        [AllowAnonymous]
         public async Task<string> ListAsync([FromQuery] ContentPageListParamDto model)
         {
             if (model == null)
@@ -112,7 +113,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         public async Task<string> UpdateStatus()
         {
             var model = await GetModel<Hashtable>();
-            var result = await _columnServices.UpdateContentStatus(model);
+            var result = await _columnServices.SimpleUpdateContent(model);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
             return Success(result.Detail);
@@ -127,7 +128,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             model["MsgGroupId"] = string.Empty;
             var result = await _columnServices.UpdateReviewContent(model, true, true);
             if (!result.IsSuccess)
-                return Fail("审批取消成功");
+                return Fail("审批取消失败");
             return Success(result.Detail);
         }
 

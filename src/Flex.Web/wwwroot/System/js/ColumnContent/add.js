@@ -9,6 +9,7 @@ ajaxHttp({
     success: function (result) {
         if (!result.content.NeedReview) {
             $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">立即提交</button>');
+            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm layui-btn-danger btn_draft" data-event="draft">存草稿</button>');
             return false;
         }
         if (result.content.stepActionButtonDto.length > 0) {
@@ -17,8 +18,6 @@ ajaxHttp({
                 let layui_class = buttons[i].stepToCate == "end-error" ? "layui-btn-warm" : buttons[i].stepToCate == "end-cancel" ? "layui-btn-danger" : "";
                 $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm reviewbutton ' + layui_class + '" data-event="' + buttons[i].stepToCate + '" onclick="return false;" data-fromid="' + buttons[i].stepFromId + '" data-toid="' + buttons[i].stepToId + '">' + buttons[i].actionName + '</button>');
             }
-        } else {
-            $('#bottomBtnbox').append('<span class="layui-btn layui-btn-warm layui-btn-sm">信息审核中</span>');
         }
     },
     complete: function () { }
@@ -78,6 +77,8 @@ layui.config(
 
         var checkboxs = demojs.filter(item => item.tag == "checkbox");
         var remotedata_checkboxs = checkboxs.filter(item => item.LocalSource == false);
+        var sliders = demojs.filter(item => item.tag == "slider");
+
         if (remotedata_checkboxs.length > 0) {
             for (var i = 0; i < remotedata_checkboxs.length; i++) {
                 (function (index) {
@@ -155,6 +156,11 @@ layui.config(
                     data[checkboxs[i].id] = getCheckboxValue(checkboxs[i].id);
                 }
             }
+            if (sliders.length > 0) {
+                for (var i = 0; i < sliders.length; i++) {
+                    data[sliders[i].id] = sliders[i].defaultValue;
+                }
+            }
             if (dateRanges.length > 0) {
                 for (var i = 0; i < dateRanges.length; i++) {
                     data[dateRanges[i].id] = data["start" + dateRanges[i].id] + " - " + data["end" + dateRanges[i].id];
@@ -169,6 +175,18 @@ layui.config(
         //监听提交
         form.on('submit(formDemo)', function (data) {
             collectData(data.field);
+            data.field.StatusCode = 1;
+            AddContent(data);
+            return false;
+        });
+        $('.btn_draft').on('click', function () {
+            var data = form.val('formTest');
+            collectData(data);
+            data.StatusCode = 2;
+            AddContent(data);
+            return false;
+        })
+        function AddContent(data) {
             ajaxHttp({
                 url: api + 'ColumnContent/CreateColumnContent',
                 type: 'Post',
@@ -189,9 +207,7 @@ layui.config(
 
                 }
             })
-            //layer.msg(JSON.stringify(data.field), { icon: 6 });
-            return false;
-        });
+        }
         $('#globalDisable').on('click', function () {
             render.globalDisable();
         });

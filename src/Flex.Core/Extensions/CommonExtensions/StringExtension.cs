@@ -69,6 +69,20 @@ namespace Flex.Core.Extensions
                 return 0;
             }
         }
+        public static int ToIntAndThrowException(this object str)
+        {
+            try
+            {
+                if (str != null)
+                    return Convert.ToInt32(str);
+                else
+                    return 0;
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public static long ToLong(this object str)
         {
             try

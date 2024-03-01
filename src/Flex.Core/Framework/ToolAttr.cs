@@ -20,6 +20,7 @@ public class ToolAttr : Attribute
     /// 是否可排序
     /// </summary>
     public bool SortAttr { get; set; }
+    public bool IsEdit { get; set; }
     /// <summary>
     /// 列描述
     /// </summary>
@@ -48,6 +49,7 @@ public class ToolAttr : Attribute
     /// 控件类型
     /// </summary>
     public string Types { get; set; }
+    public string Style { get; set; }
     /// <summary>
     /// 是否隐藏
     /// </summary>
@@ -68,7 +70,7 @@ public class ToolAttr : Attribute
     public ToolAttr(
         string nameattr, bool isShow = false, bool sortattr = false,
         string width = "0",string minWidth="80",string maxWidth = "80", string alignattr = AlignEnum.Center, string description = null,
-        string toolbar = null, string _fixeds = null, string _type = null)
+        string toolbar = null, string _fixeds = null, string _type = null, string _style = null, bool _edit = false)
     {
         this.NameAttr = nameattr;
         this.AlignAttr = alignattr;
@@ -81,5 +83,7 @@ public class ToolAttr : Attribute
         this.HideFiled = isShow;
         this.minWidth = minWidth;
         this.maxWidth = maxWidth;
+        this.Style = _style;
+        this.IsEdit = _edit;
     }
 }

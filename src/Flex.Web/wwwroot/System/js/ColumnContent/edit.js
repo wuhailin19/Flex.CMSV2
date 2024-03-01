@@ -17,6 +17,7 @@ ajaxHttp({
         model = result.content.Content;
         if (!result.content.NeedReview) {
             $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">立即提交</button>');
+            $('#bottomBtnbox').append('<button class="layui-btn layui-btn-sm layui-btn-danger btn_draft" data-event="draft">存草稿</button>');
             return false;
         }
         NeedReview = true;
@@ -83,6 +84,7 @@ layui.config(
                 StatusCode: 5,
                 ReviewStepId: ''
             };
+            var nowurl = location.href;
             ajaxHttp({
                 url: api + 'ColumnContent/CancelReview',
                 type: 'Post',
@@ -92,10 +94,10 @@ layui.config(
                 success: function (result) {
                     if (result.code == 200)
                         tips.showSuccess(result.msg);
-                    window.location.reload();
                 },
                 complete: function () { }
             })
+            return false;
         })
 
         ajaxHttp({
@@ -108,6 +110,13 @@ layui.config(
             },
             complete: function () { }
         })
+        var sliders = demojs.filter(item => item.tag == "slider");
+        if (sliders.length > 0) {
+            for (var i = 0; i < sliders.length; i++) {
+                if (model.hasOwnProperty(sliders[i].id))
+                    sliders[i]["defaultValue"] = model[sliders[i].id];
+            }
+        }
         var rates = demojs.filter(item => item.tag == "rate");
         if (rates.length > 0) {
             for (var i = 0; i < rates.length; i++) {
@@ -240,6 +249,11 @@ layui.config(
                     data[checkboxs[i].id] = getCheckboxValue(checkboxs[i].id);
                 }
             }
+            if (sliders.length > 0) {
+                for (var i = 0; i < sliders.length; i++) {
+                    data[sliders[i].id] = sliders[i].defaultValue;
+                }
+            }
             if (dateRanges.length > 0) {
                 for (var i = 0; i < dateRanges.length; i++) {
                     data[dateRanges[i].id] = data["start" + dateRanges[i].id] + " - " + data["end" + dateRanges[i].id];
@@ -252,14 +266,27 @@ layui.config(
             data.ParentId = parent_json.ParentId;
             data.Id = parent_json.Id;
         }
+
         //监听提交
         form.on('submit(formDemo)', function (data) {
             collectData(data.field);
             data.field.StatusCode = 1;
+            updateContent(data.field);
+            return false;
+        });
+
+        $('.btn_draft').on('click', function () {
+            var data = form.val('formTest');
+            collectData(data);
+            data.StatusCode = 2;
+            updateContent(data);
+            return false;
+        })
+        function updateContent(data) {
             ajaxHttp({
                 url: api + 'ColumnContent',
                 type: 'Post',
-                data: JSON.stringify(data.field),
+                data: JSON.stringify(data),
                 async: false,
                 success: function (json) {
                     if (json.code == 200) {
@@ -276,9 +303,7 @@ layui.config(
 
                 }
             })
-            //layer.msg(JSON.stringify(data.field), { icon: 6 });
-            return false;
-        });
+        }
         $('#globalDisable').on('click', function () {
             render.globalDisable();
         });

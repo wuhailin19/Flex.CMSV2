@@ -55,7 +55,7 @@
         })();
     var uploader;// WebUploader实例
     var extensionsf = options.isImage ? options.imageExtensions : options.FileExtensions
-    SizeLimit = 10, FullSizeLimit = 30;
+    SizeLimit = 20, FullSizeLimit = 60;
     function init() {
 
         $wrap.addClass("webUploader");

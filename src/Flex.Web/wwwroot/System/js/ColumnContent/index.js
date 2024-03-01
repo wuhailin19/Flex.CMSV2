@@ -66,6 +66,8 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Edit">编辑</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" id="setProperty">设置属性<i class="layui-icon layui-icon-down layui-font-12"></i></button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" id="cacelProperty">取消属性<i class="layui-icon layui-icon-down layui-font-12"></i></button>';
+        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Copy">复制</button>';
+        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Move">移动</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="History">修改历史</button>';
     }
     if (btnpermission.IsDelete)
@@ -83,6 +85,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
         , toolbar: toolbarhtml
         , limits: [1, 5, 10, 15, 20]
         , limit: 15
+        , cellExpandedMode: 'tips'
         , page: true //开启分页
         , response: {
             statusCode: 200
@@ -117,7 +120,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                     { id: 'IsTop', title: '置顶' },
                     { id: 'IsRecommend', title: '推荐' },
                     { id: 'IsHot', title: '热门' },
-                    { id: 'IsSlide', title: '焦点' },
+                    { id: 'IsSilde', title: '焦点' },
                     { id: 'IsHide', title: '隐藏' }
                 ],
                 // 菜单被点击的事件
@@ -125,7 +128,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                     var checkStatus = table.checkStatus(id)
                     var data = checkStatus.data; // 获取选中的数据
                     let ids = getIdsFromList(data);
-                    UpdateStatus(ids, obj.id, true);
+                    UpdateStatus(ids, obj.id, true, true);
                 }
             });
             // 取消属性
@@ -135,15 +138,15 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                     { id: 'IsTop', title: '取消置顶' },
                     { id: 'IsRecommend', title: '取消推荐' },
                     { id: 'IsHot', title: '取消热门' },
-                    { id: 'IsSlide', title: '取消焦点' },
-                    { id: 'IsHide', title: '显示' }
+                    { id: 'IsSilde', title: '取消焦点' },
+                    { id: 'IsHide', title: '取消隐藏' }
                 ],
                 // 菜单被点击的事件
                 click: function (obj) {
                     var checkStatus = table.checkStatus(id)
                     var data = checkStatus.data; // 获取选中的数据
                     let ids = getIdsFromList(data);
-                    UpdateStatus(ids, obj.id, false);
+                    UpdateStatus(ids, obj.id, false, true);
                 }
             });
         }
@@ -164,7 +167,24 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
     table.on('checkbox(test)', function (obj) {
 
     });
-    function UpdateStatus(ids, event, result) {
+    // 单元格编辑事件
+    table.on('edit(test)', function (obj) {
+        var field = obj.field; // 得到字段
+        var value = obj.value; // 得到修改后的值
+        var data = obj.data; // 得到所在行所有键值
+        // 值的校验
+        if (field === 'OrderId') {
+            if (!/[0-9]+$/.test(obj.value)) {
+                layer.tips('输入的排序号格式不正确，请重新编辑', this, { tips: 1 });
+                return obj.reedit(); // 重新编辑 -- v2.8.0 新增
+            }
+        }
+        value = parseInt(value);
+        
+        UpdateStatus(data.Id, field, value);
+       
+    });
+    function UpdateStatus(ids, event, result, reload) {
         if (ids == "") {
             layer.msg("选择一条数据", { icon: 5, time: 1000 })
             return;
@@ -179,18 +199,20 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
             dataType: 'json',
             success: function (result) {
                 if (result.code == 200) {
-                    //执行重载
-                    table.reload(tableid, {
-                        page: {
-                            curr: insTb.config.page.curr //刷新当前页码
-                        }
-                        , where: {
-                            ParentId: currentparentId,
-                            k: keyword.val(),
-                            timefrom: dateRanage[0],
-                            timeto: dateRanage[1]
-                        }
-                    });
+                    if (reload) {
+                        //执行重载
+                        table.reload(tableid, {
+                            page: {
+                                curr: insTb.config.page.curr //刷新当前页码
+                            }
+                            , where: {
+                                ParentId: currentparentId,
+                                k: keyword.val(),
+                                timefrom: dateRanage[0],
+                                timeto: dateRanage[1]
+                            }
+                        });
+                    }
                     tips.showSuccess(result.msg);
                 }
             },

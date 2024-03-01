@@ -2,6 +2,7 @@
 using Flex.Application.Contracts.Exceptions;
 using Flex.Core.Extensions.CommonExtensions;
 using Flex.Domain.Dtos.Role;
+using Flex.Domain.WhiteFileds;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections;
@@ -45,7 +46,7 @@ namespace Flex.Application.Services
 
             InitUpdateTable(table);
             //当前表中字段用于生成修改副本
-            var fileds = updatehistoryFields.ToList();
+            var fileds = ColumnContentUpdateFiledConfig.updatehistoryFields.ToList();
             foreach (var item in filedmodel)
             {
                 fileds.Add(item.FieldName);
@@ -57,7 +58,7 @@ namespace Flex.Application.Services
         {
             var keysToRemove = new List<object>();
             if (white_fileds.IsNullOrEmpty())
-                white_fileds = defaultFields.ToList();
+                white_fileds = ColumnContentUpdateFiledConfig.defaultFields.ToList();
             foreach (var item in table.Keys)
             {
                 if (white_fileds.Any(m => m.Equals(item.ToString(), StringComparison.OrdinalIgnoreCase)))
@@ -81,7 +82,7 @@ namespace Flex.Application.Services
             bool IsReview = true,
             bool IsCancelReview = false)
         {
-            var whitefields = new List<string> { "ParentId", "Id", "StatusCode", "ReviewStepId", "ReviewAddUser", "MsgGroupId" };
+            var whitefields = ColumnContentUpdateFiledConfig.reviewContentFields;
             if (table.Count == 0)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
@@ -101,7 +102,7 @@ namespace Flex.Application.Services
                 var result = (await _dapperDBContext.GetDynamicAsync("select ReviewAddUser from " + contentmodel.TableName + " where ParentId=@ParentId and Id=@Id", parameters)).FirstOrDefault();
                 if (result == null)
                     return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
-                if (result.ReviewAddUser != _claims.UserId && _claims.IsSystem)
+                if (result.ReviewAddUser != _claims.UserId && !_claims.IsSystem)
                 {
                     return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
                 }
@@ -119,20 +120,25 @@ namespace Flex.Application.Services
         }
 
         /// <summary>
-        /// 修改内容的属性状态或排序号
+        /// 简单修改内容不留存备份
         /// </summary>
         /// <param name="table"></param>
         /// <param name="IsReview"></param>
         /// <returns></returns>
-        public async Task<ProblemDetails<int>> UpdateContentStatus(
+        public async Task<ProblemDetails<int>> SimpleUpdateContent(
             Hashtable table,
-            bool IsReview = true)
+            bool IsReview = true,
+            List<string> whitefields = null)
         {
-            var whitefields = new List<string> { "ParentId", "OrderId", "Id", "IsTop", "Ids", "IsRecommend", "IsHot", "IsHide", "IsSilde" };
+            whitefields = whitefields ?? ColumnContentUpdateFiledConfig.simpleUpdateFields;
             if (table.Count == 0)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             if (table.GetValue("Ids").ToString().IsNullOrEmpty())
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            if (table.ContainsKey("OrderId"))
+            {
+                table.SetValue("OrderId", table["OrderId"].ToIntAndThrowException());
+            }
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
