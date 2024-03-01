@@ -605,7 +605,7 @@ hr.layui-border-black, hr.layui-border-blue, hr.layui-border-cyan, hr.layui-bord
 .layui-input-inline { display: inline-block; vertical-align: middle }
 .layui-form-item .layui-input-inline { float: left; width: 190px; margin-right: 10px }
 .layui-form-text .layui-input-inline { width: auto }
-.layui-form-mid { position: relative; float: left; display: block; padding: 9px 0 !important; line-height: 20px; margin-right: 10px }
+.layui-form-mid { position: relative; float: left; display: block; padding: 9px 5px !important; line-height: 20px; }
 .layui-form-danger + .layui-form-select .layui-input, .layui-form-danger:focus { border-color: #ff5722 !important; box-shadow: 0 0 0 3px rgba(255,87,34,.08) }
 .layui-input-prefix, .layui-input-split, .layui-input-suffix, .layui-input-suffix .layui-input-affix { position: absolute; right: 0; top: 0; padding: 0 10px; width: 35px; height: 100%; text-align: center; transition: all .3s; box-sizing: border-box }
 .layui-input-prefix { left: 0; border-radius: 2px 0 0 2px }

@@ -32,7 +32,7 @@ namespace Flex.Application.SqlServerSQLString
                                       "[IsHot] [bit] NOT NULL default 0," +
                                       "[IsHide] [bit] NOT NULL default 0," +
                                       "[IsSilde] [bit] NOT NULL default 0," +
-                                      "[OrderId] [int] NOT NULL," +
+                                      "[OrderId] [int] NOT NULL default 0," +
                                       "[StatusCode] [int] NOT NULL default 1," +
                                       "[ReviewStepId] [nvarchar](255) NULL," +
                                       "[ContentGroupId] [bigint] NULL," +
@@ -93,7 +93,7 @@ namespace Flex.Application.SqlServerSQLString
                 keyvar += "@" + myDE.Key.ToString() + ",";
                 commandParameters.Add(myDE.Key.ToString(), myDE.Value);
             }
-            builder.Append(key.Substring(0, key.Length - 1) + ",OrderId) values(" + keyvar.Substring(0, keyvar.Length - 1) + ",(select (MAX(OrderId)+1) from "+ TableName + "))");
+            builder.Append(key.Substring(0, key.Length - 1) + ",OrderId) values(" + keyvar.Substring(0, keyvar.Length - 1) + ",(select case when (MAX(OrderId)+1) is null then 0 else (MAX(OrderId)+1) end from " + TableName + "))");
             builder.Append(";SELECT SCOPE_IDENTITY();");
             return builder;
         }
