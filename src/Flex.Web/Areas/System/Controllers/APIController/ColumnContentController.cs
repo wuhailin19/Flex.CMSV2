@@ -46,7 +46,6 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 
         [HttpGet("ListAsync")]
         [Descriper(Name = "栏目内容列表分页数据")]
-        [AllowAnonymous]
         public async Task<string> ListAsync([FromQuery] ContentPageListParamDto model)
         {
             if (model == null)
@@ -75,7 +74,6 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 
         [HttpGet("GetContentById/{ParentId}/{Id}")]
         [Descriper(Name = "通过ParentId和Id获取栏目内容", IsFilter = true)]
-        [AllowAnonymous]
         public async Task<string> GetContentById(int ParentId, int Id)
         {
             if (Id == 0)

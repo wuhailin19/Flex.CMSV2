@@ -18,7 +18,6 @@ function setCheckboxValue(name, value) {
         $('input[name=' + name + '][value=' + arraybox[i] + ']').attr('checked', true)
     }
 }
-
 var HttpRequest = function (options) {
     var defaults = {
         type: 'get',

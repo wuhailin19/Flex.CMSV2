@@ -69,6 +69,7 @@
     <None Include="wwwroot\Scripts\layui\module\notice\notice.js" />
     <None Include="wwwroot\Scripts\layui\module\FormDesigner\Sortable.js" />
     <None Include="wwwroot\Scripts\layui\module\FormDesigner\Sortable.min.js" />
+    <None Include="wwwroot\Scripts\layui\module\translate\translate.js" />
     <None Include="wwwroot\System\htmlEditor\_ueditor\themes\default\fonts\iconfont.js" />
     <None Include="wwwroot\System\htmlEditor\_ueditor\themes\default\fonts\iconfont.svg" />
     <None Include="wwwroot\System\js\uploader\uploadsingle.js" />

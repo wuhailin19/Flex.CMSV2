@@ -1792,5 +1792,5 @@ html #layuicss-layer { display: none; position: absolute; width: 1989px }
     .layui-laydate-content td > div { font-size: 14px; }
     .layui-btn + .layui-btn{margin-left:0px;}
     .layui-form-pane .layui-input-block{left:0px;}
-    .layui-table-cell{padding:2px 3px;}
+    .layui-table-cell{padding:5px;}
 }

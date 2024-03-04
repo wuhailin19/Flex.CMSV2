@@ -1,10 +1,10 @@
 ﻿var elment;
 var layer;
+
 layui.use(['element', 'layer'], function () {
     elment = layui.element;
     layer = layui.layer;
     Init();
-
 })
 $('.loginout').on('click', function () {
     sessionStorage.removeItem('access_token');

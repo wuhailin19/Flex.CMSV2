@@ -14,6 +14,7 @@ namespace Flex.Domain.AutoMapper
                 .ForMember(a => a.id, b => b.MapFrom(c => c.Id))
                 .ForMember(a => a.icode, b => b.MapFrom(c => c.Icode))
                 .ForMember(a => a.parentid, b => b.MapFrom(c => c.ParentID))
+                .ForMember(a => a.OrderId, b => b.MapFrom(c => c.OrderId))
                 .ForMember(a => a.linkurl, b => b.MapFrom(c => c.LinkUrl))
                 .ForMember(a => a.ismenu, b => b.MapFrom(c => c.isMenu))
                 .ForMember(a => a.status, b => b.MapFrom(c => c.ShowStatus))

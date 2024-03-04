@@ -1,6 +1,5 @@
 ﻿using Flex.Core.Attributes;
 using Flex.Core.Config;
-using Flex.Domain.Dtos.IndexShortCut;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,12 +13,26 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         IUploadServices uploadServices;
         private IPictureServices _pictureServices;
         private IFileServices _fileServices;
-        public UploadController(IUploadServices uploadServices, IPictureServices pictureServices, IFileServices fileServices)
+        private IFileManageServices _fileManageServices;
+        public UploadController(IUploadServices uploadServices, IPictureServices pictureServices, IFileServices fileServices, IFileManageServices fileManageServices)
         {
             this.uploadServices = uploadServices;
             _pictureServices = pictureServices;
             _fileServices = fileServices;
+            _fileManageServices = fileManageServices;
         }
+        [HttpGet("GetFiles")]
+        [AllowAnonymous]
+        public string GetFiles(string path) {
+            //IFileManager fileManager = new ServiceCollection()
+            //  .AddSingleton<IFileProvider>(new HttpFileProvider("http://localhost:3721/files/dir1"))
+            //  .AddSingleton<IFileManager, FileManager>()
+            //  .BuildServiceProvider()
+            //  .GetService<IFileManager>();
+            var result = _fileManageServices.GetDirectoryByPath(path);
+            return Success(result);
+        }
+
         [HttpGet("Config")]
         [AllowAnonymous]
         [Descriper(IsFilter = true)]

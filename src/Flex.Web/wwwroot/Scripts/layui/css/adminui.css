@@ -270,3 +270,6 @@ html { background-color: rgb(233, 233, 235); color: #666 }
     .layui-layout-admin .layui-body .layadmin-tabsbody-item { -webkit-overflow-scrolling: touch; overflow: auto }
     .layui-layout-admin .layui-body { top: 50px; left:0px;}
 }
+
+
+#translate{position:fixed;z-index:11111111111;}

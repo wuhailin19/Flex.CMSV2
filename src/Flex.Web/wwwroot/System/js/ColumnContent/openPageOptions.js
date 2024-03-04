@@ -115,6 +115,7 @@ var defaultOptions = {
         //iframe窗
         layer.open({
             type: 2,
+            skin: 'layui-layer-lan',
             title: '历史修改',
             shadeClose: true,
             shade: false,
