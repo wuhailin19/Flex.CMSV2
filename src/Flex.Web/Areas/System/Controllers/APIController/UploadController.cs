@@ -1,5 +1,6 @@
 ﻿using Flex.Core.Attributes;
 using Flex.Core.Config;
+using Flex.Domain.Dtos.Upload;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,21 +31,6 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                 return Fail("");
             return result;
         }
-        [HttpGet("TestOptions")]
-        [Descriper(IsFilter = true)]
-        public string TestOptions()
-        {
-            List<Options> options = new List<Options>
-            {
-                new Options()
-                {
-                    text = "1",
-                    value = "Test",
-                    @checked = false,
-                }
-            };
-            return Success(options);
-        }
         [HttpPost("UploadFile")]
         [Descriper(Name = "上传文件")]
         public string UploadFile(IFormFileCollection file)
@@ -57,9 +43,9 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 
         [HttpPost("UploadFilesToPath")]
         [Descriper(Name = "上传文件")]
-        public string UploadFilesToPath(IFormFileCollection file, string path)
+        public string UploadFilesToPath([FromForm] UploadFileToPathDto uploadFileToPathDto)
         {
-            var result = _fileServices.UploadFilesToPathService(file, path);
+            var result = _fileServices.UploadFilesToPathService(uploadFileToPathDto.file, uploadFileToPathDto.path);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
             return Success(ServerConfig.FileServerUrl + result.Detail);

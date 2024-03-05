@@ -121,7 +121,8 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
         that.layBody = options.elem.find('.fm_body');
         that.layPathBar = options.elem.find('.path_bar');
         that.layToolBar = options.elem.find('.tool_bar');
-        that.pullData(that.page); //请求数据
+        //that.pullData(that.page); //请求数据
+        that.updatePathBar();
         that.events(); //事件
     }
 
@@ -150,7 +151,7 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
 
             that.loading();
 
-            $.ajax({
+            ajaxHttp({
                 type: options.method || 'get',
                 url: options.url,
                 contentType: options.contentType,
@@ -215,7 +216,7 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
             _content += '<li style="" data-type="' + _type + '" data-index="' + i + '">' +
                 '<div class="content" align="center">' +
                 _img +
-                '<p class="layui-elip" title="' + v.name + '">' + v.name + ' </p>' +
+                '<p class="layui-elip" title="' + v.name + '">' + v.name + '<br/>' + v.lastModify + (_type == 'DIR' ? '' : '<br/>' +v.length) + '</p>' +
                 '</div>' +
                 '</li>';
         });
@@ -329,7 +330,6 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
                 'fileManager', eventType + '(' + filter + ')'
                 , { obj: othis, path: fm.dirRoot[fm.dirRoot.length - 1]['path'] }
             );
-            // console.log('uploadfile');
         });
         //新建文件夹
         that.layToolBar.on('click', '#new_dir', function () {

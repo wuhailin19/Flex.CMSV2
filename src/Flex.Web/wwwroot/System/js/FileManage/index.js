@@ -5,12 +5,15 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
         , upload = layui.upload
         , layer = layui.layer;
 
-    
+
     $('title').html($('title').html() + ' version:' + fileManager.v);
     var upIns = upload.render({
         elem: '#test1' //绑定元素
-        , url: 'data.php?action=upload' //上传接口
-        , field: 'file[]'
+        , url: api + 'Upload/UploadFilesToPath' //上传接口
+        , headers: httpTokenHeaders
+        , accept: 'file'
+        , exts: 'jpg|png|gif|bmp|jpeg|svg|css|js|html|txt|less'
+        , field: 'file'
     })
     fileManager.render({
         elem: '#fileManager'
@@ -18,9 +21,9 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
         , id: 'fmTest'
         , btn_upload: true
         , btn_create: true
-        , data: {  }
+        , data: {}
         , where: { path: "/" }
-        , url: '/api/FileManage/GetFiles'
+        , url: api + 'FileManage/GetFiles'
         , thumb: { 'nopic': '/Scripts/layui/module/filemanage/ico/null-100x100.jpg', 'width': 100, 'height': 100 }
         , parseData: function (res) {
             /*
@@ -56,7 +59,7 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
                 shadeClose: true,
                 maxmin: true, //开启最大化最小化按钮
                 area: ['90%', '90%'],
-                content: "/system/FileManage/Preview?path="+data.path
+                content: "/system/FileManage/Preview?path=" + data.path
             });
         }
     });
@@ -89,6 +92,8 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
             case "png": return true;
             case "gif": return true;
             case "jpg": return true;
+            case "jpeg": return true;
+            case "ico": return true;
             case "svg": return true;
             case "image": return true;
             default: return false;
@@ -101,7 +106,10 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
         //更改上传组件参数
         upIns.config.data = { 'path': obj.path };
         upIns.config.done = function (res) {
-            fileManager.reload('fmTest');
+            if (res.code == 200)
+                fileManager.reload('fmTest');
+            else
+                tips.showFail(res.msg);
         }
         var e = document.createEvent("MouseEvents");
         e.initEvent("click", true, true);
@@ -112,11 +120,17 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
         //obj.obj 当前对象
         //obj.folder 文件夹名称
         //obj.path 路径
-        e = JSON.parse(e);
-        $.post('data.php?action=folder', { 'folder': obj.folder, 'path': obj.path }, function (e) {
-            layer.msg(e.msg);
-            if (e.code == 1) {
-                fileManager.reload('fmTest');
+        //e = JSON.parse(e);
+        ajaxHttp({
+            url: api + 'FileManage/CreateDirectory',
+            type: 'post',
+            data: JSON.stringify({ folder: obj.folder, path: obj.path }),
+            success: function (res) {
+                if (res.code == 200) {
+                    fileManager.reload('fmTest');
+                }
+                else
+                    tips.showFail(res.msg);
             }
         })
     });

@@ -33,6 +33,25 @@ namespace Flex.Application.Services
                 ? (Func<string, string>)(name => $"{schema}://{host}:{port}{pathBase}{path}/{name}")
                 : name => $"{schema}://{host}:{port}{pathBase}{path}";
         }
+
+        public ProblemDetails<string> CreateDirectory(string path, string dirname)
+        {
+            var dirpath = _env.WebRootPath + path.TrimEnd('/') + "/" + dirname;
+            if (Directory.Exists(dirpath))
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "文件夹已存在");
+            }
+            try
+            {
+                Directory.CreateDirectory(dirpath);
+                return new ProblemDetails<string>(HttpStatusCode.OK, "创建成功");
+            }
+            catch (Exception)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "文件夹创建失败");
+            }
+        }
+
         public List<FileModel> GetDirectoryByPath(string path)
         {
             var dirContents = _fileProvider.GetDirectoryContents(path);
@@ -51,6 +70,7 @@ namespace Flex.Application.Services
                     fileModel.filepath = item.PhysicalPath;
                     fileModel.name = item.Name;
                     fileModel.path = item.RelatePath;
+                    fileModel.lastModify = item.LastModified.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss");
                     var extension = Path.GetExtension(item.Name);
 
                     fileModel.thumb = item.RelatePath;

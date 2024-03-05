@@ -2,6 +2,7 @@
 //var api = route_href.split('/')[0] + "//" + route_href.split('/')[2]+"/";
 var api = "http://127.0.01:5003/api/";
 var SystempageRoute = "/System/";
+
 function getCheckboxValue(name) {
     var arraybox = [];
     $('input[name=' + name + ']:checked').each(function () {
@@ -18,6 +19,7 @@ function setCheckboxValue(name, value) {
         $('input[name=' + name + '][value=' + arraybox[i] + ']').attr('checked', true)
     }
 }
+
 var HttpRequest = function (options) {
     var defaults = {
         type: 'get',
@@ -89,9 +91,9 @@ var httpTokenHeaders = {
 }
 
 var global_notice;
-layui.config({
-    base: '/Scripts/layui/module/notice/' //layui自定义layui组件目录
-}).use('notice', function () {
+layui.extend({ 'notice': '/Scripts/layui/module/notice/notice' });
+
+layui.use('notice', function () {
     global_notice = layui.notice;
     // 初始化配置，同一样式只需要配置一次，非必须初始化，有默认配置
     global_notice.options = {

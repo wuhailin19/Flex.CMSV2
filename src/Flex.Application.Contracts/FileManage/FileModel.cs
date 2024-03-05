@@ -13,6 +13,7 @@ namespace Flex.Application.Contracts.FileManage
         public string filepath { set; get; }
         public string type { set; get; }
         public string thumb { set; get; }
+        public string lastModify { set; get; }
         public int isdir { set; get; }
         public string length { set; get; }
     }

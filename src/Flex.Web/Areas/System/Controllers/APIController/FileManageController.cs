@@ -1,6 +1,5 @@
 ﻿using Flex.Core.Attributes;
-using Flex.Core.Config;
-using Microsoft.AspNetCore.Authorization;
+using Flex.Domain.Dtos.FileManage;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flex.Web.Areas.System.Controllers.APIController
@@ -16,10 +15,20 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             _fileManageServices = fileManageServices;
         }
         [HttpGet("GetFiles")]
-        [AllowAnonymous]
-        public string GetFiles(string path="/") {
+        public string GetFiles(string path = "/")
+        {
             var result = _fileManageServices.GetDirectoryByPath(path);
-            return Success(result.OrderByDescending(m=>m.isdir).ThenBy(m=>m.name));
+            return Success(result.OrderByDescending(m => m.isdir).ThenBy(m => m.name));
+        }
+
+        [HttpPost("CreateDirectory")]
+        public async Task<string> CreateDirectory()
+        {
+            var model = await GetModel<DirectoryQueryDto>();
+            var result = _fileManageServices.CreateDirectory(model.path, model.folder);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
         }
     }
 }
