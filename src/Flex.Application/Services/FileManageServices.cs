@@ -51,9 +51,9 @@ namespace Flex.Application.Services
                     fileModel.filepath = item.PhysicalPath;
                     fileModel.name = item.Name;
                     fileModel.path = item.RelatePath;
-                    var extension = Path.GetExtension(fileModel.path);
+                    var extension = Path.GetExtension(item.Name);
 
-                    fileModel.thumb = IsImage(extension) ? item.RelatePath + item.Name.Replace(extension, "_200x200" + extension) : string.Empty;
+                    fileModel.thumb = item.RelatePath;
                     fileModel.isdir = item.IsDirectory ? 1 : 0;
                     decimal sizef = item.Length / 1024;
                     fileModel.length = (sizef > 1024 ? decimal.Round(sizef / 1024, 2) + "M" : decimal.Round(sizef, 2) + "KB").ToString();

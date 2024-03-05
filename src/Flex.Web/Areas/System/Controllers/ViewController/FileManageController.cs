@@ -11,5 +11,8 @@ namespace Flex.Web.Areas.System.Controllers.ViewController
         public IActionResult Index() { 
             return View();
         }
+        public IActionResult Preview() { 
+            return View();
+        }
     }
 }

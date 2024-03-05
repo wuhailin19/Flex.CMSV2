@@ -107,7 +107,7 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
             '</div>' +
             '</div><hr><div class="layui-card-body">' +
             '<div class="file-body layui-form" style="">' +
-            '<ul class="fileManager layui-row fm_body layui-col-space10" >' +
+            '<ul class="fileManager layui-row fm_body layui-col-space10" id="picmanager">' +
             '</ul>' +
             '</div>' +
             '<hr><div ><div class="layui_page_' + options.id + '" id="layui_page_' + options.id + '"></div></div></div>';
@@ -205,14 +205,14 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
                     break;
                 default:
 
-                    if (v.type == 'png' || v.type == 'gif' || v.type == 'jpg' || v.type == 'image') {
-                        _img = '<img src="' + v.thumb + '" width="' + options.thumb['width'] + '" height="' + options.thumb['height'] + '" onerror=\'this.src="' + options.thumb['nopic'] + '"\'  />';
+                    if (v.type == 'png' || v.type == 'gif' || v.type == 'jpg' || v.type == 'svg' || v.type == 'image') {
+                        _img = '<img class="view_item" src="' + v.thumb + '" width="' + options.thumb['width'] + '" height="' + options.thumb['height'] + '" onerror=\'this.src="' + options.thumb['nopic'] + '"\'  />';
                     } else {
                         _img = '<div  style="width:' + options.thumb['width'] + 'px;height:' + options.thumb['height'] + 'px;line-height:' + options.thumb['height'] + 'px"><img src="' + options.icon_url + v.type + '.png"  onerror=\'this.src="' + options.thumb['nopic'] + '"\' /></div>';
                     }
                     break;
             }
-            _content += '<li style="display:inline-block" data-type="' + _type + '" data-index="' + i + '">' +
+            _content += '<li style="" data-type="' + _type + '" data-index="' + i + '">' +
                 '<div class="content" align="center">' +
                 _img +
                 '<p class="layui-elip" title="' + v.name + '">' + v.name + ' </p>' +
@@ -263,7 +263,7 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
             , options = that.config;
         //请求数据
         let dir_cur = fm.dirRoot[fm.dirRoot.length - 1];
-        console.log(dir_cur)
+
         options.where = { 'path': dir_cur['path'] }
         let _rs = that.pullData(1);
         // console.log(_rs)
@@ -273,7 +273,7 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
         fm.dirRoot.map(function (item, index, arr) {
             let icon = index == 0 ? 'layui-icon-more-vertical' : 'layui-icon-right';
             let html = '<i class="layui-icon ' + icon + '"></i>' +
-                '<a  data-path="' + item.path + '" data-name="' + item.name + '" >' + item.name + '</a>'
+                '<a href="javascript:;" class="backpath" data-path="' + item.path + '" data-name="' + item.name + '" >' + item.name + '</a>'
             that.layPathBar.append(html);
         })
 
@@ -290,15 +290,26 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
         that.layBody.on('click', 'li', function () { //单击行
             setPicEvent.call(this, 'pic');
         });
+        $(document).on('click', 'a.backpath', function () { //单击面包屑导航
+            var othis = $(this);
+            var index = $('.backpath').index($(this));
+
+            fm.dirRoot.splice(index+1);
+            if (fm.dirRoot.length == 0) {
+                fm.dirRoot.push({ 'path': '/', 'name': '根目录' });
+            }
+            
+            that.updatePathBar();
+        });
         //文件夹事件
         that.layBody.on('click', 'li[data-type=DIR]', function () { //单击行
             var othis = $(this);
             var data = fm.cache[options.id];
             var index = othis.data('index');
             data = data[index] || {};
-
             //导航图标
             fm.dirRoot.push({ 'path': data.path, 'name': data.name });
+            
             that.updatePathBar();
         });
         //返回上一级目录
@@ -308,7 +319,6 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
 
             fm.dirRoot.length > 1 && fm.dirRoot.pop()
             that.updatePathBar();
-
             // console.log('back');
         });
         //上传文件

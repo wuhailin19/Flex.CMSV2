@@ -23,6 +23,29 @@ namespace Flex.Application.Services
             _env = env;
             basePath = _env.WebRootPath;
         }
+        public ProblemDetails<string> UploadFilesToPathService(IFormFileCollection input, string path)
+        {
+            path = path.TrimStart('/');
+            if (input == null) return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadFail.GetEnumDescription()); ;
+            var file = input[0];
+            if (!FileCheckHelper.IsAllowedExtension(file))
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadTypeDenied.GetEnumDescription());
+            if (!Directory.Exists(Path.Combine(basePath + path)))
+                Directory.CreateDirectory(Path.Combine(basePath + path));
+            string uniqueFileName = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString() + new Random().Next(1000, 9999).ToString() + Path.GetExtension(file.FileName);
+            string filePath = path + "/" + uniqueFileName;
+            string savePath = Path.Combine(basePath + filePath);
+            try
+            {
+                using FileStream fileStream = new FileStream(savePath, FileMode.Create);
+                file.CopyTo(fileStream);
+                return new ProblemDetails<string>(HttpStatusCode.OK, filePath);
+            }
+            catch (Exception ex)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
         public ProblemDetails<string> UploadFilesService(IFormFileCollection input)
         {
             if (input == null) return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadFail.GetEnumDescription()); ;
@@ -33,7 +56,7 @@ namespace Flex.Application.Services
                 Directory.CreateDirectory(Path.Combine(basePath + uploadsFolder));
             string uniqueFileName = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString() + new Random().Next(1000, 9999).ToString() + Path.GetExtension(file.FileName);
             string filePath = uploadsFolder + "/" + uniqueFileName;
-            string savePath= Path.Combine(basePath + filePath);
+            string savePath = Path.Combine(basePath + filePath);
             try
             {
                 using FileStream fileStream = new FileStream(savePath, FileMode.Create);

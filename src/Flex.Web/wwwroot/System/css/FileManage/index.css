@@ -1,0 +1,11 @@
+﻿.fileManager { display: flex; flex-wrap: wrap; }
+.fileManager li { width: 10%; box-sizing: border-box; }
+.fileManager .layui-elip { height: 40px; line-height: 20px; overflow: unset; white-space: unset; word-break: break-all;}
+
+@media screen and (max-width:1200px) {
+    .fileManager li { width: 20%; }
+}
+
+@media screen and (max-width:800px) {
+    .fileManager li { width: 50%; }
+}

@@ -1,0 +1,47 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>dragMove 图片查看器 - layui 第三方扩展组件</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../../layui/css/layui.css" media="all">
+</head>
+<body>
+
+<div style="padding: 50px;">
+  <div class="gdc-tx-photo" id="imgDragmove">
+    <img src="images/1920x1080.jpg" height="200" alt="图片名">
+    <img src="images/1920x400.jpg" height="200" alt="图片名">
+    <img src="images/400x900.jpg" height="200" alt="图片名">
+    <img src="images/400x400.jpg" height="200" alt="图片名">
+  </div>
+</div>
+
+
+<script src="../../../layui/layui.js"></script>
+<script>
+layui.config({
+  base: '../../../layui_exts/' //配置 layui 第三方扩展组件存放的基础目录
+}).extend({
+  dragMove: 'dragMove/dragMove'
+}).use(['dragMove'], function(){
+  var dragMove = layui.dragMove;
+  
+  //执行示例
+  dragMove.render({
+    elem: "#imgDragmove", //指向图片的父容器
+    layerArea: ["960px","720px"], //弹窗的宽高，同layer的area，默认["960px","720px"]
+    layerShade: 0.6, //遮罩的透明度，同layer的shade，默认0.6
+    layerMove: false, //触发拖动的元素，同layer的move，这里默认禁止，可设置为'.layui-layer-title'
+    maxZoom: 1 //图片能放大的最大倍数，默认1倍
+  });
+});
+</script>
+</body>
+</html>
+
+

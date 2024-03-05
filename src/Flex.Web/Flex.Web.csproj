@@ -65,6 +65,7 @@
     <None Include="wwwroot\Scripts\core\myflow-min\myflow.editors.js" />
     <None Include="wwwroot\Scripts\core\myflow-min\myflow.jpdl4.js" />
     <None Include="wwwroot\Scripts\core\myflow-min\myflow.js" />
+    <None Include="wwwroot\Scripts\layui\module\dragMove\dragMove.js" />
     <None Include="wwwroot\Scripts\layui\module\notice\.DS_Store" />
     <None Include="wwwroot\Scripts\layui\module\notice\notice.js" />
     <None Include="wwwroot\Scripts\layui\module\FormDesigner\Sortable.js" />

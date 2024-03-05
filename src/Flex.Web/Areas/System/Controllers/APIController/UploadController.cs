@@ -13,24 +13,11 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         IUploadServices uploadServices;
         private IPictureServices _pictureServices;
         private IFileServices _fileServices;
-        private IFileManageServices _fileManageServices;
-        public UploadController(IUploadServices uploadServices, IPictureServices pictureServices, IFileServices fileServices, IFileManageServices fileManageServices)
+        public UploadController(IUploadServices uploadServices, IPictureServices pictureServices, IFileServices fileServices)
         {
             this.uploadServices = uploadServices;
             _pictureServices = pictureServices;
             _fileServices = fileServices;
-            _fileManageServices = fileManageServices;
-        }
-        [HttpGet("GetFiles")]
-        [AllowAnonymous]
-        public string GetFiles(string path) {
-            //IFileManager fileManager = new ServiceCollection()
-            //  .AddSingleton<IFileProvider>(new HttpFileProvider("http://localhost:3721/files/dir1"))
-            //  .AddSingleton<IFileManager, FileManager>()
-            //  .BuildServiceProvider()
-            //  .GetService<IFileManager>();
-            var result = _fileManageServices.GetDirectoryByPath(path);
-            return Success(result);
         }
 
         [HttpGet("Config")]
@@ -63,6 +50,16 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         public string UploadFile(IFormFileCollection file)
         {
             var result = _fileServices.UploadFilesService(file);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(ServerConfig.FileServerUrl + result.Detail);
+        }
+
+        [HttpPost("UploadFilesToPath")]
+        [Descriper(Name = "上传文件")]
+        public string UploadFilesToPath(IFormFileCollection file, string path)
+        {
+            var result = _fileServices.UploadFilesToPathService(file, path);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
             return Success(ServerConfig.FileServerUrl + result.Detail);

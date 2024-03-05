@@ -74,9 +74,9 @@ $('.layui-card-box').on('click', 'a.addnewIframe', function () {
     let href = $elemt.data('href');
     let text = $elemt.data('cite');
     var isaspx = $elemt.data('linkstatus');
-    if (isaspx == false) {
-        href = api + href;
-    }
+    //if (isaspx == false) {
+    //    href = api + href;
+    //}
     var index = layer.open({
         type: 2,
         title: text,
@@ -176,7 +176,7 @@ var add_more = {
             type: 1,
             title: '选择快捷方式',
             skin: 'layui-layer-rim', //加上边框
-            area: ['50%', ''], //宽高
+            area: ['90%', ''], //宽高
             content: contents,
             success: function () {
                 $('.layui-layer-content .layui-card-box .boxchart a.LinkA').click(function () {

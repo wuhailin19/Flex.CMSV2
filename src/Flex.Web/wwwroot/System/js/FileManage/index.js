@@ -4,6 +4,8 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
         , $ = layui.$
         , upload = layui.upload
         , layer = layui.layer;
+
+    
     $('title').html($('title').html() + ' version:' + fileManager.v);
     var upIns = upload.render({
         elem: '#test1' //绑定元素
@@ -44,10 +46,54 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
         //obj.obj 当前对象
         //obj.data 当前图片数据
         var data = obj.data;
-        layer.alert(JSON.stringify(data), {
-            title: '当前数据：'
-        });
+
+        if (IsImage(data.type))
+            OpenImage(data);
+        else if (IsCode(data.type)) {
+            layer.open({
+                type: 2,
+                title: data.name,
+                shadeClose: true,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['90%', '90%'],
+                content: "/system/FileManage/Preview?path="+data.path
+            });
+        }
     });
+    function OpenImage(data) {
+        layer.photos({
+            photos: {
+                "title": "", // 相册标题
+                "start": 0, // 初始显示的图片序号，默认 0
+                "data": [   // 相册包含的图片，数组格式
+                    {
+                        "alt": data.name,
+                        "src": data.path, // 原图地址
+                        "thumb": data.path // 缩略图地址
+                    },
+                ]
+            }
+        });
+    }
+    function IsCode(type) {
+        switch (type) {
+            case "html": return true;
+            case "css": return true;
+            case "js": return true;
+            case "map": return true;
+            default: return false;
+        }
+    }
+    function IsImage(type) {
+        switch (type) {
+            case "png": return true;
+            case "gif": return true;
+            case "jpg": return true;
+            case "svg": return true;
+            case "image": return true;
+            default: return false;
+        }
+    }
     //监听图片上传事件
     fileManager.on('uploadfile(test)', function (obj) {
         //obj.obj 当前对象
