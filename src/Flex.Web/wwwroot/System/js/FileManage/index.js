@@ -62,6 +62,16 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
                 content: "/system/FileManage/Preview?path=" + data.path
             });
         }
+        else if (data.type=="mp4"){
+            layer.open({
+                type: 2,
+                title: data.name,
+                shadeClose: true,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['90%', '90%'],
+                content: data.path
+            });
+        }
     });
     function OpenImage(data) {
         layer.photos({

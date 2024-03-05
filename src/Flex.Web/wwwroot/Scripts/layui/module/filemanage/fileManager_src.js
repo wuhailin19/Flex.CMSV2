@@ -291,10 +291,9 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
         that.layBody.on('click', 'li', function () { //单击行
             setPicEvent.call(this, 'pic');
         });
-        $(document).on('click', 'a.backpath', function () { //单击面包屑导航
+        that.layPathBar.on('click', 'a.backpath', function () { //单击面包屑导航
             var othis = $(this);
             var index = $('.backpath').index($(this));
-
             fm.dirRoot.splice(index+1);
             if (fm.dirRoot.length == 0) {
                 fm.dirRoot.push({ 'path': '/', 'name': '根目录' });
