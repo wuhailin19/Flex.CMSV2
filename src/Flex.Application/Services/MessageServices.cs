@@ -111,6 +111,8 @@ namespace Flex.Application.Services
                 _unitOfWork.ExecuteSqlCommand(updatesql);
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
             }
+
+            
             messagemodel.ToUserId = step.stepMan;
             messagemodel.ToRoleId = step.stepRole;
             messagemodel.FlowId = step.flowId;
@@ -129,6 +131,7 @@ namespace Flex.Application.Services
             var AddUser = rauer?.ToString() ?? string.Empty;
 
             var endmsg = await msgRepository.GetFirstOrDefaultAsync(m => m.MsgGroupId == MsgGroupId && m.IsEnd, orderBy);
+            //判断当前流程是否已结束
             if (endmsg != null)
             {
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewAlreadyComplete.GetEnumDescription());
@@ -138,6 +141,14 @@ namespace Flex.Application.Services
             string result_msg = ErrorCodes.ReviewCreateSuccess.GetEnumDescription();
             if (MsgGroupId == 0 && fromstep.isStart != StepProperty.Start)
             {
+                //判断有无当前步骤审核权限
+                if (!_claims.IsSystem
+                    && !("," + fromstep.stepMan + ",").Contains(_claims.UserId.ToString())
+                    && !("," + fromstep.stepRole + ",").Contains(_claims.UserRole.ToString()))
+                {
+                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+                }
+
                 updatesql = _sqlTableServices.UpdateContentReviewStatus(contentmodel.TableName, model.ContentId, StatusCode.PendingApproval, string.Empty);
                 _unitOfWork.ExecuteSqlCommand(updatesql);
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewRest.GetEnumDescription());
@@ -164,7 +175,7 @@ namespace Flex.Application.Services
                 messagemodel.IsEnd = true;
                 messagemodel.ToUserId = AddUser;
                 messagemodel.MessageCate = MessageCate.Approved;
-                model.BaseFormContent.SetValue("ReviewAddUser",0);
+                model.BaseFormContent.SetValue("ReviewAddUser", 0);
                 InitContentReviewInfo(model.BaseFormContent, 0, StatusCode.Enable, string.Empty);
             }
             //审批驳回 设置内容为草稿

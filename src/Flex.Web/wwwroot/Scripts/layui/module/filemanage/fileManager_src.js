@@ -2,6 +2,8 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
     var $ = layui.jquery,
         layer = layui.layer,
         laypage = layui.laypage;
+
+
     //外部接口
     var fm = {
         config: { 'test': 'test', 'thumb': { 'nopic': '', width: 100, height: 100 }, icon_url: '/Scripts/layui/module/filemanage/ico/', btn_upload: true, btn_create: true }
@@ -86,12 +88,12 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
             delete options.page.elem;
             delete options.page.jump;
         }
-
         if (!options.elem[0]) return that;
         //渲染主体
         var _btn = ''
         if (options.btn_create) {
-            _btn += '<button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="new_dir">建文件夹</button>';
+            _btn += '<button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="new_dir">新建文件夹</button>';
+            _btn += '<button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="rename_dir">重命名</button>';
         }
         if (options.btn_upload) {
             _btn += '<button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="uploadfile">上传文件</button>';
@@ -196,12 +198,20 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
 
         //渲染数据
         var _content = ''
+        if (fm.dirRoot.length > 1) {
+            _content += '<li style="" data-type="DIR" data-index="-1">' +
+                '<div class="content" align="center">' +
+                '<div class="contentbox noborder"  style="width:' + options.thumb['width'] + 'px;height:' + options.thumb['height'] + 'px;line-height:' + options.thumb['height'] + 'px"><img src="/Scripts/layui/module/filemanage/ico/dir.png" style="vertical-align:middle;"></div>' +
+                '<p class="layui-elip" title="上一级">...<br/>上一级目录</p>' +
+                '</div>' +
+                '</li>';
+        }
         layui.each(data, function (i, v) {
             let _img, _type;
             _type = v.type;
             switch (v.type) {
                 case 'directory':
-                    _img = '<div  style="width:' + options.thumb['width'] + 'px;height:' + options.thumb['height'] + 'px;line-height:' + options.thumb['height'] + 'px"><img src="/Scripts/layui/module/filemanage/ico/dir.png" style="vertical-align:middle;"></div>';
+                    _img = '<div class="contentbox"  style="width:' + options.thumb['width'] + 'px;height:' + options.thumb['height'] + 'px;line-height:' + options.thumb['height'] + 'px"><img src="/Scripts/layui/module/filemanage/ico/dir.png" style="vertical-align:middle;"></div>';
                     _type = 'DIR';
                     break;
                 default:
@@ -209,14 +219,14 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
                     if (v.type == 'png' || v.type == 'gif' || v.type == 'jpg' || v.type == 'svg' || v.type == 'image') {
                         _img = '<img class="view_item" src="' + v.thumb + '" width="' + options.thumb['width'] + '" height="' + options.thumb['height'] + '" onerror=\'this.src="' + options.thumb['nopic'] + '"\'  />';
                     } else {
-                        _img = '<div  style="width:' + options.thumb['width'] + 'px;height:' + options.thumb['height'] + 'px;line-height:' + options.thumb['height'] + 'px"><img src="' + options.icon_url + v.type + '.png"  onerror=\'this.src="' + options.thumb['nopic'] + '"\' /></div>';
+                        _img = '<div class="contentbox"  style="width:' + options.thumb['width'] + 'px;height:' + options.thumb['height'] + 'px;line-height:' + options.thumb['height'] + 'px"><img src="' + options.icon_url + v.type + '.png"  onerror=\'this.src="' + options.thumb['nopic'] + '"\' /></div>';
                     }
                     break;
             }
             _content += '<li style="" data-type="' + _type + '" data-index="' + i + '">' +
                 '<div class="content" align="center">' +
                 _img +
-                '<p class="layui-elip" title="' + v.name + '">' + v.name + '<br/>' + v.lastModify + (_type == 'DIR' ? '' : '<br/>' +v.length) + '</p>' +
+                '<p class="layui-elip" title="' + v.name + '">' + v.name + '<br/>' + v.lastModify + (_type == 'DIR' ? '' : '<br/>' + v.length) + '</p>' +
                 '</div>' +
                 '</li>';
         });
@@ -287,31 +297,93 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
             , _BODY = $('body')
             , dict = {}
             , filter = options.elem.attr('lay-filter');
-        //文件事件
+
+        var fileclickid = 1;
+        var filetimer = null;
+        //文件单击事件
         that.layBody.on('click', 'li', function () { //单击行
-            setPicEvent.call(this, 'pic');
+            $(this).addClass('active').siblings().removeClass('active');
+            if (fileclickid == 1) {
+                startTime = new Date().getTime();
+                fileclickid++;
+                filetimer = setTimeout(function () {
+                    // 单击事件触发
+                    fileclickid = 1;
+                }, 300)
+            }
+            if (fileclickid == 2) {
+                fileclickid++;
+            } else {
+                var endTime = new Date().getTime();
+                if ((endTime - startTime) < 300) {
+                    // 双击事件
+                    setPicEvent.call(this, 'picdb');
+                    fileclickid = 1;
+                    clearTimeout(filetimer);
+                }
+            }
         });
         that.layPathBar.on('click', 'a.backpath', function () { //单击面包屑导航
             var othis = $(this);
             var index = $('.backpath').index($(this));
-            fm.dirRoot.splice(index+1);
+            fm.dirRoot.splice(index + 1);
             if (fm.dirRoot.length == 0) {
                 fm.dirRoot.push({ 'path': '/', 'name': '根目录' });
             }
-            
             that.updatePathBar();
         });
-        //文件夹事件
+        var clickid = 1;
+        var timer = null;
+        //文件夹单击事件
         that.layBody.on('click', 'li[data-type=DIR]', function () { //单击行
+
             var othis = $(this);
             var data = fm.cache[options.id];
             var index = othis.data('index');
-            data = data[index] || {};
-            //导航图标
-            fm.dirRoot.push({ 'path': data.path, 'name': data.name });
-            
-            that.updatePathBar();
+
+            if (clickid == 1) {
+                startTime = new Date().getTime();
+                clickid++;
+                timer = setTimeout(function () {
+                    // 单击事件触发
+                    if (othis.data('type') != 'DIR') return; //不触发事件
+                    data = data[index] || {};
+                    layui.event.call(this,
+                        'fileManager', 'dir(' + filter + ')'
+                        , { obj: othis, data: data }
+                    );
+                    clickid = 1;
+                }, 300)
+            }
+
+            if (clickid == 2) {
+                clickid++;
+            } else {
+                var endTime = new Date().getTime();
+                if ((endTime - startTime) < 300) {
+                    // 双击事件
+                    if (index == "-1") {
+                        fm.dirRoot.length > 1 && fm.dirRoot.pop()
+                        that.updatePathBar();
+                        return false;
+                    }
+                    data = data[index] || {};
+                    //导航图标
+                    fm.dirRoot.push({ 'path': data.path, 'name': data.name });
+                    that.updatePathBar();
+
+                    clickid = 1;
+                    clearTimeout(timer);
+                }
+            }
         });
+        //文件夹事件
+        //that.layBody.on('dblclick', 'li[data-type=DIR]', function () { //单击行
+        //    var othis = $(this);
+        //    var data = fm.cache[options.id];
+        //    var index = othis.data('index');
+
+        //});
         //返回上一级目录
         that.layToolBar.on('click', '#back', function () {
             var othis = $(this);
@@ -340,6 +412,23 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
                 layui.event.call(this,
                     'fileManager', eventType + '(' + filter + ')'
                     , { obj: othis, folder: name, path: fm.dirRoot[fm.dirRoot.length - 1]['path'] }
+                );
+            });
+        });
+        //重命名
+        that.layToolBar.on('click', '#rename_dir', function () {
+            var othis = $(this);
+            var data = fm.cache[options.id];
+            var activedata = data[$('#picmanager li.active').data('index')];
+            if (activedata == undefined)
+                return layer.msg('未选择文件');
+            let eventType = 'rename_dir';
+            layer.prompt({ title: '请输入新名字', formType: 0, value: activedata.name }, function (name, index) {
+                layer.close(index);
+                //重命名文件夹
+                layui.event.call(this,
+                    'fileManager', eventType + '(' + filter + ')'
+                    , { obj: othis, data: activedata, folder: name, path: fm.dirRoot[fm.dirRoot.length - 1]['path'] }
                 );
             });
         });

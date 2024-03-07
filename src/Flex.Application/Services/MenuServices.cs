@@ -20,7 +20,7 @@ namespace Flex.Application.Services
 
         private void AddMenu(List<MenuDto> all, MenuDto curItem)
         {
-            List<MenuDto> childItems = all.Where(ee => ee.parentid == curItem.id).ToList(); //得到子节点
+            List<MenuDto> childItems = all.Where(ee => ee.parentid == curItem.id).OrderBy(x=>x.OrderId).ThenBy(x=>x.id).ToList(); //得到子节点
             curItem.children = childItems; //将子节点加入
                                            //遍历子节点，进行递归，寻找子节点的子节点
             foreach (var subItem in childItems)
@@ -229,7 +229,7 @@ namespace Flex.Application.Services
         {
 
             Func<IQueryable<SysMenu>, IOrderedQueryable<SysMenu>> orderby = m => m.OrderBy(x => x.OrderId).ThenBy(x => x.Id);
-            IEnumerable<SysMenu> list = await _unitOfWork.GetRepository<SysMenu>().GetAllAsync(null, orderby);
+            var list = (await _unitOfWork.GetRepository<SysMenu>().GetAllAsync(null, orderby)).ToList();
 
             //超管直接返回所有菜单
             if (_claims.IsSystem)

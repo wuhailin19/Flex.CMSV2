@@ -15,6 +15,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             _fileManageServices = fileManageServices;
         }
         [HttpGet("GetFiles")]
+        [Descriper(Name = "获取当前目录所有文件")]
         public string GetFiles(string path = "/")
         {
             var result = _fileManageServices.GetDirectoryByPath(path);
@@ -22,10 +23,44 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
         [HttpPost("CreateDirectory")]
+        [Descriper(Name = "新建文件夹")]
         public async Task<string> CreateDirectory()
         {
             var model = await GetModel<DirectoryQueryDto>();
-            var result = _fileManageServices.CreateDirectory(model.path, model.folder);
+            var result = _fileManageServices.CreateDirectory(model);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+
+        [HttpPost("ChangeDirectory")]
+        [Descriper(Name = "更改文件目录")]
+        public async Task<string> ChangeDirectory()
+        {
+            var model = await GetModel<ChangeDirectoryQueryDto>();
+            var result = _fileManageServices.ChangeDirectory(model);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail, result.Status);
+        }
+
+        [HttpPost("RenameDirectoryorFile")]
+        [Descriper(Name = "更改文件名称")]
+        public async Task<string> RenameDirectoryorFile()
+        {
+            var model = await GetModel<RenameDirectoryQueryDto>();
+            var result = _fileManageServices.RenameDirectoryorFile(model);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+
+        [HttpPost("ChangeFileContent")]
+        [Descriper(Name = "更改文件内容")]
+        public async Task<string> ChangeFileContent()
+        {
+            var model = await GetModel<ChangeFileContentQueryDto>();
+            var result = _fileManageServices.ChangeFileContent(model);
             if (result.IsSuccess)
                 return Success(result.Detail);
             return Fail(result.Detail);

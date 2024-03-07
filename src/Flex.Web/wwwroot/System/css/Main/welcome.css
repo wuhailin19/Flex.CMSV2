@@ -27,7 +27,7 @@
 .layui-layer-rim { border: 1px solid #8D8D8D !important; }
 .layui-layer-content { overflow-x: hidden !important; }
 .layui-card .btn_box { padding: 0px 15px 0px 15px; display: flex; justify-content: flex-end; }
-.layui-layer-content .layui-card-box { height: 360px; overflow-y: scroll; overflow-x: hidden; }
+.layui-layer-content .layui-card-box { overflow-y: scroll; overflow-x: hidden; }
 .LinkA.active { border: 2px solid rgb(102, 177, 255); box-sizing: border-box; }
 .LinkA.active::after { content: '\e650'; border-radius: 10px; width: 20px; height: 20px; background: rgb(102, 177, 255); position: absolute; right: -5px; bottom: -5px; text-align: center; line-height: 20px; color: #fff; font-size: 10px; }
 .boxchart.file_box { width: 25%; height: 140px; }
@@ -39,7 +39,6 @@
 .typess .leftconfig { line-height: 80px; }
 .typess .boxchart::-webkit-scrollbar { width: 0 !important }
 .typess { min-height: 240px; }
-
 @media screen and (max-width:768px) {
     .leftbox { width: 100% !important; }
     .rightbox { width: 100% !important; }

@@ -15,6 +15,7 @@ using Flex.EFSqlServer;
 using Flex.EFSqlServer.Register;
 using Flex.Web.Jwt;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
 using NLog.Web;
 using System.Reflection;
@@ -64,6 +65,16 @@ builder.Services.AddWebCoreService(builder.Configuration);
 //注册缓存
 builder.Services.AddMemoryCacheSetup();
 builder.Services.AddLogging();
+
+// 添加自定义的 MIME 类型
+builder.Services.Configure<StaticFileOptions>(options =>
+{
+    options.ContentTypeProvider = new FileExtensionContentTypeProvider
+    {
+        // 添加 Less 文件的 MIME 类型映射
+        Mappings = { [".less"] = "text/less" }
+    };
+});
 
 builder.Host.UseNLog();
 

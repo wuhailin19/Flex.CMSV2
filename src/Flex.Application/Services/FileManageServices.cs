@@ -1,7 +1,9 @@
 ﻿using Flex.Application.Contracts.FileManage;
+using Flex.Domain.Dtos.FileManage;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
+using ShardingCore.Extensions;
 using SkiaSharp;
 
 namespace Flex.Application.Services
@@ -34,9 +36,9 @@ namespace Flex.Application.Services
                 : name => $"{schema}://{host}:{port}{pathBase}{path}";
         }
 
-        public ProblemDetails<string> CreateDirectory(string path, string dirname)
+        public ProblemDetails<string> CreateDirectory(DirectoryQueryDto directoryQueryDto)
         {
-            var dirpath = _env.WebRootPath + path.TrimEnd('/') + "/" + dirname;
+            var dirpath = _env.WebRootPath + directoryQueryDto.path.TrimEnd('/') + "/" + directoryQueryDto.folder;
             if (Directory.Exists(dirpath))
             {
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, "文件夹已存在");
@@ -49,6 +51,76 @@ namespace Flex.Application.Services
             catch (Exception)
             {
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, "文件夹创建失败");
+            }
+        }
+
+        public ProblemDetails<string> ChangeDirectory(ChangeDirectoryQueryDto directoryQueryDto)
+        {
+            var oldpath = _env.WebRootPath + directoryQueryDto.oldpath.TrimEnd('/');
+            var newpath = _env.WebRootPath + directoryQueryDto.newpath.TrimEnd('/') + "/" + directoryQueryDto.name;
+            if (!directoryQueryDto.Isoverride)
+            {
+                if (File.Exists(newpath))
+                {
+                    return new ProblemDetails<string>(HttpStatusCode.IMUsed, "文件已存在，是否覆盖");
+                }
+                if (Directory.Exists(newpath))
+                {
+                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, "文件夹已存在，需删除目标文件夹或重命名");
+                }
+            }
+            try
+            {
+                if (directoryQueryDto.type == "directory")
+                    Directory.Move(oldpath, newpath);
+                else
+                    File.Move(oldpath, newpath, directoryQueryDto.Isoverride);
+                return new ProblemDetails<string>(HttpStatusCode.OK, "移动成功");
+            }
+            catch (Exception ex)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "移动失败");
+            }
+        }
+
+        public ProblemDetails<string> RenameDirectoryorFile(RenameDirectoryQueryDto renameDirectoryQueryDto)
+        {
+            var olddirpath = _env.WebRootPath + renameDirectoryQueryDto.path;
+            var newpath = _env.WebRootPath + renameDirectoryQueryDto.folder.TrimEnd('/') + "/" + renameDirectoryQueryDto.newName;
+            if (!Directory.Exists(olddirpath) && !File.Exists(olddirpath))
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "文件夹或文件不存在");
+            }
+            try
+            {
+                if (renameDirectoryQueryDto.type == "directory")
+                    Directory.Move(olddirpath, newpath);
+                else
+                    File.Move(olddirpath, newpath);
+
+                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+            }
+            catch (Exception)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改失败");
+            }
+        }
+
+        public ProblemDetails<string> ChangeFileContent(ChangeFileContentQueryDto changeFileContentQueryDto)
+        {
+            var olddirpath = _env.WebRootPath + changeFileContentQueryDto.path;
+            if (!File.Exists(olddirpath))
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "文件不存在");
+            }
+            try
+            {
+                File.WriteAllText(olddirpath, changeFileContentQueryDto.content);
+                return new ProblemDetails<string>(HttpStatusCode.OK, "保存成功");
+            }
+            catch (Exception)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "保存失败");
             }
         }
 

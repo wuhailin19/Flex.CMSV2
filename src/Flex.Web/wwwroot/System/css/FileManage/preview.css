@@ -1,1 +1,7 @@
 ﻿.layui-code textarea { display: block; width: 100%; height: calc(100% - 32px); border: 1px solid #ccc; padding: 5px; }
+#editor { width: 100%; height: calc(100% - 60px); padding-top:30px;}
+.button_box {
+    position: fixed;
+    top: 0;
+    left:10px;
+}

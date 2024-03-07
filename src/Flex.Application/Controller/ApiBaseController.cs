@@ -75,6 +75,15 @@ public abstract class ApiBaseController : ControllerBase
         return Message<string>.Msg(ErrorCode.Fail, null, message);
     }
     /// <summary>
+    /// 返回失败，带消息
+    /// </summary>
+    /// <param name="msg">消息</param>
+    /// <returns></returns>
+    public static string Fail(string message, int code)
+    {
+        return Message<string>.Msg(code, null, message);
+    }
+    /// <summary>
     /// 返回未找到
     /// </summary>
     /// <param name="msg">消息</param>

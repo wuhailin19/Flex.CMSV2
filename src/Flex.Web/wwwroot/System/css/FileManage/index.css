@@ -1,11 +1,20 @@
 ﻿.fileManager { display: flex; flex-wrap: wrap; }
-.fileManager li { width: 10%; box-sizing: border-box; }
-.fileManager .layui-elip { height: 80px; line-height: 20px; overflow: unset; white-space: unset; word-break: break-all; }
+.fileManager li { width: 10%; box-sizing: border-box; position: relative; }
+.fileManager .layui-elip { height: 80px; line-height: 20px; overflow: unset; white-space: unset; word-break: break-all; cursor: default;}
 .path_bar .layui-icon { font-size: 12px; }
-.content hr { margin: 2px 0; border-bottom :1px dashed rgb(102, 177, 255)}
+.content hr { margin: 2px 0; border-bottom: 1px dashed rgb(102, 177, 255) }
+.fileManager li.targetactive .contentbox { background-color: rgb(102, 177, 255); opacity:0.8;}
+.fileManager li.active .contentbox { border: 1px solid rgb(102, 177, 255); }
+.fileManager li.active .content>img { border: 1px solid rgb(102, 177, 255); }
+.fileManager li:active .contentbox { border: 1px solid rgb(102, 177, 255); }
+.fileManager li:active .content>img { border: 1px solid rgb(102, 177, 255); }
+.fileManager li .contentbox { border: 1px solid #fff; }
+.fileManager li .contentbox.noborder { border: 1px solid #fff !important; }
+.ui-state-highlight { height: 1.5em; line-height: 1.2em; background-color: #808080 }
 
 @media screen and (max-width:1200px) {
     .fileManager li { width: 20%; }
+    .layui-btn-group{width:100%;}
 }
 
 @media screen and (max-width:800px) {

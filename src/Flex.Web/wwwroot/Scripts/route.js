@@ -53,7 +53,7 @@ var HttpRequest = function (options) {
             o.beforeSend && o.beforeSend();
         },
         success: function (res) {
-            if (res.code != 200) { tips.showFail(res.msg); return; }
+            if (res.code != 200 && res.code != 226) { tips.showFail(res.msg); return; }
             o.success && o.success(res);
         },
         complete: function () {

@@ -176,7 +176,7 @@ var add_more = {
             type: 1,
             title: '选择快捷方式',
             skin: 'layui-layer-rim', //加上边框
-            area: ['90%', ''], //宽高
+            area: ['90%', '90%'], //宽高
             content: contents,
             success: function () {
                 $('.layui-layer-content .layui-card-box .boxchart a.LinkA').click(function () {
@@ -253,7 +253,6 @@ $('.operation').on('click', 'span', function () {
         boxchart.find('.boxchart_delete').remove();
         box_body.find('.layui-card-box').find('.more_box').remove();
         parent.html('<span class="iconfont iconbianji" title="编辑"></span>');
-        console.log(mode)
         if (mode != "6") {
             Init();
         } else {
