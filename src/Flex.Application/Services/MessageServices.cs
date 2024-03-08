@@ -141,17 +141,17 @@ namespace Flex.Application.Services
             string result_msg = ErrorCodes.ReviewCreateSuccess.GetEnumDescription();
             if (MsgGroupId == 0 && fromstep.isStart != StepProperty.Start)
             {
-                //判断有无当前步骤审核权限
-                if (!_claims.IsSystem
-                    && !("," + fromstep.stepMan + ",").Contains(_claims.UserId.ToString())
-                    && !("," + fromstep.stepRole + ",").Contains(_claims.UserRole.ToString()))
-                {
-                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
-                }
-
                 updatesql = _sqlTableServices.UpdateContentReviewStatus(contentmodel.TableName, model.ContentId, StatusCode.PendingApproval, string.Empty);
                 _unitOfWork.ExecuteSqlCommand(updatesql);
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewRest.GetEnumDescription());
+            }
+
+            //判断有无当前步骤审核权限
+            if (!_claims.IsSystem
+                && !("," + fromstep.stepMan + ",").Contains(_claims.UserId.ToString())
+                && !("," + fromstep.stepRole + ",").Contains(_claims.UserRole.ToString()))
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             }
 
             bool IsStart = false;
