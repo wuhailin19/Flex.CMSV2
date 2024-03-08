@@ -27,6 +27,27 @@ namespace Flex.Domain.Config
         private void ConfigureSeedData(EntityTypeBuilder<SysMenu> builder)
         {
             builder.HasData(
+                new SysMenu {
+                    Id = 1,
+                    Name = "根节点",
+                    Icode = "",
+                    ParentID = 0,
+                    LinkUrl = "",
+                    Level = 0,
+                    OrderId = 0,
+                    ShowStatus = true,
+                    isMenu = true,
+                    IsControllerUrl = true,
+                    FontSort = "fontClass",
+                    AddTime = "2022/8/25 16:31:04".ToDateTime(),
+                    AddUserName = "webmaster",
+                    LastEditDate = "2022/8/25 16:31:04".ToDateTime(),
+                    LastEditUserName = "webmaster",
+                    StatusCode = StatusCode.Enable,
+                    Version = 0,
+                    AddUser = 1560206066204151804,
+                    LastEditUser = 1560206066204151804,
+                },
                 new SysMenu
                 {
                     Id = 2,
