@@ -72,6 +72,8 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
                     if (realteditem == undefined) {
                         return false;
                     }
+                    
+
                     let data = fileManager.cache["fmTest"];
 
                     let relateindex = realteditem.data('index');
@@ -94,7 +96,7 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
                         }, function () {
 
                         });
-                    }
+                    } else { excutechangedir(requestdata); }
                 }
             });
         }

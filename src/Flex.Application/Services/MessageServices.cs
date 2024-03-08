@@ -112,7 +112,7 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
             }
 
-            
+
             messagemodel.ToUserId = step.stepMan;
             messagemodel.ToRoleId = step.stepRole;
             messagemodel.FlowId = step.flowId;
@@ -146,12 +146,15 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewRest.GetEnumDescription());
             }
 
-            //判断有无当前步骤审核权限
-            if (!_claims.IsSystem
-                && !("," + fromstep.stepMan + ",").Contains(_claims.UserId.ToString())
-                && !("," + fromstep.stepRole + ",").Contains(_claims.UserRole.ToString()))
+            if (fromstep.isStart != StepProperty.Start)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+                //判断有无当前步骤审核权限
+                if (!_claims.IsSystem
+                    && !("," + fromstep.stepMan + ",").Contains(_claims.UserId.ToString())
+                    && !("," + fromstep.stepRole + ",").Contains(_claims.UserRole.ToString()))
+                {
+                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+                }
             }
 
             bool IsStart = false;
