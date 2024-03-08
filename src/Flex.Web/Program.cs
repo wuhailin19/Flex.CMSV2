@@ -128,5 +128,4 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Login}/{action=Index}/{id?}");
 
 });
-
 app.Run();
