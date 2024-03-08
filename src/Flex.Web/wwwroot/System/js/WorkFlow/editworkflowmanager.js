@@ -3,23 +3,23 @@
     $(this).addClass('layui-this').siblings().removeClass('layui-this');
     $('.layui-tab-item').eq(t_index).addClass('layui-show').siblings().removeClass('layui-show');
 })
-var datamission = { stepRole: "", stepMan: "" };
 var stepId = $.getUrlParam("stepDesc");
+var datamission = parent.stepArray[stepId];
 
-ajaxHttp({
-    url: api + 'WorkFlow/GetStepManagerById',
-    data: { Id: stepId },
-    type: 'Get',
-    async: false,
-    dataType: 'json',
-    success: function (json) {
-        if (json.code == 200) {
-            if (json.content != undefined)
-                datamission = json.content;
-        }
-    },
-    complete: function () { }
-})
+//ajaxHttp({
+//    url: api + 'WorkFlow/GetStepManagerById',
+//    data: { Id: stepId },
+//    type: 'Get',
+//    async: false,
+//    dataType: 'json',
+//    success: function (json) {
+//        if (json.code == 200) {
+//            if (json.content != undefined)
+//                datamission = json.content;
+//        }
+//    },
+//    complete: function () { }
+//})
 
 layui.config({
     base: '/Scripts/layui/module/'
@@ -77,7 +77,7 @@ layui.config({
                     }
                 })
                 if (next.length == count) {
-                    next.removeClass(checkclass)
+                    next.removeClass(checkclass);
                     checkbox.attr('checked', false);
                     $(this).removeClass(checkclass);
                 } else {
@@ -240,30 +240,35 @@ layui.config({
         var json = data.field;
         let stepRoleids = getCheckListArray('rolelist');
         let stepManids = getCheckListArray('userlist');
+        parent.stepArray[stepId]["stepRole"] = stepRoleids;
+        parent.stepArray[stepId]["stepMan"] = stepManids;
+        setTimeout(function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        }, 300)
+        //ajaxHttp({
+        //    url: api + 'WorkFlow/UpdateStepManager',
+        //    type: 'Post',
+        //    datatype: 'json',
+        //    data: JSON.stringify({ Id: stepId, stepRole: stepRoleids, stepMan: stepManids }),
+        //    async: false,
+        //    success: function (json) {
+        //        if (json.code == 200) {
+        //            tips.showSuccess(json.msg);
+        //            parent.stepArray[stepId].stepRole = stepRoleids;
+        //            parent.stepArray[stepId].stepMan = stepManids;
+        //            setTimeout(function () {
+        //                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        //                parent.layer.close(index); //再执行关闭
+        //            }, 300)
+        //        } else {
+        //            tips.showFail(json.msg);
+        //        }
+        //    },
+        //    complete: function () {
 
-        ajaxHttp({
-            url: api + 'WorkFlow/UpdateStepManager',
-            type: 'Post',
-            datatype: 'json',
-            data: JSON.stringify({ Id: stepId, stepRole: stepRoleids, stepMan: stepManids }),
-            async: false,
-            success: function (json) {
-                if (json.code == 200) {
-                    tips.showSuccess(json.msg);
-                    parent.stepArray[stepId].stepRole = stepRoleids;
-                    parent.stepArray[stepId].stepMan = stepManids;
-                    setTimeout(function () {
-                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                        parent.layer.close(index); //再执行关闭
-                    }, 300)
-                } else {
-                    tips.showFail(json.msg);
-                }
-            },
-            complete: function () {
-
-            }
-        })
+        //    }
+        //})
         return false;
     });
     $('#reset').click(function () {

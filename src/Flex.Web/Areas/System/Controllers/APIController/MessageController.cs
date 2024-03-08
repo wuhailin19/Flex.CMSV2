@@ -22,6 +22,13 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             return Success(await _messageServices.GetMessageTitleListDtoAsync(page, 10));
         }
+
+        [HttpGet("GetNotReadMessageCount")]
+        [Descriper(Name = "获取未读消息数量")]
+        public string GetNotReadMessageCount()
+        {
+            return Success(_messageServices.GetNotReadMessageCount());
+        }
         [HttpGet("GetMessage/{id}")]
         [Descriper(Name = "获取信息内容")]
         public async Task<string> GetMessageById(int id)

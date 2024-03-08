@@ -22,7 +22,7 @@ namespace Flex.Application.Services
         public async Task<ApiPermissionDto> GetRoleUrlListById(int Id)
         {
             var role = await _roleServices.GetRoleByIdAsync(Id);
-            var jObj = JsonConvert.DeserializeObject<ApiPermissionDto>(role.UrlPermission);
+            var jObj = role.UrlPermission.IsNullOrEmpty() ? new ApiPermissionDto() : JsonConvert.DeserializeObject<ApiPermissionDto>(role.UrlPermission ?? string.Empty);
             if (jObj != null)
             {
                 return jObj;
@@ -51,7 +51,7 @@ namespace Flex.Application.Services
                 var role = await _roleServices.GetCurrentRoldDtoAsync();
 
                 var datamission = role.UrlPermission;
-                var jObj = JsonConvert.DeserializeObject<List<ApiPermissionDto>>(datamission).FirstOrDefault();
+                var jObj = JsonConvert.DeserializeObject<ApiPermissionDto>(datamission);
                 var model = new List<SysRoleUrl>();
                 if (cid == 1)
                     model = (await repository.GetAllAsync(m => jObj.dataapi.ToList("-").Contains(m.Id))).ToList();

@@ -11,7 +11,7 @@ layui.config({
     base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
 }).use(['form'], function () {
     var form = layui.form, layer = layui.layer;
-    
+
     //监听提交
     form.on('submit(formDemo)', function (data) {
         var content = ue.getContent();
@@ -32,6 +32,12 @@ layui.config({
             success: function (json) {
                 if (json.code == 200) {
                     tips.showSuccess(json.msg);
+                    setTimeout(function () {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        if (!parent.IsAdd)
+                            parent.location.reload();
+                        parent.layer.close(index); //再执行关闭
+                    }, 300)
                 } else {
                     tips.showFail(json.msg);
                 }

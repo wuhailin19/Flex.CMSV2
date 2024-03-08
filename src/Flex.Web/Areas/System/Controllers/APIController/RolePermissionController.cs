@@ -51,7 +51,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             if (result != null)
                 return Success(result);
             else
-                return Fail("无数据");
+                return Success(new DataPermissionDto());
         }
 
         /// <summary>

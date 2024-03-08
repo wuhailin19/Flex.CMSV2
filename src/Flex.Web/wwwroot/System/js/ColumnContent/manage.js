@@ -57,7 +57,7 @@ layui.use(['tree', 'util'], function () {
         , icon: 'layui-icon layui-icon-file'
         , isJump: true //是否允许点击节点时弹出新窗口跳转
         , onlyIconControl: true
-        , showLine: false
+        , showLine: true
         , click: function (obj) {
             //var data = obj.data;  //获取当前点击的节点数据
             //layer.msg('状态：' + obj.state + '<br>节点数据：' + JSON.stringify(data));

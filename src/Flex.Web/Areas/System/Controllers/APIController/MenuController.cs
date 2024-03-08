@@ -39,7 +39,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         [Descriper(Name = "菜单管理页面数据")]
         public async Task<string> ListAsync()
         {
-            return Success((await _menuServices.GetMenuListAsync()).Where(m => m.ParentID != 0));
+            return Success((await _menuServices.GetMenuListAsync()).Where(m => m.ParentID != 0).OrderBy(m => m.OrderId).ThenBy(m => m.ID));
         }
         [HttpGet("GetTreeMenuAsync")]
         [Descriper(Name = "菜单编辑页面父级数据")]

@@ -96,7 +96,7 @@ namespace Flex.Web.Handlers
         /// <returns></returns>
         private async Task<Dictionary<int, List<string>>> GetRoleUrlDictByRedisOrDataServer()
         {
-            #region 缓存版本
+            #region Redis缓存版本
             //if (RedisHelperFull.RedisConfig.Useable)
             //{
             //    if (await RedisHelperFull.Instance.KeyExistsAsync(RedisKeyRepository.RoleRedisKey))

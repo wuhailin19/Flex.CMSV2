@@ -1,6 +1,11 @@
-﻿using Flex.Application.Contracts.Exceptions;
+﻿using Castle.Core.Internal;
+using Flex.Application.Contracts.Exceptions;
+using Flex.Core;
+using Flex.Core.Extensions.CommonExtensions;
 using Flex.Domain.Dtos.Message;
 using Flex.Domain.Enums.Message;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Collections;
 using System.Linq.Expressions;
 
 namespace Flex.Application.Services
@@ -44,6 +49,20 @@ namespace Flex.Application.Services
             return model;
         }
 
+        /// <summary>
+        /// 获取未读消息数量
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public int GetNotReadMessageCount()
+        {
+            var exp = GetExpression();
+            exp = exp.And(m => m.IsRead == false);
+            var count = _unitOfWork.GetRepository<sysMessage>().Count(exp);
+            return count;
+        }
+
         public async Task<ProblemDetails<MessageOutputDto>> GetMessageById(int id)
         {
             var exp = GetExpression();
@@ -61,6 +80,16 @@ namespace Flex.Application.Services
             await _unitOfWork.SaveChangesAsync();
             return new ProblemDetails<MessageOutputDto>(HttpStatusCode.OK, result, string.Empty);
         }
+        private void InitReviewer(Hashtable table)
+        {
+            table.SetValue("ReviewAddUser", _claims.UserId);
+        }
+        private void InitContentReviewInfo(Hashtable table, long MsgGroupId, StatusCode statusCode, string ReviewStepId)
+        {
+            table.SetValue("StatusCode", statusCode.ToInt());
+            table.SetValue("ReviewStepId", ReviewStepId);
+            table.SetValue("MsgGroupId", MsgGroupId);
+        }
         public async Task<ProblemDetails<string>> SendReviewMessage(SendReviewMessageDto model)
         {
             var msgRepository = _unitOfWork.GetRepository<sysMessage>();
@@ -71,6 +100,8 @@ namespace Flex.Application.Services
 
             if (model.ToPathId.IsNullOrEmpty())
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
+            if (model.BaseFormContent.IsNullOrEmpty())
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
 
             string updatesql = string.Empty;
             var step = await _unitOfWork.GetRepository<sysWorkFlowStep>().GetFirstOrDefaultAsync(m => m.stepPathId == model.ToPathId);
@@ -80,62 +111,97 @@ namespace Flex.Application.Services
                 _unitOfWork.ExecuteSqlCommand(updatesql);
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
             }
+
+
             messagemodel.ToUserId = step.stepMan;
             messagemodel.ToRoleId = step.stepRole;
             messagemodel.FlowId = step.flowId;
-
             messagemodel.TableName = contentmodel.TableName;
 
             Func<IQueryable<sysMessage>, IOrderedQueryable<sysMessage>> orderBy = m => m.OrderByDescending(m => m.AddTime);
-            var firstmsg = await msgRepository.GetFirstOrDefaultAsync(m => m.ContentId == model.ContentId && m.ParentId == model.ParentId && m.IsStart, orderBy);
+
+            var content = await contentServices.GetContentForReviewById(model.ParentId, model.ContentId);
+            if (content == null)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+
+            content.TryGetValue("MsgGroupId", out object gid);
+            content.TryGetValue("ReviewAddUser", out object rauer);
+
+            var MsgGroupId = gid?.ToLong() ?? 0;
+            var AddUser = rauer?.ToString() ?? string.Empty;
+
+            var endmsg = await msgRepository.GetFirstOrDefaultAsync(m => m.MsgGroupId == MsgGroupId && m.IsEnd, orderBy);
+            //判断当前流程是否已结束
+            if (endmsg != null)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewAlreadyComplete.GetEnumDescription());
+            }
+
             var fromstep = await _unitOfWork.GetRepository<sysWorkFlowStep>().GetFirstOrDefaultAsync(m => m.stepPathId == model.FromPathId);
             string result_msg = ErrorCodes.ReviewCreateSuccess.GetEnumDescription();
-            if (firstmsg == null && fromstep.isStart != StepProperty.Start)
+            if (MsgGroupId == 0 && fromstep.isStart != StepProperty.Start)
             {
                 updatesql = _sqlTableServices.UpdateContentReviewStatus(contentmodel.TableName, model.ContentId, StatusCode.PendingApproval, string.Empty);
                 _unitOfWork.ExecuteSqlCommand(updatesql);
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewRest.GetEnumDescription());
             }
+
+            if (fromstep.isStart != StepProperty.Start)
+            {
+                //判断有无当前步骤审核权限
+                if (!_claims.IsSystem
+                    && !("," + fromstep.stepMan + ",").Contains(_claims.UserId.ToString())
+                    && !("," + fromstep.stepRole + ",").Contains(_claims.UserRole.ToString()))
+                {
+                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+                }
+            }
+
+            bool IsStart = false;
             //工作流分组
             if (fromstep.isStart == StepProperty.Start)
             {
+                IsStart = true;
                 messagemodel.MsgGroupId = _idWorker.NextId();
                 messagemodel.IsStart = true;
             }
             else
             {
                 result_msg = "发送成功";
-                messagemodel.MsgGroupId = firstmsg.MsgGroupId;
+                messagemodel.MsgGroupId = MsgGroupId.ToLong();
                 messagemodel.IsStart = false;
             }
+
             //审批通过
             if (step.stepCate == "end")
             {
-                messagemodel.ToUserId = firstmsg.AddUser.ToString();
+                messagemodel.IsEnd = true;
+                messagemodel.ToUserId = AddUser;
                 messagemodel.MessageCate = MessageCate.Approved;
-                model.BaseFormContent.Add("StatusCode", StatusCode.Enable.ToInt());
-                model.BaseFormContent.Add("ReviewStepId", string.Empty);
+                model.BaseFormContent.SetValue("ReviewAddUser", 0);
+                InitContentReviewInfo(model.BaseFormContent, 0, StatusCode.Enable, string.Empty);
             }
             //审批驳回 设置内容为草稿
             else if (step.stepCate == "end-error")
             {
-                messagemodel.ToUserId = firstmsg.AddUser.ToString();
+                messagemodel.IsEnd = true;
+                messagemodel.ToUserId = AddUser;
                 messagemodel.MessageCate = MessageCate.Rejected;
-                model.BaseFormContent.Add("StatusCode", StatusCode.Draft.ToInt());
-                model.BaseFormContent.Add("ReviewStepId", string.Empty);
+                model.BaseFormContent.SetValue("ReviewAddUser", 0);
+                InitContentReviewInfo(model.BaseFormContent, 0, StatusCode.Draft, string.Empty);
             }
             //退稿 设置内容为待审核，并重置流程
             else if (step.stepCate == "end-cancel")
             {
-                messagemodel.ToUserId = firstmsg.AddUser.ToString();
+                messagemodel.IsEnd = true;
+                messagemodel.ToUserId = AddUser;
                 messagemodel.MessageCate = MessageCate.Rejected;
-                model.BaseFormContent.Add("StatusCode", StatusCode.PendingApproval.ToInt());
-                model.BaseFormContent.Add("ReviewStepId", string.Empty);
+                model.BaseFormContent.SetValue("ReviewAddUser", 0);
+                InitContentReviewInfo(model.BaseFormContent, 0, StatusCode.PendingApproval, string.Empty);
             }
             else
             {
-                model.BaseFormContent.Add("StatusCode", StatusCode.PendingApproval.ToInt());
-                model.BaseFormContent.Add("ReviewStepId", model.ToPathId);
+                InitContentReviewInfo(model.BaseFormContent, messagemodel.MsgGroupId, StatusCode.PendingApproval, model.ToPathId);
                 messagemodel.MessageCate = MessageCate.NormalTask;
             }
 
@@ -146,10 +212,18 @@ namespace Flex.Application.Services
                 var result = new ProblemDetails<int>(0, string.Empty);
                 if (model.BaseFormContent != null)
                 {
-                    if (model.BaseFormContent.ContainsKey("Id"))
-                        result = await contentServices.Update(model.BaseFormContent, true);
+                    if (IsStart)
+                    {   //修改提交审批的人，用于判断内容归属
+                        InitReviewer(model.BaseFormContent);
+                        if (model.BaseFormContent.ContainsKey("Id"))
+                            result = await contentServices.Update(model.BaseFormContent, true);
+                        else
+                            result = await contentServices.Add(model.BaseFormContent, true);
+                    }
                     else
-                        result = await contentServices.Add(model.BaseFormContent, true);
+                    {
+                        result = await contentServices.UpdateReviewContent(model.BaseFormContent, true);
+                    }
                 }
                 if (!result.IsSuccess)
                 {

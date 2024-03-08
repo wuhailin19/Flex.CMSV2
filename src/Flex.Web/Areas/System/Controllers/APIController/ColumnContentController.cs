@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Flex.Dapper;
 using System.Collections;
+using Flex.Domain.Dtos.ColumnContent;
 
 namespace Flex.Web.Areas.System.Controllers.APIController
 {
@@ -23,6 +24,13 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         {
             return Success(await _columnServices.GetTableThs(ParentId));
         }
+        
+        [HttpGet("HistoryColumn/{ParentId}")]
+        [Descriper(IsFilter = true)]
+        public async Task<string> HistoryColumn(int ParentId)
+        {
+            return Success(await _columnServices.GetHistoryTableThs(ParentId));
+        }
 
         /// <summary>
         /// 多选checkbox数据用此接口
@@ -38,9 +46,20 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 
         [HttpGet("ListAsync")]
         [Descriper(Name = "栏目内容列表分页数据")]
-        public async Task<string> ListAsync(int page, int limit, int ParentId)
+        public async Task<string> ListAsync([FromQuery] ContentPageListParamDto model)
         {
-            return Success(await _columnServices.ListAsync(page, limit, ParentId));
+            if (model == null)
+                return Fail("无数据");
+            return Success(await _columnServices.ListAsync(model));
+        }
+        
+        [HttpGet("HistoryListAsync")]
+        [Descriper(Name = "历史内容列表分页数据")]
+        public async Task<string> HistoryListAsync([FromQuery] ContentPageListParamDto model)
+        {
+            if (model == null)
+                return Fail("无数据");
+            return Success(await _columnServices.HistoryListAsync(model));
         }
 
         [HttpGet("GetFormHtml/{ParentId}")]
@@ -55,12 +74,14 @@ namespace Flex.Web.Areas.System.Controllers.APIController
 
         [HttpGet("GetContentById/{ParentId}/{Id}")]
         [Descriper(Name = "通过ParentId和Id获取栏目内容", IsFilter = true)]
-        [AllowAnonymous]
         public async Task<string> GetContentById(int ParentId, int Id)
         {
             if (Id == 0)
                 return Success(await _columnServices.GetButtonListByParentId(ParentId));
-            return Success(await _columnServices.GetContentById(ParentId, Id));
+            var result = await _columnServices.GetContentById(ParentId, Id);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Content);
         }
 
         [HttpPost("CreateColumnContent")]
@@ -82,6 +103,30 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             var result = await _columnServices.Update(model);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
+            return Success(result.Detail);
+        }
+
+        [HttpPost("UpdateStatus")]
+        [Descriper(Name = "修改栏目内容状态")]
+        public async Task<string> UpdateStatus()
+        {
+            var model = await GetModel<Hashtable>();
+            var result = await _columnServices.SimpleUpdateContent(model);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
+        }
+
+        [HttpPost("CancelReview")]
+        [Descriper(Name = "取消审批")]
+        public async Task<string> CancelReview()
+        {
+            var model = await GetModel<Hashtable>();
+            model["ReviewAddUser"] = string.Empty;
+            model["MsgGroupId"] = string.Empty;
+            var result = await _columnServices.UpdateReviewContent(model, true, true);
+            if (!result.IsSuccess)
+                return Fail("审批取消失败");
             return Success(result.Detail);
         }
 

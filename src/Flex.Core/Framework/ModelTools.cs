@@ -21,6 +21,8 @@ public class ModelTools<T>
     public string width { get; set; }
     public string minWidth { get; set; }
     public string maxWidth { get; set; }
+    public string style { get; set; }
+    public string edit { get; set; }
     // 获取字段的属性
     private static ToolAttr getDescription(PropertyInfo field)
     {
@@ -57,6 +59,8 @@ public class ModelTools<T>
             modelTool.width = ToolAttrs.Width;
             modelTool.minWidth = ToolAttrs.minWidth;
             modelTool.maxWidth = ToolAttrs.maxWidth;
+            modelTool.style = ToolAttrs.Style;
+            modelTool.edit = ToolAttrs.IsEdit ? "editable" : "";
 
             modelTools.Add(modelTool);
         }

@@ -8,6 +8,7 @@ namespace Flex.Domain.Dtos.Menu
         public string title { get; set; }
         public int id { get; set; }
         public int parentid { get; set; }
+        public int OrderId { get; set; }
         public string icode { get; set; }
         public bool spread { get; set; } = true;
         public string linkurl { get; set; }

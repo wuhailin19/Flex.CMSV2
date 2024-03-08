@@ -1,11 +1,17 @@
 ﻿html, body { height: 100%; width: 100%; background-color: #fff; padding-top: 10px; overflow-y: hidden; }
 .summary-search { width: 100%; }
-.search-box { position: fixed; top: 0; height: 80px; background-color: #fff; z-index: 999; width: 100%; overflow-y: hidden; padding-top: 10px; }
-.layui-tab-content { padding: 0px; padding-top: 80px; overflow: hidden; }
+.search-box { position: fixed; top: 0; height: 40px; background-color: #fff; z-index: 999; width: 100%; overflow-y: hidden; padding-top: 10px; }
+.layui-tab-content { padding: 0px; padding-top: 40px; overflow: hidden; }
 .layui-form-item .layui-inline { margin-bottom: 0px; margin-right: 0px; }
 .layui-btn-sm { padding: 0 18px; }
-.layui-form-label { width: auto; max-width:80px;}
-.layui-laydate-content td > div{font-size:14px;}
+.layui-form-label { width: auto; max-width: 80px; }
+.layui-laydate-content td > div { font-size: 14px; }
+.Property { padding: 1%; font-size: 14px !important; color: #fff; text-align: center; box-sizing: border-box; }
+.Property.top { color: #1e9fff; }
+.Property.recommend { color: #16b777; }
+.Property.hot { color: #d72929; }
+.Property.focus { color: #31bdec; }
+.Property.hide { color: #000; }
 
 @media screen and (max-width:800px) {
     .layui-form-label { width: 80px; }
@@ -14,5 +20,10 @@
     .layui-form-item .layui-input-inline { margin: 0 0 10px 80px; }
     .layui-form-item .layui-inline { clear: none; }
     .layui-laydate-range { width: calc(100% - 12px); }
-    .laydate-set-ym span{padding:0;}
+    .laydate-set-ym span { padding: 0; padding-left: 5px;}
+    .layui-laydate-header { padding: 10px 50px 5px; }
+    .layui-laydate-header i.laydate-prev-y { left: 5px; }
+    .layui-laydate-header i.laydate-prev-m { left: 30px; }
+    .layui-laydate-header i.laydate-next-y { right: 5px; }
+    .layui-laydate-header i.laydate-next-m { right: 30px; }
 }

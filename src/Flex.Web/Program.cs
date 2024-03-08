@@ -15,6 +15,8 @@ using Flex.EFSqlServer;
 using Flex.EFSqlServer.Register;
 using Flex.Web.Jwt;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.FileProviders;
 using NLog.Web;
 using System.Reflection;
 
@@ -38,6 +40,7 @@ builder.Services.AddAutomapperService();
 //跨域配置
 builder.Services.AddCorsPolicy(builder.Configuration);
 
+string webpath = builder.Environment.WebRootPath;
 //builder.Services.HtmlTemplateDictInit();
 //注册autofac
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
@@ -46,6 +49,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
         //注册拦截器，同步异步都要
         builder.RegisterType<LogInterceptor>().AsSelf();
         builder.RegisterType<LogInterceptorAsync>().AsSelf();
+        builder.RegisterType<PhysicalFileProvider>().As<IFileProvider>().WithParameter("root", webpath).SingleInstance();
         builder.RegisterAutoFacExtension();
         //注册业务层，同时对业务层的方法进行拦截
         builder.RegisterAssemblyTypes(Assembly.Load("Flex.Application"))
@@ -60,6 +64,17 @@ builder.Services.AddJwtService(builder.Configuration);
 builder.Services.AddWebCoreService(builder.Configuration);
 //注册缓存
 builder.Services.AddMemoryCacheSetup();
+builder.Services.AddLogging();
+
+// 添加自定义的 MIME 类型
+builder.Services.Configure<StaticFileOptions>(options =>
+{
+    options.ContentTypeProvider = new FileExtensionContentTypeProvider
+    {
+        // 添加 Less 文件的 MIME 类型映射
+        Mappings = { [".less"] = "text/less" }
+    };
+});
 
 builder.Host.UseNLog();
 
@@ -80,7 +95,6 @@ app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
 });
 
 
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -96,6 +110,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
+
+//app.UseMiddleware<FileProviderMiddleware>(builder.Environment.WebRootPath);
+
 app.UseRouting();
 app.UseAuthentication();
 
@@ -109,6 +126,6 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=Login}/{action=Index}/{id?}");
-});
 
+});
 app.Run();

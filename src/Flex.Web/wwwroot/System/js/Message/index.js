@@ -1,5 +1,4 @@
-﻿var req_Data;
-$('.email_title').on('click', 'li', function () {
+﻿$('.email_title').on('click', 'li', function () {
     $(this).addClass('active').siblings().removeClass('active');
     var that = $(this);
     ajaxHttp({
@@ -9,6 +8,7 @@ $('.email_title').on('click', 'li', function () {
         async: false,
         success: function (res) {
             if (res.code == 200) {
+                parent.GetMsgCount();
                 that.removeClass('new');
                 var json = res.content;
                 $('.right_box_title').addClass('active');
@@ -20,7 +20,6 @@ $('.email_title').on('click', 'li', function () {
                     Id: json.ContentId,
                     ParentId: json.ParentId
                 }
-                req_Data = parentformData;
                 $('#bottomBtnbox').html('<button class="layui-btn layui-btn-sm viewcontent">查看内容</button>');
 
             }
@@ -97,9 +96,9 @@ layui.use(function () {
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: ['90%', '90%'],
-            content: SystempageRoute + 'ColumnContent/Edit',
+            content: SystempageRoute + 'ColumnContent/Edit?ParentId=' + parentformData.ParentId + "&Id=" + parentformData.Id,
             end: function () {
-
+                //window.location.reload();
             }
         });
     })

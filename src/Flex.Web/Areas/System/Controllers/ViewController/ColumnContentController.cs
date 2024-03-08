@@ -27,5 +27,13 @@ namespace Flex.Web.Areas.System.Controllers.ViewController
         {
             return View();
         }
+        public IActionResult Hishistorical()
+        {
+            return View();
+        }
+        public IActionResult RestoreContent()
+        {
+            return View();
+        }
     }
 }

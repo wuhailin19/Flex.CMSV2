@@ -9,7 +9,7 @@
 
 .layui-body { position: absolute; left: 260px; right: 350px; top: 0; bottom: 0; z-index: 998; width: auto; overflow-y: auto; box-sizing: border-box; min-width: 250px; border-left: 1px solid #e6e6e6; border-right: 1px solid #e6e6e6; }
 
-.layui-layout-admin .layui-body { bottom: 0; top: 60px; }
+.layui-layout-admin .layui-body { bottom: 0; top: 60px;left:260px; }
 
 /* components-list*/
 

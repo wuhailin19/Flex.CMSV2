@@ -52,7 +52,7 @@ function InitCoumnShortcut(mode_arr) {
             success: function (res) {
                 let box_str = '';
                 for (var i = 0; i < res.content.length; i++) {
-                    console.log(res.content[i].Id)
+                    //console.log(res.content[i].Id)
                     box_str += '<div class="boxchart layui-anim hvr-grow-shadow types">'
                         + '<div class="iconbox">'
                         + '<i class="iconfont leftconfig iconwendang"></i>'
@@ -74,9 +74,9 @@ $('.layui-card-box').on('click', 'a.addnewIframe', function () {
     let href = $elemt.data('href');
     let text = $elemt.data('cite');
     var isaspx = $elemt.data('linkstatus');
-    if (isaspx == false) {
-        href = api + href;
-    }
+    //if (isaspx == false) {
+    //    href = api + href;
+    //}
     var index = layer.open({
         type: 2,
         title: text,
@@ -176,7 +176,7 @@ var add_more = {
             type: 1,
             title: '选择快捷方式',
             skin: 'layui-layer-rim', //加上边框
-            area: ['50%', ''], //宽高
+            area: ['90%', '90%'], //宽高
             content: contents,
             success: function () {
                 $('.layui-layer-content .layui-card-box .boxchart a.LinkA').click(function () {
@@ -253,7 +253,6 @@ $('.operation').on('click', 'span', function () {
         boxchart.find('.boxchart_delete').remove();
         box_body.find('.layui-card-box').find('.more_box').remove();
         parent.html('<span class="iconfont iconbianji" title="编辑"></span>');
-        console.log(mode)
         if (mode != "6") {
             Init();
         } else {

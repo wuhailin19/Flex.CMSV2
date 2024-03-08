@@ -12,7 +12,7 @@
         autoupload: false,
         serverUrl: '/api/Upload/UploadImage',
         imageExtensions: 'jpg,jpeg,gif,png,bmp,svg',
-        FileExtensions: 'txt,doc,docx,xls,xlsx,mp4,zip',
+        FileExtensions: 'txt,doc,docx,xls,xlsx,mp4,zip,pdf',
         valueElement: undefined
     }, options)
 
@@ -55,7 +55,7 @@
         })();
     var uploader;// WebUploader实例
     var extensionsf = options.isImage ? options.imageExtensions : options.FileExtensions
-    SizeLimit = 10, FullSizeLimit = 30;
+    SizeLimit = 20, FullSizeLimit = 60;
     function init() {
 
         $wrap.addClass("webUploader");

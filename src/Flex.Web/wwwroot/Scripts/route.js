@@ -2,6 +2,7 @@
 //var api = route_href.split('/')[0] + "//" + route_href.split('/')[2]+"/";
 var api = "http://127.0.01:5003/api/";
 var SystempageRoute = "/System/";
+
 function getCheckboxValue(name) {
     var arraybox = [];
     $('input[name=' + name + ']:checked').each(function () {
@@ -52,7 +53,7 @@ var HttpRequest = function (options) {
             o.beforeSend && o.beforeSend();
         },
         success: function (res) {
-            if (res.code != 200) { tips.showFail(res.msg); return; }
+            if (res.code != 200 && res.code != 226) { tips.showFail(res.msg); return; }
             o.success && o.success(res);
         },
         complete: function () {
@@ -79,20 +80,20 @@ var ajaxHttp = function (options) {
     }
 
     // 每次请求携带token
-    options.token = localStorage.getItem('access_token');
-    options.refreshtoken = localStorage.getItem('refresh_token');
+    options.token = sessionStorage.getItem('access_token');
+    options.refreshtoken = sessionStorage.getItem('refresh_token');
     HttpRequest(options);
 }
 
 var httpTokenHeaders = {
-    'Authorization': "Bearer " + localStorage.getItem('access_token'),
-    'Refresh_token': "Bearer " + localStorage.getItem('refresh_token')
+    'Authorization': "Bearer " + sessionStorage.getItem('access_token'),
+    'Refresh_token': "Bearer " + sessionStorage.getItem('refresh_token')
 }
 
 var global_notice;
-layui.config({
-    base: '/Scripts/layui/module/notice/' //layui自定义layui组件目录
-}).use('notice', function () {
+layui.extend({ 'notice': '/Scripts/layui/module/notice/notice' });
+
+layui.use('notice', function () {
     global_notice = layui.notice;
     // 初始化配置，同一样式只需要配置一次，非必须初始化，有默认配置
     global_notice.options = {

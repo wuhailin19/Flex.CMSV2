@@ -11,5 +11,6 @@ namespace Flex.Application.Contracts.IServices
     public interface IFileServices
     {
         ProblemDetails<string> UploadFilesService(IFormFileCollection input);
+        ProblemDetails<string> UploadFilesToPathService(IFormFileCollection input, string path);
     }
 }

@@ -102,8 +102,10 @@ layui.use('element', function () {
         var content = $(".layui-tab-item.layui-show").html();
         $(".layui-tab-item.layui-show").html(content);
     })
+    var msgindex;
     $('.rabbit_email').click(function () {
-        layer.open({
+        layer.close(msgindex);
+        msgindex=layer.open({
             type: 2,
             title: "消息",
             shadeClose: true,

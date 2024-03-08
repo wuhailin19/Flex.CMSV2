@@ -1,20 +1,12 @@
 ﻿{
   "$schema": "https://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:43198",
-      "sslPort": 0
-    }
-  },
   "profiles": {
     "Flex.Web": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
+      "externalUrlConfiguration": true, //add this line
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5218",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

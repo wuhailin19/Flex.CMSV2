@@ -101,7 +101,6 @@ layui.use('table', function () {
     });
     //监听事件
     table.on('toolbar(test)', function (obj) {
-        console.log(obj.event)
         switch (obj.event) {
             case "Normal":
                 searchbybutton(insTb, obj.event);

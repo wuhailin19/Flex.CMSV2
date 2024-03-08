@@ -1,8 +1,10 @@
-﻿using Flex.Application.Contracts.Exceptions;
+﻿using Flex.Application.Aop;
+using Flex.Application.Contracts.Exceptions;
 using Flex.Application.Contracts.Logs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -31,6 +33,16 @@ namespace Flex.Application.Exceptions
 
             title = _env.IsDevelopment() ? exception.Message : $"系统异常";
             detial = _env.IsDevelopment() ? exception.Format() : $"系统异常,请联系管理员({requestId})";
+
+            if (exception is AopHandledException)
+            {
+                if (((AopHandledException)exception).InnerHandledException is OverflowException)
+                {
+                    title = "输入异常";
+                    detial = "值超过最大限度";
+                }
+            }
+
             var exlog = new ExceptionLog()
             {
                 RequestUrl = requestUrl,
@@ -47,7 +59,7 @@ namespace Flex.Application.Exceptions
                 Type = type,
                 Instance = requestUrl
             };
-            context.Result = new ObjectResult(new Message<ExceptionMsg> { code = status, content = problemDetails,msg= detial }) { StatusCode = status };
+            context.Result = new ObjectResult(new Message<ExceptionMsg> { code = status, content = problemDetails, msg = detial }) { StatusCode = status };
             context.ExceptionHandled = true;
         }
         public override Task OnExceptionAsync(ExceptionContext context)

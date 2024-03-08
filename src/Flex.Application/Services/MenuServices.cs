@@ -20,7 +20,7 @@ namespace Flex.Application.Services
 
         private void AddMenu(List<MenuDto> all, MenuDto curItem)
         {
-            List<MenuDto> childItems = all.Where(ee => ee.parentid == curItem.id).ToList(); //得到子节点
+            List<MenuDto> childItems = all.Where(ee => ee.parentid == curItem.id).OrderBy(x=>x.OrderId).ThenBy(x=>x.id).ToList(); //得到子节点
             curItem.children = childItems; //将子节点加入
                                            //遍历子节点，进行递归，寻找子节点的子节点
             foreach (var subItem in childItems)
@@ -178,7 +178,7 @@ namespace Flex.Application.Services
             return Main;
         }
         /// <summary>
-        /// 获取当前角色菜单树
+        /// 获取角色菜单树
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -203,7 +203,7 @@ namespace Flex.Application.Services
             }
             if (list.IsNullOrEmpty())
                 return default;
-            var currentrole =await _roleServices.GetRoleByIdAsync(Id);
+            var currentrole = await _roleServices.GetRoleByIdAsync(Id);
             if (!string.IsNullOrEmpty(currentrole.MenuPermissions))
                 menus = currentrole.MenuPermissions.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
             else
@@ -220,14 +220,16 @@ namespace Flex.Application.Services
             AddMenu(query, query.Where(x => x.parentid == 0).FirstOrDefault());
             return Main;
         }
-        
+
         /// <summary>
         /// 获取主界面菜单树
         /// </summary>
         /// <returns></returns>
         public async Task<IEnumerable<MenuDto>> GetMainMenuDtoAsync()
         {
-            IEnumerable<SysMenu> list = await _unitOfWork.GetRepository<SysMenu>().GetAllAsync();
+
+            Func<IQueryable<SysMenu>, IOrderedQueryable<SysMenu>> orderby = m => m.OrderBy(x => x.OrderId).ThenBy(x => x.Id);
+            var list = (await _unitOfWork.GetRepository<SysMenu>().GetAllAsync(null, orderby)).ToList();
 
             //超管直接返回所有菜单
             if (_claims.IsSystem)

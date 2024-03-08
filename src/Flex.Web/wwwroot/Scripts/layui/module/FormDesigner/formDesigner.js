@@ -1300,6 +1300,9 @@ layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", '
                         step: json.stepValue,
                         disabled: json.disabled,
                         input: json.isInput,
+                        done: function (value) {
+                            json.defaultValue = value;
+                        }
                     });
                 },
                 /**

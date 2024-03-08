@@ -1,4 +1,5 @@
-﻿var defaultOptions = {
+﻿var HasOpenHistroryBox = false;
+var defaultOptions = {
     addwidths: 400,
     addheights: 400,
     editwidths: 400,
@@ -34,14 +35,21 @@
     callBack: function (tableIns) {
         //第二次调用
         tableIns.reload({
-            where: { 'ParentId': currentparentId } // 设定异步数据接口的额外参数，任意设
+            where: {
+                ParentId: currentparentId,
+                ContentGroupId: (parentjson != undefined ? parentjson.ContentGroupId : ''),
+                k: keyword.val(),
+                timefrom: dateRanage[0],
+                timeto: dateRanage[1]
+            } // 设定异步数据接口的额外参数，任意设
         });
         //console.log(tableIns)
     },
     editIframe: function (layer, insTb, pId) {
         var self = this;
-        let widthstr = '95%';
-        let heightstr = '95%';
+
+        let widthstr = HasOpenHistroryBox ? '70%' : '95%';
+        let heightstr = HasOpenHistroryBox ? '100%' : '95%';
         let isreload = self.isEditReload;
         //iframe窗
         layer.open({
@@ -49,9 +57,10 @@
             title: self.editTitle,
             shadeClose: true,
             shade: false,
+            offset: HasOpenHistroryBox ? 'lt' : 'auto',
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: routePageLink + 'Edit',
+            content: routePageLink + 'Edit?ParentId=' + req_Data.ParentId + "&Id=" + req_Data.Id,
             end: function () {
                 if (isreload) {
                     defaultOptions.callBack(insTb);
@@ -80,38 +89,42 @@
     },
     openOperaIframe: function (layer, insTb) {
         var self = this;
-        let widthstr = self.operawidths + 'px';
-        let heightstr = self.operaheights + 'px';
+        let widthstr = '95%';
+        let heightstr = '95%';
         let isreload = self.isOperaReload;
         //iframe窗
         layer.open({
             type: 2,
-            title: self.operationTitle,
+            title: "查看",
             shadeClose: true,
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: routePageLink + 'OperationPermission',
+            content: routePageLink + 'RestoreContent?ParentId=' + req_Data.ParentId + "&Id=" + req_Data.Id,
             end: function () {
                 if (isreload) {
                     defaultOptions.callBack(insTb);
                 }
             }
         });
-    },openDataPermissionIframe: function (layer, insTb) {
+    }, openDataPermissionIframe: function (layer, insTb) {
         var self = this;
-        let widthstr = self.datawidths + 'px';
-        let heightstr = '90%';
+        let widthstr = '30%';
+        let heightstr = '100%';
+        HasOpenHistroryBox = true;
         //iframe窗
         layer.open({
             type: 2,
-            title: '数据权限',
+            skin: 'layui-layer-lan',
+            title: '历史修改',
             shadeClose: true,
             shade: false,
+            offset: 'rt',
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: routePageLink + 'DataPermission',
+            content: routePageLink + 'Hishistorical?ParentId=' + currentparentId,
             end: function () {
+                HasOpenHistroryBox = false;
             }
         });
     },

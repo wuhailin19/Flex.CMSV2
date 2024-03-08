@@ -16,7 +16,7 @@ namespace Flex.Application.Contracts.IServices
         string AlertTableField(string TableName, string oldfiledName, string filedName, string filedtype);
         string CreateContentTableSql(string TableName);
         StringBuilder CreateDapperInsertSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters);
-        StringBuilder CreateInsertCopyContentSqlString(List<string> table, string TableName, int contentId);
+        StringBuilder CreateInsertCopyContentSqlString(Hashtable data, List<string> table, string TableName, int contentId);
         StringBuilder CreateInsertSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters);
         StringBuilder CreateUpdateSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters);
         string DeleteContentTableData(string TableName, string Ids);
