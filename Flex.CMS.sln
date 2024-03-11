@@ -11,13 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.Core", "src\Flex.Core\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.Domain", "src\Flex.Domain\Flex.Domain.csproj", "{3222DFD8-9156-4D6A-B340-5D2E77D5711D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.EFSqlServer", "src\Flex.EFSqlServer\Flex.EFSqlServer.csproj", "{B4D0B007-3432-43CF-9E9E-A5915A60A008}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "src\UnitTest\UnitTest.csproj", "{87DE32E9-1A99-4832-B536-ADC63E04E013}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.Web", "src\Flex.Web\Flex.Web.csproj", "{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flex.Dapper", "src\Flex.Dapper\Flex.Dapper.csproj", "{9FD30C87-D642-4EDE-AA48-5F521B5DE157}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.Dapper", "src\Flex.Dapper\Flex.Dapper.csproj", "{9FD30C87-D642-4EDE-AA48-5F521B5DE157}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.EFSql", "src\Flex.EFSql\Flex.EFSql.csproj", "{B45F08CA-5683-47E3-879F-03DBEB3AC7FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,6 @@ Global
 		{3222DFD8-9156-4D6A-B340-5D2E77D5711D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3222DFD8-9156-4D6A-B340-5D2E77D5711D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3222DFD8-9156-4D6A-B340-5D2E77D5711D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B4D0B007-3432-43CF-9E9E-A5915A60A008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B4D0B007-3432-43CF-9E9E-A5915A60A008}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B4D0B007-3432-43CF-9E9E-A5915A60A008}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B4D0B007-3432-43CF-9E9E-A5915A60A008}.Release|Any CPU.Build.0 = Release|Any CPU
 		{87DE32E9-1A99-4832-B536-ADC63E04E013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{87DE32E9-1A99-4832-B536-ADC63E04E013}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87DE32E9-1A99-4832-B536-ADC63E04E013}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,6 +53,10 @@ Global
 		{9FD30C87-D642-4EDE-AA48-5F521B5DE157}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FD30C87-D642-4EDE-AA48-5F521B5DE157}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FD30C87-D642-4EDE-AA48-5F521B5DE157}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B45F08CA-5683-47E3-879F-03DBEB3AC7FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B45F08CA-5683-47E3-879F-03DBEB3AC7FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B45F08CA-5683-47E3-879F-03DBEB3AC7FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B45F08CA-5683-47E3-879F-03DBEB3AC7FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

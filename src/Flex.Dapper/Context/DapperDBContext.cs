@@ -119,7 +119,7 @@ namespace Flex.Dapper.Context
         public async Task<Page> PageAsync(int pageIndex, int pageSize, string sql, object param = null)
         {
             DapperPage.BuildPageQueries((pageIndex - 1) * pageSize, pageSize, sql, out string sqlCount, out string sqlPage);
-
+       
             var result = new Page
             {
                 PageIndex = pageIndex,

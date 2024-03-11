@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Flex.Application.SqlServerSQLString
 {
-    public class SqlServerServices : ISqlTableServices
+    public class SqlServerSqlTableServices:ISqlTableServices
     {
         public string CreateContentTableSql(string TableName) => "CREATE TABLE " + TableName + "" +
                                      "(" +

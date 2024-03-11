@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Flex.EFSqlServer.Repositories
+namespace Flex.EFSql.Repositories
 {
     /// <summary>
     /// 通用仓储接口

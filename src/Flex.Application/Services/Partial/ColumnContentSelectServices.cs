@@ -1,16 +1,11 @@
 ﻿using Dapper;
 using Flex.Application.Contracts.Exceptions;
-using Flex.Domain;
+using Flex.Dapper;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Role;
 using Flex.Domain.Dtos.WorkFlow;
 using Flex.Domain.WhiteFileds;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Flex.Application.Services
 {

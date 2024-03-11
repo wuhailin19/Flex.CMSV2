@@ -4,7 +4,7 @@ using Flex.Core.Extensions;
 using Flex.Domain.Base;
 using Flex.Domain.Dtos.ContentModel;
 using Flex.Domain.Dtos.Field;
-using Flex.EFSqlServer.Repositories;
+using Flex.EFSql.Repositories;
 using Microsoft.AspNetCore.Http.Metadata;
 using System;
 using System.Collections;

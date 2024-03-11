@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Flex.Core.Timing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Flex.Domain.Base
      
         public virtual void ConfigureLongId<T>(EntityTypeBuilder<T> builder) where T : BaseLongEntity
         {
-            builder.Property(m => m.AddTime).HasDefaultValueSql("GETDATE()");
+            builder.Property(m => m.AddTime).HasDefaultValue(Clock.Now);
             builder.Property(m => m.AddUserName).HasMaxLength(200);
             builder.Property(m => m.LastEditUserName).HasMaxLength(200);
             builder.Property(m => m.StatusCode).HasDefaultValue(StatusCode.Enable);
@@ -25,7 +26,7 @@ namespace Flex.Domain.Base
         }
         public virtual void ConfigureIntId<T>(EntityTypeBuilder<T> builder) where T : BaseIntEntity
         {
-            builder.Property(m => m.AddTime).HasDefaultValueSql("GETDATE()");
+            builder.Property(m => m.AddTime).HasDefaultValue(Clock.Now);
             builder.Property(m => m.AddUserName).HasMaxLength(200);
             builder.Property(m => m.LastEditUserName).HasMaxLength(200);
             builder.Property(m => m.StatusCode).HasDefaultValue(StatusCode.Enable);
@@ -35,7 +36,7 @@ namespace Flex.Domain.Base
         }
         public virtual void ConfigureStringId<T>(EntityTypeBuilder<T> builder) where T : BaseEntity
         {
-            builder.Property(m => m.AddTime).HasDefaultValueSql("GETDATE()");
+            builder.Property(m => m.AddTime).HasDefaultValue(Clock.Now);
             builder.Property(m => m.AddUserName).HasMaxLength(200);
             builder.Property(m => m.LastEditUserName).HasMaxLength(200);
             builder.Property(m => m.StatusCode).HasDefaultValue(StatusCode.Enable);

@@ -1,4 +1,4 @@
-﻿using Flex.EFSqlServer.Repositories;
+﻿using Flex.EFSql.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Flex.EFSqlServer.Transaction
+namespace Flex.EFSql.Transaction
 {
     public interface IEfCoreIUnitWork
     {

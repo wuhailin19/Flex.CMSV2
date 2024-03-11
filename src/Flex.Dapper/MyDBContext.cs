@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using System.Data;
 using System.Data.SqlClient;
 using Flex.Core.Extensions;
+using Autofac.Core;
 
 namespace Flex.Dapper
 {
@@ -14,8 +15,24 @@ namespace Flex.Dapper
 
         protected override IDbConnection CreateConnection()
         {
-            IDbConnection conn = new SqlConnection("DataConfig:Sqlserver:ConnectionString".Config(string.Empty));
-            return conn;
+            var usedb = "DataConfig:UseDb".Config(string.Empty) ?? "Sqlserver";
+            var sqlconnection = "DataConfig:Sqlserver:ConnectionString".Config(string.Empty);
+            switch (usedb)
+            {
+                case "Sqlserver":
+                    return new SqlConnection(sqlconnection);
+                case "Mysql":
+                    sqlconnection = "DataConfig:Mysql:ConnectionString".Config(string.Empty);
+                    return new MySql.Data.MySqlClient.MySqlConnection(sqlconnection);
+                case "DM8":
+                    sqlconnection = "DataConfig:DM8:ConnectionString".Config(string.Empty);
+                    return new SqlConnection(sqlconnection);
+                case "PgSql":
+                    sqlconnection = "DataConfig:PostgreSQL:ConnectionString".Config(string.Empty);
+                    return new SqlConnection(sqlconnection);
+                default:
+                    return new SqlConnection(sqlconnection);
+            }
         }
     }
 }

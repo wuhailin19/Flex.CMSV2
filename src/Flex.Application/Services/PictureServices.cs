@@ -3,12 +3,6 @@ using Flex.Core.Helper.ImgFiles;
 using Flex.Core.Helper.UploadHelper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.PlatformAbstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Flex.Application.Services
 {

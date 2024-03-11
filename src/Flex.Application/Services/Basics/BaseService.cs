@@ -4,7 +4,7 @@ using Flex.Application.Contracts.Basics.ResultModels;
 using Flex.Application.Contracts.IServices.Basics;
 using Flex.Core.IDCode;
 using Flex.Domain.Base;
-using Flex.EFSqlServer.UnitOfWork;
+using Flex.EFSql.UnitOfWork;
 using System.Net;
 
 namespace Flex.Application.Services

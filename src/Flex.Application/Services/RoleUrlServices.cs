@@ -1,7 +1,7 @@
 ﻿using AutoMapper.Configuration.Conventions;
 using Flex.Core.Reflection;
 using Flex.Domain.Dtos.RoleUrl;
-using Flex.EFSqlServer.Repositories;
+using Flex.EFSql.Repositories;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Utilities;
 using System.Linq.Expressions;

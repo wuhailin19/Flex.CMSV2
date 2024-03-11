@@ -5,7 +5,7 @@ using Flex.Application.SqlServerSQLString;
 using Flex.Domain.Basics;
 using Flex.Domain.Dtos.ContentModel;
 using Flex.Domain.Dtos.Field;
-using Flex.EFSqlServer.Repositories;
+using Flex.EFSql.Repositories;
 using System.Reflection;
 
 namespace Flex.Application.Services

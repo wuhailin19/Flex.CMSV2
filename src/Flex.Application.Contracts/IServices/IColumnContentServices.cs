@@ -1,8 +1,7 @@
 ﻿using Flex.Application.Contracts.Basics.ResultModels;
-using Flex.Domain;
+using Flex.Dapper;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
-using Flex.Domain.Dtos.WorkFlow;
 using Flex.Domain.Entities;
 using System.Collections;
 

@@ -13,7 +13,7 @@ global using Flex.Core.Timing;
 global using Flex.Domain.Dtos.Admin;
 global using Flex.Domain.Dtos.AuthCode;
 global using Flex.Domain.Entities.System;
-global using Flex.EFSqlServer.UnitOfWork;
+global using Flex.EFSql.UnitOfWork;
 global using System.Net;
 global using Flex.Domain.Dtos.Menu;
 global using Flex.Domain.Entities;

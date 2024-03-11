@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.25" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
     <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
   </ItemGroup>
@@ -27,7 +28,7 @@
     <ProjectReference Include="..\Flex.Application.Contracts\Flex.Application.Contracts.csproj" />
     <ProjectReference Include="..\Flex.Core\Flex.Core.csproj" />
     <ProjectReference Include="..\Flex.Dapper\Flex.Dapper.csproj" />
-    <ProjectReference Include="..\Flex.EFSqlServer\Flex.EFSqlServer.csproj" />
+    <ProjectReference Include="..\Flex.EFSql\Flex.EFSql.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿using Flex.EFSqlServer.UnitOfWork;
+﻿using Flex.EFSql.UnitOfWork;
 
 namespace Flex.Application.Services
 {
