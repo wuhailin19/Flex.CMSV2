@@ -118,26 +118,7 @@ namespace Flex.Application.Services
             filed = filed.TrimEnd(',');
             DynamicParameters parameters = new DynamicParameters();
             string swhere = string.Empty;
-            parameters.Add("@parentId", contentPageListParam.ParentId);
-            swhere = " and ParentId=@parentId";
-            if (contentPageListParam.k.IsNotNullOrEmpty())
-            {
-                parameters.Add("@k", contentPageListParam.k);
-                if (contentPageListParam.k.ToInt() != 0)
-                    swhere += " and (Title like '%'+@k+'%' or Id=cast(@k as int))";
-                else
-                    swhere += " and Title like '%'+@k+'%'";
-            }
-            if (contentPageListParam.timefrom.IsNotNullOrEmpty())
-            {
-                parameters.Add("@timefrom", contentPageListParam.timefrom);
-                swhere += " and AddTime>=@timefrom";
-            }
-            if (contentPageListParam.timeto.IsNotNullOrEmpty())
-            {
-                parameters.Add("@timeto", contentPageListParam.timeto);
-                swhere += " and AddTime<DATEADD(day, 1, @timeto)";
-            }
+            _sqlTableServices.CreateDapperColumnContentSelectSql(contentPageListParam, out swhere, out parameters);
             var result = await _dapperDBContext.PageAsync(contentPageListParam.page, contentPageListParam.limit, "select " + filed + " from " + contentmodel.TableName + " where StatusCode not in (0,6)" + swhere, parameters);
             result.Items.Each(item =>
             {
@@ -211,7 +192,7 @@ namespace Flex.Application.Services
             parameters.Add("@ParentId", ParentId);
             parameters.Add("@flowId", column.ReviewMode);
 
-            var result = (await _dapperDBContext.GetDynamicAsync("select " + filed + ",flowId=@flowId from " + contentmodel.TableName + " where ParentId=@ParentId and Id=@Id", parameters)).FirstOrDefault();
+            var result = (await _dapperDBContext.GetDynamicAsync("select " + filed + ",@flowId as flowId from " + contentmodel.TableName + " where ParentId=@ParentId and Id=@Id", parameters)).FirstOrDefault();
             if (result == null)
                 return new ProblemDetails<OutputContentAndWorkFlowDto>(HttpStatusCode.NotFound, ErrorCodes.DataNotFound.GetEnumDescription());
             var model = new ProblemDetails<OutputContentAndWorkFlowDto>(HttpStatusCode.OK)

@@ -101,8 +101,8 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = "swagger";
     });
     // 初始化接口数据
-    var myService = app.Services.GetRequiredService<IRoleUrlServices>();
-    await myService.CreateUrlList();
+    //var myService = app.Services.GetRequiredService<IRoleUrlServices>();
+    //await myService.CreateUrlList();
 }
 
 app.UseStaticFiles();
@@ -114,6 +114,7 @@ app.UseAuthentication();
 
 app.UseCors(WebCoreSetupExtension.MyAllowSpecificOrigins);
 app.UseAuthorization();
+#pragma warning disable ASP0014 // Suggest using top level route registrations
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(
@@ -124,4 +125,5 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Login}/{action=Index}/{id?}");
 
 });
+#pragma warning restore ASP0014 // Suggest using top level route registrations
 app.Run();

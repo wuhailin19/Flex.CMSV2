@@ -86,7 +86,12 @@ namespace Flex.Application.Services
             table["ContentGroupId"] = _idWorker.NextId();
 
             DynamicParameters parameters = new DynamicParameters();
-            StringBuilder builder = _sqlTableServices.CreateDapperInsertSqlString(table, contentmodel.TableName, out parameters);
+
+
+            string orderSql = _sqlTableServices.GetNextOrderIdDapperSqlString(contentmodel.TableName);
+            var orderId= _dapperDBContext.ExecuteScalar(orderSql);
+
+            StringBuilder builder = _sqlTableServices.CreateDapperInsertSqlString(table, contentmodel.TableName, orderId, out parameters);
             try
             {
                 var result = _dapperDBContext.ExecuteScalar(builder.ToString(), parameters);

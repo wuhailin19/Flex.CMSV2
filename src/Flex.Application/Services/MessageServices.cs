@@ -2,6 +2,8 @@
 using Flex.Application.Contracts.Exceptions;
 using Flex.Core;
 using Flex.Core.Extensions.CommonExtensions;
+using Flex.Dapper;
+using Flex.Dapper.Context;
 using Flex.Domain.Dtos.Message;
 using Flex.Domain.Enums.Message;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -14,12 +16,14 @@ namespace Flex.Application.Services
     {
         IColumnContentServices contentServices;
         ISqlTableServices _sqlTableServices;
+        protected MyDBContext _dapperDBContext;
 
-        public MessageServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IColumnContentServices contentServices, ISqlTableServices sqlTableServices)
+        public MessageServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IColumnContentServices contentServices, ISqlTableServices sqlTableServices, MyDBContext dapperDBContext)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             this.contentServices = contentServices;
             _sqlTableServices = sqlTableServices;
+            _dapperDBContext=dapperDBContext;
         }
 
         private Expression<Func<sysMessage, bool>> GetExpression()
@@ -111,7 +115,7 @@ namespace Flex.Application.Services
                 _unitOfWork.ExecuteSqlCommand(updatesql);
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
             }
-
+            messagemodel.Title += $"【{step.stepName}】";
 
             messagemodel.ToUserId = step.stepMan;
             messagemodel.ToRoleId = step.stepRole;
@@ -206,7 +210,7 @@ namespace Flex.Application.Services
             }
 
             AddIntEntityBasicInfo(messagemodel);
-            _unitOfWork.SetTransaction();
+            _dapperDBContext.BeginTransaction();
             try
             {
                 var result = new ProblemDetails<int>(0, string.Empty);
@@ -227,21 +231,20 @@ namespace Flex.Application.Services
                 }
                 if (!result.IsSuccess)
                 {
-                    await _unitOfWork.RollbackAsync();
+                    _dapperDBContext.Rollback();
                     return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
                 }
                 if (model.ContentId == 0)
                     messagemodel.ContentId = result.Content;
 
-                msgRepository.Insert(messagemodel);
-                await _unitOfWork.SaveChangesTranAsync();
-
+                _dapperDBContext.Insert(messagemodel);
+                _dapperDBContext.Commit();
                 return new ProblemDetails<string>(HttpStatusCode.OK, result_msg);
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackAsync();
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
+                _dapperDBContext.Rollback();
+                throw;
             }
         }
     }

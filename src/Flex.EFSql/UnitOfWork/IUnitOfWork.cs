@@ -1,9 +1,5 @@
 ﻿using Flex.EFSql.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data;
-using System.Threading;
 
 namespace Flex.EFSql.UnitOfWork
 {

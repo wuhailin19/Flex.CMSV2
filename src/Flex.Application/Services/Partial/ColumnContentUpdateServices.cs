@@ -162,21 +162,20 @@ namespace Flex.Application.Services
         private async Task<ProblemDetails<int>> UpdateContentCore(Hashtable table, SysContentModel contentmodel, List<string> fileds)
         {
             StringBuilder builder = new StringBuilder();
-            SqlParameter[] commandParameters = new SqlParameter[] { };
+            DynamicParameters parameters = new DynamicParameters();
             if (fileds != null)
             {
                 //创建历史副本
                 var createcopysql = _sqlTableServices.CreateInsertCopyContentSqlString(table, fileds, contentmodel.TableName, table["Id"].ToInt());
-                _unitOfWork.ExecuteSqlCommand(createcopysql.ToString());
+                _dapperDBContext.ExecuteScalar(createcopysql.ToString());
             }
-            builder = _sqlTableServices.CreateUpdateSqlString(table, contentmodel.TableName, out commandParameters);
+            builder = _sqlTableServices.CreateDapperUpdateSqlString(table, contentmodel.TableName, out parameters);
+
             try
             {
-                var result = _unitOfWork.ExecuteSqlCommand(builder.ToString(), commandParameters);
+                var result = _dapperDBContext.Execute(builder.ToString(), parameters);
                 if (result > 0)
                 {
-                    await _unitOfWork.SaveChangesAsync();
-
                     return new ProblemDetails<int>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
                 }
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());

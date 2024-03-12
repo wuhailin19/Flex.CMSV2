@@ -26,7 +26,7 @@ namespace Flex.Dapper
                     return new MySql.Data.MySqlClient.MySqlConnection(sqlconnection);
                 case "DM8":
                     sqlconnection = "DataConfig:DM8:ConnectionString".Config(string.Empty);
-                    return new SqlConnection(sqlconnection);
+                    return new Dm.DmConnection(sqlconnection);
                 case "PgSql":
                     sqlconnection = "DataConfig:PostgreSQL:ConnectionString".Config(string.Empty);
                     return new SqlConnection(sqlconnection);

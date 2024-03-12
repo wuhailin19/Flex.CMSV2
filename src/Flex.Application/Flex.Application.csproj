@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -13,13 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="dmdbms.DmProvider" Version="1.1.3" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="DotNetCore.CAP.RabbitMQ" Version="7.2.2" />
     <PackageReference Include="DotNetCore.CAP.Dashboard" Version="7.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.25" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
     <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
   </ItemGroup>
@@ -31,4 +31,9 @@
     <ProjectReference Include="..\Flex.EFSql\Flex.EFSql.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Microsoft.EntityFrameworkCore.Dm">
+      <HintPath>..\Flex.EFSql\ExtensionDll\Microsoft.EntityFrameworkCore.Dm.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

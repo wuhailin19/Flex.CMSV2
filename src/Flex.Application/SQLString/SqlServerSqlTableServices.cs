@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Flex.Core.Extensions.CommonExtensions;
+using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Field;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -7,6 +8,7 @@ using Org.BouncyCastle.Crypto;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -79,48 +81,55 @@ namespace Flex.Application.SqlServerSQLString
                 "select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId,'',0,"+ data["LastEditUser"] + ",'"+ data["LastEditUserName"] + "','"+ data["LastEditDate"] + "' from " + TableName + " where Id=" + contentId);
             return builder;
         }
-        public StringBuilder CreateDapperInsertSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters)
+
+        public string GetNextOrderIdDapperSqlString(string tableName)
+        {
+            return $"SELECT ISNULL(MAX(OrderId) + 1, 0) FROM {tableName}";
+        }
+
+        public void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam,out string swhere,out DynamicParameters parameters) {
+            parameters = new DynamicParameters();
+            parameters.Add("@parentId", contentPageListParam.ParentId);
+            swhere = " and ParentId=@parentId";
+            if (contentPageListParam.k.IsNotNullOrEmpty())
+            {
+                parameters.Add("@k", contentPageListParam.k);
+                if (contentPageListParam.k.ToInt() != 0)
+                    swhere += " and (Title like '%'+@k+'%' or Id=cast(@k as int))";
+                else
+                    swhere += " and Title like '%'+@k+'%'";
+            }
+            if (contentPageListParam.timefrom.IsNotNullOrEmpty())
+            {
+                parameters.Add("@timefrom", contentPageListParam.timefrom);
+                swhere += " and AddTime>=@timefrom";
+            }
+            if (contentPageListParam.timeto.IsNotNullOrEmpty())
+            {
+                parameters.Add("@timeto", contentPageListParam.timeto);
+                swhere += " and AddTime<DATEADD(day, 1, @timeto)";
+            }
+        }
+
+        public StringBuilder CreateDapperInsertSqlString(Hashtable table, string tableName, int nextOrderId, out DynamicParameters commandParameters)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append("insert into " + TableName + " (");
+            builder.Append($"INSERT INTO {tableName} (");
             string key = "";
             string keyvar = "";
             table.Remove("OrderId");
             commandParameters = new DynamicParameters();
             foreach (DictionaryEntry myDE in table)
             {
-                key += "[" + myDE.Key.ToString() + "],";
-                keyvar += "@" + myDE.Key.ToString() + ",";
+                key += $"{myDE.Key},";
+                keyvar += $"@{myDE.Key},";
                 commandParameters.Add(myDE.Key.ToString(), myDE.Value);
             }
-            builder.Append(key.Substring(0, key.Length - 1) + ",OrderId) values(" + keyvar.Substring(0, keyvar.Length - 1) + ",(select case when (MAX(OrderId)+1) is null then 0 else (MAX(OrderId)+1) end from " + TableName + "))");
+            builder.Append($"{key}OrderId) VALUES ({keyvar} {nextOrderId})");
             builder.Append(";SELECT SCOPE_IDENTITY();");
             return builder;
         }
-        public StringBuilder CreateInsertSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters)
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append("insert into " + TableName + " (");
-            string key = "";
-            string keyvar = "";
-            foreach (DictionaryEntry myDE in table)
-            {
-                key += "[" + myDE.Key.ToString() + "],";
-                keyvar += "@" + myDE.Key.ToString() + ",";
-
-            }
-            builder.Append(key.Substring(0, key.Length - 1) + " ) values(" + keyvar.Substring(0, keyvar.Length - 1) + " )");
-            commandParameters = new SqlParameter[table.Count];
-            int num = 0;
-            foreach (DictionaryEntry myDE in table)
-            {
-                commandParameters[num] = new SqlParameter("@" + myDE.Key.ToString(), myDE.Value);
-                num++;
-            }
-            builder.Append(";SELECT SCOPE_IDENTITY();");
-            return builder;
-        }
-        public StringBuilder CreateUpdateSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters)
+        public StringBuilder CreateDapperUpdateSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters)
         {
             StringBuilder builder = new StringBuilder();
             int Id = table["Id"].ToInt();
@@ -136,11 +145,11 @@ namespace Flex.Application.SqlServerSQLString
 
             }
             builder.Append(keyvar.Substring(0, keyvar.Length - 1));
-            commandParameters = new SqlParameter[table.Count];
+            commandParameters = new DynamicParameters();
             int num = 0;
             foreach (DictionaryEntry myDE in table)
             {
-                commandParameters[num] = new SqlParameter("@" + myDE.Key.ToString(), myDE.Value);
+                commandParameters.Add(myDE.Key.ToString(), myDE.Value);
                 num++;
             }
             table.Add("Id", Id);

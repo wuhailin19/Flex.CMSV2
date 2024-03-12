@@ -24,7 +24,7 @@ namespace Flex.Application.SetupExtensions.OrmInitExtension
                     services.AddScoped<ISqlTableServices, MySqlSqlTableServices>();
                     break;
                 case "DM8":
-                    services.AddUnitOfWorkService<SqlServerContext>(item => item.UseSqlServer($"DataConfig:DM8:ConnectionString".Config(string.Empty)));
+                    services.AddUnitOfWorkService<SqlServerContext>(item => item.UseDm($"DataConfig:DM8:ConnectionString".Config(string.Empty)));
                     services.AddScoped<ISqlTableServices, DamengSqlTableServices>();
                     break;
                 case "PgSql":

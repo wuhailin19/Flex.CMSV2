@@ -12,112 +12,109 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flex.EFSql.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    [Migration("20240311084255_Initmdata")]
-    partial class Initmdata
+    [Migration("20240312133036_Initmenudata")]
+    partial class Initmenudata
     {
-        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+                .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn)
+                .HasAnnotation("ProductVersion", "6.0.27")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             modelBuilder.Entity("Flex.Domain.Entities.SysColumn", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INT")
+                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 4, DateTimeKind.Local).AddTicks(2282));
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 304, DateTimeKind.Local).AddTicks(6815));
 
                     b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("AddUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("ColumnImage")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("ColumnUrl")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("NVARCHAR2(50)");
 
                     b.Property<int?>("ExtensionModelId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.Property<bool>("IsShow")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("BIT");
 
                     b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("LastEditUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<int?>("ModelId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("NVARCHAR2(50)");
 
                     b.Property<int>("OrderId")
-                        .HasColumnType("int");
+                        .HasColumnType("INT");
 
                     b.Property<int>("ParentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.Property<int?>("ReviewMode")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.Property<string>("SeoDescription")
                         .HasMaxLength(2000)
-                        .HasColumnType("varchar(2000)");
+                        .HasColumnType("NVARCHAR2(2000)");
 
                     b.Property<string>("SeoKeyWord")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("NVARCHAR2(500)");
 
                     b.Property<string>("SeoTitle")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)");
+                        .HasColumnType("NVARCHAR2(250)");
 
                     b.Property<int?>("SiteId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(1);
 
                     b.Property<int?>("StatusCode")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(1);
 
                     b.Property<int?>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.HasKey("Id");
@@ -129,57 +126,56 @@ namespace Flex.EFSql.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INT")
+                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 4, DateTimeKind.Local).AddTicks(5824));
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 304, DateTimeKind.Local).AddTicks(8325));
 
                     b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("AddUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("Description")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("NVARCHAR2(100)");
 
                     b.Property<string>("FormHtmlString")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("LastEditUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("NVARCHAR2(50)");
 
                     b.Property<int?>("StatusCode")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(1);
 
                     b.Property<string>("TableName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("NVARCHAR2(50)");
 
                     b.Property<int?>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.HasKey("Id");
@@ -187,68 +183,166 @@ namespace Flex.EFSql.Migrations
                     b.ToTable("tbl_core_contentmodel", (string)null);
                 });
 
-            modelBuilder.Entity("Flex.Domain.Entities.SysGroup", b =>
+            modelBuilder.Entity("Flex.Domain.Entities.sysField", b =>
                 {
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint");
+                    b.Property<string>("Id")
+                        .HasColumnType("NVARCHAR2(450)");
 
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 5, DateTimeKind.Local).AddTicks(5228));
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 305, DateTimeKind.Local).AddTicks(2393));
 
                     b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("AddUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
+
+                    b.Property<string>("ApiName")
+                        .HasMaxLength(50)
+                        .HasColumnType("NVARCHAR2(50)");
+
+                    b.Property<string>("FieldAttritude")
+                        .HasMaxLength(500)
+                        .HasColumnType("NVARCHAR2(500)");
+
+                    b.Property<string>("FieldDescription")
+                        .HasMaxLength(500)
+                        .HasColumnType("NVARCHAR2(500)");
+
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("NVARCHAR2(50)");
+
+                    b.Property<string>("FieldType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("NVARCHAR2(50)");
+
+                    b.Property<bool?>("IsApiField")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool?>("IsSearch")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("LastEditDate")
+                        .HasColumnType("TIMESTAMP");
+
+                    b.Property<long?>("LastEditUser")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<string>("LastEditUserName")
+                        .HasMaxLength(200)
+                        .HasColumnType("NVARCHAR2(200)");
+
+                    b.Property<int>("ModelId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("NVARCHAR2(50)");
+
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasDefaultValue(0);
+
+                    b.Property<bool?>("ShowInTable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIT")
+                        .HasDefaultValue(false);
+
+                    b.Property<int?>("StatusCode")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("Validation")
+                        .HasMaxLength(500)
+                        .HasColumnType("NVARCHAR2(500)");
+
+                    b.Property<int?>("Version")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_core_field", (string)null);
+                });
+
+            modelBuilder.Entity("Flex.Domain.Entities.SysGroup", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<DateTime>("AddTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 305, DateTimeKind.Local).AddTicks(4186));
+
+                    b.Property<long?>("AddUser")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<string>("AddUserName")
+                        .HasMaxLength(200)
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("DataPermission")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("GroupDesc")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("GroupName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("NVARCHAR2(50)");
 
                     b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("LastEditUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("MenuPermissions")
                         .IsRequired()
                         .HasMaxLength(2000)
-                        .HasColumnType("varchar(2000)");
+                        .HasColumnType("NVARCHAR2(2000)");
 
                     b.Property<int?>("StatusCode")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(1);
 
                     b.Property<string>("UrlPermission")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<int?>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.Property<string>("WebsitePermissions")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.HasKey("Id");
 
@@ -259,59 +353,58 @@ namespace Flex.EFSql.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INT")
+                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 5, DateTimeKind.Local).AddTicks(9736));
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 305, DateTimeKind.Local).AddTicks(6279));
 
                     b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("AddUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<long>("AdminId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("FileManage")
-                        .HasColumnType("longtext")
+                        .HasColumnType("NVARCHAR2(8188)")
                         .HasColumnName("Index_FileManage");
 
                     b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("LastEditUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("Shortcut")
-                        .HasColumnType("longtext")
+                        .HasColumnType("NVARCHAR2(8188)")
                         .HasColumnName("Index_Shortcut");
 
                     b.Property<string>("SiteMenu")
-                        .HasColumnType("longtext")
+                        .HasColumnType("NVARCHAR2(8188)")
                         .HasColumnName("Index_Site_Menu");
 
                     b.Property<int?>("StatusCode")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(1);
 
                     b.Property<string>("SystemMenu")
-                        .HasColumnType("longtext")
+                        .HasColumnType("NVARCHAR2(8188)")
                         .HasColumnName("Index_System_Menu");
 
                     b.Property<int?>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.HasKey("Id");
@@ -339,83 +432,82 @@ namespace Flex.EFSql.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INT")
+                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 6, DateTimeKind.Local).AddTicks(5460));
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 305, DateTimeKind.Local).AddTicks(9225));
 
                     b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("AddUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("FontSort")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("Icode")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("NVARCHAR2(50)");
 
                     b.Property<bool>("IsControllerUrl")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("BIT");
 
                     b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("LastEditUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<int>("Level")
-                        .HasColumnType("int");
+                        .HasColumnType("INT");
 
                     b.Property<string>("LinkUrl")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("NVARCHAR2(50)");
 
                     b.Property<int>("OrderId")
-                        .HasColumnType("int");
+                        .HasColumnType("INT");
 
                     b.Property<int>("ParentID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.Property<bool?>("ShowStatus")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("BIT")
                         .HasDefaultValue(true);
 
                     b.Property<int?>("StatusCode")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(1);
 
                     b.Property<int?>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.Property<bool>("isMenu")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("BIT");
 
                     b.HasKey("Id");
 
@@ -1304,76 +1396,295 @@ namespace Flex.EFSql.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Flex.Domain.Entities.SysRoleUrl", b =>
+            modelBuilder.Entity("Flex.Domain.Entities.sysMessage", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 8, DateTimeKind.Local).AddTicks(4820));
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 306, DateTimeKind.Local).AddTicks(574));
 
                     b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("AddUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
-                    b.Property<int>("Category")
-                        .HasColumnType("int");
+                    b.Property<int>("ContentId")
+                        .HasColumnType("INT");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("FlowId")
+                        .HasColumnType("INT");
+
+                    b.Property<string>("FromPathId")
+                        .HasColumnType("NVARCHAR2(8188)");
+
+                    b.Property<bool>("IsEnd")
+                        .HasColumnType("BIT");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("BIT");
+
+                    b.Property<bool>("IsStart")
+                        .HasColumnType("BIT");
 
                     b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("LastEditUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
-                    b.Property<int>("MaxErrorCount")
-                        .HasColumnType("int");
+                    b.Property<int>("MessageCate")
+                        .HasColumnType("INT");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<string>("MsgContent")
+                        .HasColumnType("NVARCHAR2(8188)");
 
-                    b.Property<bool>("NeedActionPermission")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<long>("MsgGroupId")
+                        .HasColumnType("BIGINT");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
+                    b.Property<int>("ParentId")
+                        .HasColumnType("INT");
 
-                    b.Property<string>("ParentId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<string>("RabbitMqQueueName")
+                        .HasColumnType("NVARCHAR2(8188)");
 
-                    b.Property<string>("RequestType")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ReturnContent")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("RecieveId")
+                        .HasColumnType("INT");
 
                     b.Property<int?>("StatusCode")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("TableName")
+                        .HasColumnType("NVARCHAR2(8188)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(8188)");
+
+                    b.Property<string>("ToPathId")
+                        .HasColumnType("NVARCHAR2(8188)");
+
+                    b.Property<string>("ToRoleId")
+                        .HasColumnType("NVARCHAR2(8188)");
+
+                    b.Property<string>("ToUserId")
+                        .HasColumnType("NVARCHAR2(8188)");
+
+                    b.Property<int?>("Version")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_core_message", (string)null);
+                });
+
+            modelBuilder.Entity("Flex.Domain.Entities.sysPicture", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AddTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 306, DateTimeKind.Local).AddTicks(4301));
+
+                    b.Property<long?>("AddUser")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<string>("AddUserName")
+                        .HasMaxLength(200)
+                        .HasColumnType("NVARCHAR2(200)");
+
+                    b.Property<int>("CategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasDefaultValue(0);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("NVARCHAR2(255)");
+
+                    b.Property<DateTime?>("LastEditDate")
+                        .HasColumnType("TIMESTAMP");
+
+                    b.Property<long?>("LastEditUser")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<string>("LastEditUserName")
+                        .HasMaxLength(200)
+                        .HasColumnType("NVARCHAR2(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("NVARCHAR2(255)");
+
+                    b.Property<string>("Src")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("NVARCHAR2(255)");
+
+                    b.Property<int?>("StatusCode")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasDefaultValue(1);
+
+                    b.Property<int?>("Version")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_core_picture", (string)null);
+                });
+
+            modelBuilder.Entity("Flex.Domain.Entities.sysPictureCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AddTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 306, DateTimeKind.Local).AddTicks(2406));
+
+                    b.Property<long?>("AddUser")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<string>("AddUserName")
+                        .HasMaxLength(200)
+                        .HasColumnType("NVARCHAR2(200)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("NVARCHAR2(255)");
+
+                    b.Property<DateTime?>("LastEditDate")
+                        .HasColumnType("TIMESTAMP");
+
+                    b.Property<long?>("LastEditUser")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<string>("LastEditUserName")
+                        .HasMaxLength(200)
+                        .HasColumnType("NVARCHAR2(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("NVARCHAR2(255)");
+
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasDefaultValue(0);
+
+                    b.Property<int?>("StatusCode")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasDefaultValue(1);
+
+                    b.Property<int?>("Version")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_core_pictureCategory", (string)null);
+                });
+
+            modelBuilder.Entity("Flex.Domain.Entities.SysRoleUrl", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("NVARCHAR2(450)");
+
+                    b.Property<DateTime>("AddTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 306, DateTimeKind.Local).AddTicks(7227));
+
+                    b.Property<long?>("AddUser")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<string>("AddUserName")
+                        .HasMaxLength(200)
+                        .HasColumnType("NVARCHAR2(200)");
+
+                    b.Property<int>("Category")
+                        .HasColumnType("INT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(8188)");
+
+                    b.Property<DateTime?>("LastEditDate")
+                        .HasColumnType("TIMESTAMP");
+
+                    b.Property<long?>("LastEditUser")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<string>("LastEditUserName")
+                        .HasMaxLength(200)
+                        .HasColumnType("NVARCHAR2(200)");
+
+                    b.Property<int>("MaxErrorCount")
+                        .HasColumnType("INT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(8188)");
+
+                    b.Property<bool>("NeedActionPermission")
+                        .HasColumnType("BIT");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("INT");
+
+                    b.Property<string>("ParentId")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(8188)");
+
+                    b.Property<string>("RequestType")
+                        .HasColumnType("NVARCHAR2(8188)");
+
+                    b.Property<string>("ReturnContent")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(8188)");
+
+                    b.Property<int?>("StatusCode")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INT")
                         .HasDefaultValue(1);
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<int?>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.HasKey("Id");
@@ -1384,119 +1695,119 @@ namespace Flex.EFSql.Migrations
             modelBuilder.Entity("Flex.Domain.Entities.System.SysAdmin", b =>
                 {
                     b.Property<long>("Id")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("Account")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("NVARCHAR2(100)");
 
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 3, DateTimeKind.Local).AddTicks(6953));
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 304, DateTimeKind.Local).AddTicks(4187));
 
                     b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("AddUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<bool?>("AllowMultiLogin")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("BIT")
                         .HasDefaultValue(true);
 
                     b.Property<string>("CurrentLoginIP")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("NVARCHAR2(20)");
 
                     b.Property<DateTime?>("CurrentLoginTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<int>("ErrorCount")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.Property<string>("FilterIp")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<bool>("Islock")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("BIT")
                         .HasDefaultValue(false);
 
                     b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("LastEditUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<DateTime?>("LockTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<int>("LoginCount")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.Property<string>("LoginLogString")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<int>("MaxErrorCount")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(10);
 
                     b.Property<string>("Mutiloginccode")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("NVARCHAR2(20)");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("NVARCHAR2(100)");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                        .HasColumnType("INT");
 
                     b.Property<string>("RoleName")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("NVARCHAR2(20)");
 
                     b.Property<string>("SaltValue")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<int?>("StatusCode")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(1);
 
                     b.Property<string>("UserAvatar")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("NVARCHAR2(100)");
 
                     b.Property<string>("UserSign")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<int?>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.HasKey("Id");
@@ -1508,12 +1819,12 @@ namespace Flex.EFSql.Migrations
                         {
                             Id = 1560206066204151804L,
                             Account = "webmaster",
-                            AddTime = new DateTime(2024, 3, 11, 16, 42, 55, 3, DateTimeKind.Local).AddTicks(6528),
+                            AddTime = new DateTime(2024, 3, 12, 21, 30, 36, 304, DateTimeKind.Local).AddTicks(3867),
                             AddUser = 1560206066204151804L,
                             AddUserName = "webmaster",
                             AllowMultiLogin = true,
                             CurrentLoginIP = "127.0.0.1",
-                            CurrentLoginTime = new DateTime(2024, 3, 11, 16, 42, 55, 3, DateTimeKind.Local).AddTicks(6528),
+                            CurrentLoginTime = new DateTime(2024, 3, 12, 21, 30, 36, 304, DateTimeKind.Local).AddTicks(3867),
                             ErrorCount = 0,
                             Islock = false,
                             LastEditUser = 1560206066204151804L,
@@ -1534,469 +1845,127 @@ namespace Flex.EFSql.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INT")
+                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 8, DateTimeKind.Local).AddTicks(1418));
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 306, DateTimeKind.Local).AddTicks(5813));
 
                     b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("AddUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("DataPermission")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<long?>("GroupId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("LastEditUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("MenuPermissions")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("RolesDesc")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("NVARCHAR2(50)");
 
                     b.Property<string>("RolesName")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("NVARCHAR2(20)");
 
                     b.Property<int?>("StatusCode")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(1);
 
                     b.Property<string>("UrlPermission")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<int?>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.Property<string>("WebsitePermissions")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.HasKey("Id");
 
                     b.ToTable("tbl_core_role", (string)null);
                 });
 
-            modelBuilder.Entity("Flex.Domain.Entities.TestTranscation", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_core_testTransaction", (string)null);
-                });
-
-            modelBuilder.Entity("Flex.Domain.Entities.sysField", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("AddTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 5, DateTimeKind.Local).AddTicks(2003));
-
-                    b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("AddUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<string>("ApiName")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("FieldAttritude")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<string>("FieldDescription")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<string>("FieldName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("FieldType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<bool?>("IsApiField")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false);
-
-                    b.Property<bool?>("IsSearch")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false);
-
-                    b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("LastEditUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<int>("ModelId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<bool?>("ShowInTable")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false);
-
-                    b.Property<int?>("StatusCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
-
-                    b.Property<string>("Validation")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<int?>("Version")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_core_field", (string)null);
-                });
-
-            modelBuilder.Entity("Flex.Domain.Entities.sysMessage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("AddTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 6, DateTimeKind.Local).AddTicks(8494));
-
-                    b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("AddUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<int>("ContentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FlowId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FromPathId")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("IsEnd")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsStart")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("LastEditUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<int>("MessageCate")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MsgContent")
-                        .HasColumnType("longtext");
-
-                    b.Property<long>("MsgGroupId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RabbitMqQueueName")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("RecieveId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StatusCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
-
-                    b.Property<string>("TableName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ToPathId")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ToRoleId")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ToUserId")
-                        .HasColumnType("longtext");
-
-                    b.Property<int?>("Version")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_core_message", (string)null);
-                });
-
-            modelBuilder.Entity("Flex.Domain.Entities.sysPicture", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("AddTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 7, DateTimeKind.Local).AddTicks(7582));
-
-                    b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("AddUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<int>("CategoryID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("LastEditUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Src")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int?>("StatusCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
-
-                    b.Property<int?>("Version")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_core_picture", (string)null);
-                });
-
-            modelBuilder.Entity("Flex.Domain.Entities.sysPictureCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("AddTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 7, DateTimeKind.Local).AddTicks(3329));
-
-                    b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("AddUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("LastEditUserName")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<int?>("StatusCode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
-
-                    b.Property<int?>("Version")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_core_pictureCategory", (string)null);
-                });
-
             modelBuilder.Entity("Flex.Domain.Entities.sysWorkFlow", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INT")
+                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 9, DateTimeKind.Local).AddTicks(8748));
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 307, DateTimeKind.Local).AddTicks(1104));
 
                     b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("AddUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("Introduction")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("LastEditUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<int?>("StatusCode")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(1);
 
                     b.Property<int?>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.Property<string>("WorkFlowContent")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("actDesign")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("actionString")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("stepDesign")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.HasKey("Id");
 
@@ -2006,74 +1975,74 @@ namespace Flex.EFSql.Migrations
             modelBuilder.Entity("Flex.Domain.Entities.sysWorkFlowAction", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("NVARCHAR2(450)");
 
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 9, DateTimeKind.Local).AddTicks(5422));
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 306, DateTimeKind.Local).AddTicks(9614));
 
                     b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("AddUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("LastEditUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<int?>("StatusCode")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(1);
 
                     b.Property<int?>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.Property<string>("actionFromName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("actionName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("actionPathId")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("actionToName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("conjunctManFlag")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("directMode")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<int>("flowId")
-                        .HasColumnType("int");
+                        .HasColumnType("INT");
 
                     b.Property<string>("orgBossMode")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("stepFromId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("stepToCate")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("stepToId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.HasKey("Id");
 
@@ -2083,75 +2052,94 @@ namespace Flex.EFSql.Migrations
             modelBuilder.Entity("Flex.Domain.Entities.sysWorkFlowStep", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("NVARCHAR2(450)");
 
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2024, 3, 11, 16, 42, 55, 10, DateTimeKind.Local).AddTicks(2089));
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 307, DateTimeKind.Local).AddTicks(2352));
 
                     b.Property<long?>("AddUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("AddUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<DateTime?>("LastEditDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<long?>("LastEditUser")
-                        .HasColumnType("bigint");
+                        .HasColumnType("BIGINT");
 
                     b.Property<string>("LastEditUserName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("NVARCHAR2(200)");
 
                     b.Property<int?>("StatusCode")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(1);
 
                     b.Property<int?>("Version")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INT")
                         .HasDefaultValue(0);
 
                     b.Property<string>("avoidFlag")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<int>("flowId")
-                        .HasColumnType("int");
+                        .HasColumnType("INT");
 
                     b.Property<int>("isStart")
-                        .HasColumnType("int");
+                        .HasColumnType("INT");
 
                     b.Property<string>("orgMode")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("stepCate")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("stepMan")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("stepName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("stepOrg")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("stepPathId")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.Property<string>("stepRole")
-                        .HasColumnType("longtext");
+                        .HasColumnType("NVARCHAR2(8188)");
 
                     b.HasKey("Id");
 
                     b.ToTable("tbl_core_workflowstep", (string)null);
+                });
+
+            modelBuilder.Entity("Flex.Domain.Entities.TestTranscation", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIGINT")
+                        .HasAnnotation("Dm:ValueGenerationStrategy", DmValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("NVARCHAR2(8188)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(8188)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_core_testTransaction", (string)null);
                 });
 #pragma warning restore 612, 618
         }

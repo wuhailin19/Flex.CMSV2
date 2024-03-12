@@ -50,6 +50,7 @@ namespace Flex.Application.Services
         public virtual void AddIntEntityBasicInfo<T>(T model) where T : BaseIntEntity  {
             model.AddUser = _claims.UserId;
             model.AddUserName= _claims.UserName;
+            model.AddTime = Clock.Now;
         }
         public virtual void AddLongEntityBasicInfo<T>(T model) where T : BaseLongEntity
         {

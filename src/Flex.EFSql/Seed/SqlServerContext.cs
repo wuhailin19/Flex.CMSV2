@@ -10,7 +10,7 @@ namespace Flex.EFSql
     {
         public SqlServerContext(DbContextOptions<SqlServerContext> options) : base(options)
         {
-
+            
         }
         // 无参构造函数，用于设计时创建对象
         public SqlServerContext() : base()
