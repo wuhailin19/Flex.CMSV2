@@ -14,7 +14,7 @@
 3.  xxxx
 
 #### 使用说明
-1.  去掉appsettings_初始.json和appsettings.Development_初始.json的_初始字样，并修改DataConfig节点下的数据库连接字符串
+1.  去掉appsettings_初始.json的_初始字样，并修改DataConfig节点下的数据库连接字符串
 2.  在Flex.EFSqlServer中的DesignTimeSqlServerContextFactory类修改数据库连接字符串，此处的用于codefirst生成使用
 3.  在Flex.EFSqlServer目录调起终端窗口并执行以下命令即可生成数据库
 4.  dotnet ef migrations add Initmdata --context SqlServerContext
