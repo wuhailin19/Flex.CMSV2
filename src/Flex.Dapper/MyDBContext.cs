@@ -1,9 +1,8 @@
-﻿using Flex.Dapper.Context;
+﻿using Flex.Core.Extensions;
+using Flex.Dapper.Context;
 using Microsoft.Extensions.Options;
 using System.Data;
 using System.Data.SqlClient;
-using Flex.Core.Extensions;
-using Autofac.Core;
 
 namespace Flex.Dapper
 {
@@ -11,6 +10,7 @@ namespace Flex.Dapper
     {
         public MyDBContext(IOptions<DapperDBContextOptions> optionsAccessor) : base(optionsAccessor)
         {
+            
         }
 
         protected override IDbConnection CreateConnection()
