@@ -13,8 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="dmdbms.DmProvider" Version="1.1.3" />
+    <PackageReference Include="DmProvider" Version="1.1.0.16649" />
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Dm" Version="6.0.0.16623" />
     <PackageReference Include="DotNetCore.CAP.RabbitMQ" Version="7.2.2" />
     <PackageReference Include="DotNetCore.CAP.Dashboard" Version="7.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.25" />
@@ -31,9 +32,4 @@
     <ProjectReference Include="..\Flex.EFSql\Flex.EFSql.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Microsoft.EntityFrameworkCore.Dm">
-      <HintPath>..\Flex.EFSql\ExtensionDll\Microsoft.EntityFrameworkCore.Dm.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>

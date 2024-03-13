@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Flex.Domain.Dtos.ColumnContent;
+using Flex.Domain.Dtos.Field;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections;
@@ -87,7 +88,28 @@ namespace Flex.Application.SqlServerSQLString
                 $"SELECT {keyvar.Substring(0, keyvar.Length - 1)},6,OrderId,'',0,{data["LastEditUser"]},'{data["LastEditUserName"]}','{data["LastEditDate"]}' FROM `{TableName}` WHERE `Id`={contentId}");
             return builder;
         }
+        public string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"ALTER TABLE {tableName} ");
 
+            bool isFirst = true;
+            foreach (var column in insertfiledlist)
+            {
+                if (!isFirst)
+                {
+                    sb.Append(", ");
+                }
+                else
+                {
+                    isFirst = false;
+                }
+
+                sb.Append($"ADD COLUMN {column.id} {ConvertDataType(column.tag)}");
+            }
+
+            return sb.ToString();
+        }
         public string GetNextOrderIdDapperSqlString(string tableName)
         {
             return  $"SELECT CASE WHEN (MAX(`OrderId`)+1) IS NULL THEN 0 ELSE (MAX(`OrderId`)+1) END FROM `{tableName}`";

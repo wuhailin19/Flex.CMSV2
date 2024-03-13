@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Flex.Core;
 using Flex.Domain.Dtos.ColumnContent;
+using Flex.Domain.Dtos.Field;
 using Flex.Domain.Entities;
 using Microsoft.Data.SqlClient;
 using System;
@@ -29,5 +30,6 @@ namespace Flex.Application.Contracts.IServices
         string UpdateContentReviewStatus(string TableName, int ContentId, StatusCode statusCode, string ReviewStepId);
         string UpdateContentStatus(string TableName, int ContentId, StatusCode statusCode);
         void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out DynamicParameters parameters);
+        string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist);
     }
 }

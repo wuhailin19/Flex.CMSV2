@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Flex.Domain.Dtos.ColumnContent;
+using Flex.Domain.Dtos.Field;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections;
@@ -110,7 +111,28 @@ namespace Flex.Application.SqlServerSQLString
             builder.Append(" RETURNING OrderId;");
             return builder;
         }
+        public string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"ALTER TABLE {tableName} ");
 
+            bool isFirst = true;
+            foreach (var column in insertfiledlist)
+            {
+                if (!isFirst)
+                {
+                    sb.Append(", ");
+                }
+                else
+                {
+                    isFirst = false;
+                }
+
+                sb.Append($"ADD COLUMN {column.id} {ConvertDataType(column.tag)}");
+            }
+
+            return sb.ToString();
+        }
         public void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out DynamicParameters parameters)
         {
             parameters = new DynamicParameters();

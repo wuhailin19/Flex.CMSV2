@@ -110,7 +110,28 @@ namespace Flex.Application.SqlServerSQLString
                 swhere += " and AddTime<DATEADD(day, 1, @timeto)";
             }
         }
+        public string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"ALTER TABLE {tableName} ");
 
+            bool isFirst = true;
+            foreach (var column in insertfiledlist)
+            {
+                if (!isFirst)
+                {
+                    sb.Append(", ");
+                }
+                else
+                {
+                    isFirst = false;
+                }
+
+                sb.Append($"ADD COLUMN {column.id} {ConvertDataType(column.tag)}");
+            }
+
+            return sb.ToString();
+        }
         public StringBuilder CreateDapperInsertSqlString(Hashtable table, string tableName, int nextOrderId, out DynamicParameters commandParameters)
         {
             StringBuilder builder = new StringBuilder();

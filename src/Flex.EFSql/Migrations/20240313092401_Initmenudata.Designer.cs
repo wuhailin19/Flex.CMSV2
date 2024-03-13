@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flex.EFSql.Migrations
 {
     [DbContext(typeof(SqlServerContext))]
-    [Migration("20240312133036_Initmenudata")]
+    [Migration("20240313092401_Initmenudata")]
     partial class Initmenudata
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 304, DateTimeKind.Local).AddTicks(6815));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 400, DateTimeKind.Local).AddTicks(4210));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -132,7 +132,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 304, DateTimeKind.Local).AddTicks(8325));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 400, DateTimeKind.Local).AddTicks(5823));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -191,7 +191,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 305, DateTimeKind.Local).AddTicks(2393));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 400, DateTimeKind.Local).AddTicks(8743));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -289,7 +289,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 305, DateTimeKind.Local).AddTicks(4186));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 401, DateTimeKind.Local).AddTicks(110));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -359,7 +359,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 305, DateTimeKind.Local).AddTicks(6279));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 401, DateTimeKind.Local).AddTicks(2135));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -438,7 +438,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 305, DateTimeKind.Local).AddTicks(9225));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 401, DateTimeKind.Local).AddTicks(5270));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -1406,7 +1406,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 306, DateTimeKind.Local).AddTicks(574));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 401, DateTimeKind.Local).AddTicks(6640));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -1502,7 +1502,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 306, DateTimeKind.Local).AddTicks(4301));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 402, DateTimeKind.Local).AddTicks(107));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -1566,7 +1566,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 306, DateTimeKind.Local).AddTicks(2406));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 401, DateTimeKind.Local).AddTicks(8375));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -1623,7 +1623,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 306, DateTimeKind.Local).AddTicks(7227));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 402, DateTimeKind.Local).AddTicks(2781));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -1705,7 +1705,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 304, DateTimeKind.Local).AddTicks(4187));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 400, DateTimeKind.Local).AddTicks(1749));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -1819,12 +1819,12 @@ namespace Flex.EFSql.Migrations
                         {
                             Id = 1560206066204151804L,
                             Account = "webmaster",
-                            AddTime = new DateTime(2024, 3, 12, 21, 30, 36, 304, DateTimeKind.Local).AddTicks(3867),
+                            AddTime = new DateTime(2024, 3, 13, 17, 24, 1, 400, DateTimeKind.Local).AddTicks(1458),
                             AddUser = 1560206066204151804L,
                             AddUserName = "webmaster",
                             AllowMultiLogin = true,
                             CurrentLoginIP = "127.0.0.1",
-                            CurrentLoginTime = new DateTime(2024, 3, 12, 21, 30, 36, 304, DateTimeKind.Local).AddTicks(3867),
+                            CurrentLoginTime = new DateTime(2024, 3, 13, 17, 24, 1, 400, DateTimeKind.Local).AddTicks(1458),
                             ErrorCount = 0,
                             Islock = false,
                             LastEditUser = 1560206066204151804L,
@@ -1851,7 +1851,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 306, DateTimeKind.Local).AddTicks(5813));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 402, DateTimeKind.Local).AddTicks(1525));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -1919,7 +1919,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 307, DateTimeKind.Local).AddTicks(1104));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 406, DateTimeKind.Local).AddTicks(5954));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -1980,7 +1980,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 306, DateTimeKind.Local).AddTicks(9614));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 402, DateTimeKind.Local).AddTicks(4617));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
@@ -2057,7 +2057,7 @@ namespace Flex.EFSql.Migrations
                     b.Property<DateTime>("AddTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TIMESTAMP")
-                        .HasDefaultValue(new DateTime(2024, 3, 12, 21, 30, 36, 307, DateTimeKind.Local).AddTicks(2352));
+                        .HasDefaultValue(new DateTime(2024, 3, 13, 17, 24, 1, 406, DateTimeKind.Local).AddTicks(7861));
 
                     b.Property<long?>("AddUser")
                         .HasColumnType("BIGINT");
