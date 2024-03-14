@@ -1,16 +1,11 @@
-﻿using Castle.Core.Internal;
-using Dapper;
-using Flex.Application.Contracts.Exceptions;
+﻿using Flex.Application.Contracts.Exceptions;
 using Flex.Core.Extensions.CommonExtensions;
 using Flex.Dapper;
-using Flex.Domain;
 using Flex.Domain.Cache;
-using Flex.Domain.Dtos.Column;
-using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Role;
-using Flex.Domain.Dtos.WorkFlow;
 using Flex.Domain.WhiteFileds;
-using Microsoft.Data.SqlClient;
+using Flex.SqlSugarFactory.Seed;
+using SqlSugar;
 using System.Collections;
 using System.Text;
 
@@ -19,13 +14,14 @@ namespace Flex.Application.Services
     public partial class ColumnContentServices : BaseService, IColumnContentServices
     {
         protected MyDBContext _dapperDBContext;
+        protected MyContext _sqlsugar;
         protected IRoleServices _roleServices;
         protected IWorkFlowServices _workFlowServices;
 
         protected ICaching _caching;
-    
+
         ISqlTableServices _sqlTableServices;
-        public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext, ISqlTableServices sqlTableServices, IRoleServices roleServices, ICaching caching, IWorkFlowServices workFlowServices)
+        public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext, ISqlTableServices sqlTableServices, IRoleServices roleServices, ICaching caching, IWorkFlowServices workFlowServices, MyContext sqlsugar)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _dapperDBContext = dapperDBContext;
@@ -33,6 +29,7 @@ namespace Flex.Application.Services
             _roleServices = roleServices;
             _caching = caching;
             _workFlowServices = workFlowServices;
+            _sqlsugar = sqlsugar;
         }
         private void InitCreateTable(Hashtable table)
         {
@@ -45,7 +42,7 @@ namespace Flex.Application.Services
         }
         private void InitUpdateTable(Hashtable table)
         {
-            if (table.GetValue("StatusCode").ToInt() != 5) 
+            if (table.GetValue("StatusCode").ToInt() != 5)
             {
                 table["ReviewStepId"] = string.Empty;
                 table["ReviewAddUser"] = string.Empty;
@@ -85,16 +82,17 @@ namespace Flex.Application.Services
             //生成内容组Id
             table["ContentGroupId"] = _idWorker.NextId();
 
-            DynamicParameters parameters = new DynamicParameters();
-
+            SugarParameter[] parameters;
 
             string orderSql = _sqlTableServices.GetNextOrderIdDapperSqlString(contentmodel.TableName);
-            var orderId= _dapperDBContext.ExecuteScalar(orderSql);
+            var orderId = _sqlsugar.Db.Ado.GetDataTable(orderSql)?.Rows[0][0]?.ToInt() ?? 0;
+            //var orderId = (await _dapperDBContext.GetDynamicAsync(orderSql)).FirstOrDefault()?.Value ?? 0;
 
-            StringBuilder builder = _sqlTableServices.CreateDapperInsertSqlString(table, contentmodel.TableName, orderId, out parameters);
+            StringBuilder builder = _sqlTableServices.CreateSqlsugarInsertSqlString(table, contentmodel.TableName, orderId, out parameters);
             try
             {
-                var result = _dapperDBContext.ExecuteScalar(builder.ToString(), parameters);
+                //var result = _dapperDBContext.ExecuteScalar(builder.ToString(), parameters);
+                var result = _sqlsugar.Db.Ado.GetScalar(builder.ToString(), parameters).ToInt();
                 if (result > 0)
                 {
                     return new ProblemDetails<int>(HttpStatusCode.OK, result, ErrorCodes.DataInsertSuccess.GetEnumDescription());

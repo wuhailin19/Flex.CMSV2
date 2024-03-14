@@ -2,6 +2,7 @@
 using Flex.Dapper;
 using Flex.EFSql;
 using Flex.EFSql.Register;
+using Flex.SqlSugarFactory.Seed;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,6 +26,7 @@ namespace Flex.Application.SetupExtensions.OrmInitExtension
                     break;
                 case "DM8":
                     services.AddUnitOfWorkService<SqlServerContext>(item => item.UseDm($"DataConfig:DM8:ConnectionString".Config(string.Empty)));
+                    services.AddScoped<MyContext>();
                     services.AddScoped<ISqlTableServices, DamengSqlTableServices>();
                     break;
                 case "PgSql":

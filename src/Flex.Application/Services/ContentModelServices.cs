@@ -69,16 +69,16 @@ namespace Flex.Application.Services
             var filedresponsity = _unitOfWork.GetRepository<sysField>();
 
             var contentmodel = await responsity.GetFirstOrDefaultAsync(m => m.Id == model.Id);
-            contentmodel.FormHtmlString = model.FormHtmlString;
+            contentmodel.FormHtmlString = model.FormHtmlString?.Replace("\n","").Replace(" ","");
             UpdateIntEntityBasicInfo(contentmodel);
             _unitOfWork.SetTransaction();
+            var fileds = JsonHelper.Json<List<FiledHtmlStringDto>>(model.FormHtmlString);
+            var filedlist = new List<sysField>();
+            var insertfiledlist = new List<FiledHtmlStringDto>();
+            var updatefiledlist = new List<FiledHtmlStringDto>();
+            var deletefiledlist = new List<sysField>();
             try
             {
-                var fileds = JsonHelper.Json<List<FiledHtmlStringDto>>(model.FormHtmlString);
-                var filedlist = new List<sysField>();
-                var insertfiledlist = new List<FiledHtmlStringDto>();
-                var updatefiledlist = new List<FiledHtmlStringDto>();
-                var deletefiledlist = new List<sysField>();
                 var fullfiledlist = await filedresponsity.GetAllAsync(m => m.ModelId == model.Id);
                 #region 对结果集进行分组
                 foreach (var item in fileds)
@@ -112,10 +112,13 @@ namespace Flex.Application.Services
                         };
                         AddStringEntityBasicInfo(filedmodel);
                         filedlist.Add(filedmodel);
-                        filedinsertstring += _sqlServerServices.InsertTableField(contentmodel.TableName, item.id, item.tag);
                     }
-                    _unitOfWork.ExecuteSqlCommand(filedinsertstring);
                     await filedresponsity.InsertAsync(filedlist);
+                    foreach (var item in insertfiledlist)
+                    {
+                        filedinsertstring = _sqlServerServices.InsertTableField(contentmodel.TableName, item.id, item.tag);
+                        _unitOfWork.ExecuteSqlCommand(filedinsertstring);
+                    }
                 }
                 #endregion
 
@@ -130,18 +133,32 @@ namespace Flex.Application.Services
                             .FirstOrDefault();
                         if (updatemodel != null)
                         {
-                            updatestring += _sqlServerServices.AlertTableField(contentmodel.TableName, updatemodel.FieldName, item.id, item.tag);
-
                             updatemodel.OrderId = item.index;
                             updatemodel.FieldName = item.id;
                             updatemodel.Name = item.label;
                             UpdateStringEntityBasicInfo(updatemodel);
-
                             filedlist.Add(updatemodel);
                         }
                     }
-                    _unitOfWork.ExecuteSqlCommand(updatestring);
                     filedresponsity.Update(filedlist);
+                    foreach (var item in updatefiledlist)
+                    {
+                        var updatemodel = fullfiledlist.Where(m => m.Id == item.uuid)
+                        .FirstOrDefault();
+                        if (updatemodel != null)
+                        {
+                            if (updatemodel.FieldName != item.id)
+                            {
+                                updatestring = _sqlServerServices.AlertTableField(contentmodel.TableName, updatemodel.FieldName, item.id);
+                                _unitOfWork.ExecuteSqlCommand(updatestring);
+                            }
+                            if (updatemodel.FieldType != item.tag)
+                            {
+                                updatestring = _sqlServerServices.AlertTableFieldType(contentmodel.TableName, item.id, item.tag);
+                                _unitOfWork.ExecuteSqlCommand(updatestring);
+                            }
+                        }
+                    }
                 }
                 #endregion
 
@@ -152,19 +169,23 @@ namespace Flex.Application.Services
                     foreach (var item in deletefiledlist)
                     {
                         item.StatusCode = StatusCode.Deleted;
-                        deletestring += _sqlServerServices.ReNameTableField(contentmodel.TableName, item.FieldName, (item.FieldName + item.Id).Replace("-", "_"));
                     }
-                    _unitOfWork.ExecuteSqlCommand(deletestring);
                     filedresponsity.Update(deletefiledlist);
+                    foreach (var item in deletefiledlist)
+                    {
+                        deletestring = _sqlServerServices.ReNameTableField(contentmodel.TableName, item.FieldName, (item.FieldName + item.Id).Replace("-", "_"));
+                        _unitOfWork.ExecuteSqlCommand(deletestring);
+                    }
                 }
                 #endregion
+
                 responsity.Update(contentmodel);
-                await _unitOfWork.SaveChangesTranAsync();
+                _unitOfWork.SaveChangesTran();
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackAsync();
+                _unitOfWork.Rollback();
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ex.Message);
             }
         }

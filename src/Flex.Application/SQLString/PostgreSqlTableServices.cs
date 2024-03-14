@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Flex.Application.SqlServerSQLString
 {
-    public class PostgreSqlTableServices:ISqlTableServices
+    public class PostgreSqlTableServices : ISqlTableServices
     {
         public string CreateContentTableSql(string TableName) => "CREATE TABLE " + TableName + "" +
                                      "(" +
@@ -231,6 +231,16 @@ namespace Flex.Application.SqlServerSQLString
             }
             return returntype;
         }
-    }
 
+        public string AlertTableField(string TableName, string oldfiledName, string filedName) =>
+        $"ALTER TABLE \"{TableName}\" RENAME COLUMN \"{oldfiledName}\" TO \"{filedName}\";";
+
+        public string AlertTableFieldType(string TableName, string fieldName, string fieldType) =>
+            $"ALTER TABLE \"{TableName}\" ALTER COLUMN \"{fieldName}\" TYPE {ConvertDataType(fieldType)};";
+
+        public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Flex.Application.SqlServerSQLString
 {
-    public class SqlServerSqlTableServices:ISqlTableServices
+    public class SqlServerSqlTableServices : ISqlTableServices
     {
         public string CreateContentTableSql(string TableName) => "CREATE TABLE " + TableName + "" +
                                      "(" +
@@ -64,7 +64,7 @@ namespace Flex.Application.SqlServerSQLString
             return sql;
         }
         public string DeleteContentTableData(string TableName, string Ids) => "update " + TableName + " set StatusCode=0 where Id in(" + Ids + ")";
-        public StringBuilder CreateInsertCopyContentSqlString(Hashtable data,List<string> table, string TableName, int contentId)
+        public StringBuilder CreateInsertCopyContentSqlString(Hashtable data, List<string> table, string TableName, int contentId)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("insert into " + TableName + " (");
@@ -78,7 +78,7 @@ namespace Flex.Application.SqlServerSQLString
                 keyvar += "" + item + ",";
             }
             builder.Append(key.Substring(0, key.Length - 1) + ",StatusCode,OrderId,ReviewStepId,MsgGroupId,LastEditUser,LastEditUserName,LastEditDate) " +
-                "select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId,'',0,"+ data["LastEditUser"] + ",'"+ data["LastEditUserName"] + "','"+ data["LastEditDate"] + "' from " + TableName + " where Id=" + contentId);
+                "select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId,'',0," + data["LastEditUser"] + ",'" + data["LastEditUserName"] + "','" + data["LastEditDate"] + "' from " + TableName + " where Id=" + contentId);
             return builder;
         }
 
@@ -87,7 +87,8 @@ namespace Flex.Application.SqlServerSQLString
             return $"SELECT ISNULL(MAX(OrderId) + 1, 0) FROM {tableName}";
         }
 
-        public void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam,out string swhere,out DynamicParameters parameters) {
+        public void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out DynamicParameters parameters)
+        {
             parameters = new DynamicParameters();
             parameters.Add("@parentId", contentPageListParam.ParentId);
             swhere = " and ParentId=@parentId";
@@ -178,8 +179,9 @@ namespace Flex.Application.SqlServerSQLString
             {
                 builder.Append(" where Id=" + Id);
             }
-            else { 
-                builder.Append(" where Id in(" + Ids+")");
+            else
+            {
+                builder.Append(" where Id in(" + Ids + ")");
             }
             return builder;
         }
@@ -223,6 +225,16 @@ namespace Flex.Application.SqlServerSQLString
                 case "grid": returntype = "nvarchar(255)"; break;
             }
             return returntype;
+        }
+        public string AlertTableField(string TableName, string oldfieldName, string fieldName) =>
+    $"EXEC sp_rename '{TableName}.{oldfieldName}', '{fieldName}', 'COLUMN';";
+
+        public string AlertTableFieldType(string TableName, string fieldName, string fieldType) =>
+            $"ALTER TABLE {TableName} ALTER COLUMN {fieldName} {ConvertDataType(fieldType)};";
+
+        public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
+        {
+            throw new NotImplementedException();
         }
     }
 }

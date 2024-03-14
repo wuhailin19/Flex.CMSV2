@@ -30,6 +30,7 @@
     <ProjectReference Include="..\Flex.Core\Flex.Core.csproj" />
     <ProjectReference Include="..\Flex.Dapper\Flex.Dapper.csproj" />
     <ProjectReference Include="..\Flex.EFSql\Flex.EFSql.csproj" />
+    <ProjectReference Include="..\Flex.SqlSugar\Flex.SqlSugarFactory.csproj" />
   </ItemGroup>
 
 </Project>

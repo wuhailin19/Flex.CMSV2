@@ -11,6 +11,7 @@ using Flex.Application.Extensions.Register.WebCoreExtensions;
 using Flex.Application.Extensions.Swagger;
 using Flex.Application.SetupExtensions.OrmInitExtension;
 using Flex.Core.Helper;
+using Flex.SqlSugarFactory;
 using Flex.Web.Jwt;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.StaticFiles;
@@ -45,6 +46,8 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
         builder.RegisterType<LogInterceptor>().AsSelf();
         builder.RegisterType<LogInterceptorAsync>().AsSelf();
         builder.RegisterType<PhysicalFileProvider>().As<IFileProvider>().WithParameter("root", webpath).SingleInstance();
+
+        builder.RegisterGeneric(typeof(BaseRepository<>)).As(typeof(IBaseRepository<>)).InstancePerDependency(); //注册Sqlsugar仓储
         builder.RegisterAutoFacExtension();
         //注册业务层，同时对业务层的方法进行拦截
         builder.RegisterAssemblyTypes(Assembly.Load("Flex.Application"))

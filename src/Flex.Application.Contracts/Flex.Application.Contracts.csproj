@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Flex.Dapper\Flex.Dapper.csproj" />
     <ProjectReference Include="..\Flex.Domain\Flex.Domain.csproj" />
+    <ProjectReference Include="..\Flex.SqlSugar\Flex.SqlSugarFactory.csproj" />
   </ItemGroup>
 
 </Project>

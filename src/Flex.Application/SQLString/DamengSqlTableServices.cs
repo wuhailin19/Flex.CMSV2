@@ -74,7 +74,10 @@ namespace Flex.Application.SqlServerSQLString
         }
 
 
-        public string AlertTableField(string TableName, string oldfiledName, string filedName, string filedtype) => $"ALTER TABLE {TableName} RENAME COLUMN {oldfiledName} TO {filedName}; ALTER TABLE {TableName} MODIFY COLUMN {filedName} {ConvertDataType(filedtype)};";
+        public string AlertTableField(string TableName, string oldfiledName, string filedName) => $"ALTER TABLE {TableName} RENAME COLUMN {oldfiledName} TO {filedName};";
+        public string AlertTableFieldType(string TableName, string filedName, string filedtype) => $"ALTER TABLE {TableName} MODIFY {filedName} {ConvertDataType(filedtype)};";
+
+
 
         public string ReNameTableField(string TableName, string oldfiledName, string filedName) => $"ALTER TABLE {TableName} RENAME COLUMN {oldfiledName} TO {filedName};";
 
@@ -127,11 +130,34 @@ namespace Flex.Application.SqlServerSQLString
             string keyvar = "";
             table.Remove("OrderId");
             commandParameters = new DynamicParameters();
+            int count = 0;
             foreach (DictionaryEntry myDE in table)
             {
-                key += $"{myDE.Key.ToString()},";
-                keyvar += $"@{myDE.Key.ToString()},";
-                commandParameters.Add(myDE.Key.ToString(), myDE.Value);
+                key += $"{myDE.Key},";
+                keyvar += $"{myDE.Key}_{count},";
+                commandParameters.Add(myDE.Key+"_"+count, myDE.Value);
+                count++;
+            }
+            builder.Append($"{key}OrderId) VALUES ({keyvar} {nextOrderId})");
+            builder.Append(";");
+            return builder;
+        }
+        public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"INSERT INTO {tableName} (");
+            string key = "";
+            string keyvar = "";
+            table.Remove("OrderId");
+            commandParameters = new SqlSugar.SugarParameter[] { };
+            int count = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                key += $"{myDE.Key},";
+                keyvar += $"@{myDE.Key},";
+                commandParameters.Append(new SqlSugar.SugarParameter("@"+myDE.Key.ToString(), myDE.Value));
+                //commandParameters.Add(myDE.Key + "_" + count, myDE.Value);
+                count++;
             }
             builder.Append($"{key}OrderId) VALUES ({keyvar} {nextOrderId})");
             builder.Append(";");

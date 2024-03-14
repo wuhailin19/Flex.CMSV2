@@ -63,6 +63,15 @@ namespace Flex.Application.Services
             model.AddUser = _claims.UserId;
             model.AddUserName = _claims.UserName;
         }
+        public virtual void AddFiledEntityBasicInfo<T>(T model) where T : BaseEntity
+        {
+            model.AddUser = _claims.UserId;
+            model.AddTime = Clock.Now;
+            model.LastEditDate = Clock.Now;
+            model.StatusCode = StatusCode.Enable;
+            model.Version = 0;
+            model.AddUserName = _claims.UserName;
+        }
         public virtual void UpdateLongEntityBasicInfo<T>(T model) where T : BaseLongEntity
         {
             model.Version += 1;

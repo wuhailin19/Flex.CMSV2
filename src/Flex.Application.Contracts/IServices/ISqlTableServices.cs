@@ -15,7 +15,6 @@ namespace Flex.Application.Contracts.IServices
 {
     public interface ISqlTableServices
     {
-        string AlertTableField(string TableName, string oldfiledName, string filedName, string filedtype);
         string CreateContentTableSql(string TableName);
         StringBuilder CreateDapperInsertSqlString(Hashtable table, string TableName, int nextOrderId, out DynamicParameters commandParameters);
         StringBuilder CreateInsertCopyContentSqlString(Hashtable data, List<string> table, string TableName, int contentId);
@@ -31,5 +30,8 @@ namespace Flex.Application.Contracts.IServices
         string UpdateContentStatus(string TableName, int ContentId, StatusCode statusCode);
         void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out DynamicParameters parameters);
         string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist);
+        string AlertTableFieldType(string TableName, string filedName, string filedtype);
+        string AlertTableField(string TableName, string oldfiledName, string filedName);
+        StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters);
     }
 }

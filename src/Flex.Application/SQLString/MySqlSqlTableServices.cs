@@ -112,7 +112,7 @@ namespace Flex.Application.SqlServerSQLString
         }
         public string GetNextOrderIdDapperSqlString(string tableName)
         {
-            return  $"SELECT CASE WHEN (MAX(`OrderId`)+1) IS NULL THEN 0 ELSE (MAX(`OrderId`)+1) END FROM `{tableName}`";
+            return $"SELECT CASE WHEN (MAX(`OrderId`)+1) IS NULL THEN 0 ELSE (MAX(`OrderId`)+1) END FROM `{tableName}`";
         }
         public StringBuilder CreateDapperInsertSqlString(Hashtable table, string TableName, int nextOrderId, out DynamicParameters commandParameters)
         {
@@ -234,6 +234,17 @@ namespace Flex.Application.SqlServerSQLString
                 case "grid": returntype = "VARCHAR(255)"; break;
             }
             return returntype;
+        }
+
+        public string AlertTableFieldType(string TableName, string filedName, string filedtype)
+        => $"ALTER TABLE `{TableName}` MODIFY COLUMN `{filedName}` {ConvertDataType(filedtype)};";
+
+        public string AlertTableField(string TableName, string oldfiledName, string filedName)
+                => $"ALTER TABLE `{TableName}` CHANGE COLUMN `{oldfiledName}` `{filedName}`";
+
+        public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
+        {
+            throw new NotImplementedException();
         }
     }
 

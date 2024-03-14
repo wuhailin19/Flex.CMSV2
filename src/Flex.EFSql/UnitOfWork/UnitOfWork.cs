@@ -69,14 +69,15 @@ namespace Flex.EFSql.UnitOfWork
             await _context.SaveChangesAsync();
             await _dbTransaction.CommitAsync();
         }
-        public void Rollback() {
+        public void Rollback()
+        {
             CheckNotNull(_dbTransaction);
             _dbTransaction.Rollback();
         }
         public async Task RollbackAsync()
         {
             CheckNotNull(_dbTransaction);
-           await _dbTransaction.RollbackAsync();
+            await _dbTransaction.RollbackAsync();
         }
         #endregion
         /// <summary>
