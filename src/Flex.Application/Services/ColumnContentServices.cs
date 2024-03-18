@@ -1,12 +1,14 @@
-﻿using Flex.Application.Contracts.Exceptions;
+﻿using Dapper;
+using Dm;
+using Flex.Application.Contracts.Exceptions;
 using Flex.Core.Extensions.CommonExtensions;
 using Flex.Dapper;
 using Flex.Domain.Cache;
 using Flex.Domain.Dtos.Role;
 using Flex.Domain.WhiteFileds;
 using Flex.SqlSugarFactory.Seed;
-using SqlSugar;
 using System.Collections;
+using System.Linq;
 using System.Text;
 
 namespace Flex.Application.Services
@@ -82,17 +84,16 @@ namespace Flex.Application.Services
             //生成内容组Id
             table["ContentGroupId"] = _idWorker.NextId();
 
-            SugarParameter[] parameters;
-
             string orderSql = _sqlTableServices.GetNextOrderIdDapperSqlString(contentmodel.TableName);
-            var orderId = _sqlsugar.Db.Ado.GetDataTable(orderSql)?.Rows[0][0]?.ToInt() ?? 0;
-            //var orderId = (await _dapperDBContext.GetDynamicAsync(orderSql)).FirstOrDefault()?.Value ?? 0;
 
-            StringBuilder builder = _sqlTableServices.CreateSqlsugarInsertSqlString(table, contentmodel.TableName, orderId, out parameters);
+            var orderId = (await _dapperDBContext.GetDynamicAsync(orderSql)).FirstOrDefault()?.Value ?? 0;
+
+            DynamicParameters parameters = new DynamicParameters();
+            StringBuilder builder = _sqlTableServices.CreateDapperInsertSqlString(table, contentmodel.TableName, orderId, out parameters);
             try
             {
-                //var result = _dapperDBContext.ExecuteScalar(builder.ToString(), parameters);
-                var result = _sqlsugar.Db.Ado.GetScalar(builder.ToString(), parameters).ToInt();
+                var result = _dapperDBContext.ExecuteScalar(builder.ToString(), parameters);
+                //var result = _sqlsugar.Db.Ado.GetScalar(builder.ToString(), parameters).ToInt();
                 if (result > 0)
                 {
                     return new ProblemDetails<int>(HttpStatusCode.OK, result, ErrorCodes.DataInsertSuccess.GetEnumDescription());

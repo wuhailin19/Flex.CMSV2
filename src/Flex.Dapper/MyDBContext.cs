@@ -34,5 +34,7 @@ namespace Flex.Dapper
                     return new SqlConnection(sqlconnection);
             }
         }
+
+
     }
 }

@@ -6,6 +6,7 @@ using Flex.Dapper;
 using Flex.Dapper.Context;
 using Flex.Domain.Dtos.Message;
 using Flex.Domain.Enums.Message;
+using Flex.SqlSugarFactory.Seed;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections;
 using System.Linq.Expressions;
@@ -16,14 +17,16 @@ namespace Flex.Application.Services
     {
         IColumnContentServices contentServices;
         ISqlTableServices _sqlTableServices;
+        protected MyContext _sqlsugar;
         protected MyDBContext _dapperDBContext;
 
-        public MessageServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IColumnContentServices contentServices, ISqlTableServices sqlTableServices, MyDBContext dapperDBContext)
+        public MessageServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IColumnContentServices contentServices, ISqlTableServices sqlTableServices, MyDBContext dapperDBContext, MyContext sqlsugar)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             this.contentServices = contentServices;
             _sqlTableServices = sqlTableServices;
-            _dapperDBContext=dapperDBContext;
+            _dapperDBContext = dapperDBContext;
+            _sqlsugar = sqlsugar;
         }
 
         private Expression<Func<sysMessage, bool>> GetExpression()
@@ -237,7 +240,13 @@ namespace Flex.Application.Services
                 if (model.ContentId == 0)
                     messagemodel.ContentId = result.Content;
 
-                _dapperDBContext.Insert(messagemodel);
+               var insertres= _unitOfWork.GetRepository<sysMessage>().Insert(messagemodel);
+                _unitOfWork.SaveChanges();
+                if (insertres.Id <= 0)
+                {
+                    _dapperDBContext.Rollback();
+                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
+                }
                 _dapperDBContext.Commit();
                 return new ProblemDetails<string>(HttpStatusCode.OK, result_msg);
             }

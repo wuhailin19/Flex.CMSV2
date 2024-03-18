@@ -1,4 +1,5 @@
 ﻿using Flex.Core.Extensions;
+using Flex.Dapper;
 using SqlSugar;
 
 namespace Flex.SqlSugarFactory.Seed
@@ -49,6 +50,25 @@ namespace Flex.SqlSugarFactory.Seed
             private set { _db = value; }
         }
 
+        public Page PageAsync(int pageIndex, int pageSize, string sql, object param = null)
+        {
+            DapperPage.BuildPageQueries((pageIndex - 1) * pageSize, pageSize, sql, out string sqlCount, out string sqlPage);
+
+            var result = new Page
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                TotalCount = _db.Ado.SqlQuerySingle<int>(sqlCount, param)
+            };
+            result.TotalPages = result.TotalCount / pageSize;
+
+            if ((result.TotalCount % pageSize) != 0)
+                result.TotalPages++;
+
+            result.Items = _db.Ado.SqlQuery<dynamic>(sqlPage, param);
+            return result;
+        }
+
         /// <summary>
         /// 功能描述:构造函数
         /// 作　　者:Blog.Core
@@ -57,7 +77,7 @@ namespace Flex.SqlSugarFactory.Seed
         {
             if (string.IsNullOrEmpty(_connectionString))
                 throw new ArgumentNullException("数据库连接字符串为空");
-            _db= new SqlSugarClient(new ConnectionConfig()
+            _db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = _connectionString,
                 DbType = _dbType,
@@ -72,7 +92,29 @@ namespace Flex.SqlSugarFactory.Seed
                     //IsWithNoLockQuery = true,
                     IsAutoRemoveDataCache = true
                 }
-            }) ;
+            }, db =>
+            {
+
+                //如果是多库看标题6
+
+                //每次Sql执行前事件
+                db.Aop.OnLogExecuting = (sql, pars) =>
+                {
+                    //我可以在这里面写逻辑
+
+                    //获取原生SQL推荐 5.1.4.63  性能OK
+                    Console.WriteLine(UtilMethods.GetNativeSql(sql, pars));
+                    foreach (var item in pars)
+                    {
+                        Console.WriteLine(item.ToJsonString());
+                    }
+                    //获取无参数化SQL 影响性能只适合调试
+                    //Console.Write(UtilMethods.GetSqlString(DbType.SqlServer, sql, pars));
+                    //技巧：AOP中获取IOC对象
+                    //var serviceBuilder = services.BuildServiceProvider();
+                    //var log= serviceBuilder.GetService<ILogger<WeatherForecastController>>();
+                };
+            });
         }
     }
 }

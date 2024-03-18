@@ -110,6 +110,11 @@ namespace Flex.Application.SqlServerSQLString
                 parameters.Add("@timeto", contentPageListParam.timeto);
                 swhere += " and AddTime<DATEADD(day, 1, @timeto)";
             }
+            if (contentPageListParam.ContentGroupId.IsNotNullOrEmpty())
+            {
+                parameters.Add("@ContentGroupId", contentPageListParam.ContentGroupId);
+                swhere += " and ContentGroupId=@ContentGroupId";
+            }
         }
         public string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist)
         {
@@ -235,6 +240,22 @@ namespace Flex.Application.SqlServerSQLString
         public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
         {
             throw new NotImplementedException();
+        }
+
+        public void CreateSqlSugarColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out SqlSugar.SugarParameter[] parameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void InitDapperColumnContentSwheresql(ref string swhere, ref DynamicParameters parameters, Dictionary<string, object> dataparams)
+        {
+            foreach (var item in dataparams.Keys)
+            {
+                parameters.Add("@" + item, dataparams[item]);
+                if (swhere.IsNotNullOrEmpty())
+                    swhere += " and";
+                swhere += " " + item + "=@" + item;
+            }
         }
     }
 }

@@ -159,6 +159,11 @@ namespace Flex.Application.SqlServerSQLString
                 parameters.Add("@timeto", contentPageListParam.timeto);
                 swhere += " and AddTime < (@timeto + INTERVAL '1 DAY')";
             }
+            if (contentPageListParam.ContentGroupId.IsNotNullOrEmpty())
+            {
+                parameters.Add("@ContentGroupId", contentPageListParam.ContentGroupId);
+                swhere += " and ContentGroupId=@ContentGroupId";
+            }
         }
 
 
@@ -214,7 +219,7 @@ namespace Flex.Application.SqlServerSQLString
                 case "sign": returntype = "VARCHAR(255)"; break;
                 case "iconPicker": returntype = "VARCHAR(255)"; break;
                 case "cron": returntype = "TEXT"; break;
-                case "date": returntype = "TIMESTAMP"; break;
+                case "date": returntype = "date"; break;
                 case "dateRange": returntype = "VARCHAR(255)"; break;
                 case "rate": returntype = "VARCHAR(255)"; break;
                 case "carousel": returntype = "VARCHAR(500)"; break;
@@ -241,6 +246,22 @@ namespace Flex.Application.SqlServerSQLString
         public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
         {
             throw new NotImplementedException();
+        }
+
+        public void CreateSqlSugarColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out SqlSugar.SugarParameter[] parameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void InitDapperColumnContentSwheresql(ref string swhere, ref DynamicParameters parameters, Dictionary<string, object> dataparams)
+        {
+            foreach (var item in dataparams.Keys)
+            {
+                parameters.Add("@" + item, dataparams[item]);
+                if (swhere.IsNotNullOrEmpty())
+                    swhere += " and";
+                swhere += " " + item + "=@" + item;
+            }
         }
     }
 }

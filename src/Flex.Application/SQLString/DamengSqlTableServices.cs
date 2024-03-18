@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Dm;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Field;
 using Microsoft.Data.SqlClient;
@@ -49,7 +50,7 @@ namespace Flex.Application.SqlServerSQLString
         public string InsertTableField(string TableName, sysField model) => $"ALTER TABLE {TableName} ADD COLUMN {model.FieldName} {ConvertDataType(model.FieldType)};";
 
         public string InsertTableField(string TableName, string filedName, string filedtype) => $"ALTER TABLE {TableName} ADD COLUMN {filedName} {ConvertDataType(filedtype)};";
-        
+
         public string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist)
         {
             StringBuilder sb = new StringBuilder();
@@ -119,7 +120,7 @@ namespace Flex.Application.SqlServerSQLString
 
         public string GetNextOrderIdDapperSqlString(string tableName)
         {
-            return $"SELECT COALESCE(MAX(OrderId) + 1, 0) FROM {tableName}";
+            return $"SELECT COALESCE(MAX(OrderId) + 1, 0) FROM {tableName};";
         }
 
         public StringBuilder CreateDapperInsertSqlString(Hashtable table, string tableName, int nextOrderId, out DynamicParameters commandParameters)
@@ -134,12 +135,12 @@ namespace Flex.Application.SqlServerSQLString
             foreach (DictionaryEntry myDE in table)
             {
                 key += $"{myDE.Key},";
-                keyvar += $"{myDE.Key}_{count},";
-                commandParameters.Add(myDE.Key+"_"+count, myDE.Value);
+                keyvar += $"?,";
+                commandParameters.Add("@" + myDE.Key, myDE.Value);
                 count++;
             }
-            builder.Append($"{key}OrderId) VALUES ({keyvar} {nextOrderId})");
-            builder.Append(";");
+            builder.Append($"{key}OrderId) VALUES ({keyvar}{nextOrderId})");
+            builder.Append(";SELECT SCOPE_IDENTITY();");
             return builder;
         }
         public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
@@ -149,49 +150,110 @@ namespace Flex.Application.SqlServerSQLString
             string key = "";
             string keyvar = "";
             table.Remove("OrderId");
-            commandParameters = new SqlSugar.SugarParameter[] { };
             int count = 0;
             foreach (DictionaryEntry myDE in table)
             {
                 key += $"{myDE.Key},";
-                keyvar += $"@{myDE.Key},";
-                commandParameters.Append(new SqlSugar.SugarParameter("@"+myDE.Key.ToString(), myDE.Value));
-                //commandParameters.Add(myDE.Key + "_" + count, myDE.Value);
+                keyvar += $"?,";
                 count++;
             }
-            builder.Append($"{key}OrderId) VALUES ({keyvar} {nextOrderId})");
-            builder.Append(";");
+            commandParameters = new SqlSugar.SugarParameter[table.Count];
+            int num = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                commandParameters[num] = new SqlSugar.SugarParameter("@" + myDE.Key.ToString(), myDE.Value);
+                num++;
+            }
+            builder.Append($"{key}OrderId) VALUES ({keyvar}{nextOrderId})");
+            builder.Append(";SELECT SCOPE_IDENTITY();");
             return builder;
+        }
+        public void CreateSqlSugarColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out SqlSugar.SugarParameter[] parameters)
+        {
+            Dictionary<string, object> paramdict = new Dictionary<string, object>();
+            if (contentPageListParam.k.IsNotNullOrEmpty())
+            { paramdict.Add("@k", contentPageListParam.k); }
+            if (contentPageListParam.timefrom.IsNotNullOrEmpty())
+            { paramdict.Add("@timefrom", contentPageListParam.timefrom); }
+            if (contentPageListParam.timeto.IsNotNullOrEmpty())
+            { paramdict.Add("@timeto", contentPageListParam.timeto); }
+            if (contentPageListParam.ContentGroupId.IsNotNullOrEmpty())
+            { paramdict.Add("@ContentGroupId", contentPageListParam.ContentGroupId); }
+            int count = paramdict.Count() + 1;
+            parameters = new SqlSugar.SugarParameter[count];
+            parameters[0] = new SqlSugar.SugarParameter("@parentId", contentPageListParam.ParentId);
+            swhere = " and ParentId=?";
+
+            int index = 1;
+            if (contentPageListParam.k.IsNotNullOrEmpty())
+            {
+                if (contentPageListParam.k.ToInt() != 0)
+                    swhere += " and (Title like '%' || " + contentPageListParam.k + " || '%' or Id=" + contentPageListParam.k + ")";
+                else
+                {
+                    parameters[index] = new SqlSugar.SugarParameter("@k", contentPageListParam.k);
+                    swhere += " and Title like '%' || ? || '%'";
+                    index++;
+                }
+            }
+            if (contentPageListParam.timefrom.IsNotNullOrEmpty())
+            {
+                parameters[index] = new SqlSugar.SugarParameter("@timefrom", contentPageListParam.timefrom);
+                index++;
+                swhere += " and AddTime >= to_date(?, 'yyyy-mm-dd')";
+            }
+            if (contentPageListParam.timeto.IsNotNullOrEmpty())
+            {
+                parameters[index] = new SqlSugar.SugarParameter("@timeto", contentPageListParam.timeto);
+                index++;
+                swhere += " and AddTime < to_date(?, 'yyyy-mm-dd') + 1";
+            }
+            if (contentPageListParam.ContentGroupId.IsNotNullOrEmpty())
+            {
+                parameters[index] = new SqlSugar.SugarParameter("@ContentGroupId", contentPageListParam.ContentGroupId);
+                index++;
+                swhere += " and ContentGroupId=?";
+            }
+        }
+        public void InitDapperColumnContentSwheresql(ref string swhere, ref DynamicParameters parameters, Dictionary<string, object> dataparams)
+        {
+            foreach (var item in dataparams.Keys)
+            {
+                parameters.Add("@" + item, dataparams[item]);
+                if (swhere.IsNotNullOrEmpty())
+                    swhere += " and";
+                swhere += " " + item + "=?";
+            }
         }
         public void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out DynamicParameters parameters)
         {
             parameters = new DynamicParameters();
             parameters.Add("@parentId", contentPageListParam.ParentId);
-            swhere = " and ParentId=@parentId";
-
+            swhere = " and ParentId=?";
             if (contentPageListParam.k.IsNotNullOrEmpty())
             {
-                parameters.Add("@k", contentPageListParam.k);
                 if (contentPageListParam.k.ToInt() != 0)
-                    swhere += " and (Title like '%' || @k || '%' or Id=@k)";
+                    swhere += " and (Title like '%' || " + contentPageListParam.k + " || '%' or Id=" + contentPageListParam.k + ")";
                 else
-                    swhere += " and Title like '%' || @k || '%'";
+                {
+                    parameters.Add("@k", contentPageListParam.k);
+                    swhere += " and Title like '%' || ? || '%'";
+                }
             }
-
             if (contentPageListParam.timefrom.IsNotNullOrEmpty())
             {
-                parameters.Add("@timefrom", contentPageListParam.timefrom);
-                swhere += " and AddTime >= to_date(@timefrom, 'yyyy-mm-dd')";
+                swhere += " and AddTime >= to_date('" + contentPageListParam.timefrom + "', 'yyyy-mm-dd')";
             }
-
             if (contentPageListParam.timeto.IsNotNullOrEmpty())
             {
-                parameters.Add("@timeto", contentPageListParam.timeto);
-                swhere += " and AddTime < to_date(@timeto, 'yyyy-mm-dd') + 1";
+                swhere += " and AddTime < to_date('" + contentPageListParam.timeto + "', 'yyyy-mm-dd') + 1";
+            }
+            if (contentPageListParam.ContentGroupId.IsNotNullOrEmpty())
+            {
+                parameters.Add("@ContentGroupId", contentPageListParam.ContentGroupId);
+                swhere += " and ContentGroupId=?";
             }
         }
-
-
         public StringBuilder CreateDapperUpdateSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters)
         {
             StringBuilder builder = new StringBuilder();
@@ -204,14 +266,14 @@ namespace Flex.Application.SqlServerSQLString
             string keyvar = "";
             foreach (DictionaryEntry myDE in table)
             {
-                keyvar += $"{myDE.Key.ToString()}=@{myDE.Key.ToString()},";
+                keyvar += $"{myDE.Key}=?,";
             }
             builder.Append(keyvar.Substring(0, keyvar.Length - 1));
             commandParameters = new DynamicParameters();
             int num = 0;
             foreach (DictionaryEntry myDE in table)
             {
-                commandParameters.Add(myDE.Key.ToString(), myDE.Value);
+                commandParameters.Add("@" + myDE.Key.ToString(), myDE.Value);
                 num++;
             }
             table.Add("Id", Id);

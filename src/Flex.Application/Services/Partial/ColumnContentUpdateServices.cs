@@ -96,10 +96,18 @@ namespace Flex.Application.Services
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             if (IsCancelReview)
             {
+
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@Id", table["Id"]);
-                parameters.Add("@ParentId", table["ParentId"]);
-                var result = (await _dapperDBContext.GetDynamicAsync("select ReviewAddUser from " + contentmodel.TableName + " where ParentId=@ParentId and Id=@Id", parameters)).FirstOrDefault();
+                Dictionary<string, object> dict = new Dictionary<string, object>
+                    {
+                        { "Id", table["Id"] },
+                        { "ParentId",  table["ParentId"] }
+                    };
+                string swhere = string.Empty;
+                _sqlTableServices.InitDapperColumnContentSwheresql(ref swhere, ref parameters, dict);
+
+
+                var result = (await _dapperDBContext.GetDynamicAsync("select ReviewAddUser from " + contentmodel.TableName + " where"+ swhere, parameters)).FirstOrDefault();
                 if (result == null)
                     return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
                 if (result.ReviewAddUser != _claims.UserId && !_claims.IsSystem)

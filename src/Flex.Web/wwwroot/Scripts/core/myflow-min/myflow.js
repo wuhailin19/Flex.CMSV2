@@ -1342,28 +1342,28 @@
                     }
 
                     if (_src.toJson().indexOf("type:'start'") != -1) {
-                        _tb.append('<tr><td>部门</td><td><div id="p1'
-                            + k + '" class="editor">'
+                        //_tb.append('<tr><td>部门</td><td><div id="p1'
+                        //    + k + '" class="editor">'
 
-                            + '<select class="lay-selet" id="select_bm_' + _src.getId() + '" style="width:100%;">'
+                        //    + '<select class="lay-selet" id="select_bm_' + _src.getId() + '" style="width:100%;">'
 
-                            + '<option value="0">所有部门参与审核</option>'
-                            + '<option value="1">仅所属部门可审核</option>'
-                            + '</select>'
+                        //    + '<option value="0">所有部门参与审核</option>'
+                        //    + '<option value="1">仅所属部门可审核</option>'
+                        //    + '</select>'
 
-                            + '</div></td></tr>');
+                        //    + '</div></td></tr>');
 
 
-                        _tb.append('<tr><td>回避</td><td><div id="p2'
-                            + k + '" class="editor">'
+                        //_tb.append('<tr><td>回避</td><td><div id="p2'
+                        //    + k + '" class="editor">'
 
-                            + '<select class="lay-selet" id="select_hb_' + _src.getId() + '" style="width:100%;">'
+                        //    + '<select class="lay-selet" id="select_hb_' + _src.getId() + '" style="width:100%;">'
 
-                            + '<option value="0">可审核自己内容</option>'
-                            + '<option value="1">不可审核自己内容</option>'
-                            + '</select>'
+                        //    + '<option value="0">可审核自己内容</option>'
+                        //    + '<option value="1">不可审核自己内容</option>'
+                        //    + '</select>'
 
-                            + '</div></td></tr>');
+                        //    + '</div></td></tr>');
 
 
                         //init
@@ -1481,7 +1481,7 @@
                     stepObj = stepArray[_src.getId()];
                 }
 
-                if (jsonv.indexOf("type:'task'") != -1 || jsonv.indexOf("type:'start'") != -1) {
+                if (jsonv.indexOf("type:'task'") != -1) {
                     actTr += '<a onclick="javascript:openEditFlowStepDialog(' + stepObj.flowId + ',\'' + _src.getId() + '\',\'' + dataObj.text.text + '\');"  class="layui-btn layui-btn-radius layui-btn-primary layui-btn-xs"  ><i class="layui-icon layui-icon-user"></i>参与人</a>';
                 }
 
