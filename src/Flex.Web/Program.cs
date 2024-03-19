@@ -104,8 +104,8 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = "swagger";
     });
     // 初始化接口数据
-    //var myService = app.Services.GetRequiredService<IRoleUrlServices>();
-    //await myService.CreateUrlList();
+    var myService = app.Services.GetRequiredService<IRoleUrlServices>();
+    await myService.CreateUrlList();
 }
 
 app.UseStaticFiles();

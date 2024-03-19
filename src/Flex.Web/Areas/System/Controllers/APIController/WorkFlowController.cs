@@ -91,6 +91,7 @@ namespace Flex.Web.Areas.System.Controllers.APIController
         }
 
         [HttpGet("GetStepManagerById")]
+        [Descriper(IsFilter = true)]
         public async Task<string> GetStepManagerById(string Id)
         {
             var result = await _workFlowServices.GetStepManagerById(Id);
