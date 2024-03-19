@@ -1,9 +1,9 @@
-﻿using Flex.EFSqlServer.UnitOfWork;
+﻿using Flex.EFSql.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ShardingCore.Sharding;
 
-namespace Flex.EFSqlServer.Register
+namespace Flex.EFSql.Register
 {
     /// <summary>
     ///在 <see cref="IServiceCollection"/>中安装工作单元依赖注入的扩展方法

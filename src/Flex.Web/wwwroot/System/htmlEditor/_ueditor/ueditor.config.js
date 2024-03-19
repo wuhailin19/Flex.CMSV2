@@ -34,9 +34,12 @@
         , serverUrl: "/api/Upload/Config"
         , BaseUrl: "/api/Upload/"
         , imageActionName: "UploadPasteImage"
-        , imageAllowFiles: [".png",".jpg",".gif"]
+        , catcherActionName: "UploadRemoteImage"
+        , catcherFieldName: "upfile"
+        , imageAllowFiles: [".png",".jpg",".gif",".svg"]
         , imageFieldName: "upfile"
         , imageUrlPrefix: "http://localhost:5003"
+        , catcherUrlPrefix: "http://localhost:5003"
         //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的重新定义
         , toolbars: [
             ['fullscreen', 'source', '|', 'undo', 'redo', '|',
@@ -305,7 +308,7 @@
         //,toolbarTopOffset:400
 
         //设置远程图片是否抓取到本地保存
-        //,catchRemoteImageEnable: true //设置是否抓取远程图片
+        ,catchRemoteImageEnable: true //设置是否抓取远程图片
 
         //pageBreakTag
         //分页标识符,默认是_ueditor_page_break_tag_

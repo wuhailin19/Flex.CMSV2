@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
-namespace Flex.EFSqlServer.Repositories
+namespace Flex.EFSql.Repositories
 {
     /// <summary>
     /// 通用仓储的默认实现

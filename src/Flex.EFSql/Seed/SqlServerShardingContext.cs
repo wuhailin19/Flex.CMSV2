@@ -7,7 +7,7 @@ using ShardingCore.Core.VirtualRoutes.TableRoutes.RouteTails.Abstractions;
 using ShardingCore.Sharding;
 using ShardingCore.Sharding.Abstractions;
 
-namespace Flex.EFSqlServer
+namespace Flex.EFSql
 {
     public class SqlServerShardingContext : AbstractShardingDbContext, IShardingTableDbContext
     {

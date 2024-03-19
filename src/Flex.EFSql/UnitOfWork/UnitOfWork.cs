@@ -1,5 +1,5 @@
-﻿using Flex.EFSqlServer.Repositories;
-using Flex.EFSqlServer.Transaction;
+﻿using Flex.EFSql.Repositories;
+using Flex.EFSql.Transaction;
 using DotNetCore.CAP;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -9,7 +9,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Flex.EFSqlServer.UnitOfWork
+namespace Flex.EFSql.UnitOfWork
 {
     /// <summary>
     /// 工作单元的默认实现.
@@ -69,14 +69,15 @@ namespace Flex.EFSqlServer.UnitOfWork
             await _context.SaveChangesAsync();
             await _dbTransaction.CommitAsync();
         }
-        public void Rollback() {
+        public void Rollback()
+        {
             CheckNotNull(_dbTransaction);
             _dbTransaction.Rollback();
         }
         public async Task RollbackAsync()
         {
             CheckNotNull(_dbTransaction);
-           await _dbTransaction.RollbackAsync();
+            await _dbTransaction.RollbackAsync();
         }
         #endregion
         /// <summary>

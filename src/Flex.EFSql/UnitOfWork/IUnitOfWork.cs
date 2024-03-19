@@ -1,11 +1,7 @@
-﻿using Flex.EFSqlServer.Repositories;
+﻿using Flex.EFSql.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data;
-using System.Threading;
 
-namespace Flex.EFSqlServer.UnitOfWork
+namespace Flex.EFSql.UnitOfWork
 {
     /// <summary>
     /// 定义工作单元接口

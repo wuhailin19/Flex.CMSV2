@@ -1,4 +1,5 @@
 ﻿using Flex.Application.Contracts.Basics.ResultModels;
+using Flex.Domain.Dtos.Picture;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,6 @@ namespace Flex.Application.Contracts.IServices
     public interface IPictureServices
     {
         ProblemDetails<string> UploadImgService(IFormFileCollection input);
+        Task<ProblemDetails<List<CatchRemoteImagesDto>>> UploadRemoteImage(string[] imgs);
     }
 }

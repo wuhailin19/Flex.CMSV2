@@ -1,6 +1,5 @@
 ﻿using Flex.Core.Extensions;
 using Flex.Core.Helper.ImgFiles;
-using Microsoft.Extensions.PlatformAbstractions;
 using SkiaSharp;
 
 namespace Flex.Core.Helper.UploadHelper

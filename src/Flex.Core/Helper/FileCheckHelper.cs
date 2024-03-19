@@ -27,9 +27,10 @@ namespace Flex.Core.Helper
          */
         static string[] fileType = { "255216", "6677", "7173", "208207", "8297", "8075", "98109", "3780", "13780", "00", "60115" };
         static string[] managefileType = { "255216", "6677", "7173", "208207", "8297", "8075", "98109", "3780", "13780", "00", "60115", "1310", "98111", "5050", "4949" };
-        static string[] deniedThumbImageExt = { ".bmp",".gif",".svg"};
-        public static bool IsThumbImage(string ext) {
-            if(!deniedThumbImageExt.Contains(ext))
+        static string[] deniedThumbImageExt = { ".bmp", ".gif", ".svg" };
+        public static bool IsThumbImage(string ext)
+        {
+            if (!deniedThumbImageExt.Contains(ext))
                 return true;
             return false;
         }
@@ -70,7 +71,7 @@ namespace Flex.Core.Helper
         {
             long fileLen = file.Length;
             byte[] imgArray = new byte[fileLen];
-            using var filesteam= file.OpenReadStream();
+            using var filesteam = file.OpenReadStream();
             BinaryReader r = new BinaryReader(filesteam);
             string fileclass = "";
             byte buffer;
@@ -86,8 +87,25 @@ namespace Flex.Core.Helper
                 return false;
             }
             r.Close();
-         
+
             return fileType.Contains(fileclass);
+        }
+
+        public static bool IsImage(string fileName)
+        {
+            if (!fileName.Contains("."))
+                return false;
+            var ext = Path.GetExtension(fileName).ToLower();
+            switch (ext)
+            {
+                case "": return false;
+                case ".bmp": return true;
+                case ".jpg": return true;
+                case ".png": return true;
+                case ".gif": return true;
+                case ".svg": return true;
+                default: return false;
+            }
         }
     }
 }

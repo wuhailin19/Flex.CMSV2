@@ -4,7 +4,7 @@ using Flex.Application.Contracts.Basics.ResultModels;
 using Flex.Application.Contracts.IServices.Basics;
 using Flex.Core.IDCode;
 using Flex.Domain.Base;
-using Flex.EFSqlServer.UnitOfWork;
+using Flex.EFSql.UnitOfWork;
 using System.Net;
 
 namespace Flex.Application.Services
@@ -50,6 +50,7 @@ namespace Flex.Application.Services
         public virtual void AddIntEntityBasicInfo<T>(T model) where T : BaseIntEntity  {
             model.AddUser = _claims.UserId;
             model.AddUserName= _claims.UserName;
+            model.AddTime = Clock.Now;
         }
         public virtual void AddLongEntityBasicInfo<T>(T model) where T : BaseLongEntity
         {
@@ -60,6 +61,15 @@ namespace Flex.Application.Services
         public virtual void AddStringEntityBasicInfo<T>(T model) where T : BaseEntity
         {
             model.AddUser = _claims.UserId;
+            model.AddUserName = _claims.UserName;
+        }
+        public virtual void AddFiledEntityBasicInfo<T>(T model) where T : BaseEntity
+        {
+            model.AddUser = _claims.UserId;
+            model.AddTime = Clock.Now;
+            model.LastEditDate = Clock.Now;
+            model.StatusCode = StatusCode.Enable;
+            model.Version = 0;
             model.AddUserName = _claims.UserName;
         }
         public virtual void UpdateLongEntityBasicInfo<T>(T model) where T : BaseLongEntity

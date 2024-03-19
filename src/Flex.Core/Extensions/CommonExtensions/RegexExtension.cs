@@ -111,6 +111,11 @@ namespace Flex.Core.Extensions
         {
             return RegexHelper.IsUrl(c);
         }
+        
+        public static bool IsTime(this string c)
+        {
+            return RegexHelper.IsTime(c);
+        }
 
         public static bool IsMobile(this string c)
         {

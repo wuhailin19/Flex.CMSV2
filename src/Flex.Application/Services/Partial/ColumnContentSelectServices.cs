@@ -1,16 +1,15 @@
 ﻿using Dapper;
+using Dm;
 using Flex.Application.Contracts.Exceptions;
-using Flex.Domain;
+using Flex.Core.Config;
+using Flex.Core.Framework.Enum;
+using Flex.Dapper;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Role;
 using Flex.Domain.Dtos.WorkFlow;
 using Flex.Domain.WhiteFileds;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Flex.SqlSugarFactory.Seed;
 
 namespace Flex.Application.Services
 {
@@ -66,7 +65,7 @@ namespace Flex.Application.Services
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             string filed = "Title,Id";
             var options = new List<ContentOptions>();
-            var result = await _dapperDBContext.GetDynamicAsync("select " + filed + " from " + contentmodel.TableName + " where ParentId=" + ParentId + " and StatusCode=1");
+            var result = await _dapperDBContext.GetDynamicAsync("select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName + " where ParentId=" + ParentId + " and StatusCode=1");
             result.Each(item =>
             {
                 options.Add(new ContentOptions()
@@ -93,14 +92,9 @@ namespace Flex.Application.Services
             filed = filed.TrimEnd(',');
             DynamicParameters parameters = new DynamicParameters();
             string swhere = string.Empty;
-            parameters.Add("@parentId", contentPageListParam.ParentId);
-            swhere = " and ParentId=@parentId";
-            if (contentPageListParam.ContentGroupId.IsNotNullOrEmpty())
-            {
-                parameters.Add("@ContentGroupId", contentPageListParam.ContentGroupId);
-                swhere += " and ContentGroupId=@ContentGroupId";
-            }
-            var result = await _dapperDBContext.PageAsync(contentPageListParam.page, contentPageListParam.limit, "select " + filed + " from " + contentmodel.TableName + " where StatusCode=6 order by AddTime desc" + swhere, parameters);
+            _sqlTableServices.CreateDapperColumnContentSelectSql(contentPageListParam, out swhere, out parameters);
+            var result = await _dapperDBContext.PageAsync(contentPageListParam.page, contentPageListParam.limit, "select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName + " where StatusCode=6"+ swhere + " order by AddTime desc", parameters);
+
             result.Items.Each(item =>
             {
                 item.StatusColor = ((StatusCode)item.StatusCode).GetEnumColorDescription();
@@ -123,31 +117,13 @@ namespace Flex.Application.Services
             filed = filed.TrimEnd(',');
             DynamicParameters parameters = new DynamicParameters();
             string swhere = string.Empty;
-            parameters.Add("@parentId", contentPageListParam.ParentId);
-            swhere = " and ParentId=@parentId";
-            if (contentPageListParam.k.IsNotNullOrEmpty())
-            {
-                parameters.Add("@k", contentPageListParam.k);
-                if (contentPageListParam.k.ToInt() != 0)
-                    swhere += " and (Title like '%'+@k+'%' or Id=cast(@k as int))";
-                else
-                    swhere += " and Title like '%'+@k+'%'";
-            }
-            if (contentPageListParam.timefrom.IsNotNullOrEmpty())
-            {
-                parameters.Add("@timefrom", contentPageListParam.timefrom);
-                swhere += " and AddTime>=@timefrom";
-            }
-            if (contentPageListParam.timeto.IsNotNullOrEmpty())
-            {
-                parameters.Add("@timeto", contentPageListParam.timeto);
-                swhere += " and AddTime<DATEADD(day, 1, @timeto)";
-            }
-            var result = await _dapperDBContext.PageAsync(contentPageListParam.page, contentPageListParam.limit, "select " + filed + " from " + contentmodel.TableName + " where StatusCode not in (0,6)" + swhere, parameters);
+            _sqlTableServices.CreateDapperColumnContentSelectSql(contentPageListParam, out swhere, out parameters);
+            var result = await _dapperDBContext.PageAsync(contentPageListParam.page, contentPageListParam.limit, "select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName + " where StatusCode not in (0,6)" + swhere, parameters);
+
             result.Items.Each(item =>
             {
                 item.StatusColor = ((StatusCode)item.StatusCode).GetEnumColorDescription();
-                item.StatusCode = ((StatusCode)item.StatusCode).GetEnumDescription();
+                item.StatusCodeText = ((StatusCode)item.StatusCode).GetEnumDescription();
             });
             return result;
         }
@@ -179,10 +155,16 @@ namespace Flex.Application.Services
                 return default;
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             string filed = "ReviewAddUser,MsgGroupId";
+
             DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@Id", Id);
-            parameters.Add("@ParentId", ParentId);
-            var result = (await _dapperDBContext.GetDynamicAsync("select " + filed + " from " + contentmodel.TableName + " where ParentId=@ParentId and Id=@Id", parameters)).FirstOrDefault();
+            Dictionary<string, object> dict = new Dictionary<string, object>
+            {
+                { "Id", Id },
+                { "ParentId", ParentId }
+            };
+            string swhere = string.Empty;
+            _sqlTableServices.InitDapperColumnContentSwheresql(ref swhere, ref parameters, dict);
+            var result = (await _dapperDBContext.GetDynamicAsync("select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName + " where " + swhere, parameters)).FirstOrDefault();
             Dictionary<object, object> normalItems = new Dictionary<object, object>();
             if (result == null)
                 return normalItems;
@@ -203,20 +185,21 @@ namespace Flex.Application.Services
                 return new ProblemDetails<OutputContentAndWorkFlowDto>(HttpStatusCode.NotFound, ErrorCodes.DataNotFound.GetEnumDescription());
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             string filed = ColumnContentUpdateFiledConfig.defaultFields;
-            //List<string> editors = new List<string>();
             foreach (var item in fieldmodel)
             {
                 filed += item.FieldName + ",";
-                //if (item.FieldType == nameof(Editor))
-                //    editors.Add(item.FieldName);
             }
             filed = filed.TrimEnd(',');
             DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@Id", Id);
-            parameters.Add("@ParentId", ParentId);
-            parameters.Add("@flowId", column.ReviewMode);
+            Dictionary<string, object> dict = new Dictionary<string, object>
+            {
+                { "Id", Id },
+                { "ParentId", ParentId }
+            };
+            string swhere = string.Empty;
+            _sqlTableServices.InitDapperColumnContentSwheresql(ref swhere, ref parameters, dict);
 
-            var result = (await _dapperDBContext.GetDynamicAsync("select " + filed + ",flowId=@flowId from " + contentmodel.TableName + " where ParentId=@ParentId and Id=@Id", parameters)).FirstOrDefault();
+            var result = (await _dapperDBContext.GetDynamicAsync("select " + filed.GetCurrentBaseField() + "," + column.ReviewMode + " as flowId from " + contentmodel.TableName + " where" + swhere, parameters)).FirstOrDefault();
             if (result == null)
                 return new ProblemDetails<OutputContentAndWorkFlowDto>(HttpStatusCode.NotFound, ErrorCodes.DataNotFound.GetEnumDescription());
             var model = new ProblemDetails<OutputContentAndWorkFlowDto>(HttpStatusCode.OK)

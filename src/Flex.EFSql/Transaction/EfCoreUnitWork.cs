@@ -1,4 +1,4 @@
-﻿using Flex.EFSqlServer.Repositories;
+﻿using Flex.EFSql.Repositories;
 using DotNetCore.CAP;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Flex.EFSqlServer.Transaction
+namespace Flex.EFSql.Transaction
 {
     public class EfCoreUnitWork<TDbContext> : IEfCoreIUnitWork where TDbContext : DbContext
     {

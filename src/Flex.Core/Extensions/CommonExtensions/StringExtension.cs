@@ -1,4 +1,6 @@
-﻿using Flex.Core.Helper;
+﻿using Flex.Core.Config;
+using Flex.Core.Framework.Enum;
+using Flex.Core.Helper;
 using System;
 using System.Collections.Specialized;
 using System.Globalization;
@@ -22,6 +24,33 @@ namespace Flex.Core.Extensions
         public static bool IsNullOrEmpty(this string str)
         {
             return string.IsNullOrEmpty(str);
+        }
+
+        public static string GetCurrentBaseField(this string filed) {
+            if (DataBaseConfig.dataBase != DataBaseType.PgSql)
+                return filed;
+            var list = filed.ToList();
+            string filedstr = string.Empty;
+            foreach (var item in list)
+            {
+                if (filedstr.IsNullOrEmpty())
+                    filedstr = $@"{item} as ""{item}""";
+                else
+                    filedstr += $@",{item} as ""{item}""";
+            }
+            return filedstr;
+        }
+        public static DateTime ToUtcTime(this string timeString) {
+            DateTime localTime;
+            if (DateTime.TryParseExact(timeString, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out localTime))
+            {
+                DateTime utcTime = localTime.ToUniversalTime();
+                return utcTime;
+            }
+            else
+            {
+                return localTime;
+            }
         }
         public static List<string> ToList(this string strs, string splitstr = ",")
         {

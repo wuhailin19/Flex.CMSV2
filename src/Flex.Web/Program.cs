@@ -9,10 +9,9 @@ using Flex.Application.Extensions.Register.AutoMapper;
 using Flex.Application.Extensions.Register.MemoryCacheExtension;
 using Flex.Application.Extensions.Register.WebCoreExtensions;
 using Flex.Application.Extensions.Swagger;
+using Flex.Application.SetupExtensions.OrmInitExtension;
 using Flex.Core.Helper;
-using Flex.Dapper;
-using Flex.EFSqlServer;
-using Flex.EFSqlServer.Register;
+using Flex.SqlSugarFactory;
 using Flex.Web.Jwt;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.StaticFiles;
@@ -31,10 +30,7 @@ builder.Services.AddSwagger(AssemblyName);
 //注册视图控制器
 builder.Services.AddControllersWithViews();
 //注册EFcoreSqlserver
-builder.Services.AddUnitOfWorkService<SqlServerContext>(item => item.UseSqlServer("DataConfig:Sqlserver:ConnectionString".Config(string.Empty)));
-
-builder.Services.AddSingleton<MyDBContext>();
-
+builder.Services.RegisterDbConnectionString();
 //注册Automapper
 builder.Services.AddAutomapperService();
 //跨域配置
@@ -50,9 +46,12 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
         builder.RegisterType<LogInterceptor>().AsSelf();
         builder.RegisterType<LogInterceptorAsync>().AsSelf();
         builder.RegisterType<PhysicalFileProvider>().As<IFileProvider>().WithParameter("root", webpath).SingleInstance();
+
+        builder.RegisterGeneric(typeof(BaseRepository<>)).As(typeof(IBaseRepository<>)).InstancePerDependency(); //注册Sqlsugar仓储
         builder.RegisterAutoFacExtension();
         //注册业务层，同时对业务层的方法进行拦截
         builder.RegisterAssemblyTypes(Assembly.Load("Flex.Application"))
+             .Where(t => !t.Name.EndsWith("SqlTableServices")) // 排除以 "SqlTableServices" 结尾的类型
             .AsImplementedInterfaces()
             .InstancePerLifetimeScope()
             .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy;// 注册被拦截的类并启用类拦截
@@ -118,6 +117,7 @@ app.UseAuthentication();
 
 app.UseCors(WebCoreSetupExtension.MyAllowSpecificOrigins);
 app.UseAuthorization();
+#pragma warning disable ASP0014 // Suggest using top level route registrations
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(
@@ -128,4 +128,5 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Login}/{action=Index}/{id?}");
 
 });
+#pragma warning restore ASP0014 // Suggest using top level route registrations
 app.Run();

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Flex.Core.Extensions.CommonExtensions;
+using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Field;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -7,13 +8,14 @@ using Org.BouncyCastle.Crypto;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Flex.Application.SqlServerSQLString
 {
-    public class SqlServerServices : ISqlTableServices
+    public class SqlServerSqlTableServices : ISqlTableServices
     {
         public string CreateContentTableSql(string TableName) => "CREATE TABLE " + TableName + "" +
                                      "(" +
@@ -62,7 +64,7 @@ namespace Flex.Application.SqlServerSQLString
             return sql;
         }
         public string DeleteContentTableData(string TableName, string Ids) => "update " + TableName + " set StatusCode=0 where Id in(" + Ids + ")";
-        public StringBuilder CreateInsertCopyContentSqlString(Hashtable data,List<string> table, string TableName, int contentId)
+        public StringBuilder CreateInsertCopyContentSqlString(Hashtable data, List<string> table, string TableName, int contentId)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("insert into " + TableName + " (");
@@ -76,51 +78,85 @@ namespace Flex.Application.SqlServerSQLString
                 keyvar += "" + item + ",";
             }
             builder.Append(key.Substring(0, key.Length - 1) + ",StatusCode,OrderId,ReviewStepId,MsgGroupId,LastEditUser,LastEditUserName,LastEditDate) " +
-                "select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId,'',0,"+ data["LastEditUser"] + ",'"+ data["LastEditUserName"] + "','"+ data["LastEditDate"] + "' from " + TableName + " where Id=" + contentId);
+                "select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId,'',0," + data["LastEditUser"] + ",'" + data["LastEditUserName"] + "','" + data["LastEditDate"] + "' from " + TableName + " where Id=" + contentId);
             return builder;
         }
-        public StringBuilder CreateDapperInsertSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters)
+
+        public string GetNextOrderIdDapperSqlString(string tableName)
+        {
+            return $"SELECT ISNULL(MAX(OrderId) + 1, 0) FROM {tableName}";
+        }
+
+        public void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out DynamicParameters parameters)
+        {
+            parameters = new DynamicParameters();
+            parameters.Add("@parentId", contentPageListParam.ParentId);
+            swhere = " and ParentId=@parentId";
+            if (contentPageListParam.k.IsNotNullOrEmpty())
+            {
+                parameters.Add("@k", contentPageListParam.k);
+                if (contentPageListParam.k.ToInt() != 0)
+                    swhere += " and (Title like '%'+@k+'%' or Id=cast(@k as int))";
+                else
+                    swhere += " and Title like '%'+@k+'%'";
+            }
+            if (contentPageListParam.timefrom.IsNotNullOrEmpty())
+            {
+                parameters.Add("@timefrom", contentPageListParam.timefrom);
+                swhere += " and AddTime>=@timefrom";
+            }
+            if (contentPageListParam.timeto.IsNotNullOrEmpty())
+            {
+                parameters.Add("@timeto", contentPageListParam.timeto);
+                swhere += " and AddTime<DATEADD(day, 1, @timeto)";
+            }
+            if (contentPageListParam.ContentGroupId.IsNotNullOrEmpty())
+            {
+                parameters.Add("@ContentGroupId", contentPageListParam.ContentGroupId);
+                swhere += " and ContentGroupId=@ContentGroupId";
+            }
+        }
+        public string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"ALTER TABLE {tableName} ");
+
+            bool isFirst = true;
+            foreach (var column in insertfiledlist)
+            {
+                if (!isFirst)
+                {
+                    sb.Append(", ");
+                }
+                else
+                {
+                    isFirst = false;
+                }
+
+                sb.Append($"ADD COLUMN {column.id} {ConvertDataType(column.tag)}");
+            }
+
+            return sb.ToString();
+        }
+        public StringBuilder CreateDapperInsertSqlString(Hashtable table, string tableName, int nextOrderId, out DynamicParameters commandParameters)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append("insert into " + TableName + " (");
+            builder.Append($"INSERT INTO {tableName} (");
             string key = "";
             string keyvar = "";
             table.Remove("OrderId");
             commandParameters = new DynamicParameters();
             foreach (DictionaryEntry myDE in table)
             {
-                key += "[" + myDE.Key.ToString() + "],";
-                keyvar += "@" + myDE.Key.ToString() + ",";
+                key += $"{myDE.Key},";
+                keyvar += $"@{myDE.Key},";
                 commandParameters.Add(myDE.Key.ToString(), myDE.Value);
             }
-            builder.Append(key.Substring(0, key.Length - 1) + ",OrderId) values(" + keyvar.Substring(0, keyvar.Length - 1) + ",(select case when (MAX(OrderId)+1) is null then 0 else (MAX(OrderId)+1) end from " + TableName + "))");
+            builder.Append($"{key}OrderId) VALUES ({keyvar} {nextOrderId})");
             builder.Append(";SELECT SCOPE_IDENTITY();");
             return builder;
         }
-        public StringBuilder CreateInsertSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters)
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append("insert into " + TableName + " (");
-            string key = "";
-            string keyvar = "";
-            foreach (DictionaryEntry myDE in table)
-            {
-                key += "[" + myDE.Key.ToString() + "],";
-                keyvar += "@" + myDE.Key.ToString() + ",";
-
-            }
-            builder.Append(key.Substring(0, key.Length - 1) + " ) values(" + keyvar.Substring(0, keyvar.Length - 1) + " )");
-            commandParameters = new SqlParameter[table.Count];
-            int num = 0;
-            foreach (DictionaryEntry myDE in table)
-            {
-                commandParameters[num] = new SqlParameter("@" + myDE.Key.ToString(), myDE.Value);
-                num++;
-            }
-            builder.Append(";SELECT SCOPE_IDENTITY();");
-            return builder;
-        }
-        public StringBuilder CreateUpdateSqlString(Hashtable table, string TableName, out SqlParameter[] commandParameters)
+        public StringBuilder CreateDapperUpdateSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters)
         {
             StringBuilder builder = new StringBuilder();
             int Id = table["Id"].ToInt();
@@ -136,11 +172,11 @@ namespace Flex.Application.SqlServerSQLString
 
             }
             builder.Append(keyvar.Substring(0, keyvar.Length - 1));
-            commandParameters = new SqlParameter[table.Count];
+            commandParameters = new DynamicParameters();
             int num = 0;
             foreach (DictionaryEntry myDE in table)
             {
-                commandParameters[num] = new SqlParameter("@" + myDE.Key.ToString(), myDE.Value);
+                commandParameters.Add(myDE.Key.ToString(), myDE.Value);
                 num++;
             }
             table.Add("Id", Id);
@@ -148,8 +184,9 @@ namespace Flex.Application.SqlServerSQLString
             {
                 builder.Append(" where Id=" + Id);
             }
-            else { 
-                builder.Append(" where Id in(" + Ids+")");
+            else
+            {
+                builder.Append(" where Id in(" + Ids + ")");
             }
             return builder;
         }
@@ -193,6 +230,32 @@ namespace Flex.Application.SqlServerSQLString
                 case "grid": returntype = "nvarchar(255)"; break;
             }
             return returntype;
+        }
+        public string AlertTableField(string TableName, string oldfieldName, string fieldName) =>
+    $"EXEC sp_rename '{TableName}.{oldfieldName}', '{fieldName}', 'COLUMN';";
+
+        public string AlertTableFieldType(string TableName, string fieldName, string fieldType) =>
+            $"ALTER TABLE {TableName} ALTER COLUMN {fieldName} {ConvertDataType(fieldType)};";
+
+        public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateSqlSugarColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out SqlSugar.SugarParameter[] parameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void InitDapperColumnContentSwheresql(ref string swhere, ref DynamicParameters parameters, Dictionary<string, object> dataparams)
+        {
+            foreach (var item in dataparams.Keys)
+            {
+                parameters.Add("@" + item, dataparams[item]);
+                if (swhere.IsNotNullOrEmpty())
+                    swhere += " and";
+                swhere += " " + item + "=@" + item;
+            }
         }
     }
 }

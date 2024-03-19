@@ -251,8 +251,8 @@ namespace Flex.Application.Services
         public async Task<Dictionary<string, List<string>>> PermissionDtosAsync()
         {
             var result = new Dictionary<string, List<string>>();
-            var RoleList = await _unitOfWork.GetRepository<SysRole>().GetAllAsync();
-            var UrlList = await _unitOfWork.GetRepository<SysRoleUrl>().GetAllAsync();
+            var RoleList = (await _unitOfWork.GetRepository<SysRole>().GetAllAsync()).ToList();
+            var UrlList = (await _unitOfWork.GetRepository<SysRoleUrl>().GetAllAsync()).ToList();
             //var permisslists = new List<PermissionDto>();
             RoleList.Foreach(item =>
             {

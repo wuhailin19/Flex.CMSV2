@@ -28,6 +28,8 @@ namespace Flex.Core.Helper
             @"<([0-9a-zA-Z]+)[^>]*\bid=([""']){0}\2[^>]*>(?><\1[^>]*>(?<tag>)|</\1>(?<-tag>)|.)*?(?(tag)(?!))</\1>";
 
         private const string HtmlIdRegex = @"<([0-9a-zA-Z]+)[^>]*\bid=([""']){0}\2[^>]*/>";
+        private const string datetimepattern = @"^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?";
+
 
         private const string HtmlFindByCssRegex =
             @"<([0-9a-zA-Z]+)[^>]*\bclass=(['""]?)(?<t>[^""'\s]*\s)*{0}(?<b>\s[^""'\s]*)*\2[^>]*>(?><\1[^>]*>(?<tag>)|</\1>(?<-tag>)|.)*?(?(tag)(?!))</\1>";
@@ -139,6 +141,16 @@ namespace Flex.Core.Helper
         public static bool IsIp(string ip)
         {
             return !string.IsNullOrWhiteSpace(ip) && Regex.IsMatch(ip, IpRegex);
+        }
+        
+        /// <summary>
+        /// 是否是时间
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <returns></returns>
+        public static bool IsTime(string time)
+        {
+            return !string.IsNullOrWhiteSpace(time) && Regex.IsMatch(time, datetimepattern);
         }
 
         ///<summary>

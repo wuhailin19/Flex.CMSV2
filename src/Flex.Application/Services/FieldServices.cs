@@ -5,7 +5,7 @@ using Flex.Application.SqlServerSQLString;
 using Flex.Domain.Basics;
 using Flex.Domain.Dtos.ContentModel;
 using Flex.Domain.Dtos.Field;
-using Flex.EFSqlServer.Repositories;
+using Flex.EFSql.Repositories;
 using System.Reflection;
 
 namespace Flex.Application.Services
@@ -24,7 +24,7 @@ namespace Flex.Application.Services
         }
         public async Task<IEnumerable<FieldColumnDto>> ListAsync(int Id)
         {
-            var list = await responsity.GetAllAsync(m => m.ModelId == Id);
+            var list = (await responsity.GetAllAsync(m => m.ModelId == Id)).ToList();
             return _mapper.Map<List<FieldColumnDto>>(list);
         }
         public async Task<ProblemDetails<string>> Add(AddFieldDto model)

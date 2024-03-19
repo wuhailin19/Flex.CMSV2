@@ -28,6 +28,11 @@ namespace Flex.Core
         /// </summary>
         public List<T> data { get; set; }
 
+        public PageModel(int _page,int _dataCount,int _PageSize, List<T> _data) {
+            page = _page;
+            data = _data;
+            dataCount = _dataCount;
+            PageSize = _PageSize;
+        }
     }
-
 }

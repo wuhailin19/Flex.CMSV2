@@ -25,7 +25,7 @@ function GetMsgCount() {
                 }
             }
         }, complete: function () {
-            setTimeout(function () { GetMsgCount() }, 5000)
+            //setTimeout(function () { GetMsgCount() }, 5000)
         }
     })
 }

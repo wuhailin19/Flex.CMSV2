@@ -37,6 +37,7 @@ namespace Flex.Application.Services
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
+          
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
@@ -88,6 +89,7 @@ namespace Flex.Application.Services
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
+       
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
@@ -96,10 +98,18 @@ namespace Flex.Application.Services
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             if (IsCancelReview)
             {
+
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@Id", table["Id"]);
-                parameters.Add("@ParentId", table["ParentId"]);
-                var result = (await _dapperDBContext.GetDynamicAsync("select ReviewAddUser from " + contentmodel.TableName + " where ParentId=@ParentId and Id=@Id", parameters)).FirstOrDefault();
+                Dictionary<string, object> dict = new Dictionary<string, object>
+                    {
+                        { "Id", table["Id"] },
+                        { "ParentId",  table["ParentId"] }
+                    };
+                string swhere = string.Empty;
+                _sqlTableServices.InitDapperColumnContentSwheresql(ref swhere, ref parameters, dict);
+
+
+                var result = (await _dapperDBContext.GetDynamicAsync("select ReviewAddUser from " + contentmodel.TableName + " where"+ swhere, parameters)).FirstOrDefault();
                 if (result == null)
                     return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
                 if (result.ReviewAddUser != _claims.UserId && !_claims.IsSystem)
@@ -142,6 +152,7 @@ namespace Flex.Application.Services
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
+            
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
@@ -162,21 +173,22 @@ namespace Flex.Application.Services
         private async Task<ProblemDetails<int>> UpdateContentCore(Hashtable table, SysContentModel contentmodel, List<string> fileds)
         {
             StringBuilder builder = new StringBuilder();
-            SqlParameter[] commandParameters = new SqlParameter[] { };
+            DynamicParameters parameters = new DynamicParameters();
+            table["Id"] = table["Id"].ToInt();
+            table["ParentId"] = table["ParentId"].ToInt();
             if (fileds != null)
             {
                 //创建历史副本
                 var createcopysql = _sqlTableServices.CreateInsertCopyContentSqlString(table, fileds, contentmodel.TableName, table["Id"].ToInt());
-                _unitOfWork.ExecuteSqlCommand(createcopysql.ToString());
+                _dapperDBContext.ExecuteScalar(createcopysql.ToString());
             }
-            builder = _sqlTableServices.CreateUpdateSqlString(table, contentmodel.TableName, out commandParameters);
+            builder = _sqlTableServices.CreateDapperUpdateSqlString(table, contentmodel.TableName, out parameters);
+
             try
             {
-                var result = _unitOfWork.ExecuteSqlCommand(builder.ToString(), commandParameters);
+                var result = _dapperDBContext.Execute(builder.ToString(), parameters);
                 if (result > 0)
                 {
-                    await _unitOfWork.SaveChangesAsync();
-
                     return new ProblemDetails<int>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
                 }
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());

@@ -1,9 +1,11 @@
 ﻿using Flex.Core.JsonConvertExtension;
 using Flex.Domain.Enums.Message;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Flex.Domain.Entities
 {
+    [Table(name: "tbl_core_message")]
     public class sysMessage : BaseIntEntity, EntityContext
     {
         public string Title { set; get; }

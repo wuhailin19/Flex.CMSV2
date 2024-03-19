@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Flex.EFSqlServer.Transaction
+namespace Flex.EFSql.Transaction
 {
     public class UnitOfWorkStatus
     {
