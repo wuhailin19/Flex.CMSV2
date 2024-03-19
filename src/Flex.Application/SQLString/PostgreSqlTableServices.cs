@@ -13,36 +13,37 @@ namespace Flex.Application.SqlServerSQLString
 {
     public class PostgreSqlTableServices : ISqlTableServices
     {
-        public string CreateContentTableSql(string TableName) => "CREATE TABLE " + TableName + "" +
-                                     "(" +
-                                      "Id SERIAL PRIMARY KEY," +
-                                      "ParentId INT NOT NULL," +
-                                      "SiteId INT NOT NULL DEFAULT 1," +
-                                      "Title VARCHAR(255) NOT NULL," +
-                                      "SimpleTitle VARCHAR(255) NULL," +
-                                      "Hits INT NOT NULL DEFAULT 1," +
-                                      "SeoTitle VARCHAR(255) NULL," +
-                                      "KeyWord VARCHAR(500) NULL," +
-                                      "Description VARCHAR(1000) NULL," +
-                                      "AddTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-                                      "IsTop BOOLEAN NOT NULL DEFAULT FALSE," +
-                                      "IsRecommend BOOLEAN NOT NULL DEFAULT FALSE," +
-                                      "IsHot BOOLEAN NOT NULL DEFAULT FALSE," +
-                                      "IsHide BOOLEAN NOT NULL DEFAULT FALSE," +
-                                      "IsSilde BOOLEAN NOT NULL DEFAULT FALSE," +
-                                      "OrderId INT NOT NULL DEFAULT 0," +
-                                      "StatusCode INT NOT NULL DEFAULT 1," +
-                                      "ReviewStepId VARCHAR(255) NULL," +
-                                      "ContentGroupId BIGINT NULL," +
-                                      "MsgGroupId BIGINT NULL," +
-                                      "ReviewAddUser BIGINT NULL," +
-                                      "AddUser BIGINT NULL," +
-                                      "AddUserName VARCHAR(100) NULL," +
-                                      "LastEditUser BIGINT NULL," +
-                                      "LastEditUserName VARCHAR(100) NOT NULL," +
-                                      "LastEditDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-                                      "Version INT NOT NULL DEFAULT 0 " +
-                                      " )";
+        public string CreateContentTableSql(string TableName) => "CREATE TABLE \"" + TableName + "\"" +
+                "(" +
+                    "\"Id\" SERIAL PRIMARY KEY," +
+                    "\"ParentId\" INT NOT NULL," +
+                    "\"SiteId\" INT NOT NULL DEFAULT 1," +
+                    "\"Title\" VARCHAR(255) NOT NULL," +
+                    "\"SimpleTitle\" VARCHAR(255) NULL," +
+                    "\"Hits\" INT NOT NULL DEFAULT 1," +
+                    "\"SeoTitle\" VARCHAR(255) NULL," +
+                    "\"KeyWord\" VARCHAR(500) NULL," +
+                    "\"Description\" VARCHAR(1000) NULL," +
+                    "\"AddTime\" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                    "\"IsTop\" BOOLEAN NOT NULL DEFAULT FALSE," +
+                    "\"IsRecommend\" BOOLEAN NOT NULL DEFAULT FALSE," +
+                    "\"IsHot\" BOOLEAN NOT NULL DEFAULT FALSE," +
+                    "\"IsHide\" BOOLEAN NOT NULL DEFAULT FALSE," +
+                    "\"IsSilde\" BOOLEAN NOT NULL DEFAULT FALSE," +
+                    "\"OrderId\" INT NOT NULL DEFAULT 0," +
+                    "\"StatusCode\" INT NOT NULL DEFAULT 1," +
+                    "\"ReviewStepId\" VARCHAR(255) NULL," +
+                    "\"ContentGroupId\" BIGINT NULL," +
+                    "\"MsgGroupId\" BIGINT NULL," +
+                    "\"ReviewAddUser\" BIGINT NULL," +
+                    "\"AddUser\" BIGINT NULL," +
+                    "\"AddUserName\" VARCHAR(100) NULL," +
+                    "\"LastEditUser\" BIGINT NULL," +
+                    "\"LastEditUserName\" VARCHAR(100) NOT NULL," +
+                    "\"LastEditDate\" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                    "\"Version\" INT NOT NULL DEFAULT 0" +
+                ")";
+
 
         public string InsertTableField(string TableName, sysField model) => $"ALTER TABLE {TableName} ADD COLUMN {model.FieldName} {ConvertDataType(model.FieldType)};";
 
@@ -219,7 +220,7 @@ namespace Flex.Application.SqlServerSQLString
                 case "sign": returntype = "VARCHAR(255)"; break;
                 case "iconPicker": returntype = "VARCHAR(255)"; break;
                 case "cron": returntype = "TEXT"; break;
-                case "date": returntype = "date"; break;
+                case "date": returntype = "timestamp with time zone"; break;
                 case "dateRange": returntype = "VARCHAR(255)"; break;
                 case "rate": returntype = "VARCHAR(255)"; break;
                 case "carousel": returntype = "VARCHAR(500)"; break;
@@ -245,8 +246,30 @@ namespace Flex.Application.SqlServerSQLString
 
         public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
         {
-            throw new NotImplementedException();
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"INSERT INTO {tableName} (");
+            string key = "";
+            string keyvar = "";
+            table.Remove("OrderId");
+            int count = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                key += $"{myDE.Key},";
+                keyvar += $"@{myDE.Key},";
+                count++;
+            }
+            commandParameters = new SqlSugar.SugarParameter[table.Count];
+            int num = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                commandParameters[num] = new SqlSugar.SugarParameter($"@{myDE.Key}", myDE.Value);
+                num++;
+            }
+            builder.Append($"{key}OrderId) VALUES ({keyvar}{nextOrderId})");
+            builder.Append(" RETURNING OrderId;");
+            return builder;
         }
+
 
         public void CreateSqlSugarColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out SqlSugar.SugarParameter[] parameters)
         {

@@ -17,16 +17,14 @@ namespace Flex.Application.Services
     {
         IColumnContentServices contentServices;
         ISqlTableServices _sqlTableServices;
-        protected MyContext _sqlsugar;
         protected MyDBContext _dapperDBContext;
 
-        public MessageServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IColumnContentServices contentServices, ISqlTableServices sqlTableServices, MyDBContext dapperDBContext, MyContext sqlsugar)
+        public MessageServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IColumnContentServices contentServices, ISqlTableServices sqlTableServices, MyDBContext dapperDBContext)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             this.contentServices = contentServices;
             _sqlTableServices = sqlTableServices;
             _dapperDBContext = dapperDBContext;
-            _sqlsugar = sqlsugar;
         }
 
         private Expression<Func<sysMessage, bool>> GetExpression()

@@ -37,6 +37,7 @@ namespace Flex.Application.Services
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
+          
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
@@ -88,6 +89,7 @@ namespace Flex.Application.Services
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
+       
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
@@ -150,6 +152,7 @@ namespace Flex.Application.Services
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
+            
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
@@ -171,6 +174,8 @@ namespace Flex.Application.Services
         {
             StringBuilder builder = new StringBuilder();
             DynamicParameters parameters = new DynamicParameters();
+            table["Id"] = table["Id"].ToInt();
+            table["ParentId"] = table["ParentId"].ToInt();
             if (fileds != null)
             {
                 //创建历史副本

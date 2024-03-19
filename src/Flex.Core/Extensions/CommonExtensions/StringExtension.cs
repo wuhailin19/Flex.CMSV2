@@ -23,6 +23,19 @@ namespace Flex.Core.Extensions
         {
             return string.IsNullOrEmpty(str);
         }
+
+        public static DateTime ToUtcTime(this string timeString) {
+            DateTime localTime;
+            if (DateTime.TryParseExact(timeString, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out localTime))
+            {
+                DateTime utcTime = localTime.ToUniversalTime();
+                return utcTime;
+            }
+            else
+            {
+                return localTime;
+            }
+        }
         public static List<string> ToList(this string strs, string splitstr = ",")
         {
             if (string.IsNullOrEmpty(strs))

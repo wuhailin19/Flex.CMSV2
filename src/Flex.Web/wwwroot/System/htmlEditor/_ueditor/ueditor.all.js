@@ -8371,6 +8371,8 @@
                     }
                 }
             };
+            xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('access_token'));
+            xhr.setRequestHeader("Refresh_token", "Bearer " + sessionStorage.getItem('refresh_token'));
             if (method == "POST") {
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.send(submitStr);
@@ -23917,8 +23919,7 @@
                         }
 
                         /* 获取源路径和新路径 */
-                        var i, j, ci, cj, oldSrc, newSrc, list = info.list;
-
+                        var i, j, ci, cj, oldSrc, newSrc, list = info.content.Content;
                         for (i = 0; ci = imgs[i++];) {
                             oldSrc = ci.getAttribute("_src") || ci.src || "";
                             for (j = 0; cj = list[j++];) {
@@ -23943,7 +23944,8 @@
 
             function catchremoteimage(imgs, callbacks) {
                 var params = utils.serializeParam(me.queryCommandValue('serverparam')) || '',
-                    url = utils.formatUrl(catcherActionUrl + (catcherActionUrl.indexOf('?') == -1 ? '?' : '&') + params),
+                    //url = utils.formatUrl(catcherActionUrl + (catcherActionUrl.indexOf('?') == -1 ? '?' : '&') + params),
+                    url = utils.formatUrl(catcherActionUrl),
                     isJsonp = utils.isCrossDomainUrl(url),
                     opt = {
                         'method': 'POST',
@@ -23953,6 +23955,7 @@
                         'onerror': callbacks["error"]
                     };
                 opt[catcherFieldName] = imgs;
+                //console.log(opt)
                 ajax.request(url, opt);
             }
 
@@ -24500,8 +24503,7 @@
             fd.append('type', 'ajax');
             xhr.open("post", url, true);
             xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-            xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('access_token'));
-            xhr.setRequestHeader("Refresh_token", "Bearer " + sessionStorage.getItem('refresh_token'));
+            
             xhr.addEventListener('load', function (e) {
                 try {
                     var json = (new Function("return " + utils.trim(e.target.response)))();

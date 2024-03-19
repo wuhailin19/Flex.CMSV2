@@ -1,4 +1,6 @@
-﻿using Flex.Core.Extensions;
+﻿using Flex.Core.Config;
+using Flex.Core.Extensions;
+using Flex.Core.Framework.Enum;
 using Flex.Dapper.Context;
 using Microsoft.Extensions.Options;
 using System.Data;
@@ -15,26 +17,23 @@ namespace Flex.Dapper
 
         protected override IDbConnection CreateConnection()
         {
-            var usedb = "DataConfig:UseDb".Config(string.Empty) ?? "Sqlserver";
             var sqlconnection = "DataConfig:Sqlserver:ConnectionString".Config(string.Empty);
-            switch (usedb)
+            switch (DataBaseConfig.dataBase)
             {
-                case "Sqlserver":
+                case DataBaseType.SqlServer:
                     return new SqlConnection(sqlconnection);
-                case "Mysql":
+                case DataBaseType.Mysql:
                     sqlconnection = "DataConfig:Mysql:ConnectionString".Config(string.Empty);
                     return new MySql.Data.MySqlClient.MySqlConnection(sqlconnection);
-                case "DM8":
+                case DataBaseType.DM:
                     sqlconnection = "DataConfig:DM8:ConnectionString".Config(string.Empty);
                     return new Dm.DmConnection(sqlconnection);
-                case "PgSql":
+                case DataBaseType.PgSql:
                     sqlconnection = "DataConfig:PostgreSQL:ConnectionString".Config(string.Empty);
-                    return new SqlConnection(sqlconnection);
+                    return new Npgsql.NpgsqlConnection(sqlconnection);
                 default:
                     return new SqlConnection(sqlconnection);
             }
         }
-
-
     }
 }

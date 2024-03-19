@@ -120,7 +120,7 @@ namespace Flex.Application.Services
             result.Items.Each(item =>
             {
                 item.StatusColor = ((StatusCode)item.StatusCode).GetEnumColorDescription();
-                item.StatusCode = ((StatusCode)item.StatusCode).GetEnumDescription();
+                item.StatusCodeText = ((StatusCode)item.StatusCode).GetEnumDescription();
             });
             return result;
         }

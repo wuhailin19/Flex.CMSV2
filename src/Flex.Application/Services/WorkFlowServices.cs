@@ -212,10 +212,10 @@ namespace Flex.Application.Services
             var workflowaction = _unitOfWork.GetRepository<sysWorkFlowAction>();
             try
             {
-                var steps = await workflowstrp.GetAllAsync(m => m.flowId == flowId);
+                var steps = (await workflowstrp.GetAllAsync(m => m.flowId == flowId)).ToList();
                 workflowstrp.Delete(steps);
 
-                var actions = await workflowaction.GetAllAsync(m => m.flowId == flowId);
+                var actions = (await workflowaction.GetAllAsync(m => m.flowId == flowId)).ToList();
                 workflowaction.Delete(actions);
                 return true;
             }

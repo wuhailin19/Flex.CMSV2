@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using Dm;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Core.Config;
 using Flex.Core.Extensions.CommonExtensions;
+using Flex.Core.Framework.Enum;
 using Flex.Dapper;
 using Flex.Domain.Cache;
 using Flex.Domain.Dtos.Role;
@@ -39,11 +41,20 @@ namespace Flex.Application.Services
             table["AddUserName"] = _claims.UserName;
             table["LastEditUser"] = _claims.UserId;
             table["LastEditUserName"] = _claims.UserName;
-            table["LastEditDate"] = Clock.Now;
+            //pgSQL情况
+            switch (DataBaseConfig.dataBase) {
+                case DataBaseType.PgSql:
+                    table["LastEditDate"] = Clock.Now.ToUniversalTime();
+                    break;
+                default: 
+                    table["LastEditDate"] = Clock.Now;
+                    break;
+            }
             table["OrderId"] = 0;
         }
         private void InitUpdateTable(Hashtable table)
         {
+            //如果是审批结束
             if (table.GetValue("StatusCode").ToInt() != 5)
             {
                 table["ReviewStepId"] = string.Empty;
@@ -65,15 +76,36 @@ namespace Flex.Application.Services
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataUpdateError.GetEnumDescription());
-            var filedmodel = await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId);
+            table["ParentId"] = table["ParentId"].ToInt();
+           
+            var filedmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             var keysToRemove = new List<object>();
+            var timelist = new List<object>();
             var white_fileds = ColumnContentUpdateFiledConfig.defaultFields.ToList();
+
             foreach (var item in table.Keys)
             {
                 if (white_fileds.Any(m => m.Equals(item.ToString(), StringComparison.OrdinalIgnoreCase)))
                     continue;
+                if (table[item].ToString().IsTime())
+                {
+                    timelist.Add(item);
+                }
                 if (!filedmodel.Any(m => m.FieldName.Equals(item.ToString(), StringComparison.OrdinalIgnoreCase)))
                     keysToRemove.Add(item);
+            }
+
+            //pgSQL情况
+            switch (DataBaseConfig.dataBase)
+            {
+                case DataBaseType.PgSql:
+                    foreach (var item in timelist)
+                    {
+                        table[item] = table[item].ToString().ToUtcTime();
+                    }
+                    break;
+                default:
+                    break;
             }
             foreach (var key in keysToRemove)
             {
@@ -88,12 +120,15 @@ namespace Flex.Application.Services
 
             var orderId = (await _dapperDBContext.GetDynamicAsync(orderSql)).FirstOrDefault()?.Value ?? 0;
 
-            DynamicParameters parameters = new DynamicParameters();
-            StringBuilder builder = _sqlTableServices.CreateDapperInsertSqlString(table, contentmodel.TableName, orderId, out parameters);
+            //DynamicParameters parameters = new DynamicParameters();
+            //StringBuilder builder = _sqlTableServices.CreateDapperInsertSqlString(table, contentmodel.TableName, orderId, out parameters);
+
+            SqlSugar.SugarParameter[] parameters = new SqlSugar.SugarParameter[] { };
+            StringBuilder builder = _sqlTableServices.CreateSqlsugarInsertSqlString(table, contentmodel.TableName, orderId, out parameters);
             try
             {
-                var result = _dapperDBContext.ExecuteScalar(builder.ToString(), parameters);
-                //var result = _sqlsugar.Db.Ado.GetScalar(builder.ToString(), parameters).ToInt();
+                //var result = _dapperDBContext.ExecuteScalar(builder.ToString(), parameters);
+                var result = _sqlsugar.Db.Ado.GetScalar(builder.ToString(), parameters).ToInt();
                 if (result > 0)
                 {
                     return new ProblemDetails<int>(HttpStatusCode.OK, result, ErrorCodes.DataInsertSuccess.GetEnumDescription());

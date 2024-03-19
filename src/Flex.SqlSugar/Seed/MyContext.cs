@@ -1,4 +1,6 @@
-﻿using Flex.Core.Extensions;
+﻿using Flex.Core.Config;
+using Flex.Core.Extensions;
+using Flex.Core.Framework.Enum;
 using Flex.Dapper;
 using SqlSugar;
 
@@ -11,21 +13,20 @@ namespace Flex.SqlSugarFactory.Seed
         {
             get
             {
-                var usedb = "DataConfig:UseDb".Config(string.Empty) ?? "Sqlserver";
-                switch (usedb)
+                switch (DataBaseConfig.dataBase)
                 {
                     default:
                         _dbType = DbType.SqlServer;
                         return "DataConfig:Sqlserver:ConnectionString".Config(string.Empty);
-                    case "Mysql":
+                    case DataBaseType.Mysql:
                         _dbType = DbType.MySql;
                         return "DataConfig:Mysql:ConnectionString".Config(string.Empty);
-                    case "DM8":
+                    case DataBaseType.DM:
                         _dbType = DbType.Dm;
                         return "DataConfig:DM8:ConnectionString".Config(string.Empty);
-                    case "PgSql":
+                    case DataBaseType.PgSql:
                         _dbType = DbType.PostgreSQL;
-                        return "DataConfig:DM8:ConnectionString".Config(string.Empty);
+                        return "DataConfig:PostgreSQL:ConnectionString".Config(string.Empty);
                 }
             }
         }

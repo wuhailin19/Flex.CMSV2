@@ -69,6 +69,15 @@ namespace Flex.Web.Areas.System.Controllers.APIController
                 return Fail(result.Detail);
             return Success(result.Detail);
         }
+        [HttpPost("UploadRemoteImage")]
+        [Descriper(Name = "上传远程图片")]
+        public async Task<string> UploadRemoteImage([FromForm] string[] upfile)
+        {
+            var result =await _pictureServices.UploadRemoteImage(upfile);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result);
+        }
     }
 
     public class Options

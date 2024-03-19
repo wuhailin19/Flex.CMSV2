@@ -1,4 +1,6 @@
 ﻿using Flex.Application.SqlServerSQLString;
+using Flex.Core.Config;
+using Flex.Core.Framework.Enum;
 using Flex.Dapper;
 using Flex.EFSql;
 using Flex.EFSql.Register;
@@ -13,28 +15,28 @@ namespace Flex.Application.SetupExtensions.OrmInitExtension
     {
         public static void RegisterDbConnectionString(this IServiceCollection services) {
 
-            var usedb = "DataConfig:UseDb".Config(string.Empty) ?? "Sqlserver";
-            switch (usedb)
+            switch (DataBaseConfig.dataBase)
             {
-                case "Sqlserver":
+                case DataBaseType.SqlServer:
                     services.AddUnitOfWorkService<SqlServerContext>(item => item.UseSqlServer($"DataConfig:Sqlserver:ConnectionString".Config(string.Empty)));
                     services.AddScoped<ISqlTableServices, SqlServerSqlTableServices>();
                     break;
-                case "Mysql":
+                case DataBaseType.Mysql:
                     services.AddUnitOfWorkService<SqlServerContext>(item => item.UseMySql($"DataConfig:Mysql:ConnectionString".Config(string.Empty), new MySqlServerVersion(new Version("8.0.27"))));
                     services.AddScoped<ISqlTableServices, MySqlSqlTableServices>();
                     break;
-                case "DM8":
+                case DataBaseType.DM:
                     services.AddUnitOfWorkService<SqlServerContext>(item => item.UseDm($"DataConfig:DM8:ConnectionString".Config(string.Empty)));
-                    services.AddScoped<MyContext>();
                     services.AddScoped<ISqlTableServices, DamengSqlTableServices>();
                     break;
-                case "PgSql":
-                    services.AddUnitOfWorkService<SqlServerContext>(item => item.UseSqlServer($"DataConfig:PostgreSQL:ConnectionString".Config(string.Empty)));
+                case DataBaseType.PgSql:
+                    services.AddUnitOfWorkService<SqlServerContext>(item => item.UseNpgsql($"DataConfig:PostgreSQL:ConnectionString".Config(string.Empty)));
                     services.AddScoped<ISqlTableServices, PostgreSqlTableServices>();
                     break;
             }
-
+            //注册sqlsugar
+            services.AddSingleton<MyContext>();
+            //注册dapper
             services.AddSingleton<MyDBContext>();
         }
     }

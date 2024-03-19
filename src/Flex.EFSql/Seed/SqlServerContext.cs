@@ -4,6 +4,7 @@ using Flex.Domain.Base;
 using Flex.Domain.Config;
 using Flex.Domain.Entities.System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Logging;
 using System.Xml;
 
@@ -13,7 +14,7 @@ namespace Flex.EFSql
     {
         public SqlServerContext(DbContextOptions<SqlServerContext> options) : base(options)
         {
-            
+
         }
         // 无参构造函数，用于设计时创建对象
         public SqlServerContext() : base()
@@ -66,6 +67,24 @@ namespace Flex.EFSql
                     modelBuilder.ApplyConfigurationsFromAssembly(assembly);
                 }
             });
+
+            var usedb = "DataConfig:UseDb".Config(string.Empty) ?? "Sqlserver";
+            if (usedb == "PostgreSQL")
+            {
+                // 将所有日期时间字段配置为使用UTC时间
+                foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+                {
+                    foreach (var property in entityType.GetProperties())
+                    {
+                        if (property.ClrType == typeof(DateTime) || property.ClrType == typeof(DateTime?))
+                        {
+                            property.SetValueConverter(new ValueConverter<DateTime, DateTime>(
+                                v => v.ToUniversalTime(),
+                                v => DateTime.SpecifyKind(v, DateTimeKind.Utc)));
+                        }
+                    }
+                }
+            }
             base.OnModelCreating(modelBuilder);
         }
     }
