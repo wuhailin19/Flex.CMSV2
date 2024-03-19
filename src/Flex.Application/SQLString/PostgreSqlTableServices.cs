@@ -13,35 +13,35 @@ namespace Flex.Application.SqlServerSQLString
 {
     public class PostgreSqlTableServices : ISqlTableServices
     {
-        public string CreateContentTableSql(string TableName) => "CREATE TABLE \"" + TableName + "\"" +
+        public string CreateContentTableSql(string TableName) => "CREATE TABLE " + TableName+
                 "(" +
-                    "\"Id\" SERIAL PRIMARY KEY," +
-                    "\"ParentId\" INT NOT NULL," +
-                    "\"SiteId\" INT NOT NULL DEFAULT 1," +
-                    "\"Title\" VARCHAR(255) NOT NULL," +
-                    "\"SimpleTitle\" VARCHAR(255) NULL," +
-                    "\"Hits\" INT NOT NULL DEFAULT 1," +
-                    "\"SeoTitle\" VARCHAR(255) NULL," +
-                    "\"KeyWord\" VARCHAR(500) NULL," +
-                    "\"Description\" VARCHAR(1000) NULL," +
-                    "\"AddTime\" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-                    "\"IsTop\" BOOLEAN NOT NULL DEFAULT FALSE," +
-                    "\"IsRecommend\" BOOLEAN NOT NULL DEFAULT FALSE," +
-                    "\"IsHot\" BOOLEAN NOT NULL DEFAULT FALSE," +
-                    "\"IsHide\" BOOLEAN NOT NULL DEFAULT FALSE," +
-                    "\"IsSilde\" BOOLEAN NOT NULL DEFAULT FALSE," +
-                    "\"OrderId\" INT NOT NULL DEFAULT 0," +
-                    "\"StatusCode\" INT NOT NULL DEFAULT 1," +
-                    "\"ReviewStepId\" VARCHAR(255) NULL," +
-                    "\"ContentGroupId\" BIGINT NULL," +
-                    "\"MsgGroupId\" BIGINT NULL," +
-                    "\"ReviewAddUser\" BIGINT NULL," +
-                    "\"AddUser\" BIGINT NULL," +
-                    "\"AddUserName\" VARCHAR(100) NULL," +
-                    "\"LastEditUser\" BIGINT NULL," +
-                    "\"LastEditUserName\" VARCHAR(100) NOT NULL," +
-                    "\"LastEditDate\" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-                    "\"Version\" INT NOT NULL DEFAULT 0" +
+                    "id SERIAL PRIMARY KEY," +
+                    "ParentId INT NOT NULL," +
+                    "SiteId INT NOT NULL DEFAULT 1," +
+                    "title VARCHAR(255) NOT NULL," +
+                    "SimpleTitle VARCHAR(255) NULL," +
+                    "Hits INT NOT NULL DEFAULT 1," +
+                    "SeoTitle VARCHAR(255) NULL," +
+                    "KeyWord VARCHAR(500) NULL," +
+                    "Description VARCHAR(1000) NULL," +
+                    "addtime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                    "IsTop BOOLEAN NOT NULL DEFAULT FALSE," +
+                    "IsRecommend BOOLEAN NOT NULL DEFAULT FALSE," +
+                    "IsHot BOOLEAN NOT NULL DEFAULT FALSE," +
+                    "IsHide BOOLEAN NOT NULL DEFAULT FALSE," +
+                    "IsSilde BOOLEAN NOT NULL DEFAULT FALSE," +
+                    "orderid INT NOT NULL DEFAULT 0," +
+                    "statuscode INT NOT NULL DEFAULT 1," +
+                    "reviewstepid VARCHAR(255) NULL," +
+                    "contentgroupid BIGINT NULL," +
+                    "MsgGroupId BIGINT NULL," +
+                    "ReviewAddUser BIGINT NULL," +
+                    "AddUser BIGINT NULL," +
+                    "AddUserName VARCHAR(100) NULL," +
+                    "lastedituser BIGINT NULL," +
+                    "lasteditusername VARCHAR(100) NOT NULL," +
+                    "lasteditdate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                    "Version INT NOT NULL DEFAULT 0" +
                 ")";
 
 
@@ -55,9 +55,9 @@ namespace Flex.Application.SqlServerSQLString
 
         public string ReNameTableName(string TableName, string NewTableName) => $"ALTER TABLE {TableName} RENAME TO {NewTableName};";
 
-        public string UpdateContentStatus(string TableName, int ContentId, StatusCode statusCode) => $"UPDATE {TableName} SET StatusCode={statusCode.ToInt()} WHERE Id={ContentId};";
+        public string UpdateContentStatus(string TableName, int ContentId, StatusCode statuscode) => $"UPDATE {TableName} SET statuscode={statuscode.ToInt()} WHERE id={ContentId};";
 
-        public string UpdateContentReviewStatus(string TableName, int ContentId, StatusCode statusCode, string ReviewStepId) => $"UPDATE {TableName} SET StatusCode={statusCode.ToInt()}, ReviewStepId='{ReviewStepId}' WHERE Id={ContentId};";
+        public string UpdateContentReviewStatus(string TableName, int ContentId, StatusCode statuscode, string reviewstepid) => $"UPDATE {TableName} SET statuscode={statuscode.ToInt()}, reviewstepid='{reviewstepid}' WHERE id={ContentId};";
 
         public string DeleteTableField(string TableName, List<sysField> Fields)
         {
@@ -69,7 +69,7 @@ namespace Flex.Application.SqlServerSQLString
             return sql.ToString();
         }
 
-        public string DeleteContentTableData(string TableName, string Ids) => $"UPDATE {TableName} SET StatusCode=0 WHERE Id IN ({Ids})";
+        public string DeleteContentTableData(string TableName, string Ids) => $"UPDATE {TableName} SET statuscode=0 WHERE id IN ({Ids})";
 
         public StringBuilder CreateInsertCopyContentSqlString(Hashtable data, List<string> table, string TableName, int contentId)
         {
@@ -81,35 +81,35 @@ namespace Flex.Application.SqlServerSQLString
             {
                 if (item.ToLower() == "id")
                     continue;
-                key += $"{item},";
+                key += $"{item.ToLower()},";
                 keyvar += $"{item},";
             }
-            builder.Append($"{key.Substring(0, key.Length - 1)},StatusCode,OrderId,ReviewStepId,MsgGroupId,LastEditUser,LastEditUserName,LastEditDate) " +
-                $"SELECT {keyvar.Substring(0, keyvar.Length - 1)},6,OrderId,'',0,{data["LastEditUser"]},'{data["LastEditUserName"]}','{data["LastEditDate"]}' FROM {TableName} WHERE Id={contentId}");
+            builder.Append($"{key.Substring(0, key.Length - 1)},statuscode,orderid,reviewstepid,MsgGroupId,lastedituser,lasteditusername,lasteditdate) " +
+                $"SELECT {keyvar.Substring(0, keyvar.Length - 1)},6,orderid,'',0,{data["lastedituser"]},'{data["lasteditusername"]}','{data["lasteditdate"]}' FROM {TableName} WHERE id={contentId}");
             return builder;
         }
 
         public string GetNextOrderIdDapperSqlString(string tableName)
         {
-            return $"SELECT COALESCE(MAX(OrderId) + 1, 0) FROM {tableName}";
+            return $"SELECT COALESCE(MAX(orderid) + 1, 0) FROM {tableName}";
         }
 
-        public StringBuilder CreateDapperInsertSqlString(Hashtable table, string tableName, int nextOrderId, out DynamicParameters commandParameters)
+        public StringBuilder CreateDapperInsertSqlString(Hashtable table, string tableName, int nextorderid, out DynamicParameters commandParameters)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($"INSERT INTO {tableName} (");
             string key = "";
             string keyvar = "";
-            table.Remove("OrderId");
+            table.Remove("orderid");
             commandParameters = new DynamicParameters();
             foreach (DictionaryEntry myDE in table)
             {
-                key += $"{myDE.Key.ToString()},";
+                key += $"{myDE.Key.ToString().ToLower()},";
                 keyvar += $"@{myDE.Key.ToString()},";
                 commandParameters.Add(myDE.Key.ToString(), myDE.Value);
             }
-            builder.Append($"{key}OrderId) VALUES ({keyvar} {nextOrderId})");
-            builder.Append(" RETURNING OrderId;");
+            builder.Append($"{key}orderid) VALUES ({keyvar} {nextorderid})");
+            builder.Append(" RETURNING orderid;");
             return builder;
         }
         public string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist)
@@ -138,32 +138,32 @@ namespace Flex.Application.SqlServerSQLString
         {
             parameters = new DynamicParameters();
             parameters.Add("@parentId", contentPageListParam.ParentId);
-            swhere = " and ParentId=@parentId";
+            swhere = " and parentid=@parentId";
 
             if (contentPageListParam.k.IsNotNullOrEmpty())
             {
                 parameters.Add("@k", contentPageListParam.k);
                 if (contentPageListParam.k.ToInt() != 0)
-                    swhere += " and (Title like '%' || @k || '%' or Id=@k)";
+                    swhere += " and (title like '%' || @k || '%' or id=@k)";
                 else
-                    swhere += " and Title like '%' || @k || '%'";
+                    swhere += " and title like '%' || @k || '%'";
             }
 
             if (contentPageListParam.timefrom.IsNotNullOrEmpty())
             {
                 parameters.Add("@timefrom", contentPageListParam.timefrom);
-                swhere += " and AddTime >= @timefrom";
+                swhere += " and addtime >= @timefrom";
             }
 
             if (contentPageListParam.timeto.IsNotNullOrEmpty())
             {
                 parameters.Add("@timeto", contentPageListParam.timeto);
-                swhere += " and AddTime < (@timeto + INTERVAL '1 DAY')";
+                swhere += " and addtime < (@timeto + INTERVAL '1 DAY')";
             }
             if (contentPageListParam.ContentGroupId.IsNotNullOrEmpty())
             {
-                parameters.Add("@ContentGroupId", contentPageListParam.ContentGroupId);
-                swhere += " and ContentGroupId=@ContentGroupId";
+                parameters.Add("@contentgroupid", contentPageListParam.ContentGroupId);
+                swhere += " and contentgroupid=@contentgroupid";
             }
         }
 
@@ -171,16 +171,16 @@ namespace Flex.Application.SqlServerSQLString
         public StringBuilder CreateDapperUpdateSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters)
         {
             StringBuilder builder = new StringBuilder();
-            int Id = (int)table["Id"];
+            int id = (int)table["id"];
             var Ids = (string)table["Ids"];
 
-            table.Remove("Id");
+            table.Remove("id");
             table.Remove("Ids");
             builder.Append($"UPDATE {TableName} SET ");
             string keyvar = "";
             foreach (DictionaryEntry myDE in table)
             {
-                keyvar += $"{myDE.Key.ToString()}=@{myDE.Key.ToString()},";
+                keyvar += $"{myDE.Key.ToString().ToLower()}=@{myDE.Key.ToString()},";
             }
             builder.Append(keyvar.Substring(0, keyvar.Length - 1));
             commandParameters = new DynamicParameters();
@@ -190,14 +190,14 @@ namespace Flex.Application.SqlServerSQLString
                 commandParameters.Add(myDE.Key.ToString(), myDE.Value);
                 num++;
             }
-            table.Add("Id", Id);
+            table.Add("id", id);
             if (string.IsNullOrEmpty(Ids))
             {
-                builder.Append($" WHERE Id={Id}");
+                builder.Append($" WHERE id={id}");
             }
             else
             {
-                builder.Append($" WHERE Id IN ({Ids})");
+                builder.Append($" WHERE id IN ({Ids})");
             }
             return builder;
         }
@@ -239,22 +239,22 @@ namespace Flex.Application.SqlServerSQLString
         }
 
         public string AlertTableField(string TableName, string oldfiledName, string filedName) =>
-        $"ALTER TABLE \"{TableName}\" RENAME COLUMN \"{oldfiledName}\" TO \"{filedName}\";";
+        $"ALTER TABLE {TableName} RENAME COLUMN {oldfiledName.ToLower()} TO {filedName.ToLower()};";
 
         public string AlertTableFieldType(string TableName, string fieldName, string fieldType) =>
-            $"ALTER TABLE \"{TableName}\" ALTER COLUMN \"{fieldName}\" TYPE {ConvertDataType(fieldType)};";
+            $"ALTER TABLE {TableName} ALTER COLUMN {fieldName.ToLower()} TYPE {ConvertDataType(fieldType)};";
 
-        public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
+        public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextorderid, out SqlSugar.SugarParameter[] commandParameters)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($"INSERT INTO {tableName} (");
             string key = "";
             string keyvar = "";
-            table.Remove("OrderId");
+            table.Remove("orderid");
             int count = 0;
             foreach (DictionaryEntry myDE in table)
             {
-                key += $"{myDE.Key},";
+                key += $"{myDE.Key.ToString().ToLower()},";
                 keyvar += $"@{myDE.Key},";
                 count++;
             }
@@ -265,8 +265,8 @@ namespace Flex.Application.SqlServerSQLString
                 commandParameters[num] = new SqlSugar.SugarParameter($"@{myDE.Key}", myDE.Value);
                 num++;
             }
-            builder.Append($"{key}OrderId) VALUES ({keyvar}{nextOrderId})");
-            builder.Append(" RETURNING OrderId;");
+            builder.Append($"{key}orderid) VALUES ({keyvar}{nextorderid})");
+            builder.Append(" RETURNING orderid;");
             return builder;
         }
 
@@ -283,7 +283,7 @@ namespace Flex.Application.SqlServerSQLString
                 parameters.Add("@" + item, dataparams[item]);
                 if (swhere.IsNotNullOrEmpty())
                     swhere += " and";
-                swhere += " " + item + "=@" + item;
+                swhere += " " + item.ToLower() + "=@" + item;
             }
         }
     }
