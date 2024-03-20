@@ -12,7 +12,7 @@ function getTailParameterFromUrl(urllink) {
     return null; // 如果没有尾部参数，则返回 null 或其他适当的值
 }
 layui.config({
-    base: '/Scripts/layui/module/',
+    base: '/scripts/layui/module/',
 }).use(['element', 'tabrightmenu'], function () {
     let element = layui.element;
     let rightmenu_ = layui.tabrightmenu;

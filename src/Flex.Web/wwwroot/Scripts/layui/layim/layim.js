@@ -18,7 +18,7 @@ layui.use('layim', function (layim) {
 
         //初始化接口
         init: {
-            url: '/Scripts/layui/json/getList.json'
+            url: '/scripts/layui/json/getList.json'
             , data: {}
         }
         //简约模式（不显示主面板）
@@ -26,7 +26,7 @@ layui.use('layim', function (layim) {
 
         //查看群员接口
         , members: {
-            url: '/Scripts/layui/json/getMembers.json'
+            url: '/scripts/layui/json/getMembers.json'
             , data: {}
         }
         ,//可同时配置多个
@@ -50,9 +50,9 @@ layui.use('layim', function (layim) {
         //,isfriend: false //是否开启好友
         //,isgroup: false //是否开启群组
         //,min: true //是否始终最小化主面板（默认false）
-        , msgbox: '/Scripts/layui/demo/msgbox.html'
-        , find: '/Scripts/layui/demo/find.html'
-        , chatLog: '/Scripts/layui/demo/chatLog.html'
+        , msgbox: '/scripts/layui/demo/msgbox.html'
+        , find: '/scripts/layui/demo/find.html'
+        , chatLog: '/scripts/layui/demo/chatLog.html'
         , notice: true
         //,copyright: true //是否授权
     });

@@ -99,7 +99,7 @@ layui.define(['layer'], function (exports) {
         },
         templateFormList: [
             {
-                text: '默认模板', imageUrl: "/Scripts/layui/module/FormDesigner/images/1.PNG",
+                text: '默认模板', imageUrl: "/scripts/layui/module/formdesigner/images/1.PNG",
                 value: [
                     {
                         "id": "input_1",
@@ -265,10 +265,10 @@ layui.define(['layer'], function (exports) {
             '    <meta charset="utf-8">\n' +
             '    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">\n' +
             '    <title>表单设计器代码</title>\n' +
-            '    <link rel="stylesheet" href="/Scripts/layui/css/layui.css"/>\n' +
-            '    <link rel="stylesheet" href="/Scripts/layui/module/cron.css" />\n' +
-            '    <link rel="stylesheet" href="/Scripts/layui/module/labelGeneration.css" />\n' +
-            '    <link rel="stylesheet" href="/Scripts/layui/module/FormDesigner/formDesigner.css" />\n' +
+            '    <link rel="stylesheet" href="/scripts/layui/css/layui.css"/>\n' +
+            '    <link rel="stylesheet" href="/scripts/layui/module/cron.css" />\n' +
+            '    <link rel="stylesheet" href="/scripts/layui/module/labelGeneration.css" />\n' +
+            '    <link rel="stylesheet" href="/scripts/layui/module/FormDesigner/formDesigner.css" />\n' +
             '</head>\n' +
             '<body>\n' +
             '<div id="testdemo" style="margin: 10px 20px;">\n' +
@@ -282,15 +282,15 @@ layui.define(['layer'], function (exports) {
             '        </div>\n' +
             '    </form>\n' +
             '</div>\n' +
-            '<script type="text/javascript" src="/Scripts/layui/layui.js"></script>\n' +
-            '<script type="text/javascript" src="/Scripts/layui/module/Sortable/Sortable.js"></script>\n' +
-            '<script type="text/javascript" src="/Scripts/layui/module/numberInput.js"></script>\n' +
-            '<script type="text/javascript" src="/Scripts/layui/module/iconPicker.js"></script>\n' +
-            '<script type="text/javascript" src="/Scripts/layui/module/cron.js"></script>\n' +
+            '<script type="text/javascript" src="/scripts/layui/layui.js"></script>\n' +
+            '<script type="text/javascript" src="/scripts/layui/module/Sortable/Sortable.js"></script>\n' +
+            '<script type="text/javascript" src="/scripts/layui/module/numberInput.js"></script>\n' +
+            '<script type="text/javascript" src="/scripts/layui/module/iconPicker.js"></script>\n' +
+            '<script type="text/javascript" src="/scripts/layui/module/cron.js"></script>\n' +
             '<script type="text/javascript" src="/system/htmleditor/_ueditor/editor_config.js"></script>\n' +
             '<script type="text/javascript" src="/system/htmleditor/_ueditor/editor_all.js"></script>\n' +
-            '<script type="text/javascript" src="/Scripts/layui/module/labelGeneration.js"></script>\n' +
-            '<script type="text/javascript" src="/Scripts/layui/module/FormDesigner/config.js?v=100"></script>\n' +
+            '<script type="text/javascript" src="/scripts/layui/module/labelGeneration.js"></script>\n' +
+            '<script type="text/javascript" src="/scripts/layui/module/FormDesigner/config.js?v=100"></script>\n' +
             '<script>\n' +
             '    layui.use(["layer", "laytpl", "element", "form", "slider", "laydate", "rate", "colorpicker", "layedit", "carousel", "upload", "formField", "numberInput", "iconHhysFa", "cron", "labelGeneration"], function () {\n' +
             '        var $ = layui.jquery\n' +

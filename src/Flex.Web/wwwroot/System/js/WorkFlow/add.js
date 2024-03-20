@@ -19,7 +19,7 @@ function getChecked_list(data, type) {
 }
 
 layui.config({
-    base: '/Scripts/layui/module/'
+    base: '/scripts/layui/module/'
 }).use(['form', 'tree'], function () {
     var form = layui.form;
     //监听提交

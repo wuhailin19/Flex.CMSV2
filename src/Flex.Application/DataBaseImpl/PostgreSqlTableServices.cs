@@ -109,7 +109,7 @@ namespace Flex.Application.SqlServerSQLString
                 commandParameters.Add(myDE.Key.ToString(), myDE.Value);
             }
             builder.Append($"{key}OrderId) VALUES ({keyvar} {nextOrderId})");
-            builder.Append(" RETURNING OrderId;");
+            builder.Append(" RETURNING Id;");
             return builder;
         }
         public string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist)
@@ -266,7 +266,7 @@ namespace Flex.Application.SqlServerSQLString
                 num++;
             }
             builder.Append($"{key}OrderId) VALUES ({keyvar}{nextOrderId})");
-            builder.Append(" RETURNING OrderId;");
+            builder.Append(" RETURNING Id;");
             return builder;
         }
 

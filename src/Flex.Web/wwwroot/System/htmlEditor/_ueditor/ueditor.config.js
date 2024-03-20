@@ -20,7 +20,7 @@
      * window.UEDITOR_HOME_URL = "/xxxx/xxxx/";
      */
     //var URL = window.UEDITOR_HOME_URL || getUEBasePath();
-    var URL = "/System/htmlEditor/_ueditor/";
+    var URL = "/system/htmleditor/_ueditor/";
 
     /**
      * 配置项主体。注意，此处所有涉及到路径的配置别遗漏URL变量。
@@ -38,8 +38,8 @@
         , catcherFieldName: "upfile"
         , imageAllowFiles: [".png",".jpg",".gif",".svg"]
         , imageFieldName: "upfile"
-        , imageUrlPrefix: "http://localhost:5003"
-        , catcherUrlPrefix: "http://localhost:5003"
+        , imageUrlPrefix: !hostlink ? "http://192.168.8.128:5003" : hostlink
+        , catcherUrlPrefix: !hostlink ? "http://192.168.8.128:5003" : hostlink
         //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的重新定义
         , toolbars: [
             ['fullscreen', 'source', '|', 'undo', 'redo', '|',

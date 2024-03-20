@@ -18,7 +18,7 @@
  + 4.表单数据的获取与回显,禁用全表单
  +------------------------------------------------------------------------------------+
  */
-layui.config({ base: '/Scripts/layui/module/formdesigner/' }).define(["layer", 'flow', "laytpl", "element", "form", "slider", "laydate", "rate", "colorpicker", "carousel", "upload", "formField", "staticField", "numberInput", "iconHhysFa", "cron", "labelGeneration"]
+layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", 'flow', "laytpl", "element", "form", "slider", "laydate", "rate", "colorpicker", "carousel", "upload", "formField", "staticField", "numberInput", "iconHhysFa", "cron", "labelGeneration"]
     , function (exports) {
         var $ = layui.jquery
             , layer = layui.layer

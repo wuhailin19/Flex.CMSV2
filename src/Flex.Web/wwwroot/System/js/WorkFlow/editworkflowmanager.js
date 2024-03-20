@@ -22,7 +22,7 @@ var datamission = parent.stepArray[stepId];
 //})
 
 layui.config({
-    base: '/Scripts/layui/module/'
+    base: '/scripts/layui/module/'
 }).use(['layer', 'form', 'element', 'treeTable'], function () {
     var form = layui.form;
     var $ = layui.jquery;

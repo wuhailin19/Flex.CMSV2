@@ -1,6 +1,7 @@
 ﻿var route_href = window.location.href;
-//var api = route_href.split('/')[0] + "//" + route_href.split('/')[2]+"/";
-var api = "http://127.0.01:5003/api/";
+var hostlink = route_href.split('/')[0] + "//" + route_href.split('/')[2];
+//var hostlink = "http://127.0.0.1:5003";
+var api = hostlink+"/api/";
 var SystempageRoute = "/System/";
 
 function getCheckboxValue(name) {
@@ -91,7 +92,7 @@ var httpTokenHeaders = {
 }
 
 var global_notice;
-layui.extend({ 'notice': '/Scripts/layui/module/notice/notice' });
+layui.extend({ 'notice': '/scripts/layui/module/notice/notice' });
 
 layui.use('notice', function () {
     global_notice = layui.notice;

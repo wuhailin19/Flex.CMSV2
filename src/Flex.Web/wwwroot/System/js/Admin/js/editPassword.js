@@ -13,7 +13,7 @@ $(".show").on("click", ".iconyanjing_kai", function () {
 // 操作列tips
 var ischeck = false;
 layui.config({
-    base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
+    base: '/scripts/layui/module/cropper/' //layui自定义layui组件目录
 }).use(['form', 'croppers'], function () {
     var form = layui.form, croppers = layui.croppers, layer = layui.layer;
     var parent_json;

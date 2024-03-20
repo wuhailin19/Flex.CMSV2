@@ -247,9 +247,32 @@ namespace Flex.Application.SqlServerSQLString
         public string AlertTableField(string TableName, string oldfiledName, string filedName)
                 => $"ALTER TABLE `{TableName}` CHANGE COLUMN `{oldfiledName}` `{filedName}`";
 
+       
         public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
         {
-            throw new NotImplementedException();
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"INSERT INTO {tableName} (");
+            string key = "";
+            string keyvar = "";
+            table.Remove("OrderId");
+            int count = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                key += $"{myDE.Key},";
+                keyvar += $"@{myDE.Key},";
+                count++;
+            }
+            commandParameters = new SqlSugar.SugarParameter[table.Count];
+            int num = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                commandParameters[num] = new SqlSugar.SugarParameter($"@{myDE.Key}", myDE.Value);
+                num++;
+            }
+            // 将 RETURNING Id 替换为 SELECT LAST_INSERT_ID()
+            builder.Append($"{key}OrderId) VALUES ({keyvar}{nextOrderId})");
+            builder.Append("; SELECT LAST_INSERT_ID();"); // 使用 LAST_INSERT_ID() 获取自增 ID
+            return builder;
         }
 
         public void CreateSqlSugarColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out SqlSugar.SugarParameter[] parameters)

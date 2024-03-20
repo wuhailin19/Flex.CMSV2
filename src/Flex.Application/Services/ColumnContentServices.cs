@@ -42,11 +42,12 @@ namespace Flex.Application.Services
             table["LastEditUser"] = _claims.UserId;
             table["LastEditUserName"] = _claims.UserName;
             //pgSQL情况
-            switch (DataBaseConfig.dataBase) {
+            switch (DataBaseConfig.dataBase)
+            {
                 case DataBaseType.PgSql:
                     table["LastEditDate"] = Clock.Now.ToUniversalTime();
                     break;
-                default: 
+                default:
                     table["LastEditDate"] = Clock.Now;
                     break;
             }
@@ -77,7 +78,7 @@ namespace Flex.Application.Services
             if (contentmodel == null)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataUpdateError.GetEnumDescription());
             table["ParentId"] = table["ParentId"].ToInt();
-           
+
             var filedmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             var keysToRemove = new List<object>();
             var timelist = new List<object>();
@@ -118,7 +119,7 @@ namespace Flex.Application.Services
 
             string orderSql = _sqlTableServices.GetNextOrderIdDapperSqlString(contentmodel.TableName);
 
-            var orderId = (await _dapperDBContext.GetDynamicAsync(orderSql)).FirstOrDefault()?.Value ?? 0;
+            var orderId = _sqlsugar.Db.Ado.GetDataTable(orderSql)?.Rows[0][0].ToInt() ?? 0;
 
             //DynamicParameters parameters = new DynamicParameters();
             //StringBuilder builder = _sqlTableServices.CreateDapperInsertSqlString(table, contentmodel.TableName, orderId, out parameters);

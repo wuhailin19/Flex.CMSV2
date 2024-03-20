@@ -1,4 +1,4 @@
-﻿layui.extend({ 'fileManager': '/Scripts/layui/module/filemanage/fileManager_src' });
+﻿layui.extend({ 'fileManager': '/scripts/layui/module/filemanage/fileManager_src' });
 layui.use(['fileManager', 'layer', 'upload'], function () {
     var fileManager = layui.fileManager
         , $ = layui.$
@@ -24,7 +24,7 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
         , data: {}
         , where: { path: "/" }
         , url: api + 'FileManage/GetFiles'
-        , thumb: { 'nopic': '/Scripts/layui/module/filemanage/ico/null-100x100.jpg', 'width': 100, 'height': 100 }
+        , thumb: { 'nopic': '/scripts/layui/module/filemanage/ico/null-100x100.jpg', 'width': 100, 'height': 100 }
         , parseData: function (res) {
             /*
             data:[{

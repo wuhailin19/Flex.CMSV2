@@ -239,8 +239,32 @@ namespace Flex.Application.SqlServerSQLString
 
         public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
         {
-            throw new NotImplementedException();
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"INSERT INTO {tableName} (");
+            string key = "";
+            string keyvar = "";
+            table.Remove("OrderId");
+            int count = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                key += $"{myDE.Key},";
+                keyvar += $"@{myDE.Key},";
+                count++;
+            }
+            commandParameters = new SqlSugar.SugarParameter[table.Count + 1]; // +1 for nextOrderId parameter
+            int num = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                commandParameters[num] = new SqlSugar.SugarParameter($"@{myDE.Key}", myDE.Value);
+                num++;
+            }
+            // Add nextOrderId parameter
+            commandParameters[num] = new SqlSugar.SugarParameter("@nextOrderId", nextOrderId);
+
+            builder.Append($"{key}OrderId) VALUES ({keyvar}@nextOrderId); SELECT SCOPE_IDENTITY();");
+            return builder;
         }
+
 
         public void CreateSqlSugarColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out SqlSugar.SugarParameter[] parameters)
         {

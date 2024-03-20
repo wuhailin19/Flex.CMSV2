@@ -475,7 +475,7 @@ layui.define(['laypage', 'form'], function (exports) {
             getData: function (url) {
                 ////远程获取文件
                 //this.ajax({
-                //    url: '/Scripts/iconfont/iconfont.ttf',
+                //    url: '/scripts/iconfont/iconfont.ttf',
                 //    type: 'buffer',
                 //    success: (params) => { console.log(params); this.parseIcon(params); }
                 //})
