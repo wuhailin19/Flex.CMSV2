@@ -1,33 +1,38 @@
 ﻿using Flex.Core;
 using Flex.Core.Extensions;
+using Flex.Core.Helper.LogHelper;
 using Flex.Domain.Base;
 using Flex.Domain.Config;
 using Flex.Domain.Entities.System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Logging;
+using NLog;
+using NLog.Config;
+using NLog.Extensions.Logging;
 using System.Xml;
 
 namespace Flex.EFSql
 {
-    public class SqlServerContext : DbContext
+    public class EfCoreDBContext : DbContext
     {
-        public SqlServerContext(DbContextOptions<SqlServerContext> options) : base(options)
+        public EfCoreDBContext(DbContextOptions<EfCoreDBContext> options) : base(options)
         {
-
         }
         // 无参构造函数，用于设计时创建对象
-        public SqlServerContext() : base()
+        public EfCoreDBContext() : base()
         {
         }
         //此处用微软原生的控制台日志记录，如果使用NLog很可能数据库还没创建，造成记录日志到数据库性能下降（一直在尝试连接数据库，但是数据库还没创建）
         //此处使用静态实例，这样不会为每个上下文实例创建新的 ILoggerFactory 实例，这一点非常重要。 否则会导致内存泄漏和性能下降。
         //此处使用了Debug和console两种日志输出，会输出到控制台和调试窗口
-        public static readonly ILoggerFactory MyLoggerFactory = LoggerFactory.Create(builder => builder.AddDebug().AddConsole());
+
+        // 加载 NLog 配置文件
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseLoggerFactory(MyLoggerFactory);
+            optionsBuilder.UseLoggerFactory(StaticLoggerFactory.MyLoggerFactory);
             //if (!optionsBuilder.IsConfigured) // 只在未配置的情况下配置
             //{
             //    

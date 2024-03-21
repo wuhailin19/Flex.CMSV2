@@ -1,7 +1,10 @@
 ﻿using Flex.Core.Config;
 using Flex.Core.Extensions;
 using Flex.Core.Framework.Enum;
+using Flex.Core.Helper.LogHelper;
 using Flex.Dapper;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 using SqlSugar;
 
 namespace Flex.SqlSugarFactory.Seed
@@ -70,6 +73,7 @@ namespace Flex.SqlSugarFactory.Seed
             return result;
         }
 
+
         /// <summary>
         /// 功能描述:构造函数
         /// 作　　者:Blog.Core
@@ -78,6 +82,7 @@ namespace Flex.SqlSugarFactory.Seed
         {
             if (string.IsNullOrEmpty(_connectionString))
                 throw new ArgumentNullException("数据库连接字符串为空");
+            var _loger = StaticLoggerFactory.MyLoggerFactory.CreateLogger("SqlSugarContext");
             _db = new SqlSugarClient(new ConnectionConfig()
             {
                 ConnectionString = _connectionString,
@@ -95,20 +100,18 @@ namespace Flex.SqlSugarFactory.Seed
                 }
             }, db =>
             {
-
                 //如果是多库看标题6
-
                 //每次Sql执行前事件
                 db.Aop.OnLogExecuting = (sql, pars) =>
                 {
                     //我可以在这里面写逻辑
-
                     //获取原生SQL推荐 5.1.4.63  性能OK
-                    Console.WriteLine(UtilMethods.GetNativeSql(sql, pars));
-                    foreach (var item in pars)
-                    {
-                        Console.WriteLine(item.ToJsonString());
-                    }
+                    //Console.WriteLine(UtilMethods.GetNativeSql(sql, pars));
+                    _loger.Log(LogLevel.Information,UtilMethods.GetNativeSql(sql, pars));
+                    //foreach (var item in pars)
+                    //{
+                    //    Console.WriteLine(item.ToJsonString());
+                    //}
                     //获取无参数化SQL 影响性能只适合调试
                     //Console.Write(UtilMethods.GetSqlString(DbType.SqlServer, sql, pars));
                     //技巧：AOP中获取IOC对象

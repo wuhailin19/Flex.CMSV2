@@ -100,7 +100,7 @@ namespace Flex.Application.SqlServerSQLString
 
         public string DeleteContentTableData(string TableName, string Ids) => $"UPDATE {TableName} SET StatusCode=0 WHERE Id IN ({Ids})";
 
-        public StringBuilder CreateInsertCopyContentSqlString(Hashtable data, List<string> table, string TableName, int contentId)
+        public StringBuilder CreateInsertCopyContentSqlString(List<string> table, string TableName)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($"INSERT INTO {TableName} (");
@@ -114,7 +114,7 @@ namespace Flex.Application.SqlServerSQLString
                 keyvar += $"{item},";
             }
             builder.Append($"{key.Substring(0, key.Length - 1)},StatusCode,OrderId,ReviewStepId,MsgGroupId,LastEditUser,LastEditUserName,LastEditDate) " +
-                $"SELECT {keyvar.Substring(0, keyvar.Length - 1)},6,OrderId,'',0,{data["LastEditUser"]},'{data["LastEditUserName"]}','{data["LastEditDate"]}' FROM {TableName} WHERE Id={contentId}");
+                $"SELECT {keyvar.Substring(0, keyvar.Length - 1)},6,OrderId,'',0,?,?,? FROM {TableName} WHERE Id=?");
             return builder;
         }
 
@@ -323,6 +323,39 @@ namespace Flex.Application.SqlServerSQLString
             }
             return returntype;
         }
-    }
 
+        public StringBuilder CreateSqlsugarUpdateSqlString(Hashtable table, string TableName, out SqlSugar.SugarParameter[] commandParameters)
+        {
+            StringBuilder builder = new StringBuilder();
+            int Id = Convert.ToInt32(table["Id"]);
+            var Ids = Convert.ToString(table["Ids"]);
+
+            table.Remove("Id");
+            table.Remove("Ids");
+            builder.Append($"UPDATE {TableName} SET ");
+            string keyvar = "";
+            foreach (DictionaryEntry myDE in table)
+            {
+                keyvar += $"{myDE.Key}=?,";
+            }
+            builder.Append(keyvar.Substring(0, keyvar.Length - 1));
+            commandParameters = new SqlSugar.SugarParameter[table.Count];
+            int num = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                commandParameters[num]=new SqlSugar.SugarParameter("@" + myDE.Key.ToString(), myDE.Value);
+                num++;
+            }
+            table.Add("Id", Id);
+            if (string.IsNullOrEmpty(Ids))
+            {
+                builder.Append($" WHERE Id={Id}");
+            }
+            else
+            {
+                builder.Append($" WHERE Id IN ({Ids})");
+            }
+            return builder;
+        }
+    }
 }

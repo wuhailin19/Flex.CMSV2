@@ -45,7 +45,10 @@ namespace Flex.Application.Services
             switch (DataBaseConfig.dataBase)
             {
                 case DataBaseType.PgSql:
-                    table["LastEditDate"] = Clock.Now.ToUniversalTime();
+                    TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("UTC");
+                    DateTime utcTime = DateTime.SpecifyKind(Clock.Now, DateTimeKind.Utc);
+                    DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZone);
+                    table["LastEditDate"] = localTime;
                     break;
                 default:
                     table["LastEditDate"] = Clock.Now;
@@ -59,12 +62,24 @@ namespace Flex.Application.Services
             if (table.GetValue("StatusCode").ToInt() != 5)
             {
                 table["ReviewStepId"] = string.Empty;
-                table["ReviewAddUser"] = string.Empty;
-                table["MsgGroupId"] = string.Empty;
+                table["ReviewAddUser"] = 0;
+                table["MsgGroupId"] = 0;
             }
             table["LastEditUser"] = _claims.UserId;
             table["LastEditUserName"] = _claims.UserName;
-            table["LastEditDate"] = Clock.Now;
+            //pgSQL情况
+            switch (DataBaseConfig.dataBase)
+            {
+                case DataBaseType.PgSql:
+                    TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("UTC");
+                    DateTime utcTime = DateTime.SpecifyKind(Clock.Now, DateTimeKind.Utc);
+                    DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZone);
+                    table["LastEditDate"] = localTime;
+                    break;
+                default:
+                    table["LastEditDate"] = Clock.Now;
+                    break;
+            }
         }
         public async Task<ProblemDetails<int>> Add(Hashtable table, bool IsReview = false)
         {
