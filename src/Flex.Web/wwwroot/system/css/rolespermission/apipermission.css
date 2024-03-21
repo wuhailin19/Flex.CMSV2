@@ -1,0 +1,9 @@
+﻿.layui-form-item .layui-form-label { text-align: center; }
+.edui-editor.edui-default { width: 100% !important; }
+.layui-input-block > .edui-default { width: 100% !important; }
+.layui-select-title .layui-anim.layui-anim-upbit { display: none; }
+.iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
+.layui-btn { height: 28px; line-height: 28px; }
+.layui-btn.btn_search { height: 38px; line-height: 38px; }
+.layui-tab-title { top: 0px; z-index: 10000; }
+.demoTable { top: 40px; position: fixed; z-index: 10000; width: 100%; background: #fff; height: 30px; padding: 10px; border-top: 1px solid #f1f1f1; }
