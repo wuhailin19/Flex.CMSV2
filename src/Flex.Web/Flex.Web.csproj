@@ -7,15 +7,36 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\scripts\core\laypro\layuiadmin\**" />
+    <Compile Remove="wwwroot\scripts\core\vs0\**" />
+    <Compile Remove="wwwroot\system\htmleditor\ueditor\**" />
+    <Compile Remove="wwwroot\system\htmleditor\_ueditor\dialogs111\**" />
+    <Content Remove="wwwroot\scripts\core\laypro\layuiadmin\**" />
+    <Content Remove="wwwroot\scripts\core\vs0\**" />
+    <Content Remove="wwwroot\system\htmleditor\ueditor\**" />
+    <Content Remove="wwwroot\system\htmleditor\_ueditor\dialogs111\**" />
+    <EmbeddedResource Remove="wwwroot\scripts\core\laypro\layuiadmin\**" />
+    <EmbeddedResource Remove="wwwroot\scripts\core\vs0\**" />
+    <EmbeddedResource Remove="wwwroot\system\htmleditor\ueditor\**" />
+    <EmbeddedResource Remove="wwwroot\system\htmleditor\_ueditor\dialogs111\**" />
+    <None Remove="wwwroot\scripts\core\laypro\layuiadmin\**" />
+    <None Remove="wwwroot\scripts\core\vs0\**" />
+    <None Remove="wwwroot\system\htmleditor\ueditor\**" />
+    <None Remove="wwwroot\system\htmleditor\_ueditor\dialogs111\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="appsettings.Development_初始.json" />
     <Content Remove="appsettings_初始.json" />
+    <Content Remove="wwwroot\system\htmleditor\_ueditor\themes\default\fonts\iconfont.js" />
+    <Content Remove="wwwroot\system\htmleditor\_ueditor\themes\default\fonts\iconfont.svg" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.25" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.2" />
+    <PackageReference Include="system.Text.Json" Version="8.0.2" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.2.0" />
     <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.1" />
   </ItemGroup>
@@ -33,29 +54,17 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Areas\System\Data\" />
-    <Folder Include="Areas\System\Models\" />
+    <Folder Include="Areas\system\Data\" />
+    <Folder Include="Areas\system\Models\" />
     <Folder Include="Controllers\" />
     <Folder Include="Views\" />
-    <Folder Include="wwwroot\111\222\" />
-    <Folder Include="wwwroot\222333\" />
-    <Folder Include="wwwroot\222\" />
+    <Folder Include="wwwroot\upload\" />
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="wwwroot\111\mpage.js" />
-    <None Include="wwwroot\111\page.js" />
-    <None Include="wwwroot\111\style.less" />
-    <None Include="wwwroot\content\bootstrap-theme.css.map" />
-    <None Include="wwwroot\content\bootstrap-theme.min.css.map" />
-    <None Include="wwwroot\content\bootstrap.css.map" />
-    <None Include="wwwroot\content\bootstrap.min.css.map" />
-    <None Include="wwwroot\content\images\page.js" />
-    <None Include="wwwroot\scripts\bootstrap.js" />
-    <None Include="wwwroot\scripts\bootstrap.min.js" />
     <None Include="wwwroot\scripts\core\commonutil.js" />
-    <None Include="wwwroot\scripts\core\myflow-min\lib\jquery-ui.js" />
-    <None Include="wwwroot\scripts\core\myflow-min\lib\jquery-ui.min.js" />
+    <None Include="wwwroot\scripts\core\myflow-min\lib\jquery-ui-1.8.4.custom\js\jquery-1.4.2.min.js" />
+    <None Include="wwwroot\scripts\core\myflow-min\lib\jquery-ui-1.8.4.custom\js\jquery-ui-1.8.4.custom.min.js" />
     <None Include="wwwroot\scripts\core\myflow-min\lib\raphael-min.js" />
     <None Include="wwwroot\scripts\core\myflow-min\myflow.editors.js" />
     <None Include="wwwroot\scripts\core\myflow-min\myflow.jpdl4.js" />
@@ -171,211 +180,16 @@
     <None Include="wwwroot\scripts\core\vs\language\typescript\tsMode.js" />
     <None Include="wwwroot\scripts\core\vs\language\typescript\tsWorker.js" />
     <None Include="wwwroot\scripts\core\vs\loader.js" />
-    <None Include="wwwroot\scripts\jquery-1.6.4-vsdoc.js" />
-    <None Include="wwwroot\scripts\jquery-1.6.4.js" />
-    <None Include="wwwroot\scripts\jquery-1.6.4.min.js" />
-    <None Include="wwwroot\scripts\jquery-1.8.2.min.js" />
-    <None Include="wwwroot\scripts\jquery-3.4.1.intellisense.js" />
-    <None Include="wwwroot\scripts\jquery-3.4.1.js" />
-    <None Include="wwwroot\scripts\jquery-3.4.1.min.js" />
-    <None Include="wwwroot\scripts\jquery-3.4.1.min.map" />
-    <None Include="wwwroot\scripts\jquery-3.4.1.slim.js" />
-    <None Include="wwwroot\scripts\jquery-3.4.1.slim.min.js" />
-    <None Include="wwwroot\scripts\jquery-3.4.1.slim.min.map" />
-    <None Include="wwwroot\scripts\jquery.validate-vsdoc.js" />
-    <None Include="wwwroot\scripts\jquery.validate.js" />
-    <None Include="wwwroot\scripts\jquery.validate.min.js" />
-    <None Include="wwwroot\scripts\jquery.validate.unobtrusive.js" />
-    <None Include="wwwroot\scripts\jquery.validate.unobtrusive.min.js" />
-    <None Include="wwwroot\scripts\layer\layer.js" />
-    <None Include="wwwroot\scripts\layer\mobile\layer.js" />
-    <None Include="wwwroot\scripts\layui\admin.js" />
-    <None Include="wwwroot\scripts\layui\css\iconfont\iconfont.js" />
-    <None Include="wwwroot\scripts\layui\css\iconfont\iconfont.svg" />
-    <None Include="wwwroot\scripts\layui\css\iconfont\iconfont.woff2" />
-    <None Include="wwwroot\scripts\layui\css\modules\layim\layims.js" />
-    <None Include="wwwroot\scripts\layui\font2.5.7\iconfont.svg" />
-    <None Include="wwwroot\scripts\layui\font2.5.7\iconfont.woff2" />
-    <None Include="wwwroot\scripts\layui\font\iconfont.svg" />
-    <None Include="wwwroot\scripts\layui\font\iconfont.woff2" />
-    <None Include="wwwroot\scripts\layui\layim\layim.js" />
-    <None Include="wwwroot\scripts\layui\layui-table.js" />
-    <None Include="wwwroot\scripts\layui\layui.js" />
-    <None Include="wwwroot\scripts\layui\layui2.5.7.js" />
-    <None Include="wwwroot\scripts\layui\layuis.all.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\carousel.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\code.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\colorpicker.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\element.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\flow.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\form.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\iconHhysFa.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\jquery.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\laydate.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\layedit.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\layer.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\layim.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\laypage.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\laytpl.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\mobile.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\rate.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\slider.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\table.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\transfer.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\tree.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\treeTable.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\upload.js" />
-    <None Include="wwwroot\scripts\layui\lay\modules\util.js" />
-    <None Include="wwwroot\scripts\layui\menujs.js" />
-    <None Include="wwwroot\scripts\layui\module\cropper\cropper.js" />
-    <None Include="wwwroot\scripts\layui\module\cropper\croppers.js" />
     <None Include="wwwroot\scripts\layui\module\dragMove\dragMove.js" />
-    <None Include="wwwroot\scripts\layui\module\filemanage\fileManager.js" />
-    <None Include="wwwroot\scripts\layui\module\filemanage\fileManager_src.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\config.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\cron.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\formDesigner.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\formField.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\htmlformat.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\iconHhysFa.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\iconPicker.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\jsformat.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\labelGeneration.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\numberInput.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\preview.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\sortable.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\sortable.min.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\staticField.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\xmselect.js" />
-    <None Include="wwwroot\scripts\layui\module\iconHhysFa.js" />
     <None Include="wwwroot\scripts\layui\module\notice\.DS_Store" />
     <None Include="wwwroot\scripts\layui\module\notice\notice.js" />
-    <None Include="wwwroot\scripts\layui\module\tableEdit.js" />
-    <None Include="wwwroot\scripts\layui\module\tabrightmenu.js" />
+    <None Include="wwwroot\scripts\layui\module\formdesigner\sortable.js" />
+    <None Include="wwwroot\scripts\layui\module\formdesigner\sortable.min.js" />
     <None Include="wwwroot\scripts\layui\module\translate\translate.js" />
-    <None Include="wwwroot\scripts\layui\module\treeTable.js" />
-    <None Include="wwwroot\scripts\layui\module\viewer\viewer.js" />
-    <None Include="wwwroot\scripts\modernizr-2.8.3.js" />
-    <None Include="wwwroot\scripts\Page\index\index.js" />
-    <None Include="wwwroot\scripts\Page\index\openPageOptions.js" />
-    <None Include="wwwroot\scripts\route.js" />
-    <None Include="wwwroot\scripts\websocket.js" />
-    <None Include="wwwroot\system\css\columncontent\font\iconfont.js" />
-    <None Include="wwwroot\system\css\columncontent\font\iconfont.woff2" />
-    <None Include="wwwroot\system\css\login\css\iconfont\iconfont.js" />
-    <None Include="wwwroot\system\css\login\css\iconfont\iconfont.svg" />
-    <None Include="wwwroot\system\css\login\css\iconfont\iconfont.woff2" />
-    <None Include="wwwroot\system\htmleditor\tablesortable\colResizable-1.6.js" />
-    <None Include="wwwroot\system\htmleditor\tablesortable\ueditor.all.js" />
-    <None Include="wwwroot\system\htmleditor\tablesortable\ueditor.config.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\ckeditor.min.office.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\attachment\callbacks.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\attachment\fileTypeMaps.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\background\background.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\emotion\emotion.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\help\help.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\image\image.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\image\imageUploader.swf" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\internal.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\music\music.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\scrawl\scrawl.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\searchreplace\searchreplace.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\spechars\spechars.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\table\table.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\tangram.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\template\config.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\template\template.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\video\video.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\wordimage\fClipboard_ueditor.swf" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\wordimage\imageUploader.swf" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs111\wordimage\wordimage.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\attachment\attachment.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\background\background.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\charts\chart.config.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\charts\charts.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\emotion\emotion.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\help\help.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\image\image.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\internal.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\music\music.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\scrawl\scrawl.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\searchreplace\searchreplace.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\spechars\spechars.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\table\edittable.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\template\config.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\template\template.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\video\video.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\wordimage\fClipboard_ueditor.swf" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\wordimage\imageUploader.swf" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\wordimage\tangram.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\dialogs\wordimage\wordimage.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\editor_all.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\editor_config.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\lang\en\en.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\lang\zh-cn\zh-cn.js" />
     <None Include="wwwroot\system\htmleditor\_ueditor\themes\default\fonts\iconfont.js" />
     <None Include="wwwroot\system\htmleditor\_ueditor\themes\default\fonts\iconfont.svg" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\third-party\codemirror\codemirror.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\third-party\zeroclipboard\ZeroClipboard.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\ueditor.all.js" />
-    <None Include="wwwroot\system\htmleditor\_ueditor\ueditor.config.js" />
-    <None Include="wwwroot\system\js\admin\js\add.js" />
-    <None Include="wwwroot\system\js\admin\js\edit.js" />
-    <None Include="wwwroot\system\js\admin\js\editPassword.js" />
-    <None Include="wwwroot\system\js\admin\js\index.js" />
-    <None Include="wwwroot\system\js\admin\js\openpageoptions.js" />
-    <None Include="wwwroot\system\js\admin\js\simpleedit.js" />
-    <None Include="wwwroot\system\js\columncontent\add.js" />
-    <None Include="wwwroot\system\js\columncontent\edit.js" />
-    <None Include="wwwroot\system\js\columncontent\hishistorical.js" />
-    <None Include="wwwroot\system\js\columncontent\index.js" />
-    <None Include="wwwroot\system\js\columncontent\manage.js" />
-    <None Include="wwwroot\system\js\columncontent\openpageoptions.js" />
-    <None Include="wwwroot\system\js\columncontent\restorecontent.js" />
-    <None Include="wwwroot\system\js\column\js\add.js" />
-    <None Include="wwwroot\system\js\column\js\edit.js" />
-    <None Include="wwwroot\system\js\column\js\index.js" />
-    <None Include="wwwroot\system\js\column\js\opentype.js" />
-    <None Include="wwwroot\system\js\column\openpageoptions.js" />
-    <None Include="wwwroot\system\js\contentmodel\add.js" />
-    <None Include="wwwroot\system\js\contentmodel\edit.js" />
-    <None Include="wwwroot\system\js\contentmodel\index.js" />
-    <None Include="wwwroot\system\js\contentmodel\openpageoptions.js" />
-    <None Include="wwwroot\system\js\filed\add.js" />
-    <None Include="wwwroot\system\js\filed\edit.js" />
-    <None Include="wwwroot\system\js\filed\index.js" />
-    <None Include="wwwroot\system\js\filed\openpageoptions.js" />
-    <None Include="wwwroot\system\js\filemanage\index.js" />
-    <None Include="wwwroot\system\js\filemanage\preview.js" />
-    <None Include="wwwroot\system\js\formdesigner\index.js" />
-    <None Include="wwwroot\system\js\login\js\encrypto\encrypto.js" />
-    <None Include="wwwroot\system\js\login\js\login.js" />
-    <None Include="wwwroot\system\js\main\echarts\echarts.min.js" />
-    <None Include="wwwroot\system\js\main\echarts\walden.js" />
-    <None Include="wwwroot\system\js\main\index.js" />
-    <None Include="wwwroot\system\js\main\statistics.js" />
-    <None Include="wwwroot\system\js\main\welcome.js" />
-    <None Include="wwwroot\system\js\menu\js\add.js" />
-    <None Include="wwwroot\system\js\menu\js\edit.js" />
-    <None Include="wwwroot\system\js\menu\js\index.js" />
-    <None Include="wwwroot\system\js\menu\js\opentype.js" />
-    <None Include="wwwroot\system\js\message\index.js" />
-    <None Include="wwwroot\system\js\message\sendmsg.js" />
-    <None Include="wwwroot\system\js\rolespermission\apipermission.js" />
-    <None Include="wwwroot\system\js\rolespermission\datapermission.js" />
-    <None Include="wwwroot\system\js\rolespermission\edit.js" />
-    <None Include="wwwroot\system\js\rolespermission\js\add.js" />
-    <None Include="wwwroot\system\js\rolespermission\js\index.js" />
-    <None Include="wwwroot\system\js\rolespermission\js\openpageoptions.js" />
-    <None Include="wwwroot\system\js\rolespermission\menupermission.js" />
-    <None Include="wwwroot\system\js\uploader\uploader.js" />
     <None Include="wwwroot\system\js\uploader\uploadsingle.js" />
-    <None Include="wwwroot\system\js\uploader\webuploader.js" />
     <None Include="wwwroot\system\js\uploader\webuploader.min.js" />
-    <None Include="wwwroot\system\js\workflow\add.js" />
-    <None Include="wwwroot\system\js\workflow\designworkflow.js" />
-    <None Include="wwwroot\system\js\workflow\edit.js" />
-    <None Include="wwwroot\system\js\workflow\editworkflowmanager.js" />
     <None Include="wwwroot\system\js\workflow\index.js" />
     <None Include="wwwroot\system\js\workflow\openpageoptions.js" />
   </ItemGroup>
@@ -383,6 +197,10 @@
   <ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\system\htmleditor\_ueditor\lang\zh-cn\zh-cn.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
 </Project>

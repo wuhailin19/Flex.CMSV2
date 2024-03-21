@@ -3,12 +3,12 @@
  */
 var testimg;
 layui.config({
-    base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
+    base: '/scripts/layui/module/cropper/' //layui自定义layui组件目录
 }).define(['jquery', 'layer', 'cropper'], function (exports) {
     var $ = layui.jquery
         , layer = layui.layer;
     var fileName='head.jpg';
-    var html = "<link rel=\"stylesheet\" href=\"/Scripts/layui/module/cropper/cropper.css\">\n" +
+    var html = "<link rel=\"stylesheet\" href=\"/scripts/layui/module/cropper/cropper.css\">\n" +
         "<div class=\"layui-fluid showImgEdit\" style=\"display: none\">\n" +
         "    <div class=\"layui-form-item\" style=\"padding-top:10px;\">\n" +
         "        <div class=\"layui-input-inline layui-btn-container  choose_img\" style=\"width: auto;\">\n" +

@@ -38,12 +38,11 @@ ajaxHttp({
 var demojs = [];
 var parentformData;
 //JavaScript代码区域
-layui.config(
-    { base: '/scripts/layui/module/formDesigner/' })
-    .extend({
-        croppers: '../../../layui/module/cropper/croppers'
-    })
-    .use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
+layui.extend({
+    'croppers': '../../../layui/module/cropper/croppers',
+    'formDesigner': '/scripts/layui/module/formdesigner/formdesigner'
+});
+layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
         var layer = layui.layer;
         var $ = layui.jquery;
         var upload = layui.upload;

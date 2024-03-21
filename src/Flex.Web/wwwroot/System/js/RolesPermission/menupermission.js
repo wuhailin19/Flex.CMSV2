@@ -18,7 +18,7 @@ function getChecked_list(data, type) {
     return id;
 }
 layui.config({
-    base: '/Scripts/layui/module/'
+    base: '/scripts/layui/module/'
 }).use(['form', 'tree'], function () {
     var form = layui.form;
     var columnlist;

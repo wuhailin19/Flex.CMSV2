@@ -21,7 +21,7 @@ function removeArray(arr, val) {
     }
 }
 layui.config({
-    base: '/Scripts/layui/module/',
+    base: '/scripts/layui/module/',
 }).use(['element', 'tabrightmenu'], function () {
     let element = layui.element;
     let rightmenu_ = layui.tabrightmenu;

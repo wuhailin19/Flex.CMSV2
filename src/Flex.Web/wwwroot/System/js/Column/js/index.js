@@ -1,6 +1,6 @@
 ﻿var req_Data = null;
 layui.config({
-    base: '/Scripts/layui/module/'
+    base: '/scripts/layui/module/'
 }).use(['layer', 'table', 'treeTable'], function () {
     var table = layui.table;
     var layer = layui.layer;

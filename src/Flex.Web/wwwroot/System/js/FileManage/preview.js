@@ -1,4 +1,4 @@
-﻿require.config({ paths: { 'vs': '/Scripts/core/vs' } });
+﻿require.config({ paths: { 'vs': '/scripts/core/vs' } });
 require(['vs/editor/editor.main'], function () {
     var path = $.getUrlParam('path');
     var extension = getFileExtension(path);

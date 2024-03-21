@@ -64,7 +64,7 @@ namespace Flex.Application.SqlServerSQLString
             return sql;
         }
         public string DeleteContentTableData(string TableName, string Ids) => "update " + TableName + " set StatusCode=0 where Id in(" + Ids + ")";
-        public StringBuilder CreateInsertCopyContentSqlString(Hashtable data, List<string> table, string TableName, int contentId)
+        public StringBuilder CreateInsertCopyContentSqlString(List<string> table, string TableName)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("insert into " + TableName + " (");
@@ -78,7 +78,7 @@ namespace Flex.Application.SqlServerSQLString
                 keyvar += "" + item + ",";
             }
             builder.Append(key.Substring(0, key.Length - 1) + ",StatusCode,OrderId,ReviewStepId,MsgGroupId,LastEditUser,LastEditUserName,LastEditDate) " +
-                "select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId,'',0," + data["LastEditUser"] + ",'" + data["LastEditUserName"] + "','" + data["LastEditDate"] + "' from " + TableName + " where Id=" + contentId);
+                "select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId,'',0,@LastEditUser,@LastEditUserName,@LastEditDate from " + TableName + " where Id=@Id");
             return builder;
         }
 
@@ -239,8 +239,32 @@ namespace Flex.Application.SqlServerSQLString
 
         public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
         {
-            throw new NotImplementedException();
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"INSERT INTO {tableName} (");
+            string key = "";
+            string keyvar = "";
+            table.Remove("OrderId");
+            int count = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                key += $"{myDE.Key},";
+                keyvar += $"@{myDE.Key},";
+                count++;
+            }
+            commandParameters = new SqlSugar.SugarParameter[table.Count + 1]; // +1 for nextOrderId parameter
+            int num = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                commandParameters[num] = new SqlSugar.SugarParameter($"@{myDE.Key}", myDE.Value);
+                num++;
+            }
+            // Add nextOrderId parameter
+            commandParameters[num] = new SqlSugar.SugarParameter("@nextOrderId", nextOrderId);
+
+            builder.Append($"{key}OrderId) VALUES ({keyvar}@nextOrderId); SELECT SCOPE_IDENTITY();");
+            return builder;
         }
+
 
         public void CreateSqlSugarColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out SqlSugar.SugarParameter[] parameters)
         {
@@ -256,6 +280,41 @@ namespace Flex.Application.SqlServerSQLString
                     swhere += " and";
                 swhere += " " + item + "=@" + item;
             }
+        }
+
+        public StringBuilder CreateSqlsugarUpdateSqlString(Hashtable table, string TableName, out SqlSugar.SugarParameter[] commandParameters)
+        {
+            StringBuilder builder = new StringBuilder();
+            int Id = table["Id"].ToInt();
+            var Ids = table.GetStringValue("Ids");
+
+            table.Remove("Id");
+            table.Remove("Ids");
+            builder.Append("Update " + TableName + " set ");
+            string keyvar = "";
+            foreach (DictionaryEntry myDE in table)
+            {
+                keyvar += "[" + myDE.Key.ToString() + "]" + "=" + "@" + myDE.Key.ToString() + ",";
+
+            }
+            builder.Append(keyvar.Substring(0, keyvar.Length - 1));
+            commandParameters = new SqlSugar.SugarParameter[table.Count];
+            int num = 0;
+            foreach (DictionaryEntry myDE in table)
+            {
+                commandParameters[num] = new SqlSugar.SugarParameter(myDE.Key.ToString(), myDE.Value);
+                num++;
+            }
+            table.Add("Id", Id);
+            if (Ids.IsNullOrEmpty())
+            {
+                builder.Append(" where Id=" + Id);
+            }
+            else
+            {
+                builder.Append(" where Id in(" + Ids + ")");
+            }
+            return builder;
         }
     }
 }

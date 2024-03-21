@@ -1,6 +1,7 @@
 ﻿using Flex.Core.Config;
 using Flex.Core.Framework.Enum;
 using Flex.Core.Helper;
+using Flex.Core.Timing;
 using System;
 using System.Collections.Specialized;
 using System.Globalization;
@@ -8,6 +9,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
 
 namespace Flex.Core.Extensions
 {
@@ -44,8 +46,10 @@ namespace Flex.Core.Extensions
             DateTime localTime;
             if (DateTime.TryParseExact(timeString, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out localTime))
             {
-                DateTime utcTime = localTime.ToUniversalTime();
-                return utcTime;
+                TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("UTC");
+                DateTime utcTime = DateTime.SpecifyKind(localTime, DateTimeKind.Utc);
+                DateTime resTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZone);
+                return resTime;
             }
             else
             {

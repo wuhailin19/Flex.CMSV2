@@ -173,20 +173,27 @@ namespace Flex.Application.Services
         private async Task<ProblemDetails<int>> UpdateContentCore(Hashtable table, SysContentModel contentmodel, List<string> fileds)
         {
             StringBuilder builder = new StringBuilder();
-            DynamicParameters parameters = new DynamicParameters();
+            SqlSugar.SugarParameter[] parameters;
             table["Id"] = table["Id"].ToInt();
             table["ParentId"] = table["ParentId"].ToInt();
             if (fileds != null)
             {
                 //创建历史副本
-                var createcopysql = _sqlTableServices.CreateInsertCopyContentSqlString(table, fileds, contentmodel.TableName, table["Id"].ToInt());
-                _dapperDBContext.ExecuteScalar(createcopysql.ToString());
+                parameters = new SqlSugar.SugarParameter[] {
+                    new SqlSugar.SugarParameter("@LastEditUser",table["LastEditUser"]),
+                    new SqlSugar.SugarParameter("@LastEditUserName",table["LastEditUserName"]),
+                    new SqlSugar.SugarParameter("@LastEditDate",table["LastEditDate"]),
+                    new SqlSugar.SugarParameter("@Id",table["Id"].ToInt()),
+                };
+                var createcopysql = _sqlTableServices.CreateInsertCopyContentSqlString(fileds, contentmodel.TableName);
+                _sqlsugar.Db.Ado.ExecuteCommand(createcopysql.ToString(), parameters);
             }
-            builder = _sqlTableServices.CreateDapperUpdateSqlString(table, contentmodel.TableName, out parameters);
 
+            parameters= new SqlSugar.SugarParameter[] { };
+            builder = _sqlTableServices.CreateSqlsugarUpdateSqlString(table, contentmodel.TableName, out parameters);
             try
             {
-                var result = _dapperDBContext.Execute(builder.ToString(), parameters);
+                var result = _sqlsugar.Db.Ado.ExecuteCommand(builder.ToString(), parameters);
                 if (result > 0)
                 {
                     return new ProblemDetails<int>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());

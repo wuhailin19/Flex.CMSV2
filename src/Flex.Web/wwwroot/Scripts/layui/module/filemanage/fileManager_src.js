@@ -6,7 +6,7 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
 
     //外部接口
     var fm = {
-        config: { 'test': 'test', 'thumb': { 'nopic': '', width: 100, height: 100 }, icon_url: '/Scripts/layui/module/filemanage/ico/', btn_upload: true, btn_create: true }
+        config: { 'test': 'test', 'thumb': { 'nopic': '', width: 100, height: 100 }, icon_url: '/scripts/layui/module/filemanage/ico/', btn_upload: true, btn_create: true }
         , cache: {} //数据缓存
         , index: layui.fm ? (layui.fm.index + 10000) : 0
         //设置全局项
@@ -201,7 +201,7 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
         if (fm.dirRoot.length > 1) {
             _content += '<li style="" data-type="DIR" data-index="-1">' +
                 '<div class="content" align="center">' +
-                '<div class="contentbox noborder"  style="width:' + options.thumb['width'] + 'px;height:' + options.thumb['height'] + 'px;line-height:' + options.thumb['height'] + 'px"><img src="/Scripts/layui/module/filemanage/ico/dir.png" style="vertical-align:middle;"></div>' +
+                '<div class="contentbox noborder"  style="width:' + options.thumb['width'] + 'px;height:' + options.thumb['height'] + 'px;line-height:' + options.thumb['height'] + 'px"><img src="/scripts/layui/module/filemanage/ico/dir.png" style="vertical-align:middle;"></div>' +
                 '<p class="layui-elip" title="上一级">...<br/>上一级目录</p>' +
                 '</div>' +
                 '</li>';
@@ -211,7 +211,7 @@ layui.define(['jquery', 'layer', 'laypage'], function (exports) { //提示：模
             _type = v.type;
             switch (v.type) {
                 case 'directory':
-                    _img = '<div class="contentbox"  style="width:' + options.thumb['width'] + 'px;height:' + options.thumb['height'] + 'px;line-height:' + options.thumb['height'] + 'px"><img src="/Scripts/layui/module/filemanage/ico/dir.png" style="vertical-align:middle;"></div>';
+                    _img = '<div class="contentbox"  style="width:' + options.thumb['width'] + 'px;height:' + options.thumb['height'] + 'px;line-height:' + options.thumb['height'] + 'px"><img src="/scripts/layui/module/filemanage/ico/dir.png" style="vertical-align:middle;"></div>';
                     _type = 'DIR';
                     break;
                 default:

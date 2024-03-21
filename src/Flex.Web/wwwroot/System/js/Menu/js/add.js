@@ -14,7 +14,7 @@ ajaxHttp({
     complete: function () { }
 })
 layui.config({
-    base: '/Scripts/layui/module/'
+    base: '/scripts/layui/module/'
 }).extend({
     iconHhysFa: 'iconHhysFa'
 }).use(['iconHhysFa', 'form', 'tree'], function () {
@@ -41,7 +41,7 @@ layui.config({
         page: true,
         // 每页显示数量，默认12
         limit: 12,
-        url: '/Scripts/layui/css/iconfont/iconfont.css',
+        url: '/scripts/layui/css/iconfont/iconfont.css',
         // 点击回调
         click: function (data) {
         },
@@ -60,7 +60,7 @@ layui.config({
             search: true,
             page: true,
             limit: 12,
-            url: '/Scripts/layui/css/iconfont/iconfont.css'
+            url: '/scripts/layui/css/iconfont/iconfont.css'
         });
     });
     $('#icon_click').delegate('#icon_clear', 'click', function () {

@@ -24,7 +24,7 @@ ajaxHttp({
     complete: function () { }
 })
 layui.config({
-    base: '/Scripts/layui/module/'
+    base: '/scripts/layui/module/'
 }).use(['layer', 'treeTable', 'form'], function () {
     var form = layui.form;
     var $ = layui.jquery;

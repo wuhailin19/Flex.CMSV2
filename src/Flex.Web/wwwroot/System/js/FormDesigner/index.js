@@ -11,13 +11,13 @@ ajaxHttp({
     complete: function () { }
 })
 
-layui.config(
-    { base: '/Scripts/layui/module/FormDesigner/' }).use(['layer', 'formDesigner'], function () {
-        var formDesigner = layui.formDesigner;
-        let formdata = json_data ? json_data.slice() : [];
-        var render = formDesigner.render({
-            data: formdata,
-            elem: '#formdesigner'
-        });
-
+layui.extend({ 'formDesigner': '/scripts/layui/module/formdesigner/formdesigner' });
+layui.use(['layer', 'formDesigner'], function () {
+    var formDesigner = layui.formDesigner;
+    let formdata = json_data ? json_data.slice() : [];
+    var render = formDesigner.render({
+        data: formdata,
+        elem: '#formdesigner'
     });
+
+});

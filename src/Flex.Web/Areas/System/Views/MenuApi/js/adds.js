@@ -1,5 +1,5 @@
 ﻿layui.config({
-    base: '/Scripts/layui/module/'
+    base: '/scripts/layui/module/'
 }).use(['form'], function () {
     var form = layui.form;
     //监听提交

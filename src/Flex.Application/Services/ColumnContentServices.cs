@@ -42,11 +42,15 @@ namespace Flex.Application.Services
             table["LastEditUser"] = _claims.UserId;
             table["LastEditUserName"] = _claims.UserName;
             //pgSQL情况
-            switch (DataBaseConfig.dataBase) {
+            switch (DataBaseConfig.dataBase)
+            {
                 case DataBaseType.PgSql:
-                    table["LastEditDate"] = Clock.Now.ToUniversalTime();
+                    TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("UTC");
+                    DateTime utcTime = DateTime.SpecifyKind(Clock.Now, DateTimeKind.Utc);
+                    DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZone);
+                    table["LastEditDate"] = localTime;
                     break;
-                default: 
+                default:
                     table["LastEditDate"] = Clock.Now;
                     break;
             }
@@ -58,12 +62,24 @@ namespace Flex.Application.Services
             if (table.GetValue("StatusCode").ToInt() != 5)
             {
                 table["ReviewStepId"] = string.Empty;
-                table["ReviewAddUser"] = string.Empty;
-                table["MsgGroupId"] = string.Empty;
+                table["ReviewAddUser"] = 0;
+                table["MsgGroupId"] = 0;
             }
             table["LastEditUser"] = _claims.UserId;
             table["LastEditUserName"] = _claims.UserName;
-            table["LastEditDate"] = Clock.Now;
+            //pgSQL情况
+            switch (DataBaseConfig.dataBase)
+            {
+                case DataBaseType.PgSql:
+                    TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("UTC");
+                    DateTime utcTime = DateTime.SpecifyKind(Clock.Now, DateTimeKind.Utc);
+                    DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZone);
+                    table["LastEditDate"] = localTime;
+                    break;
+                default:
+                    table["LastEditDate"] = Clock.Now;
+                    break;
+            }
         }
         public async Task<ProblemDetails<int>> Add(Hashtable table, bool IsReview = false)
         {
@@ -77,7 +93,7 @@ namespace Flex.Application.Services
             if (contentmodel == null)
                 return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataUpdateError.GetEnumDescription());
             table["ParentId"] = table["ParentId"].ToInt();
-           
+
             var filedmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             var keysToRemove = new List<object>();
             var timelist = new List<object>();
@@ -118,7 +134,7 @@ namespace Flex.Application.Services
 
             string orderSql = _sqlTableServices.GetNextOrderIdDapperSqlString(contentmodel.TableName);
 
-            var orderId = (await _dapperDBContext.GetDynamicAsync(orderSql)).FirstOrDefault()?.Value ?? 0;
+            var orderId = _sqlsugar.Db.Ado.GetDataTable(orderSql)?.Rows[0][0].ToInt() ?? 0;
 
             //DynamicParameters parameters = new DynamicParameters();
             //StringBuilder builder = _sqlTableServices.CreateDapperInsertSqlString(table, contentmodel.TableName, orderId, out parameters);

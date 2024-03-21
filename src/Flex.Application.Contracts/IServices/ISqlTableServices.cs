@@ -17,7 +17,7 @@ namespace Flex.Application.Contracts.IServices
     {
         string CreateContentTableSql(string TableName);
         StringBuilder CreateDapperInsertSqlString(Hashtable table, string TableName, int nextOrderId, out DynamicParameters commandParameters);
-        StringBuilder CreateInsertCopyContentSqlString(Hashtable data, List<string> table, string TableName, int contentId);
+        StringBuilder CreateInsertCopyContentSqlString(List<string> table, string TableName);
         StringBuilder CreateDapperUpdateSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters);
         string DeleteContentTableData(string TableName, string Ids);
         string DeleteTableField(string TableName, List<sysField> model);
@@ -35,5 +35,6 @@ namespace Flex.Application.Contracts.IServices
         StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters);
         void CreateSqlSugarColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out SqlSugar.SugarParameter[] parameters);
         void InitDapperColumnContentSwheresql(ref string swhere, ref DynamicParameters parameters, Dictionary<string, object> dataparams);
+        StringBuilder CreateSqlsugarUpdateSqlString(Hashtable table, string TableName, out SqlSugar.SugarParameter[] commandParameters);
     }
 }

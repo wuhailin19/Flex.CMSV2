@@ -8,7 +8,7 @@ var ue = new UE.getEditor("content", editorOption);
 // 操作列tips
 var ischeck = true;
 layui.config({
-    base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
+    base: '/scripts/layui/module/cropper/' //layui自定义layui组件目录
 }).use(['form'], function () {
     var form = layui.form, layer = layui.layer;
 

@@ -16,8 +16,15 @@ using Flex.Web.Jwt;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
+using NLog.Extensions.Logging;
+using NLog;
 using NLog.Web;
 using System.Reflection;
+using NLog.Config;
+
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 
 var builder = WebApplication.CreateBuilder(args);
 var AssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
@@ -74,7 +81,7 @@ builder.Services.Configure<StaticFileOptions>(options =>
         Mappings = { [".less"] = "text/less" }
     };
 });
-
+LogManager.Configuration = new XmlLoggingConfiguration("nlog.config");
 builder.Host.UseNLog();
 
 var app = builder.Build();

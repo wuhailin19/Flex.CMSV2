@@ -1,4 +1,6 @@
 ﻿using Flex.Core.Attributes;
+using Flex.Core.Timing;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flex.Web.Areas.System.Controllers.APIController
@@ -25,6 +27,14 @@ namespace Flex.Web.Areas.System.Controllers.APIController
             {
                 return default(byte[]);
             }
+        }
+        [HttpGet("getDataStr")]
+        [AllowAnonymous]
+        public DateTime getDataStr() {
+            TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("UTC");
+            DateTime utcTime = DateTime.SpecifyKind(Clock.Now, DateTimeKind.Utc);
+            DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZone);
+            return localTime;
         }
     }
 }

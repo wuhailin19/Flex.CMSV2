@@ -40,7 +40,7 @@ ajaxHttp({
 })
 
 layui.config({
-    base: '/Scripts/layui/module/cropper/' //layui自定义layui组件目录
+    base: '/scripts/layui/module/cropper/' //layui自定义layui组件目录
 }).use('croppers', function () {
     var croppers = layui.croppers;
 
@@ -58,7 +58,7 @@ layui.config({
     });
 })
 layui.config({
-    base: '/Scripts/layui/module/'
+    base: '/scripts/layui/module/'
 }).use(['form', 'tree'], function () {
     var form = layui.form;
     var pId = parent_json.Id;
