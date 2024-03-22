@@ -7,6 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\system\Data\**" />
+    <Compile Remove="Areas\system\Models\**" />
+    <Compile Remove="Controllers\**" />
+    <Compile Remove="Views\**" />
+    <Content Remove="Areas\system\Data\**" />
+    <Content Remove="Areas\system\Models\**" />
+    <Content Remove="Controllers\**" />
+    <Content Remove="Views\**" />
+    <EmbeddedResource Remove="Areas\system\Data\**" />
+    <EmbeddedResource Remove="Areas\system\Models\**" />
+    <EmbeddedResource Remove="Controllers\**" />
+    <EmbeddedResource Remove="Views\**" />
+    <None Remove="Areas\system\Data\**" />
+    <None Remove="Areas\system\Models\**" />
+    <None Remove="Controllers\**" />
+    <None Remove="Views\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="appsettings.Development_初始.json" />
     <Content Remove="appsettings_初始.json" />
   </ItemGroup>
@@ -33,10 +52,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Areas\system\Data\" />
-    <Folder Include="Areas\system\Models\" />
-    <Folder Include="Controllers\" />
-    <Folder Include="Views\" />
+    <Folder Include="Areas\System\Views\Product\" />
     <Folder Include="wwwroot\111\222\" />
     <Folder Include="wwwroot\222333\" />
     <Folder Include="wwwroot\222\" />
