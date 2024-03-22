@@ -109,9 +109,9 @@ layui.use('element', function () {
             type: 2,
             title: "消息",
             shadeClose: true,
-            shade: false,
+            shade: 0.3,
             maxmin: true, //开启最大化最小化按钮
-            area: ['60%', '80%'],
+            area: ['90%', '90%'],
             content: SystempageRoute + "Message/Index",
             success: function (layero, index) {
             }

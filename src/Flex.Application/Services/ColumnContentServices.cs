@@ -49,6 +49,7 @@ namespace Flex.Application.Services
                     DateTime utcTime = DateTime.SpecifyKind(Clock.Now, DateTimeKind.Utc);
                     DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZone);
                     table["LastEditDate"] = localTime;
+                    table["AddTime"] = localTime;
                     break;
                 default:
                     table["LastEditDate"] = Clock.Now;

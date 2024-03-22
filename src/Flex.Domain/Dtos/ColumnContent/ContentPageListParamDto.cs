@@ -13,7 +13,7 @@ namespace Flex.Domain.Dtos.ColumnContent
         public int ParentId { set; get; }
         public string? ContentGroupId { set; get; }
         public string? k { set; get; } = null;
-        public string? timefrom { set; get; }
-        public string? timeto { set; get; }
+        public DateTime? timefrom { set; get; }
+        public DateTime? timeto { set; get; }
     }
 }

@@ -65,7 +65,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
                 type: 2,
                 title: that.text(),
                 shadeClose: true,
-                shade: false,
+                shade: 0.3,
                 maxmin: true, //开启最大化最小化按钮
                 area: ['80%', '80%'],
                 content: SystempageRoute + 'Message/SendMsg?stepToId=' + that.attr('data-toid') + '&stepFromId=' + that.attr('data-fromid') + '&parentId=' + parent_json.ParentId + '&contentId=' + parent_json.Id,

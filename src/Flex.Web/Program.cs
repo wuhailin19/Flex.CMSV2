@@ -16,7 +16,6 @@ using Flex.Web.Jwt;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
-using NLog.Extensions.Logging;
 using NLog;
 using NLog.Web;
 using System.Reflection;

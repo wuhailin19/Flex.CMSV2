@@ -24,7 +24,7 @@ namespace Flex.Application.SqlServerSQLString
                     "SeoTitle VARCHAR(255) NULL," +
                     "KeyWord VARCHAR(500) NULL," +
                     "Description VARCHAR(1000) NULL," +
-                    "AddTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                    "AddTime timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                     "IsTop BOOLEAN NOT NULL DEFAULT FALSE," +
                     "IsRecommend BOOLEAN NOT NULL DEFAULT FALSE," +
                     "IsHot BOOLEAN NOT NULL DEFAULT FALSE," +
@@ -40,7 +40,7 @@ namespace Flex.Application.SqlServerSQLString
                     "AddUserName VARCHAR(100) NULL," +
                     "LastEditUser BIGINT NULL," +
                     "LastEditUserName VARCHAR(100) NOT NULL," +
-                    "LastEditDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                    "LastEditDate timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                     "Version INT NOT NULL DEFAULT 0" +
                 ")";
 
@@ -149,13 +149,13 @@ namespace Flex.Application.SqlServerSQLString
                     swhere += " and Title like '%' || @k || '%'";
             }
 
-            if (contentPageListParam.timefrom.IsNotNullOrEmpty())
+            if (contentPageListParam.timefrom != null)
             {
                 parameters.Add("@timefrom", contentPageListParam.timefrom);
                 swhere += " and AddTime >= @timefrom";
             }
 
-            if (contentPageListParam.timeto.IsNotNullOrEmpty())
+            if (contentPageListParam.timeto != null)
             {
                 parameters.Add("@timeto", contentPageListParam.timeto);
                 swhere += " and AddTime < (@timeto + INTERVAL '1 DAY')";
@@ -177,7 +177,7 @@ namespace Flex.Application.SqlServerSQLString
             table.Remove("Ids");
             builder.Append($"UPDATE {TableName} SET ");
             string keyvar = "";
-            
+
             foreach (DictionaryEntry myDE in table)
             {
                 keyvar += $"{myDE.Key.ToString()}=@{myDE.Key.ToString()},";
@@ -185,10 +185,10 @@ namespace Flex.Application.SqlServerSQLString
             builder.Append(keyvar.Substring(0, keyvar.Length - 1));
             commandParameters = new SqlSugar.SugarParameter[table.Count];
 
-           int num = 0;
+            int num = 0;
             foreach (DictionaryEntry myDE in table)
             {
-                commandParameters[num]=new SqlSugar.SugarParameter(myDE.Key.ToString(), myDE.Value);
+                commandParameters[num] = new SqlSugar.SugarParameter(myDE.Key.ToString(), myDE.Value);
                 num++;
             }
             table.Add("Id", Id);
@@ -255,7 +255,7 @@ namespace Flex.Application.SqlServerSQLString
                 case "sign": returntype = "VARCHAR(255)"; break;
                 case "iconPicker": returntype = "VARCHAR(255)"; break;
                 case "cron": returntype = "TEXT"; break;
-                case "date": returntype = "timestamp with time zone"; break;
+                case "date": returntype = "timestamp without time zone"; break;
                 case "dateRange": returntype = "VARCHAR(255)"; break;
                 case "rate": returntype = "VARCHAR(255)"; break;
                 case "carousel": returntype = "VARCHAR(500)"; break;
