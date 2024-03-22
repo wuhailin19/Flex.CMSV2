@@ -69,7 +69,6 @@ builder.Services.AddJwtService(builder.Configuration);
 builder.Services.AddWebCoreService(builder.Configuration);
 //注册缓存
 builder.Services.AddMemoryCacheSetup();
-builder.Services.AddLogging();
 
 // 添加自定义的 MIME 类型
 builder.Services.Configure<StaticFileOptions>(options =>
@@ -82,6 +81,7 @@ builder.Services.Configure<StaticFileOptions>(options =>
 });
 LogManager.Configuration = new XmlLoggingConfiguration("nlog.config");
 builder.Host.UseNLog();
+builder.Services.AddLogging();
 
 var app = builder.Build();
 

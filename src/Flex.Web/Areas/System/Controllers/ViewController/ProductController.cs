@@ -11,5 +11,9 @@ namespace Flex.Web.Areas.system.Controllers.ViewController
         {
             return View();
         }
+        public IActionResult Detail()
+        {
+            return View();
+        }
     }
 }
