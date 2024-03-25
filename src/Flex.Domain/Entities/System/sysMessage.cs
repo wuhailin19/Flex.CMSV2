@@ -2,10 +2,11 @@
 using Flex.Domain.Enums.Message;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using SqlSugar;
 namespace Flex.Domain.Entities
 {
     [Table(name: "tbl_core_message")]
+    [SugarTable("tbl_core_message")]
     public class sysMessage : BaseIntEntity, EntityContext
     {
         public string Title { set; get; }

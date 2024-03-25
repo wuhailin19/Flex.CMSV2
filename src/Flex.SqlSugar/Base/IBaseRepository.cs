@@ -31,6 +31,7 @@ namespace Flex.SqlSugarFactory
         /// <param name="model"></param>
         /// <returns></returns>
         Task<long> Add(TEntity model);
+        Task<int> AddReturnIntAsync(TEntity model);
 
         /// <summary>
         /// 批量添加

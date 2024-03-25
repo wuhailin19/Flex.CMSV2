@@ -6,7 +6,9 @@ using Flex.Dapper;
 using Flex.Dapper.Context;
 using Flex.Domain.Dtos.Message;
 using Flex.Domain.Enums.Message;
+using Flex.SqlSugarFactory;
 using Flex.SqlSugarFactory.Seed;
+using Flex.SqlSugarFactory.UnitOfWorks;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections;
 using System.Linq.Expressions;
@@ -17,14 +19,19 @@ namespace Flex.Application.Services
     {
         IColumnContentServices contentServices;
         ISqlTableServices _sqlTableServices;
-        protected MyDBContext _dapperDBContext;
+        IUnitOfWorkManage _IUnitOfWorkManage;
+        IBaseRepository<sysMessage> _msgrepository;
 
-        public MessageServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IColumnContentServices contentServices, ISqlTableServices sqlTableServices, MyDBContext dapperDBContext)
+        public MessageServices(IUnitOfWork unitOfWork,
+            IMapper mapper, IdWorker idWorker, IClaimsAccessor claims,
+            IColumnContentServices contentServices, ISqlTableServices sqlTableServices,
+            IUnitOfWorkManage IUnitOfWorkManage, IBaseRepository<sysMessage> msgrepository)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             this.contentServices = contentServices;
             _sqlTableServices = sqlTableServices;
-            _dapperDBContext = dapperDBContext;
+            _IUnitOfWorkManage = IUnitOfWorkManage;
+            _msgrepository = msgrepository;
         }
 
         private Expression<Func<sysMessage, bool>> GetExpression()
@@ -34,6 +41,7 @@ namespace Flex.Application.Services
             Expression<Func<sysMessage, bool>> expression =
                     m => ("," + m.ToRoleId + ",").Contains(userRoleString)
                   || ("," + m.ToUserId + ",").Contains(userIdString);
+            
             return expression;
         }
         /// <summary>
@@ -211,7 +219,7 @@ namespace Flex.Application.Services
             }
 
             AddIntEntityBasicInfo(messagemodel);
-            _dapperDBContext.BeginTransaction();
+            _IUnitOfWorkManage.BeginTran();
             try
             {
                 var result = new ProblemDetails<int>(0, string.Empty);
@@ -232,25 +240,24 @@ namespace Flex.Application.Services
                 }
                 if (!result.IsSuccess)
                 {
-                    _dapperDBContext.Rollback();
+                    _IUnitOfWorkManage.RollbackTran();
                     return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
                 }
                 if (model.ContentId == 0)
                     messagemodel.ContentId = result.Content;
 
-               var insertres= _unitOfWork.GetRepository<sysMessage>().Insert(messagemodel);
-                _unitOfWork.SaveChanges();
-                if (insertres.Id <= 0)
+               var res= await _msgrepository.AddReturnIntAsync(messagemodel);
+                if (res <= 0)
                 {
-                    _dapperDBContext.Rollback();
+                    _IUnitOfWorkManage.RollbackTran();
                     return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
                 }
-                _dapperDBContext.Commit();
+                _IUnitOfWorkManage.CommitTran();
                 return new ProblemDetails<string>(HttpStatusCode.OK, result_msg);
             }
             catch (Exception ex)
             {
-                _dapperDBContext.Rollback();
+                _IUnitOfWorkManage.RollbackTran();
                 throw;
             }
         }

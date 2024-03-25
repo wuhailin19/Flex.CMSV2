@@ -5,6 +5,7 @@ using Flex.Dapper;
 using Flex.EFSql;
 using Flex.EFSql.Register;
 using Flex.SqlSugarFactory.Seed;
+using Flex.SqlSugarFactory.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +14,8 @@ namespace Flex.Application.SetupExtensions.OrmInitExtension
     //新增数据库判断，新增PostgreSQL,Mysql,达梦版本语句
     public static class OrmInitExtension
     {
-        public static void RegisterDbConnectionString(this IServiceCollection services) {
+        public static void RegisterDbConnectionString(this IServiceCollection services)
+        {
 
             switch (DataBaseConfig.dataBase)
             {
@@ -35,7 +37,7 @@ namespace Flex.Application.SetupExtensions.OrmInitExtension
                     break;
             }
             //注册sqlsugar
-            services.AddSingleton<MyContext>();
+            services.AddScoped<MyContext>();
             //注册dapper
             services.AddSingleton<MyDBContext>();
         }

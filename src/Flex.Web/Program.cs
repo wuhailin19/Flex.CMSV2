@@ -20,6 +20,8 @@ using NLog;
 using NLog.Web;
 using System.Reflection;
 using NLog.Config;
+using Autofac.Core;
+using Flex.SqlSugarFactory.UnitOfWorks;
 
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -62,6 +64,11 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
             .InstancePerLifetimeScope()
             .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy;// 注册被拦截的类并启用类拦截
             .InterceptedBy(typeof(LogInterceptor));//这里只有同步的，因为异步方法拦截器还是先走同步拦截器 
+
+        builder.RegisterType<UnitOfWorkManage>().As<IUnitOfWorkManage>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope()
+                .PropertiesAutowired();
     });
 
 builder.Services.AddJwtService(builder.Configuration);
