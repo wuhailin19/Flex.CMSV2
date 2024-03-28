@@ -54,6 +54,7 @@ namespace Flex.SqlSugarFactory.UnitOfWorks
             {
                 _tranCount++;
                 GetDbClient().BeginTran();
+                _logger.LogDebug("UnitOfWork Begin");
             }
         }
 
@@ -77,6 +78,7 @@ namespace Flex.SqlSugarFactory.UnitOfWorks
                     try
                     {
                         GetDbClient().CommitTran();
+                        _logger.LogDebug("UnitOfWork CommitTran");
                     }
                     catch (Exception ex)
                     {
@@ -132,6 +134,7 @@ namespace Flex.SqlSugarFactory.UnitOfWorks
             {
                 _tranCount--;
                 GetDbClient().RollbackTran();
+                _logger.LogDebug("UnitOfWork RollbackTran");
             }
         }
 

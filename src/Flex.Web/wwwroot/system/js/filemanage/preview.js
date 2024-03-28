@@ -40,6 +40,9 @@ require(['vs/editor/editor.main'], function () {
         if (path.indexOf('.css') > -1) {
             return 'css';
         }
+        if (path.indexOf('.less') > -1) {
+            return 'less';
+        }
         if (path.indexOf('.json') > -1) {
             return 'json';
         }

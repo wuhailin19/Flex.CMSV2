@@ -3,7 +3,7 @@
     /// <summary>
     /// 项目管理
     /// </summary>
-    public class projectProductManage : BaseIntEntity, EntityContext
+    public class norProductManage : BaseIntEntity, EntityContext
     {
         /// <summary>
         /// 项目名称

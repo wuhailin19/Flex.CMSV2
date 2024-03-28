@@ -21833,7 +21833,7 @@
                                 }
                             }
                             let result = (((tableFinalWidth / bodyWidth) * 100).toFixed(4));
-                            table.style.width = ((result > 100 ? 100 : result) +'%');  
+                            table.style.width = ((result > 100 ? 100 : result) + '%');
                             table.style['table-layout'] = 'fixed';
                             table.removeAttribute('width');
 
@@ -21854,7 +21854,7 @@
                                 if (i == (colIndex + 1)) {
                                     width = width - changeValue;
                                     right = right - changeValue;
-                                } 
+                                }
                                 percent = (width / tableFinalWidth * 100);
                                 widthPercent = percent.toFixed(4);
                                 col.style.width = (widthPercent + '%');
@@ -21884,7 +21884,7 @@
                                 width = width + changeValue;
                                 right = right + changeValue;
                             }
-                            
+
 
                             newCol.style.width = (width + 'px');
                             newColGroup.appendChild(newCol)
@@ -21916,12 +21916,12 @@
                             if (i == colIndex) {
                                 width = width + changeValue;
                                 right = right + changeValue;
-                            } 
+                            }
                             if (i == (colIndex + 1)) {
                                 width = width - changeValue;
                                 right = right - changeValue;
-                            } 
-                            
+                            }
+
                             var left = td.left;
                             var percent = (width / tableFinalWidth * 100);
                             var widthPercent = percent.toFixed(4);
@@ -24497,13 +24497,15 @@
             var xhr = new XMLHttpRequest(),
                 fd = new FormData(),
                 params = utils.serializeParam(me.queryCommandValue('serverparam')) || '',
-                url = utils.formatUrl(actionUrl + (actionUrl.indexOf('?') == -1 ? '?' : '&') + params);
+                //url = utils.formatUrl(actionUrl + (actionUrl.indexOf('?') == -1 ? '?' : '&') + params);
+                url = actionUrl;
 
             fd.append(fieldName, file, file.name || ('blob.' + file.type.substr('image/'.length)));
             fd.append('type', 'ajax');
             xhr.open("post", url, true);
             xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-            
+            xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('access_token'));
+            xhr.setRequestHeader("Refresh_token", "Bearer " + sessionStorage.getItem('refresh_token'));
             xhr.addEventListener('load', function (e) {
                 try {
                     var json = (new Function("return " + utils.trim(e.target.response)))();

@@ -11,10 +11,16 @@
     <Compile Remove="Areas\system\Models\**" />
     <Compile Remove="Controllers\**" />
     <Compile Remove="Views\**" />
+    <Compile Remove="wwwroot\111\**" />
+    <Compile Remove="wwwroot\222333\**" />
+    <Compile Remove="wwwroot\222\**" />
     <Content Remove="Areas\system\Data\**" />
     <Content Remove="Areas\system\Models\**" />
     <Content Remove="Controllers\**" />
     <Content Remove="Views\**" />
+    <Content Remove="wwwroot\111\**" />
+    <Content Remove="wwwroot\222333\**" />
+    <Content Remove="wwwroot\222\**" />
     <EmbeddedResource Remove="Areas\system\Data\**" />
     <EmbeddedResource Remove="Areas\system\Models\**" />
     <EmbeddedResource Remove="Controllers\**" />
@@ -23,11 +29,16 @@
     <None Remove="Areas\system\Models\**" />
     <None Remove="Controllers\**" />
     <None Remove="Views\**" />
+    <None Remove="wwwroot\111\**" />
+    <None Remove="wwwroot\222333\**" />
+    <None Remove="wwwroot\222\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Remove="appsettings.Development_初始.json" />
     <Content Remove="appsettings_初始.json" />
+    <Content Remove="wwwroot\system\js\productmg\add.js" />
+    <Content Remove="wwwroot\system\js\productmg\addrecord.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,16 +63,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Areas\System\Views\Product\" />
-    <Folder Include="wwwroot\111\222\" />
-    <Folder Include="wwwroot\222333\" />
-    <Folder Include="wwwroot\222\" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Include="wwwroot\111\mpage.js" />
-    <None Include="wwwroot\111\page.js" />
-    <None Include="wwwroot\111\style.less" />
     <None Include="wwwroot\content\bootstrap-theme.css.map" />
     <None Include="wwwroot\content\bootstrap-theme.min.css.map" />
     <None Include="wwwroot\content\bootstrap.css.map" />
@@ -379,6 +380,8 @@
     <None Include="wwwroot\system\js\menu\js\opentype.js" />
     <None Include="wwwroot\system\js\message\index.js" />
     <None Include="wwwroot\system\js\message\sendmsg.js" />
+    <None Include="wwwroot\system\js\productmg\addrecord.js" />
+    <None Include="wwwroot\system\js\productmg\add.js" />
     <None Include="wwwroot\system\js\rolespermission\apipermission.js" />
     <None Include="wwwroot\system\js\rolespermission\datapermission.js" />
     <None Include="wwwroot\system\js\rolespermission\edit.js" />
@@ -406,5 +409,10 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Areas\Normal\Controllers\" />
+    <Folder Include="Areas\Normal\Views\" />
   </ItemGroup>
 </Project>

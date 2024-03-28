@@ -15,5 +15,13 @@ namespace Flex.Web.Areas.system.Controllers.ViewController
         {
             return View();
         }
+        public IActionResult AddPage()
+        {
+            return View();
+        }
+        public IActionResult AddRecord()
+        {
+            return View();
+        }
     }
 }

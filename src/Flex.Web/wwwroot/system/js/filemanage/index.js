@@ -163,6 +163,7 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
                 content: data.path
             });
         }
+        return false;
     });
     function OpenImage(data) {
         layer.photos({
