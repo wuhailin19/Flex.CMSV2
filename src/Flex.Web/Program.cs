@@ -22,6 +22,8 @@ using System.Reflection;
 using NLog.Config;
 using Autofac.Core;
 using Flex.SqlSugarFactory.UnitOfWorks;
+using Microsoft.Extensions.Hosting;
+using Flex.EFSql;
 
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -90,8 +92,19 @@ LogManager.Configuration = new XmlLoggingConfiguration("nlog.config");
 builder.Host.UseNLog();
 builder.Services.AddLogging();
 
+
+
 var app = builder.Build();
 
+// 初始化自动创建数据库
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<EfCoreDBContext>();
+
+    // 确保数据库已创建
+    context.Database.EnsureCreated();
+}
 
 app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
 {
