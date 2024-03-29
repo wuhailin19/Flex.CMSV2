@@ -12,8 +12,11 @@ namespace Flex.Application.Contracts.IServices.Normal
     {
         Task<ProblemDetails<string>> AddProject(AddProjectDto addColumnDto);
         Task<ProblemDetails<string>> AddRecord(AddRecordDto addColumnDto);
+        Task<ProblemDetails<string>> DeleteProDetail(string Id);
+        Task<ProblemDetails<string>> DeleteProItem(string Id);
         Task<ProjectDetailDto> GetProjectDetailAsync(int id);
         Task<List<ProductDetailListDto>> GetProjectDetailListAsync(int projectid);
         Task<List<ProjectListDto>> GetProjectListAsync();
+        Task<ProblemDetails<string>> UpdateProject(UpdateProjectDto addColumnDto);
     }
 }

@@ -10,6 +10,7 @@ namespace Flex.Domain.AutoMapper.Project
             CreateMap<AddProjectDto, norProductManage>();
             CreateMap<norProductManage, ProjectListDto>();
             CreateMap<norProductManage, ProjectDetailDto>();
+            CreateMap<UpdateProjectDto, norProductManage>();
 
             CreateMap<norProductDetail, ProductDetailListDto>();
             CreateMap<AddRecordDto, norProductDetail>();

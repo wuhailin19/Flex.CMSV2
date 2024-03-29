@@ -9,7 +9,7 @@
       },
       "dotnetRunMessages": true,
       "externalUrlConfiguration": true,
-      "hotReloadEnabled": true
+      "hotReloadEnabled": false
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json"

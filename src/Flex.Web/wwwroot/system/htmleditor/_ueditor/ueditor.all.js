@@ -20938,7 +20938,7 @@
                     me.body.style.webkitUserSelect = 'none';
                     me.selection.getNative()[browser.ie9below ? 'empty' : 'removeAllRanges']();
                     pos = mouseCoords(evt);
-                    //console.log(555)
+                    /*console.log(555)*/
                     toggleDraggableState(me, true, onDrag, pos, target);
                     if (onDrag == "h") {
                         dragLine.style.left = getPermissionX(dragTd, evt) + "px";

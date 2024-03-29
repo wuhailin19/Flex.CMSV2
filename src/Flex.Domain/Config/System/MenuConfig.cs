@@ -905,6 +905,28 @@ namespace Flex.Domain.Config
                     AddUserName = "webmaster",
                     AddTime = "2022/8/25 16:31:04".ToDateTime(),
                     OrderId = 113,
+                },
+                new SysMenu
+                {
+                    Id = 176,
+                    ParentID = 1,
+                    Name = "项目管理",
+                    Icode = "layui-icon-component",
+                    ShowStatus = true,
+                    isMenu = false,
+                    IsControllerUrl = false,
+                    LinkUrl = "/system/Product/Index",
+                    FontSort = "layui-icon",
+                    Level = 0,
+                    LastEditUser = 1560206066204151804,
+                    AddUser = 1560206066204151804,
+                    Version = 0,
+                    StatusCode = StatusCode.Enable,
+                    LastEditUserName = "webmaster",
+                    LastEditDate = "2022/8/25 16:31:04".ToDateTime(),
+                    AddUserName = "webmaster",
+                    AddTime = "2022/8/25 16:31:04".ToDateTime(),
+                    OrderId = 113,
                 }
           );
         }

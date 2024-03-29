@@ -50,7 +50,8 @@ namespace Flex.Application.Services.Normal
         /// <returns></returns>
         public async Task<List<ProjectListDto>> GetProjectListAsync()
         {
-            var list = await _unitOfWork.GetRepository<norProductManage>().GetAllAsync();
+            Func<IQueryable<norProductManage>, IOrderedQueryable<norProductManage>> orderfunc = m => m.OrderBy(m => m.ProductName);
+            var list = await _unitOfWork.GetRepository<norProductManage>().GetAllAsync(null, orderfunc);
             var nopagelist
                 = _mapper
                 .Map<List<ProjectListDto>>(list);
@@ -72,7 +73,79 @@ namespace Flex.Application.Services.Normal
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
             }
         }
-
+        public async Task<ProblemDetails<string>> UpdateProject(UpdateProjectDto addColumnDto)
+        {
+            var coreRespository = _unitOfWork.GetRepository<norProductManage>();
+            var model =await coreRespository.GetFirstOrDefaultAsync(m=>m.Id== addColumnDto.Id);
+            model.ServerInfo = addColumnDto.ServerInfo;
+            model.ProductName=addColumnDto.ProductName;
+            model.Participants=addColumnDto.Participants;
+            UpdateIntEntityBasicInfo(model);
+            try
+            {
+                coreRespository.Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+            }
+        }
+        public async Task<ProblemDetails<string>> DeleteProDetail(string Id)
+        {
+            var adminRepository = _unitOfWork.GetRepository<norProductDetail>();
+            if (Id.IsNullOrEmpty())
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
+            var Ids = Id.ToList("-");
+            var delete_list = adminRepository.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
+            if (delete_list.Count == 0)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+            try
+            {
+                var softdels = new List<norProductDetail>();
+                foreach (var item in delete_list)
+                {
+                    item.StatusCode = StatusCode.Deleted;
+                    UpdateIntEntityBasicInfo(item);
+                    softdels.Add(item);
+                }
+                adminRepository.Update(softdels);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        public async Task<ProblemDetails<string>> DeleteProItem(string Id)
+        {
+            var adminRepository = _unitOfWork.GetRepository<norProductManage>();
+            if (Id.IsNullOrEmpty())
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
+            var Ids = Id.ToList("-");
+            var delete_list = adminRepository.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
+            if (delete_list.Count == 0)
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+            try
+            {
+                var softdels = new List<norProductManage>();
+                foreach (var item in delete_list)
+                {
+                    item.StatusCode = StatusCode.Deleted;
+                    UpdateIntEntityBasicInfo(item);
+                    softdels.Add(item);
+                }
+                adminRepository.Update(softdels);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public async Task<ProblemDetails<string>> AddRecord(AddRecordDto addColumnDto)
         {
             var coreRespository = _unitOfWork.GetRepository<norProductDetail>();

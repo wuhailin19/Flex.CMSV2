@@ -63,7 +63,25 @@ namespace Flex.Web.Areas.system.Controllers.APIController
                 return Fail(result.Detail);
             return Success(result.Detail);
         }
-        
+        [HttpPost("DeleteProItem/{Id}")]
+        [Descriper(IsFilter = true)]
+        public async Task<string> DeleteProItem(string Id)
+        {
+            var result = await _services.DeleteProItem(Id);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+        [HttpPost("DeleteProDetail/{Id}")]
+        [Descriper(IsFilter = true)]
+        public async Task<string> DeleteProDetail(string Id)
+        {
+            var result = await _services.DeleteProDetail(Id);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+
         [HttpPost("AddRecord")]
         public async Task<string> AddRecord()
         {
@@ -71,6 +89,18 @@ namespace Flex.Web.Areas.system.Controllers.APIController
             if (!validate.IsSuccess)
                 return Fail(validate.Detail);
             var result = await _services.AddRecord(validate.Content);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
+        }
+        
+        [HttpPost("UpdateProject")]
+        public async Task<string> UpdateProject()
+        {
+            var validate = await ValidateModel<UpdateProjectDto>();
+            if (!validate.IsSuccess)
+                return Fail(validate.Detail);
+            var result = await _services.UpdateProject(validate.Content);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
             return Success(result.Detail);

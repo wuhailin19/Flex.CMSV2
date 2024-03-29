@@ -58,7 +58,7 @@ namespace Flex.Application.Services
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
-            {
+            { 
                 await _unitOfWork.RollbackAsync();
                 return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
             }
@@ -69,7 +69,7 @@ namespace Flex.Application.Services
             var filedresponsity = _unitOfWork.GetRepository<sysField>();
 
             var contentmodel = await responsity.GetFirstOrDefaultAsync(m => m.Id == model.Id);
-            contentmodel.FormHtmlString = model.FormHtmlString?.Replace("\n","").Replace(" ","");
+            contentmodel.FormHtmlString = model.FormHtmlString?.Replace("\n", "").Replace(" ", "");
             UpdateIntEntityBasicInfo(contentmodel);
             _unitOfWork.SetTransaction();
             var fileds = JsonHelper.Json<List<FiledHtmlStringDto>>(model.FormHtmlString);
@@ -193,6 +193,7 @@ namespace Flex.Application.Services
         {
             var responsity = _unitOfWork.GetRepository<SysContentModel>();
             var contentmodel = await responsity.GetFirstOrDefaultAsync(m => m.Id == model.Id);
+            string oldtablename = contentmodel.TableName;
             contentmodel.Name = model.Name;
             contentmodel.Description = model.Description;
             contentmodel.TableName =
@@ -201,7 +202,9 @@ namespace Flex.Application.Services
             UpdateIntEntityBasicInfo(contentmodel);
             try
             {
-
+                string renametablesql = _sqlServerServices.ReNameTableName(oldtablename, contentmodel.TableName);
+                if (renametablesql.IsNotNullOrEmpty())
+                    _unitOfWork.ExecuteSqlCommand(renametablesql);
                 responsity.Update(contentmodel);
                 await _unitOfWork.SaveChangesAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());

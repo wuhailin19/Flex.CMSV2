@@ -39,6 +39,7 @@
     <Content Remove="appsettings_初始.json" />
     <Content Remove="wwwroot\system\js\productmg\add.js" />
     <Content Remove="wwwroot\system\js\productmg\addrecord.js" />
+    <Content Remove="wwwroot\system\js\productmg\edit.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -380,6 +381,7 @@
     <None Include="wwwroot\system\js\menu\js\opentype.js" />
     <None Include="wwwroot\system\js\message\index.js" />
     <None Include="wwwroot\system\js\message\sendmsg.js" />
+    <None Include="wwwroot\system\js\productmg\edit.js" />
     <None Include="wwwroot\system\js\productmg\addrecord.js" />
     <None Include="wwwroot\system\js\productmg\add.js" />
     <None Include="wwwroot\system\js\rolespermission\apipermission.js" />

@@ -54,13 +54,10 @@ function initList() {
         dataType: 'json',
         success: function (result) {
             var json = result.content;
-            if (json.length == 0)
-                return false;
-
             var htmlstr = '';
             var htmlcontentstr = '';
             for (var i = 0; i < json.length; i++) {
-                htmlstr += '<a href="#id_' + json[i].Id + '"><span>' + json[i].Title + '</span></a>';
+                htmlstr += '<a href="#id_' + json[i].Id + '"><span class="prodelete" data-id="' + json[i].Id + '">-</span><span class="prodetailtitle">' + json[i].Title + '</span></a>';
 
                 htmlcontentstr += "<div class=\"event\" id=\"id_" + json[i].Id + "\">";
                 htmlcontentstr += "<div class=\"event-operation\">";
@@ -94,6 +91,28 @@ function initList() {
 }
 initList();
 var addindex;
+$('#projecttitlelist').on('click', 'a span.prodelete', function () {
+    var id = $(this).attr('data-id');
+    if (!id)
+        return false;
+    layer.confirm('确定删除本条数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
+        ajaxHttp({
+            url: api + 'Product/DeleteProDetail/' + id,
+            type: 'Post',
+            async: false,
+            success: function (json) {
+                if (json.code == 200) {
+                    tips.showSuccess(json.msg);
+                    initList();
+                } else {
+                    tips.showFail(json.msg);
+                }
+            },
+            complete: function () { }
+        })
+        layer.close(index)
+    })
+})
 $('#addrecord').on('click', function () {
     if (addindex != undefined)
         layer.close(addindex);
