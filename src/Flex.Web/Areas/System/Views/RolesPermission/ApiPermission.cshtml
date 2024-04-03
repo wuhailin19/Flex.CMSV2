@@ -41,17 +41,22 @@
         </div>
     </form>
     <script type="text/html" id="barDemo">
-        {{#if(d.Id=='00000'){}}
-        <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="dataapi">
+        {{#if(d.ParentId==-1){}}
         {{#}else{}}
-        {{#if(('-'+datamission.dataapi+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
-        <input type="checkbox" name="dataapi" title="授权" data-id="{{d.Id}}" lay-skin="primary" checked>
-        {{#}else{}}
-        <input type="checkbox" name="dataapi" title="授权" data-id="{{d.Id}}" lay-skin="primary">
-        {{#}}}
+            {{#if(d.Id=='00000'){}}
+            <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="dataapi">
+            {{#}else{}}
+            {{#if(('-'+datamission.dataapi+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
+            <input type="checkbox" name="dataapi" title="授权" data-id="{{d.Id}}" lay-skin="primary" checked>
+            {{#}else{}}
+            <input type="checkbox" name="dataapi" title="授权" data-id="{{d.Id}}" lay-skin="primary">
+            {{#}}}
+            {{#}}}
         {{#}}}
     </script>
     <script type="text/html" id="barDemos">
+        {{#if(d.ParentId==-1){}}
+        {{#}else{}}
         {{#if(d.Id=='00000'){}}
         <input type="checkbox" name="select_alls" title="全选" lay-skin="primary" lay-event="pageapi">
         {{#}else{}}
@@ -59,6 +64,7 @@
         <input type="checkbox" name="pageapi" title="授权" data-id="{{d.Id}}" lay-skin="primary" checked>
         {{#}else{}}
         <input type="checkbox" name="pageapi" title="授权" data-id="{{d.Id}}" lay-skin="primary">
+        {{#}}}
         {{#}}}
         {{#}}}
     </script>

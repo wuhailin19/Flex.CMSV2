@@ -3,33 +3,34 @@ using SqlSugar;
 using System.Collections.Concurrent;
 using System.Reflection;
 using Flex.Core.Extensions;
+using Flex.SqlSugarFactory.Seed;
 
 namespace Flex.SqlSugarFactory.UnitOfWorks
 {
     public class UnitOfWorkManage : IUnitOfWorkManage
     {
         private readonly ILogger<UnitOfWorkManage> _logger;
-        private readonly ISqlSugarClient _sqlSugarClient;
+        private readonly MyContext _context;
 
         private int _tranCount { get; set; }
         public int TranCount => _tranCount;
         public readonly ConcurrentStack<string> TranStack = new();
 
-        public UnitOfWorkManage(ISqlSugarClient sqlSugarClient, ILogger<UnitOfWorkManage> logger)
+        public UnitOfWorkManage(ILogger<UnitOfWorkManage> logger, MyContext context)
         {
-            _sqlSugarClient = sqlSugarClient;
             _logger = logger;
             _tranCount = 0;
+            _context = context;
         }
 
         /// <summary>
         /// 获取DB，保证唯一性
         /// </summary>
         /// <returns></returns>
-        public SqlSugarScope GetDbClient()
+        public SqlSugarClient GetDbClient()
         {
             // 必须要as，后边会用到切换数据库操作
-            return _sqlSugarClient as SqlSugarScope;
+            return _context.Db;
         }
 
 
@@ -37,8 +38,8 @@ namespace Flex.SqlSugarFactory.UnitOfWorks
         {
             UnitOfWork uow = new UnitOfWork();
             uow.Logger = _logger;
-            uow.Db = _sqlSugarClient;
-            uow.Tenant = (ITenant) _sqlSugarClient;
+            uow.Db = _context.Db;
+            uow.Tenant = (ITenant)_context.Db;
             uow.IsTran = true;
 
             uow.Db.Open();
@@ -53,6 +54,7 @@ namespace Flex.SqlSugarFactory.UnitOfWorks
             {
                 _tranCount++;
                 GetDbClient().BeginTran();
+                _logger.LogDebug("UnitOfWork Begin");
             }
         }
 
@@ -76,6 +78,7 @@ namespace Flex.SqlSugarFactory.UnitOfWorks
                     try
                     {
                         GetDbClient().CommitTran();
+                        _logger.LogDebug("UnitOfWork CommitTran");
                     }
                     catch (Exception ex)
                     {
@@ -131,6 +134,7 @@ namespace Flex.SqlSugarFactory.UnitOfWorks
             {
                 _tranCount--;
                 GetDbClient().RollbackTran();
+                _logger.LogDebug("UnitOfWork RollbackTran");
             }
         }
 

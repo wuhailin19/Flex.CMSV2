@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,12 +7,44 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\system\Data\**" />
+    <Compile Remove="Areas\system\Models\**" />
+    <Compile Remove="Controllers\**" />
+    <Compile Remove="Views\**" />
+    <Compile Remove="wwwroot\111\**" />
+    <Compile Remove="wwwroot\222333\**" />
+    <Compile Remove="wwwroot\222\**" />
+    <Content Remove="Areas\system\Data\**" />
+    <Content Remove="Areas\system\Models\**" />
+    <Content Remove="Controllers\**" />
+    <Content Remove="Views\**" />
+    <Content Remove="wwwroot\111\**" />
+    <Content Remove="wwwroot\222333\**" />
+    <Content Remove="wwwroot\222\**" />
+    <EmbeddedResource Remove="Areas\system\Data\**" />
+    <EmbeddedResource Remove="Areas\system\Models\**" />
+    <EmbeddedResource Remove="Controllers\**" />
+    <EmbeddedResource Remove="Views\**" />
+    <None Remove="Areas\system\Data\**" />
+    <None Remove="Areas\system\Models\**" />
+    <None Remove="Controllers\**" />
+    <None Remove="Views\**" />
+    <None Remove="wwwroot\111\**" />
+    <None Remove="wwwroot\222333\**" />
+    <None Remove="wwwroot\222\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="appsettings.Development_初始.json" />
     <Content Remove="appsettings_初始.json" />
+    <Content Remove="wwwroot\system\js\productmg\add.js" />
+    <Content Remove="wwwroot\system\js\productmg\addrecord.js" />
+    <Content Remove="wwwroot\system\js\productmg\edit.js" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.25" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="System.Text.Json" Version="8.0.2" />
@@ -23,6 +55,8 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
   
   <ItemGroup>
@@ -33,19 +67,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Areas\System\Data\" />
-    <Folder Include="Areas\System\Models\" />
-    <Folder Include="Controllers\" />
-    <Folder Include="Views\" />
-    <Folder Include="wwwroot\111\222\" />
-    <Folder Include="wwwroot\222333\" />
-    <Folder Include="wwwroot\222\" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Include="wwwroot\111\mpage.js" />
-    <None Include="wwwroot\111\page.js" />
-    <None Include="wwwroot\111\style.less" />
     <None Include="wwwroot\content\bootstrap-theme.css.map" />
     <None Include="wwwroot\content\bootstrap-theme.min.css.map" />
     <None Include="wwwroot\content\bootstrap.css.map" />
@@ -54,6 +75,8 @@
     <None Include="wwwroot\scripts\bootstrap.js" />
     <None Include="wwwroot\scripts\bootstrap.min.js" />
     <None Include="wwwroot\scripts\core\commonutil.js" />
+    <None Include="wwwroot\scripts\core\myflow-min\lib\jquery-ui-1.8.4.custom\js\jquery-1.4.2.min.js" />
+    <None Include="wwwroot\scripts\core\myflow-min\lib\jquery-ui-1.8.4.custom\js\jquery-ui-1.8.4.custom.min.js" />
     <None Include="wwwroot\scripts\core\myflow-min\lib\jquery-ui.js" />
     <None Include="wwwroot\scripts\core\myflow-min\lib\jquery-ui.min.js" />
     <None Include="wwwroot\scripts\core\myflow-min\lib\raphael-min.js" />
@@ -243,13 +266,13 @@
     <None Include="wwwroot\scripts\layui\module\formdesigner\labelGeneration.js" />
     <None Include="wwwroot\scripts\layui\module\formdesigner\numberInput.js" />
     <None Include="wwwroot\scripts\layui\module\formdesigner\preview.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\sortable.js" />
-    <None Include="wwwroot\scripts\layui\module\formdesigner\sortable.min.js" />
     <None Include="wwwroot\scripts\layui\module\formdesigner\staticField.js" />
     <None Include="wwwroot\scripts\layui\module\formdesigner\xmselect.js" />
     <None Include="wwwroot\scripts\layui\module\iconHhysFa.js" />
     <None Include="wwwroot\scripts\layui\module\notice\.DS_Store" />
     <None Include="wwwroot\scripts\layui\module\notice\notice.js" />
+    <None Include="wwwroot\scripts\layui\module\formdesigner\sortable.js" />
+    <None Include="wwwroot\scripts\layui\module\formdesigner\sortable.min.js" />
     <None Include="wwwroot\scripts\layui\module\tableEdit.js" />
     <None Include="wwwroot\scripts\layui\module\tabrightmenu.js" />
     <None Include="wwwroot\scripts\layui\module\translate\translate.js" />
@@ -357,10 +380,21 @@
     <None Include="wwwroot\system\js\main\welcome.js" />
     <None Include="wwwroot\system\js\menu\js\add.js" />
     <None Include="wwwroot\system\js\menu\js\edit.js" />
-    <None Include="wwwroot\system\js\menu\js\index.js" />
+    <None Include="wwwroot\system\js\menu\js\index.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="wwwroot\system\js\menu\js\opentype.js" />
     <None Include="wwwroot\system\js\message\index.js" />
     <None Include="wwwroot\system\js\message\sendmsg.js" />
+    <None Include="wwwroot\system\js\productmg\edit.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\system\js\productmg\addrecord.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\system\js\productmg\add.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="wwwroot\system\js\rolespermission\apipermission.js" />
     <None Include="wwwroot\system\js\rolespermission\datapermission.js" />
     <None Include="wwwroot\system\js\rolespermission\edit.js" />
@@ -384,5 +418,20 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\system\htmleditor\_ueditor\lang\zh-cn\zh-cn.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\system\js\productmg\detail.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\system\js\productmg\index.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Areas\Normal\Controllers\" />
+    <Folder Include="Areas\Normal\Views\" />
   </ItemGroup>
 </Project>

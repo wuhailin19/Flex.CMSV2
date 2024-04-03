@@ -5,7 +5,7 @@ namespace Flex.SqlSugarFactory.UnitOfWorks
 {
     public interface IUnitOfWorkManage
     {
-        SqlSugarScope GetDbClient();
+        SqlSugarClient GetDbClient();
         int TranCount { get; }
 
         UnitOfWork CreateUnitOfWork();

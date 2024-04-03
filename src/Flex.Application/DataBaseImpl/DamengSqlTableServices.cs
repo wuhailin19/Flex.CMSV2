@@ -173,9 +173,9 @@ namespace Flex.Application.SqlServerSQLString
             Dictionary<string, object> paramdict = new Dictionary<string, object>();
             if (contentPageListParam.k.IsNotNullOrEmpty())
             { paramdict.Add("@k", contentPageListParam.k); }
-            if (contentPageListParam.timefrom.IsNotNullOrEmpty())
+            if (contentPageListParam.timefrom != null)
             { paramdict.Add("@timefrom", contentPageListParam.timefrom); }
-            if (contentPageListParam.timeto.IsNotNullOrEmpty())
+            if (contentPageListParam.timeto != null)
             { paramdict.Add("@timeto", contentPageListParam.timeto); }
             if (contentPageListParam.ContentGroupId.IsNotNullOrEmpty())
             { paramdict.Add("@ContentGroupId", contentPageListParam.ContentGroupId); }
@@ -196,13 +196,13 @@ namespace Flex.Application.SqlServerSQLString
                     index++;
                 }
             }
-            if (contentPageListParam.timefrom.IsNotNullOrEmpty())
+            if (contentPageListParam.timefrom != null)
             {
                 parameters[index] = new SqlSugar.SugarParameter("@timefrom", contentPageListParam.timefrom);
                 index++;
                 swhere += " and AddTime >= to_date(?, 'yyyy-mm-dd')";
             }
-            if (contentPageListParam.timeto.IsNotNullOrEmpty())
+            if (contentPageListParam.timeto != null)
             {
                 parameters[index] = new SqlSugar.SugarParameter("@timeto", contentPageListParam.timeto);
                 index++;
@@ -240,11 +240,11 @@ namespace Flex.Application.SqlServerSQLString
                     swhere += " and Title like '%' || ? || '%'";
                 }
             }
-            if (contentPageListParam.timefrom.IsNotNullOrEmpty())
+            if (contentPageListParam.timefrom != null)
             {
                 swhere += " and AddTime >= to_date('" + contentPageListParam.timefrom + "', 'yyyy-mm-dd')";
             }
-            if (contentPageListParam.timeto.IsNotNullOrEmpty())
+            if (contentPageListParam.timeto != null)
             {
                 swhere += " and AddTime < to_date('" + contentPageListParam.timeto + "', 'yyyy-mm-dd') + 1";
             }

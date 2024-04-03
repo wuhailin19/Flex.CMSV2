@@ -100,12 +100,12 @@ namespace Flex.Application.SqlServerSQLString
                 else
                     swhere += " and Title like '%'+@k+'%'";
             }
-            if (contentPageListParam.timefrom.IsNotNullOrEmpty())
+            if (contentPageListParam.timefrom != null)
             {
                 parameters.Add("@timefrom", contentPageListParam.timefrom);
                 swhere += " and AddTime>=@timefrom";
             }
-            if (contentPageListParam.timeto.IsNotNullOrEmpty())
+            if (contentPageListParam.timeto != null)
             {
                 parameters.Add("@timeto", contentPageListParam.timeto);
                 swhere += " and AddTime<DATEADD(day, 1, @timeto)";

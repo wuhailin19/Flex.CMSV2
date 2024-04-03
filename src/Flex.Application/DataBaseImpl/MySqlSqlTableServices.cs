@@ -147,13 +147,13 @@ namespace Flex.Application.SqlServerSQLString
                     swhere += " and Title like CONCAT('%', @k, '%')";
             }
 
-            if (contentPageListParam.timefrom.IsNotNullOrEmpty())
+            if (contentPageListParam.timefrom != null)
             {
                 parameters.Add("@timefrom", contentPageListParam.timefrom);
                 swhere += " and AddTime >= @timefrom";
             }
 
-            if (contentPageListParam.timeto.IsNotNullOrEmpty())
+            if (contentPageListParam.timeto != null)
             {
                 parameters.Add("@timeto", contentPageListParam.timeto);
                 swhere += " and AddTime < DATE_ADD(@timeto, INTERVAL 1 DAY)";

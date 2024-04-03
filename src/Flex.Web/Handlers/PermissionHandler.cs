@@ -62,13 +62,13 @@ namespace Flex.Web.Handlers
                     }
                     //所有角色对应的接口权限
                     var RoleList = await GetRoleUrlDictByRedisOrDataServer();
-
+                    var checkurl = nowurl.TrimEnd('/') + "/";
                     var result = false;
                     if (RoleList.ContainsKey(userrole))
                     {
                         foreach (var item in RoleList[userrole])
                         {
-                            if (nowurl.Contains(item))
+                            if (checkurl.Contains(item.TrimEnd('/') + "/"))
                             {
                                 result = true; break;
                             }

@@ -16,11 +16,14 @@ using Flex.Web.Jwt;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
-using NLog.Extensions.Logging;
 using NLog;
 using NLog.Web;
 using System.Reflection;
 using NLog.Config;
+using Autofac.Core;
+using Flex.SqlSugarFactory.UnitOfWorks;
+using Microsoft.Extensions.Hosting;
+using Flex.EFSql;
 
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -63,6 +66,11 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
             .InstancePerLifetimeScope()
             .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy;// 注册被拦截的类并启用类拦截
             .InterceptedBy(typeof(LogInterceptor));//这里只有同步的，因为异步方法拦截器还是先走同步拦截器 
+
+        builder.RegisterType<UnitOfWorkManage>().As<IUnitOfWorkManage>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope()
+                .PropertiesAutowired();
     });
 
 builder.Services.AddJwtService(builder.Configuration);
@@ -70,7 +78,6 @@ builder.Services.AddJwtService(builder.Configuration);
 builder.Services.AddWebCoreService(builder.Configuration);
 //注册缓存
 builder.Services.AddMemoryCacheSetup();
-builder.Services.AddLogging();
 
 // 添加自定义的 MIME 类型
 builder.Services.Configure<StaticFileOptions>(options =>
@@ -83,9 +90,21 @@ builder.Services.Configure<StaticFileOptions>(options =>
 });
 LogManager.Configuration = new XmlLoggingConfiguration("nlog.config");
 builder.Host.UseNLog();
+builder.Services.AddLogging();
+
+
 
 var app = builder.Build();
 
+// 初始化自动创建数据库
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<EfCoreDBContext>();
+
+    // 确保数据库已创建
+    context.Database.EnsureCreated();
+}
 
 app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
 {

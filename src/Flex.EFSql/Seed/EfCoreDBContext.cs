@@ -1,5 +1,7 @@
 ﻿using Flex.Core;
+using Flex.Core.Config;
 using Flex.Core.Extensions;
+using Flex.Core.Framework.Enum;
 using Flex.Core.Helper.LogHelper;
 using Flex.Domain.Base;
 using Flex.Domain.Config;
@@ -73,8 +75,7 @@ namespace Flex.EFSql
                 }
             });
 
-            var usedb = "DataConfig:UseDb".Config(string.Empty) ?? "Sqlserver";
-            if (usedb == "PostgreSQL")
+            if (DataBaseConfig.dataBase==DataBaseType.PgSql)
             {
                 // 将所有日期时间字段配置为使用UTC时间
                 foreach (var entityType in modelBuilder.Model.GetEntityTypes())

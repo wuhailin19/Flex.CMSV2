@@ -10,7 +10,7 @@ namespace Flex.SqlSugarFactory
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, new()
     {
         private readonly IUnitOfWorkManage _unitOfWorkManage;
-        private readonly SqlSugarScope _dbBase;
+        private readonly SqlSugarClient _dbBase;
 
         private ISqlSugarClient _db
         {
@@ -88,6 +88,25 @@ namespace Flex.SqlSugarFactory
             //var return3 = await insert.ExecuteReturnEntityAsync();
 
             return await insert.ExecuteReturnSnowflakeIdAsync();
+        }
+        
+        /// <summary>
+        /// 写入实体数据
+        /// </summary>
+        /// <param name="entity">博文实体类</param>
+        /// <returns></returns>
+        public async Task<int> AddReturnIntAsync(TEntity entity)
+        {
+            //var i = await Task.Run(() => _db.Insertable(entity).ExecuteReturnBigIdentity());
+            ////返回的i是long类型,这里你可以根据你的业务需要进行处理
+            //return (int)i;
+
+            var insert = _db.Insertable(entity);
+
+            //这里你可以返回TEntity，这样的话就可以获取id值，无论主键是什么类型
+            //var return3 = await insert.ExecuteReturnEntityAsync();
+
+            return await insert.ExecuteReturnIdentityAsync();
         }
 
         /// <summary>
