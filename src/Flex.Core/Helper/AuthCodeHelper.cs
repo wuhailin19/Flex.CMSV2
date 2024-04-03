@@ -11,7 +11,7 @@ namespace Flex.Core
             //验证码颜色集合  
             var colors = new[] { SKColors.Black, SKColors.Red, SKColors.DarkBlue, SKColors.Green, SKColors.Orange, SKColors.Brown, SKColors.DarkCyan, SKColors.Purple };
             //验证码字体集合
-            var fonts = new[] { "Verdana", "Microsoft Sans Serif", "Comic Sans MS", "Arial", "宋体" };
+            var fonts = new[] { "DejaVu Sans" };
             //相当于js的 canvas.getContext('2d')
             var imagwidth = 130;
             var imageheight = 30;

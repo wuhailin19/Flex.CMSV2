@@ -44,6 +44,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.25" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="system.Text.Json" Version="8.0.2" />
@@ -54,6 +55,8 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
   
   <ItemGroup>
@@ -377,13 +380,21 @@
     <None Include="wwwroot\system\js\main\welcome.js" />
     <None Include="wwwroot\system\js\menu\js\add.js" />
     <None Include="wwwroot\system\js\menu\js\edit.js" />
-    <None Include="wwwroot\system\js\menu\js\index.js" />
+    <None Include="wwwroot\system\js\menu\js\index.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="wwwroot\system\js\menu\js\opentype.js" />
     <None Include="wwwroot\system\js\message\index.js" />
     <None Include="wwwroot\system\js\message\sendmsg.js" />
-    <None Include="wwwroot\system\js\productmg\edit.js" />
-    <None Include="wwwroot\system\js\productmg\addrecord.js" />
-    <None Include="wwwroot\system\js\productmg\add.js" />
+    <None Include="wwwroot\system\js\productmg\edit.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\system\js\productmg\addrecord.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\system\js\productmg\add.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="wwwroot\system\js\rolespermission\apipermission.js" />
     <None Include="wwwroot\system\js\rolespermission\datapermission.js" />
     <None Include="wwwroot\system\js\rolespermission\edit.js" />
@@ -410,6 +421,12 @@
     <Content Update="wwwroot\system\htmleditor\_ueditor\lang\zh-cn\zh-cn.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\system\js\productmg\detail.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\system\js\productmg\index.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   
