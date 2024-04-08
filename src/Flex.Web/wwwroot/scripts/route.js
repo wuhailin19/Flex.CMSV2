@@ -83,6 +83,7 @@ var ajaxHttp = function (options) {
     // 每次请求携带token
     options.token = sessionStorage.getItem('access_token');
     options.refreshtoken = sessionStorage.getItem('refresh_token');
+    options.siteId = localStorage.getItem('siteId');
     HttpRequest(options);
 }
 

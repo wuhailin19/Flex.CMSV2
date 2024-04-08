@@ -43,7 +43,7 @@
     editIframe: function (layer, insTb) {
         var self = this;
         let widthstr = '80%';
-        let heightstr = '90%';
+        let heightstr = '80%';
         let isreload = self.isEditReload;
         //iframe窗
         layer.open({
@@ -55,6 +55,7 @@
             area: [widthstr, heightstr],
             content: routePageLink + 'Edit',
             end: function () {
+
                 if (isreload) {
                     defaultOptions.callBack(insTb);
                 }

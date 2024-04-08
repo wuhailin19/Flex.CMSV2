@@ -25,7 +25,7 @@ namespace Flex.Domain.Config
             builder.Property(m => m.UserAvatar).HasMaxLength(200);
             builder.Property(m => m.LoginLogString).HasMaxLength(200);
             builder.Property(m => m.LoginCount).HasDefaultValue(0);
-            builder.Property(m => m.MaxErrorCount).HasDefaultValue(10);
+            builder.Property(m => m.MaxErrorCount).HasDefaultValue(5);
             builder.Property(m => m.ErrorCount).HasDefaultValue(0);
             builder.Property(m => m.Islock).HasDefaultValue(false);
             builder.Property(m => m.AllowMultiLogin).HasDefaultValue(true);

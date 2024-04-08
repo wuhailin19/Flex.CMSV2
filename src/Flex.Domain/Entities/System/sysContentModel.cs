@@ -12,5 +12,10 @@ namespace Flex.Domain.Entities
         public string? Description { set; get; }
         public string TableName { set; get; }
         public string? FormHtmlString { set; get; }
+        /// <summary>
+        /// 是否只用于本站点
+        /// </summary>
+        public bool SelfUse { set; get; }
+        public int SiteId { set; get; }
     }
 }
