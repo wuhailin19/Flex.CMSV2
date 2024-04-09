@@ -1,0 +1,100 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/scripts/layui/layui.js" type="text/javascript"></script>
+    <script src="~/scripts/route.js" type="text/javascript"></script>
+    <script src="~/scripts/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <style>
+        .layui-form-item .layui-form-label { text-align: center; }
+        .edui-editor.edui-default { width: 100% !important; }
+        .layui-input-block > .edui-default { width: 100% !important; }
+        .layui-select-title .layui-anim.layui-anim-upbit { display: none; }
+        .iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
+        <div class='layui-form-item'>
+            <label class='layui-form-label'>菜单</label>
+            <div class='layui-input-block'>
+                <input type='text' name='Name' required lay-verify='required' placeholder='请输入菜单名' autocomplete='off' class='layui-input'>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">图标种类</label>
+            <div class="layui-input-block">
+                <select name="FontSort" lay-search="" id="FontSort" lay-filter="FontSort">
+                    <option value="layui-icon">layuifont</option>
+                    <option value="iconfont">iconfont</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">图标</label>
+            <div class="layui-input-block" id="icon_click">
+                <input type="text" name="Icode" placeholder="请输入图标" autocomplete="off" class="layui-input" id="iconHhysFa" lay-filter="iconHhysFa">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">父级选择框</label>
+            <div class="layui-input-block">
+                <div class="layui-form-select downpanel">
+                    <div class="layui-select-title">
+                        <select name="ParentID" id="chooseName">
+                            <option value="-1">无</option>
+                        </select>
+                    </div>
+                    <dl class="layui-anim layui-anim-upbit">
+                        <dd>
+                            <div id="ParentID" class="demo-tree-more"></div>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">显示状态</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="Status" lay-skin="switch" lay-text="开启|关闭" value="true">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">目录</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="isMenu" lay-skin="switch" lay-text="是|否" value="true">
+            </div>
+        </div>
+        @* <div class="layui-form-item">
+            <label class="layui-form-label">链接类型</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="IsControllerUrl" lay-skin="switch" lay-text="aspx|mvc" value="true">
+            </div>
+        </div> *@
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">链接地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="LinkUrl" placeholder="请输入链接地址" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">排序号</label>
+            <div class="layui-input-block">
+                <input type="text" name="OrderId" placeholder="请输入排序号" autocomplete="off" class="layui-input" value="0">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+    <script src="~/system/js/menu/js/add.js"></script>
+</body>
+</html>

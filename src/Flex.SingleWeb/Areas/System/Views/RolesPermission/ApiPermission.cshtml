@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/scripts/layui/css/layui2.5.7.css" rel="stylesheet" />
+    <link href="~/scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/scripts/layui/layui2.5.7.js" type="text/javascript"></script>
+    <script src="~/scripts/route.js" type="text/javascript"></script>
+    <script src="~/scripts/jquery-3.4.1.js" type="text/javascript"></script>
+    <link href="~/system/css/rolespermission/apipermission.css" rel="stylesheet" />
+</head>
+<body>
+    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
+        <div class="layui-form-item">接口权限</div>
+        <div class="demo-tree-more">
+            <ul class="layui-tab-title" style="left: 0px;">
+                <li class="layui-this" data-tableid="testReloadf">数据接口</li>
+                <li data-tableid="testReloads">视图接口</li>
+            </ul>
+            @* <div class="demoTable">
+                搜索链接：
+                <div class="layui-inline">
+                    <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+                </div>
+                <span class="layui-btn btn_search" data-type="reload">搜索</span>
+            </div> *@
+            <div class="layui-tab-content" style="height:550px;overflow-y:scroll;">
+                <div class="layui-tab-item layui-show">
+                    <table id="demo_tree" lay-filter="tests"></table>
+                </div>
+                <div class="layui-tab-item">
+                    <table id="demo_trees" lay-filter="testt"></table>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
+            </div>
+        </div>
+    </form>
+    <script type="text/html" id="barDemo">
+        {{#if(d.ParentId==-1){}}
+        {{#}else{}}
+            {{#if(d.Id=='00000'){}}
+            <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="dataapi">
+            {{#}else{}}
+            {{#if(('-'+datamission.dataapi+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
+            <input type="checkbox" name="dataapi" title="授权" data-id="{{d.Id}}" lay-skin="primary" checked>
+            {{#}else{}}
+            <input type="checkbox" name="dataapi" title="授权" data-id="{{d.Id}}" lay-skin="primary">
+            {{#}}}
+            {{#}}}
+        {{#}}}
+    </script>
+    <script type="text/html" id="barDemos">
+        {{#if(d.ParentId==-1){}}
+        {{#}else{}}
+        {{#if(d.Id=='00000'){}}
+        <input type="checkbox" name="select_alls" title="全选" lay-skin="primary" lay-event="pageapi">
+        {{#}else{}}
+        {{#if(('-'+datamission.pageapi+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
+        <input type="checkbox" name="pageapi" title="授权" data-id="{{d.Id}}" lay-skin="primary" checked>
+        {{#}else{}}
+        <input type="checkbox" name="pageapi" title="授权" data-id="{{d.Id}}" lay-skin="primary">
+        {{#}}}
+        {{#}}}
+        {{#}}}
+    </script>
+    <script src="~/system/js/rolespermission/apipermission.js"></script>
+</body>
+</html>

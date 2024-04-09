@@ -1,0 +1,114 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/scripts/layui/layui.js" type="text/javascript"></script>
+    <script src="~/scripts/route.js" type="text/javascript"></script>
+    <script src="~/scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+    
+
+    <link href="~/scripts/iconfont/iconfont.css" rel="stylesheet" />
+    <style>
+        .layui-form-item .layui-form-label { text-align: center; }
+        .edui-editor.edui-default { width: 100% !important; }
+        .layui-input-block > .edui-default { width: 100% !important; }
+        .layui-select-title .layui-anim.layui-anim-upbit { display: none; }
+        .iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">授权码</label>
+            <div class="layui-input-block">
+                <input type="text" name="AppId" placeholder="请输入授权码" autocomplete="off" class="layui-input" lay-verify='required'>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">密钥</label>
+            <div class="layui-input-inline" style="width:40%;">
+                <input type="password" name="AppSecret" id="password" placeholder="请输入AppSecret" autocomplete="off" class="layui-input" lay-verify='required'>
+            </div>
+            <div class="layui-input-inline" style="width: 20px;margin-top:10px ">
+                <a href="javascript:void(0);" id="show" style="text-decoration:none;"><i class="iconfont iconyanjing_bi"></i></a>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">白名单</label>
+            <div class="layui-input-inline" style="width:40%;">
+                <textarea name="FilterIp" placeholder="" class="layui-textarea"></textarea>
+            </div>
+            <div class="layui-input-inline" style="width:30%;margin-top:10px ">
+                授权指定IP来源的请求才可使用，每行填写一条，留空则不限制
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea name="Mark" placeholder="请输入备注" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
+            </div>
+        </div>
+    </form>
+    <script type="text/javascript">
+        $("#show").on("click", ".iconyanjing_bi", function () {
+            $(this).removeClass("iconyanjing_bi").addClass("iconyanjing_kai");
+            $("#password").attr("type", "text");
+        });
+
+        $("#show").on("click", ".iconyanjing_kai", function () {
+            $(this).removeClass("iconyanjing_kai").addClass("iconyanjing_bi");
+            $("#password").attr("type", "password");
+        });
+    </script>
+    <script>
+        layui.config({
+            base: '/scripts/layui/module/'
+        }).use(['form'], function () {
+            var form = layui.form;
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                var json = data.field;
+                console.log(json)
+                $.ajax({
+                    url: api + 'api/User/Add',
+                    type: 'Post',
+                    datatype: 'json',
+                    data: JSON.stringify(json),
+                    async: false,
+                    success: function (result) {
+                        let json = JSON.parse(result);
+                        if (json.code == 200) {
+                            layer.msg(json.msg, { icon: 6, time: 300 }, function () {
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                            });
+                        } else {
+                            layer.msg(json.msg, { icon: 5, time: 1000 });
+                        }
+                    },
+                    complete: function () {
+
+                    }
+                })
+                return false;
+            });
+            $('#reset').click(function () {
+                insTb.reload();
+                return false;
+            })
+        });
+    </script>
+</body>
+</html>

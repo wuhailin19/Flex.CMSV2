@@ -1,0 +1,65 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/scripts/layui/layui.js" type="text/javascript"></script>
+    <script src="~/scripts/route.js" type="text/javascript"></script>
+    <script src="~/scripts/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <script src="~/system/htmleditor/_ueditor/editor_config.js"></script>
+    <script src="~/system/htmleditor/_ueditor/editor_all.js"></script>
+    <style>
+        .layui-form-item .layui-form-label { text-align: center; }
+        .edui-editor.edui-default { width: 100% !important; }
+        .layui-input-block > .edui-default { width: 100% !important; }
+        .layui-select-title .layui-anim.layui-anim-upbit { display: none; }
+        .iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">编号</label>
+            <div class="layui-input-block">
+                <input type="text" name="Id" readonly="readonly" autocomplete="off" class="layui-input layui-disabled" lay-verify='required'>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">模型名</label>
+            <div class="layui-input-block">
+                <input type="text" name="Name" placeholder="请输入模型名" autocomplete="off" class="layui-input" lay-verify='required'>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">描述</label>
+            <div class="layui-input-block">
+                <input type="text" name="Description" placeholder="请输入描述" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">表名</label>
+            <div class="layui-input-block">
+                <input type="text" name="TableName" placeholder="请输入表名" value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">私有</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="SelfUse" lay-skin="switch" lay-text="私有|公有" value="true">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
+            </div>
+        </div>
+    </form>
+    <script src="~/system/js/contentmodel/edit.js"></script>
+</body>
+</html>

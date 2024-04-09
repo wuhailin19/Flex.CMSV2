@@ -1,0 +1,127 @@
+
+body, button, input, select, textarea {
+	font: Microsoft YaHei,tahoma, helvetica, arial, \5b8b\4f53, sans-serif;
+}
+
+
+/*placeholder统一*/
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+	color: #999999db;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+	color: #999999db;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+	color: #ccc;
+}
+
+.layui-btn-normal-ext-m {
+	background-color: #1e9fffd4
+}
+
+.layui-btn-warm-ext-m {
+	background-color: #ffb800d6
+}
+
+.layui-btn-danger-ext-m {
+	background-color: #ff5722d6
+}
+
+/*background-color: #1e9fffc7*/
+.layui-btn-normal-ext-s {
+	background-color: #1e9fffb5
+}
+
+.layui-btn-warm-ext-s {
+	background-color: #ffb800c7
+}
+
+.layui-btn-danger-ext-s {
+	background-color: #ff5722c7
+}
+
+
+/*用于tr背景变色*/
+.tdbgyew {
+	background: #ffffb5c2;
+}
+
+
+.word {
+	position: absolute;
+
+	right: 20px;
+
+	bottom: 5px;
+
+	color: #aaa;
+
+	font-size: 12px;
+}
+
+
+
+.form-input {
+	-moz-border-radius: 2px 2px 2px 2px;
+	border: 1px solid #CECECF;
+	color: #336699;
+	padding-left: 2px;
+	vertical-align: middle;
+	height: 29px;
+}
+
+/*iframe内button沉底布局*/
+.f-button {
+	width: 100%;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	z-index: 998;
+	background: #fff;
+	color: #fff ";
+}
+
+/*错误提示加强效果*/
+.erron-on
+{
+	border-color:#FF5722!important
+}
+
+
+
+.onError {
+	/* add: 不需要此图片background: url(../images/error_01.png) left 10px no-repeat; */
+	/* add:pad改为0 */
+	padding-left: 0px;
+	width: 120px !important
+}
+
+.onError-bottom { /* 宽度调整*/
+	width: 118px;
+	background: url(../images/bottom-left-w.gif) left bottom no-repeat;
+}
+
+.onError-right {
+	background: url(../images/bottom-right-w.gif) right bottom no-repeat;
+}
+
+.onError-left {
+	background: url(../images/top-left-w.gif) left top no-repeat;
+}
+
+.onError-top-right {
+	background: url(../images/top-right-w.gif) right top no-repeat;
+	line-height: 13px !important;
+	padding: 11px 10px 16px 20px
+}
+
+
+/*编辑功能自适应调整*/
+.layui-col-lg5-w {
+
+	width: 47.18%;
+}
+
+.layui-col-lg11-w {
+	width: 94.18%;
+}

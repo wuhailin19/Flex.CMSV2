@@ -1,25 +1,11 @@
 ﻿{
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:44576",
-      "sslPort": 0
-    }
-  },
   "profiles": {
     "Flex.SingleWeb": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5233",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
+      "applicationUrl": "swagger",
+      "externalUrlConfiguration": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
