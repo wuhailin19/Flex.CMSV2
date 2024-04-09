@@ -13,13 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.Domain", "src\Flex.Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "src\UnitTest\UnitTest.csproj", "{87DE32E9-1A99-4832-B536-ADC63E04E013}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.Web", "src\Flex.Web\Flex.Web.csproj", "{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.Dapper", "src\Flex.Dapper\Flex.Dapper.csproj", "{9FD30C87-D642-4EDE-AA48-5F521B5DE157}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.EFSql", "src\Flex.EFSql\Flex.EFSql.csproj", "{B45F08CA-5683-47E3-879F-03DBEB3AC7FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flex.SqlSugarFactory", "src\Flex.SqlSugar\Flex.SqlSugarFactory.csproj", "{9CAD2969-41FC-4BEB-AD21-0E4E97608D10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.SqlSugarFactory", "src\Flex.SqlSugar\Flex.SqlSugarFactory.csproj", "{9CAD2969-41FC-4BEB-AD21-0E4E97608D10}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flex.WebApi", "src\Flex.WebApi\Flex.WebApi.csproj", "{4847E95E-3E1C-4A8E-8283-BDA9A710361F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flex.LayuiWeb", "src\Flex.LayuiWeb\Flex.LayuiWeb.csproj", "{0C4ECE83-0071-457F-874D-34BF97FA4283}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +49,6 @@ Global
 		{87DE32E9-1A99-4832-B536-ADC63E04E013}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87DE32E9-1A99-4832-B536-ADC63E04E013}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87DE32E9-1A99-4832-B536-ADC63E04E013}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3FD9717-D91B-403C-9AAC-F72AD0DE89B0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9FD30C87-D642-4EDE-AA48-5F521B5DE157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9FD30C87-D642-4EDE-AA48-5F521B5DE157}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FD30C87-D642-4EDE-AA48-5F521B5DE157}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,6 +61,14 @@ Global
 		{9CAD2969-41FC-4BEB-AD21-0E4E97608D10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CAD2969-41FC-4BEB-AD21-0E4E97608D10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CAD2969-41FC-4BEB-AD21-0E4E97608D10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4847E95E-3E1C-4A8E-8283-BDA9A710361F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4847E95E-3E1C-4A8E-8283-BDA9A710361F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4847E95E-3E1C-4A8E-8283-BDA9A710361F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4847E95E-3E1C-4A8E-8283-BDA9A710361F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C4ECE83-0071-457F-874D-34BF97FA4283}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C4ECE83-0071-457F-874D-34BF97FA4283}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C4ECE83-0071-457F-874D-34BF97FA4283}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C4ECE83-0071-457F-874D-34BF97FA4283}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
