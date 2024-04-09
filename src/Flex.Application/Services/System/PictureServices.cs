@@ -1,4 +1,5 @@
 ﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Core.Config;
 using Flex.Core.Helper.ImgFiles;
 using Flex.Core.Helper.UploadHelper;
 using Flex.Domain.Dtos.Picture;
@@ -31,7 +32,7 @@ namespace Flex.Application.Services
                 {
                     var result = UploadImgService(await DownloadAndSaveImageAsync(item));
                     if (result.IsSuccess)
-                        imgremoteresult.Add(new CatchRemoteImagesDto { source = item, url = result.Detail, state = "SUCCESS" });
+                        imgremoteresult.Add(new CatchRemoteImagesDto { source = item, url =  result.Detail, state = "SUCCESS" });
                     else
                         imgremoteresult.Add(new CatchRemoteImagesDto { source = item, url = result.Detail, state = "ERROR" });
                 }

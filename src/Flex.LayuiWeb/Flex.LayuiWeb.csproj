@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Areas\Normal\ViewController\" />
     <Folder Include="Areas\Normal\Views\" />
-    <Folder Include="Areas\System\Views\SiteManage\" />
     <Folder Include="wwwroot\111\222\" />
     <Folder Include="wwwroot\222333\" />
     <Folder Include="wwwroot\222\" />

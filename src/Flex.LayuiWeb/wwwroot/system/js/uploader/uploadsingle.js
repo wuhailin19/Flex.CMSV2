@@ -4,13 +4,12 @@
 ; function ___initUpload($elment, options) {
     // 当domReady的时候开始初始化
     //$(window).on('load', function () {
-
     var $wrap = $($elment);
     options = $.extend({
         single: false,
         isImage: true,
         autoupload: false,
-        serverUrl: '/api/Upload/UploadImage',
+        serverUrl: api + 'Upload/UploadImage',
         imageExtensions: 'jpg,jpeg,gif,png,bmp,svg',
         FileExtensions: 'txt,doc,docx,xls,xlsx,mp4,zip,pdf',
         valueElement: undefined
@@ -490,7 +489,7 @@
         var idsobj = options.valueElement == undefined ? $('#' + $elment + 'fujian') : $(options.valueElement);
         if (data.code == 200) {
             idsobj.val(data.msg);
-            
+
             tips.showSuccess('上传成功');
         }
         else

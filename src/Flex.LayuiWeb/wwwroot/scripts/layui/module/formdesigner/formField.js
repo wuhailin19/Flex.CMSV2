@@ -403,7 +403,7 @@ layui.define(['layer'], function (exports) {
                 disabled: false,
                 required: true,
                 document: '',
-                uploadUrl: '/api/Upload/UploadImage',
+                uploadUrl: api +'Upload/UploadImage',
             },
             file: {
                 id:'-1',
@@ -417,7 +417,7 @@ layui.define(['layer'], function (exports) {
                 disabled: false,
                 required: true,
                 document: '',
-                uploadUrl: '/api/Upload/UploadFile',
+                uploadUrl: api+'Upload/UploadFile',
             },
             textarea: {
                 id:'-1',

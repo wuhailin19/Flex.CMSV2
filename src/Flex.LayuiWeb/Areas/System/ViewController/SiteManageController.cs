@@ -7,6 +7,9 @@ namespace Flex.Web.Areas.System.Controllers.ViewController
     [Descriper(Name = "站点管理页面")]
     public class SiteManageController : Controller
     {
-
+        public IActionResult Index()
+        {
+            return View();
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Autofac.Core;
 using Flex.Application.Filters;
 using Flex.Core.Attributes;
+using Flex.Core.Config;
 using Flex.Domain.Dtos.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -83,7 +84,7 @@ namespace Flex.WebApi.SystemControllers
             var result = _pictureServices.UploadImgService(file);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
-            return Success(result.Detail);
+            return Success(ServerConfig.ImageServerUrl + result.Detail);
         }
 
         /// <summary>

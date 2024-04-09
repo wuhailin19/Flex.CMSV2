@@ -1,14 +1,33 @@
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.StaticFiles;
 using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var AssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddMvcOptions(options =>
+{
+    // 设置默认的响应字符编码为 UTF-8
+    options.OutputFormatters.OfType<StringOutputFormatter>().FirstOrDefault().SupportedEncodings.Add(Encoding.UTF8);
+});
 
 var app = builder.Build();
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    // 设置静态文件的 Content-Type
+    ContentTypeProvider = new FileExtensionContentTypeProvider
+    {
+        Mappings = { 
+            [".css"] = "text/css; charset=utf-8",
+            [".js"] = "text/js; charset=utf-8",
+        },
+        
+    }
+});
+
 
 app.UseRouting();
 

@@ -23954,6 +23954,7 @@
                         'onsuccess': callbacks["success"],
                         'onerror': callbacks["error"]
                     };
+                url = catcherUrlPrefix + url;
                 opt[catcherFieldName] = imgs;
                 //console.log(opt)
                 ajax.request(url, opt);
@@ -24498,7 +24499,7 @@
                 fd = new FormData(),
                 params = utils.serializeParam(me.queryCommandValue('serverparam')) || '',
                 //url = utils.formatUrl(actionUrl + (actionUrl.indexOf('?') == -1 ? '?' : '&') + params);
-                url = actionUrl;
+                url = urlPrefix + actionUrl;
 
             fd.append(fieldName, file, file.name || ('blob.' + file.type.substr('image/'.length)));
             fd.append('type', 'ajax');
@@ -25250,6 +25251,7 @@
                     }
 
                     domUtils.on(iframe, 'load', callback);
+                    console.log(utils.formatUrl(imageActionUrl + (imageActionUrl.indexOf('?') == -1 ? '?' : '&') + params))
                     form.action = utils.formatUrl(imageActionUrl + (imageActionUrl.indexOf('?') == -1 ? '?' : '&') + params);
                     form.submit();
                 });
