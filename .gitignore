@@ -392,3 +392,5 @@ FodyWeavers.xsd
 /src/Flex.EFSql/Migrations/20240318075716_Initmenudata.cs
 /src/Flex.EFSql/Migrations/SqlServerContextModelSnapshot.cs
 /src/Flex.EFSql/Migrations/SqlServerContextModelSnapshot.cs
+/src/Flex.WebApi/appsettings.json
+/src/Flex.LayuiWeb/appsettings.json
