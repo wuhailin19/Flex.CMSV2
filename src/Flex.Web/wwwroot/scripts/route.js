@@ -89,7 +89,8 @@ var ajaxHttp = function (options) {
 
 var httpTokenHeaders = {
     'Authorization': "Bearer " + sessionStorage.getItem('access_token'),
-    'Refresh_token': "Bearer " + sessionStorage.getItem('refresh_token')
+    'Refresh_token': "Bearer " + sessionStorage.getItem('refresh_token'),
+    'siteId': localStorage.getItem('siteId'),
 }
 
 var global_notice;

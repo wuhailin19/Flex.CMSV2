@@ -27,6 +27,7 @@ layui.config({
         Name: parent_json.Name,
         Description: parent_json.Description,
         TableName: parent_json.TableName,
+        SelfUse: parent_json.SelfUse,
         Id: parent_json.Id
     }
     //监听提交

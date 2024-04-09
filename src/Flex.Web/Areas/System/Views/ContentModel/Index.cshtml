@@ -24,11 +24,11 @@
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
-    <script type="text/html" id="statusPxy">
-        {{#if(d.IsLock==true){}}
-        <input type="checkbox" name="yyy" lay-skin="switch" lay-text="已锁|未锁" checked>
+    <script type="text/html" id="SelfUse">
+        {{#if(d.SelfUse==true){}}
+        <input type="checkbox" name="yyy" lay-skin="switch" lay-filter="usestatus" value="{{d.Id}}" lay-text="私有|公有" checked>
         {{#}else{}}
-        <input type="checkbox" name="yyy" lay-skin="switch" lay-text="已锁|未锁">
+        <input type="checkbox" name="yyy" lay-skin="switch" lay-filter="usestatus" value="{{d.Id}}" lay-text="私有|公有">
         {{#}}}
     </script>
     <script type="text/html" id="toolbarDemo">

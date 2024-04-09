@@ -4,6 +4,7 @@ using Flex.Core.Extensions;
 using Flex.Domain.Base;
 using Flex.Domain.Dtos.ContentModel;
 using Flex.Domain.Dtos.Field;
+using Flex.Domain.Dtos.System.ContentModel;
 using Flex.EFSql.Repositories;
 using Microsoft.AspNetCore.Http.Metadata;
 using System;
@@ -196,6 +197,7 @@ namespace Flex.Application.Services
             string oldtablename = contentmodel.TableName;
             contentmodel.Name = model.Name;
             contentmodel.Description = model.Description;
+            contentmodel.SelfUse = model.SelfUse;
             contentmodel.TableName =
                 "tbl_normal_" + model.TableName
                 .Replace("tbl_normal_", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
@@ -205,6 +207,24 @@ namespace Flex.Application.Services
                 string renametablesql = _sqlServerServices.ReNameTableName(oldtablename, contentmodel.TableName);
                 if (renametablesql.IsNotNullOrEmpty())
                     _unitOfWork.ExecuteSqlCommand(renametablesql);
+                responsity.Update(contentmodel);
+                await _unitOfWork.SaveChangesAsync();
+                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+            }
+        }
+        
+        public async Task<ProblemDetails<string>> QuickEdit(QuickEditContentModelDto model)
+        {
+            var responsity = _unitOfWork.GetRepository<SysContentModel>();
+            var contentmodel = await responsity.GetFirstOrDefaultAsync(m => m.Id == model.Id);
+            contentmodel.SelfUse = model.SelfUse;
+            UpdateIntEntityBasicInfo(contentmodel);
+            try
+            {
                 responsity.Update(contentmodel);
                 await _unitOfWork.SaveChangesAsync();
                 return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());

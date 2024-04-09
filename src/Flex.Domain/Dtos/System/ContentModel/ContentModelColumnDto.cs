@@ -18,6 +18,8 @@ namespace Flex.Domain.Dtos.ContentModel
         public string? Description { set; get; }
         [ToolAttr(NameAttr = "数据表名")]
         public string TableName { set; get; }
+        [ToolAttr(NameAttr = "是否私有",Toolbar = "#SelfUse")]
+        public bool SelfUse { set; get; }
         [ToolAttr(NameAttr = "操作", Toolbar = "#barDemo", AlignAttr = AlignEnum.Center, Fixed = AlignEnum.Right)]
         public controlType Operation { get; set; }
     }

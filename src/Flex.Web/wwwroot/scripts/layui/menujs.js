@@ -102,6 +102,10 @@ layui.use('element', function () {
         var content = $(".layui-tab-item.layui-show").html();
         $(".layui-tab-item.layui-show").html(content);
     })
+    $('.changesite span').click(function () {
+        top.window.location.reload();
+        localStorage.setItem('siteId', $(this).attr('data-siteid'));
+    })
     var msgindex;
     $('.rabbit_email').click(function () {
         layer.close(msgindex);

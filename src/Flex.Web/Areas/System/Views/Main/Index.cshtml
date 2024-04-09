@@ -48,11 +48,11 @@
                 </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;" layadmin-event="changesite" class="changesite" title="切换站点">
-                        <i class="layui-icon layui-icon-down"></i>
+                        <div class="choosesite">主站点</div><i class="layui-icon layui-icon-down"></i>
                     </a>
                     <dl class="layui-nav-child changesite">
-                        <dd><a href="" target="_blank">主站点</a></dd>
-                        <dd><a href="javascript:void(0);" data-type="changeChild">子站点</a></dd>
+                        <dd><span data-siteid="1">主站点</span></dd>
+                        <dd><span data-siteid="2">子站点</span></dd>
                     </dl>
                 </li>
             </ul>
@@ -97,7 +97,6 @@
             </div>
         </div>
     </div>
-    <script src="~/scripts/layui/layui.js"></script>
     <script src="~/scripts/layui/layui.js"></script>
     <script src="~/scripts/route.js?v=0.1" type="text/javascript"></script>
     <script src="~/system/js/main/index.js"></script>
