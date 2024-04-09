@@ -5,18 +5,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationFile>..\Flex.Web\bin\Debug\net6.0\Flex.Domain.xml</DocumentationFile>
+    <DocumentationFile>..\Flex.SingleWeb\bin\Debug\net6.0\Flex.Domain.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Flex.Core\Flex.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Admin\" />
-    <Folder Include="Repository\" />
-    <Folder Include="RolePermission\" />
-  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.27" />

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Flex.Web.Areas.System.Controllers.ViewController
+namespace Flex.LayuiWeb.Areas.System.Controllers.ViewController
 {
     [Area("System")]
     [Descriper(Name = "菜单页面")]

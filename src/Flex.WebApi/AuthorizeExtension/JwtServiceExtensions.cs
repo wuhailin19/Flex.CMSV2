@@ -3,13 +3,13 @@ using Flex.Application.Contracts.Authorize;
 using Flex.Application.Contracts.Exceptions;
 using Flex.Application.Jwt;
 using Flex.Core.Helper;
-using Flex.Web.Handlers;
+using Flex.WebApi.Handlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Flex.Web.Jwt
+namespace Flex.WebApi.Jwt
 {
     public static class JwtServiceExtensions
     {

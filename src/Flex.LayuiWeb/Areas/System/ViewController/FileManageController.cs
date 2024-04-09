@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Flex.Web.Areas.System.Controllers.ViewController
+namespace Flex.LayuiWeb.Areas.System.Controllers.ViewController
 {
     [Area("System")]
     [Descriper(Name = "文件管理页面")]

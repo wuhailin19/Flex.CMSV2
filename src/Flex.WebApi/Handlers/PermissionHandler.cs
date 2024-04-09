@@ -12,7 +12,7 @@ using ShardingCore.Extensions;
 using System.Collections.Concurrent;
 using System.Security.Claims;
 
-namespace Flex.Web.Handlers
+namespace Flex.WebApi.Handlers
 {
 
     public class PermissionHandler : AuthorizationHandler<PermissionRequirement>

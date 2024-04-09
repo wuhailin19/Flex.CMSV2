@@ -1,7 +1,7 @@
 ﻿using Flex.Core.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Flex.Web.Areas.System.Controllers.ViewController
+namespace Flex.LayuiWeb.Areas.System.Controllers.ViewController
 {
     [Area("System")]
     [Descriper(Name = "审核流程图页面")]

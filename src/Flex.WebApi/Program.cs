@@ -12,7 +12,7 @@ using Flex.Application.Extensions.Swagger;
 using Flex.Application.SetupExtensions.OrmInitExtension;
 using Flex.Core.Helper;
 using Flex.SqlSugarFactory;
-using Flex.Web.Jwt;
+using Flex.WebApi.Jwt;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
@@ -143,8 +143,6 @@ app.UseAuthentication();
 app.UseCors(WebCoreSetupExtension.MyAllowSpecificOrigins);
 app.UseAuthorization();
 app.UseEndpoints(options => {
-    options.MapControllerRoute(
-        name: "default",
-        pattern: "/api/{controller=Home}/{action=Index}/{id?}");
+    options.MapControllers();
 });
 app.Run();

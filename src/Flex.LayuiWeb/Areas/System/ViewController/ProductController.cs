@@ -1,7 +1,7 @@
 ﻿using Flex.Core.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Flex.Web.Areas.system.Controllers.ViewController
+namespace Flex.LayuiWeb.Areas.system.Controllers.ViewController
 {
     [Area("System")]
     [Descriper(Name = "项目管理页面")]
