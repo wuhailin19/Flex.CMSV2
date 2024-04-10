@@ -54,7 +54,7 @@ namespace Flex.Application.Services
                 await _unitOfWork.SaveChangesTranAsync();
 
                 await CreateModelHtmlString(contentmodel);
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
@@ -94,7 +94,7 @@ namespace Flex.Application.Services
             var fieldRepository = _unitOfWork.GetRepository<sysField>();
             var model = await fieldRepository.GetFirstOrDefaultAsync(m => m.Id == fieldQuickEditDto.Id);
             if (model is null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             if (fieldQuickEditDto.IsApiField.IsNotNullOrEmpty())
                 model.IsApiField = fieldQuickEditDto.IsApiField.CastTo<bool>();
             if (fieldQuickEditDto.IsSearch.IsNotNullOrEmpty())
@@ -106,11 +106,11 @@ namespace Flex.Application.Services
                 UpdateStringEntityBasicInfo(model);
                 fieldRepository.Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(),ex);
             }
         }
         public async Task<ProblemDetails<string>> Update(UpdateFieldDto updateFieldDto)
@@ -146,11 +146,11 @@ namespace Flex.Application.Services
                 await _unitOfWork.SaveChangesAsync();
 
                 //await CreateModelHtmlString(contentmodel);
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                throw;
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
         public async Task<UpdateFieldDto> GetFiledInfoById(string Id)
@@ -161,12 +161,12 @@ namespace Flex.Application.Services
         public async Task<ProblemDetails<string>> Delete(string Id)
         {
             if (Id.IsNullOrEmpty())
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
             var Ids = Id.ToList("-");
             var delete_list = responsity.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
             var softdels = new List<sysField>();
             if (delete_list.Count == 0)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             foreach (var item in delete_list)
             {
                 item.StatusCode = StatusCode.Deleted;
@@ -193,12 +193,12 @@ namespace Flex.Application.Services
 
                 await CreateModelHtmlString(contentmodel);
 
-                return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
+                return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
             }
-            catch
+            catch(Exception ex)
             {
                 await _unitOfWork.RollbackAsync();
-                throw;
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }
         }
     }

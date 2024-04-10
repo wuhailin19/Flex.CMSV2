@@ -2,6 +2,7 @@
 global using Flex.Application.Authorize;
 global using Flex.Application.Contracts.Basics.ResultModels;
 global using Flex.Application.Contracts.IServices;
+global using Flex.Application.Contracts.Aop;
 global using AutoMapper;
 global using Flex.Core;
 global using Flex.Core.Admin.Application;

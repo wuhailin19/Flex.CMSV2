@@ -1,19 +1,8 @@
 ﻿using Flex.Application.Contracts.Exceptions;
-using Flex.Application.SqlServerSQLString;
-using Flex.Core.Extensions;
-using Flex.Domain.Base;
 using Flex.Domain.Dtos.ContentModel;
 using Flex.Domain.Dtos.Field;
 using Flex.Domain.Dtos.System.ContentModel;
-using Flex.EFSql.Repositories;
-using Microsoft.AspNetCore.Http.Metadata;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Flex.Application.Services
 {
@@ -42,8 +31,8 @@ namespace Flex.Application.Services
         {
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == ModelId);
             if (contentmodel == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "没有选择有效模型");
-            return new ProblemDetails<string>(HttpStatusCode.OK, contentmodel.FormHtmlString);
+                return Problem<string>(HttpStatusCode.BadRequest, "没有选择有效模型");
+            return Problem<string>(HttpStatusCode.OK, contentmodel.FormHtmlString);
         }
         public async Task<ProblemDetails<string>> Add(AddContentModelDto model)
         {
@@ -56,12 +45,12 @@ namespace Flex.Application.Services
                 responsity.Insert(contentmodel);
                 _unitOfWork.ExecuteSqlCommand(_sqlServerServices.CreateContentTableSql(contentmodel.TableName));
                 await _unitOfWork.SaveChangesTranAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             { 
                 await _unitOfWork.RollbackAsync();
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataInsertError.GetEnumDescription(), ex);
             }
         }
         public async Task<ProblemDetails<string>> UpdateFormString(UpdateFormHtmlStringDto model)
@@ -182,12 +171,12 @@ namespace Flex.Application.Services
 
                 responsity.Update(contentmodel);
                 _unitOfWork.SaveChangesTran();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ex.Message);
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
         public async Task<ProblemDetails<string>> Update(UpdateContentModelDto model)
@@ -200,7 +189,7 @@ namespace Flex.Application.Services
             contentmodel.SelfUse = model.SelfUse;
             contentmodel.TableName =
                 "tbl_normal_" + model.TableName
-                .Replace("tbl_normal_", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                .Replace("tbl_normal_", "", RegexOptions.IgnoreCase);
             UpdateIntEntityBasicInfo(contentmodel);
             try
             {
@@ -209,11 +198,11 @@ namespace Flex.Application.Services
                     _unitOfWork.ExecuteSqlCommand(renametablesql);
                 responsity.Update(contentmodel);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
         
@@ -227,11 +216,11 @@ namespace Flex.Application.Services
             {
                 responsity.Update(contentmodel);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
 
@@ -239,11 +228,11 @@ namespace Flex.Application.Services
         {
             var responsity = _unitOfWork.GetRepository<SysContentModel>();
             if (Id.IsNullOrEmpty())
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
             var Ids = Id.ToList("-");
             var delete_list = responsity.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
             if (delete_list.Count == 0)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             try
             {
                 var softdels = new List<SysContentModel>();
@@ -259,11 +248,11 @@ namespace Flex.Application.Services
                     _unitOfWork.ExecuteSqlCommand(renametablesql);
                 responsity.Update(softdels);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
+                return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
             }
-            catch
+            catch(Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }
         }
     }

@@ -32,15 +32,15 @@ namespace Flex.Application.Services
                 {
                     var result = UploadImgService(await DownloadAndSaveImageAsync(item));
                     if (result.IsSuccess)
-                        imgremoteresult.Add(new CatchRemoteImagesDto { source = item, url =  result.Detail, state = "SUCCESS" });
+                        imgremoteresult.Add(new CatchRemoteImagesDto { source = item, url = result.Detail, state = "SUCCESS" });
                     else
                         imgremoteresult.Add(new CatchRemoteImagesDto { source = item, url = result.Detail, state = "ERROR" });
                 }
-                return new ProblemDetails<List<CatchRemoteImagesDto>>(HttpStatusCode.OK, imgremoteresult);
+                return Problem<List<CatchRemoteImagesDto>>(HttpStatusCode.OK, imgremoteresult);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                return Problem<List<CatchRemoteImagesDto>>(HttpStatusCode.OK, ErrorCodes.UploadFail.GetEnumDescription(), ex);
             }
         }
         public async Task<IFormFileCollection> DownloadAndSaveImageAsync(string imageUrl)
@@ -72,10 +72,10 @@ namespace Flex.Application.Services
         public ProblemDetails<string> UploadImgService(IFormFileCollection input)
         {
             if (input.Count == 0)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadFail.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadFail.GetEnumDescription());
             var file = input[0];
             if (!FileCheckHelper.IsAllowedExtension(file))
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadTypeDenied.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadTypeDenied.GetEnumDescription());
             string uniqueFileName = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString() + new Random().Next(1000, 9999).ToString();
             var extension = Path.GetExtension(file.FileName);
 
@@ -92,12 +92,12 @@ namespace Flex.Application.Services
                 //imgFile.DeafultImgPath = savepath;
                 //await _repository.InsertAsync(imgFile);
                 IsSuccess = true;
-                return new ProblemDetails<string>(HttpStatusCode.OK, imgrelationpath);
+                return Problem<string>(HttpStatusCode.OK, imgrelationpath);
             }
             catch (Exception ex)
             {
                 IsSuccess = false;
-                return new ProblemDetails<string>(HttpStatusCode.InternalServerError, ex.Message);
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.UploadFail.GetEnumDescription(), ex);
             }
             finally
             {

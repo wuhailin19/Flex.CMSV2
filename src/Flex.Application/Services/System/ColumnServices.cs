@@ -165,22 +165,22 @@ namespace Flex.Application.Services
             {
                 coreRespository.Insert(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataInsertError.GetEnumDescription(),ex);
             }
         }
         public async Task<ProblemDetails<string>> Delete(string Id)
         {
             var adminRepository = _unitOfWork.GetRepository<SysColumn>();
             if (Id.IsNullOrEmpty())
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
             var Ids = Id.ToList("-");
             var delete_list = adminRepository.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
             if (delete_list.Count == 0)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             try
             {
                 var softdels = new List<SysColumn>();
@@ -192,11 +192,11 @@ namespace Flex.Application.Services
                 }
                 adminRepository.Update(softdels);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
+                return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
             }
-            catch
+            catch(Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(),ex);
             }
         }
         public async Task<ProblemDetails<string>> UpdateColumn(UpdateColumnDto updateColumnDto)
@@ -209,11 +209,11 @@ namespace Flex.Application.Services
             {
                 coreRespository.Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
 

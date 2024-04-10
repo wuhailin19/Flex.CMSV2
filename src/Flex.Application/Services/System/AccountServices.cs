@@ -1,4 +1,6 @@
-﻿using Flex.EFSql.UnitOfWork;
+﻿using Flex.Application.Aop;
+using Flex.Application.Contracts.Exceptions;
+using Flex.EFSql.UnitOfWork;
 
 namespace Flex.Application.Services
 {
@@ -34,20 +36,20 @@ namespace Flex.Application.Services
                 StringObj = EncryptHelper.RsaDecrypt(StringObj, RSAHepler.RSAPrivateKey);
                 return Problem<UserData>(HttpStatusCode.OK, StringObj);
             }
-            catch
+            catch (Exception ex)
             {
-                return Problem<UserData>(HttpStatusCode.RedirectKeepVerb, "解析失败，重试");
+                return Problem<UserData>(HttpStatusCode.InternalServerError, "解析失败，重试", ex);
             }
         }
         private async Task<ProblemDetails<UserData>> CheckPasswordAsync(SysAdmin admin, string Password)
         {
             if (admin is null)
             {
-                return Problem<UserData>(HttpStatusCode.BadRequest, "用户名或密码错误");
+                return Problem<UserData>(HttpStatusCode.BadRequest, ErrorCodes.AccountOrPwdWrong.GetEnumDescription());
             }
             if (admin.Islock && !admin.IsSystem)
             {
-                return Problem<UserData>(HttpStatusCode.Locked, "账号已锁定");
+                return Problem<UserData>(HttpStatusCode.Locked, ErrorCodes.AccountLocked.GetEnumDescription());
             }
             var result = DecryptStringObj(Password);
             if (result.IsSuccess)
@@ -78,7 +80,7 @@ namespace Flex.Application.Services
                 }
                 else
                 {
-                    return Problem<UserData>(HttpStatusCode.BadRequest, "用户名或密码错误");
+                    return Problem<UserData>(HttpStatusCode.BadRequest, ErrorCodes.AccountOrPwdWrong.GetEnumDescription());
                 }
             }
             return Problem<UserData>(HttpStatusCode.OK, "");
@@ -93,7 +95,7 @@ namespace Flex.Application.Services
             if (adminLoginDto.CodeId.IsNotNullOrEmpty())
                 _caching.Remove(adminLoginDto.CodeId);//删除验证码
             if (adminLoginDto.Account.IsNullOrEmpty() || adminLoginDto.Password.IsNullOrEmpty())
-                return Problem<UserData>(HttpStatusCode.BadRequest, "用户名或密码为空");
+                return Problem<UserData>(HttpStatusCode.BadRequest, ErrorCodes.AccountOrPwdEmpty.GetEnumDescription());
             var admin_unit = _unitOfWork.GetRepository<SysAdmin>();
             var Account = string.Empty;
             var Password = string.Empty;
@@ -105,10 +107,10 @@ namespace Flex.Application.Services
             Account = result.Detail;
             if (!admin_unit.Exists(m => m.Account == Account))
             {
-                return Problem<UserData>(HttpStatusCode.BadRequest, "用户名或密码错误");
+                return Problem<UserData>(HttpStatusCode.BadRequest, ErrorCodes.AccountOrPwdWrong.GetEnumDescription());
             }
             var admin = await admin_unit.GetFirstOrDefaultAsync(m => m.Account == Account, null, null, true, false);
-            
+
             result = await CheckPasswordAsync(admin, adminLoginDto.Password).ConfigureAwait(false);
             if (!result.IsSuccess)
             {

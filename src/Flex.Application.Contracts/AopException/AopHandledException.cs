@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Core.Extensions;
 
-namespace Flex.Application.Aop
+namespace Flex.Application.Contracts.Aop
 {
     /// <summary>
     /// 使用自定义的Exception，用于在aop中已经处理过的异常，在其他地方不用重复记录日志
@@ -24,6 +25,12 @@ namespace Flex.Application.Aop
         {
             this.InnerHandledException = innerException;
             this.ErrorMessage = msg;
+        }
+        //带有一个字符串参数和一个内部异常信息参数的构造函数
+        public AopHandledException(ErrorCodes statuscode, Exception innerException) 
+        {
+            this.InnerHandledException = innerException;
+            this.ErrorMessage = statuscode.GetEnumDescription();
         }
         public string GetError()
         {

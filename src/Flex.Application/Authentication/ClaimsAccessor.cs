@@ -1,5 +1,7 @@
-﻿using Flex.Core.Extensions;
+﻿using Flex.Application.Contracts.Aop;
+using Flex.Core.Extensions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 
 namespace Flex.Application.Authorize
@@ -13,18 +15,16 @@ namespace Flex.Application.Authorize
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public ClaimsPrincipal UserPrincipal
+        private ClaimsPrincipal UserPrincipal
         {
             get
             {
                 ClaimsPrincipal user = _httpContextAccessor.HttpContext.User;
                 if (user.Identity?.IsAuthenticated ?? false)
-                {
                     return user;
-                }
                 else
                 {
-                    throw new Exception("用户未认证");
+                    return null;
                 }
             }
         }
@@ -66,6 +66,14 @@ namespace Flex.Application.Authorize
             get
             {
                 return UserPrincipal.Claims.First(x => x.Type == UserClaimType.RoleDisplayName).Value;
+            }
+        }
+
+        public bool IsAuthenticated
+        {
+            get
+            {
+                return this.UserPrincipal != null;
             }
         }
     }

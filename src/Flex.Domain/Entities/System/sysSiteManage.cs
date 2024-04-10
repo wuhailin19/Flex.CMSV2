@@ -21,6 +21,10 @@ namespace Flex.Domain.Entities.System
         /// </summary>
         public string TablePrefix { set; get; }
         /// <summary>
+        /// 路由前缀
+        /// </summary>
+        public string RoutePrefix { set; get; }
+        /// <summary>
         /// 选择复制站点，为0则不复制
         /// </summary>
         public int CopySiteId { set; get; } = 0;

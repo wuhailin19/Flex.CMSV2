@@ -95,17 +95,7 @@ layui.config({
     var tree = layui.tree;
 
     function formRender() {
-        form.val("formTest", {
-            'Name': parent_json.Name
-            , 'Id': parent_json.Id
-            , 'ParentID': parent_json.ParentId
-            , 'ModelId': parent_json.ModelId
-            , 'ColumnImage': parent_json.ColumnImage
-            , 'ColumnUrl': parent_json.ColumnUrl
-            , 'SeoTitle': parent_json.SeoTitle
-            , 'SeoKeyWord': parent_json.SeoKeyWord
-            , 'SeoDescription': parent_json.SeoDescription
-        });
+        form.val("formTest", parent_json);
     }
     formRender();
 

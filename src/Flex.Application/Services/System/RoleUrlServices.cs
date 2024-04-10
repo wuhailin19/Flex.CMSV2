@@ -122,11 +122,11 @@ namespace Flex.Application.Services
                     await _unitOfWork.GetRepository<SysRoleUrl>().InsertAsync(menuapis);
                     await _unitOfWork.SaveChangesAsync();
                 }
-                return new ProblemDetails<string>(HttpStatusCode.OK, "共添加" + menuapis.Count + "条数据");
+                return Problem<string>(HttpStatusCode.OK, "共添加" + menuapis.Count + "条数据");
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ex.Message);
+                return Problem<string>(HttpStatusCode.BadRequest, ex.Message);
             }
         }
     }

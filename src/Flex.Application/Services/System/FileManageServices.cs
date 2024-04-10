@@ -8,18 +8,22 @@ using SkiaSharp;
 
 namespace Flex.Application.Services
 {
-    public class FileManageServices : IFileManageServices
+    public class FileManageServices : BaseService, IFileManageServices
     {
         private IFileProvider _fileProvider;
         IWebHostEnvironment _env;
         private readonly IHttpContextAccessor _Context;
 
-        public FileManageServices(IHttpContextAccessor Context, IWebHostEnvironment env, IFileProvider fileProvider)
+
+        public FileManageServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims
+            , IHttpContextAccessor Context, IWebHostEnvironment env, IFileProvider fileProvider)
+            : base(unitOfWork, mapper, idWorker, claims)
         {
             _Context = Context;
             _env = env;
             _fileProvider = fileProvider;
         }
+
         private Func<string, string> CreatePhysicalPathResolver(HttpContext context, bool isDirRequest)
         {
             string schema = context.Request.IsHttps ? "https" : "http";
@@ -41,16 +45,16 @@ namespace Flex.Application.Services
             var dirpath = _env.WebRootPath + directoryQueryDto.path.TrimEnd('/') + "/" + directoryQueryDto.folder;
             if (Directory.Exists(dirpath))
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "文件夹已存在");
+                return Problem<string>(HttpStatusCode.BadRequest, "文件夹已存在");
             }
             try
             {
                 Directory.CreateDirectory(dirpath);
-                return new ProblemDetails<string>(HttpStatusCode.OK, "创建成功");
+                return Problem<string>(HttpStatusCode.OK, "创建成功");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "文件夹创建失败");
+                return Problem<string>(HttpStatusCode.InternalServerError, "文件夹创建失败", ex);
             }
         }
 
@@ -62,11 +66,11 @@ namespace Flex.Application.Services
             {
                 if (File.Exists(newpath))
                 {
-                    return new ProblemDetails<string>(HttpStatusCode.IMUsed, "文件已存在，是否覆盖");
+                    return Problem<string>(HttpStatusCode.IMUsed, "文件已存在，是否覆盖");
                 }
                 if (Directory.Exists(newpath))
                 {
-                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, "文件夹已存在，需删除目标文件夹或重命名");
+                    return Problem<string>(HttpStatusCode.BadRequest, "文件夹已存在，需删除目标文件夹或重命名");
                 }
             }
             try
@@ -75,11 +79,11 @@ namespace Flex.Application.Services
                     Directory.Move(oldpath, newpath);
                 else
                     File.Move(oldpath, newpath, directoryQueryDto.Isoverride);
-                return new ProblemDetails<string>(HttpStatusCode.OK, "移动成功");
+                return Problem<string>(HttpStatusCode.OK, "移动成功");
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "移动失败");
+                return Problem<string>(HttpStatusCode.InternalServerError, "移动失败", ex);
             }
         }
 
@@ -89,7 +93,7 @@ namespace Flex.Application.Services
             var newpath = _env.WebRootPath + renameDirectoryQueryDto.folder.TrimEnd('/') + "/" + renameDirectoryQueryDto.newName;
             if (!Directory.Exists(olddirpath) && !File.Exists(olddirpath))
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "文件夹或文件不存在");
+                return Problem<string>(HttpStatusCode.BadRequest, "文件夹或文件不存在");
             }
             try
             {
@@ -98,11 +102,11 @@ namespace Flex.Application.Services
                 else
                     File.Move(olddirpath, newpath);
 
-                return new ProblemDetails<string>(HttpStatusCode.OK, "修改成功");
+                return Problem<string>(HttpStatusCode.OK, "修改成功");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "修改失败");
+                return Problem<string>(HttpStatusCode.InternalServerError, "修改失败", ex);
             }
         }
 
@@ -111,16 +115,16 @@ namespace Flex.Application.Services
             var olddirpath = _env.WebRootPath + changeFileContentQueryDto.path;
             if (!File.Exists(olddirpath))
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "文件不存在");
+                return Problem<string>(HttpStatusCode.BadRequest, "文件不存在");
             }
             try
             {
                 File.WriteAllText(olddirpath, changeFileContentQueryDto.content);
-                return new ProblemDetails<string>(HttpStatusCode.OK, "保存成功");
+                return Problem<string>(HttpStatusCode.OK, "保存成功");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "保存失败");
+                return Problem<string>(HttpStatusCode.InternalServerError, "保存失败", ex);
             }
         }
 

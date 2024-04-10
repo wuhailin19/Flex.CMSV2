@@ -12,6 +12,10 @@
         public string? SiteDesc { set; get; }
         [ToolAttr(NameAttr = "数据表前缀")]
         public string TablePrefix { set; get; }
+        [ToolAttr(HideFiled =true)]
+        public string CopySiteId { set; get; }
+        [ToolAttr(HideFiled = true)]
+        public string RoutePrefix { set; get; }
         [ToolAttr(NameAttr = "操作", Toolbar = "#barDemo", AlignAttr = AlignEnum.Center, Fixed = AlignEnum.Right)]
         public controlType Operation { get; set; }
     }

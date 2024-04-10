@@ -12,5 +12,6 @@ namespace Flex.Application.Authorize
         int UserRole { get; }
         string UserRoleDisplayName { get; }
         bool IsSystem { get; }
+        bool IsAuthenticated { get; }
     }
 }

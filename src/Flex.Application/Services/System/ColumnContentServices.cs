@@ -85,14 +85,14 @@ namespace Flex.Application.Services
         public async Task<ProblemDetails<int>> Add(Hashtable table, bool IsReview = false)
         {
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ad)))
-                return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.NoOperationPermission.GetEnumDescription());
+                return Problem<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
-                return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataNeedReview.GetEnumDescription());
+                return Problem<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataNeedReview.GetEnumDescription());
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
-                return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return Problem<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataUpdateError.GetEnumDescription());
             table["ParentId"] = table["ParentId"].ToInt();
 
             var filedmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
@@ -148,13 +148,13 @@ namespace Flex.Application.Services
                 var result = _sqlsugar.Db.Ado.GetScalar(builder.ToString(), parameters).ToInt();
                 if (result > 0)
                 {
-                    return new ProblemDetails<int>(HttpStatusCode.OK, result, ErrorCodes.DataInsertSuccess.GetEnumDescription());
+                    return Problem(HttpStatusCode.OK, result, ErrorCodes.DataInsertSuccess.GetEnumDescription());
                 }
-                return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataInsertError.GetEnumDescription());
+                return Problem(HttpStatusCode.BadRequest, 0, ErrorCodes.DataInsertError.GetEnumDescription());
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                return Problem<int>(HttpStatusCode.InternalServerError, ErrorCodes.DataInsertError.GetEnumDescription(), ex);
             }
         }
         private async Task<bool> CheckPermission(int ParentId, string permissioncate)
@@ -196,23 +196,22 @@ namespace Flex.Application.Services
         public async Task<ProblemDetails<string>> Delete(int ParentId, string Id)
         {
             if (!await CheckPermission(ParentId, nameof(DataPermissionDto.dp)))
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             string Ids = Id.Replace("-", ",");
             try
             {
                 _unitOfWork.ExecuteSqlCommand(_sqlTableServices.DeleteContentTableData(contentmodel.TableName, Ids));
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Split(',').Count()}条数据");
+                return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Split(',').Count()}条数据");
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }
         }
-
     }
 }
