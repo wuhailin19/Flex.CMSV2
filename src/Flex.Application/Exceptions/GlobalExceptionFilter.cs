@@ -58,7 +58,7 @@ namespace Flex.Application.Exceptions
                 Type = type,
                 Instance = requestUrl
             };
-            context.Result = new ObjectResult(new Message<ExceptionMsg> { code = status, content = problemDetails, msg = exceptionmodel.detial }) { StatusCode = status };
+            context.Result = new ObjectResult(new Message<ExceptionMsg> { code = status, content = problemDetails, msg = exceptionmodel.title }) { StatusCode = status };
             context.ExceptionHandled = true;
         }
         public override Task OnExceptionAsync(ExceptionContext context)

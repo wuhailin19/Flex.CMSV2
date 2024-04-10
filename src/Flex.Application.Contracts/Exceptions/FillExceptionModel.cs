@@ -27,14 +27,14 @@ namespace Flex.Application.Contracts.Exceptions
                 }
                 else
                 {
-                    title = aopex.ErrorMessage;
-                    detial = aopex.ErrorMessage + $"<br/>请联系管理员处理，<br/>本次故障Id：{requestId}";
+                    title = aopex.ExceptionTitle;
+                    detial = $"请联系管理员处理，本次故障Id：{requestId}";
                 }
             }
             else if (exception is WarningHandledException)
             {
                 var aopex = (WarningHandledException)exception;
-                title = aopex.ErrorMessage;
+                title = aopex.ExceptionTitle;
                 detial = aopex.ErrorMessage;
                 logLevel = LogLevel.Warning;
             }

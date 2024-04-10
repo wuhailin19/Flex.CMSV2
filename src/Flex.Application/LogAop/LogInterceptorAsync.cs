@@ -31,16 +31,18 @@ namespace Flex.Application.Aop
             }
             catch (AopHandledException ex)
             {
-                throw;
+                LogExecuteError(ex, invocation, out string msg);
+                throw new AopHandledException(ex.ExceptionTitle, msg, ex);
             }
             catch (WarningHandledException ex)
             {
-                throw;
+                LogExecuteError(ex, invocation, out string msg);
+                throw new WarningHandledException(ex.ExceptionTitle, msg, ex);
             }
             catch (Exception ex)
             {
                 LogExecuteError(ex, invocation, out string msg);
-                throw new AopHandledException(msg, ex);
+                throw new AopHandledException(string.Empty, msg, ex);
             }
         }
 
@@ -54,20 +56,22 @@ namespace Flex.Application.Aop
             {
                 //调用业务方法
                 invocation.Proceed();
-                LogExecuteInfo(invocation, JsonHelper.ToJson(invocation.ReturnValue,NamingType.CamelCase,false));//记录日志
+                LogExecuteInfo(invocation, JsonHelper.ToJson(invocation.ReturnValue, NamingType.CamelCase, false));//记录日志
             }
             catch (AopHandledException ex)
             {
-                throw;
+                LogExecuteError(ex, invocation, out string msg);
+                throw new AopHandledException(ex.ExceptionTitle, msg, ex);
             }
             catch (WarningHandledException ex)
             {
-                throw;
+                LogExecuteError(ex, invocation, out string msg);
+                throw new WarningHandledException(ex.ExceptionTitle, msg, ex);
             }
             catch (Exception ex)
             {
                 LogExecuteError(ex, invocation, out string msg);
-                throw new AopHandledException(msg, ex);
+                throw new AopHandledException(string.Empty, msg, ex);
             }
         }
 
@@ -95,16 +99,18 @@ namespace Flex.Application.Aop
             }
             catch (AopHandledException ex)
             {
-                throw;
+                LogExecuteError(ex, invocation, out string msg);
+                throw new AopHandledException(ex.ExceptionTitle, msg, ex);
             }
             catch (WarningHandledException ex)
             {
-                throw;
+                LogExecuteError(ex, invocation, out string msg);
+                throw new WarningHandledException(ex.ExceptionTitle, msg, ex);
             }
             catch (Exception ex)
             {
-                LogExecuteError(ex, invocation,out string msg);
-                throw new AopHandledException(msg, ex);
+                LogExecuteError(ex, invocation, out string msg);
+                throw new AopHandledException(string.Empty, msg, ex);
             }
         }
 
@@ -140,7 +146,7 @@ namespace Flex.Application.Aop
         private void LogExecuteError(Exception ex, IInvocation invocation, out string msg)
         {
             //Console.WriteLine(ex.Message, "执行{0}时发生错误！", GetMethodInfo(invocation));
-            msg = _env.IsDevelopment() ? GetMethodInfo(invocation): "执行操作时发生错误！";
+            msg = _env.IsDevelopment() ? GetMethodInfo(invocation) : "执行操作时发生错误！";
             //_logger.Log(LogLevel.Error, "执行{0}时发生错误！", string.Empty);
         }
         #endregion

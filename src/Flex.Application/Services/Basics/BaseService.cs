@@ -14,8 +14,8 @@ namespace Flex.Application.Services
             if (statusCode == HttpStatusCode.OK)
                 return new ProblemDetails<T>(statusCode, default, detail);
             if (statusCode == HttpStatusCode.InternalServerError)
-                throw new AopHandledException(detail);
-            throw new WarningHandledException(detail);
+                throw new AopHandledException(detail, exception);
+            throw new WarningHandledException(detail, exception);
         }
         protected ProblemDetails<T> Problem<T>(HttpStatusCode? statusCode, T Content, string detail = null) => new ProblemDetails<T>(statusCode, Content, detail);
         public BaseService(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims)
