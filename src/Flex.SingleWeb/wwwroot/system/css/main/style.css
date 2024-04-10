@@ -7,6 +7,9 @@
 .layui-nav-item a.changesite { display: flex; }
 .changesite a { padding: 0 20px !important; }
 .changesite .layui-nav-more { display: none; }
+.changesitebox{color:#000;min-width:50px;}
+.changesitebox dd{text-align:center;cursor:pointer;}
+.changesitebox dd:hover{background-color:#eee;}
 .email_extension { font-size: 22px !important; position: relative; }
 .email_extension .email_num { color: #fff !important; font-size: 10px; position: absolute; background-color: red; width: 20px; height: 20px; border-radius: 10px; right: -10px; top: -10px; line-height: 20px; text-align: center; }
 .messagebox { position: absolute; left: 50%; background: #fff; z-index: 10000; border: solid #f1f1f1; display: none; }

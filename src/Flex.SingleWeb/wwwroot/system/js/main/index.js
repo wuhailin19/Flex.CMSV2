@@ -1,10 +1,52 @@
 ﻿var elment;
 var layer;
-
+var sitestr = '';
+ajaxHttp({
+    url: api + 'SiteManage/ListAsync',
+    type: 'Get',
+    datatype: 'json',
+    async: false,
+    success: function (json) {
+        if (json.code == 200) {
+            currentinfo = json.content;
+            if (currentinfo.length > 0) {
+                for (var i = 0; i < currentinfo.length; i++) {
+                    sitestr += '<dd data-siteid="' + currentinfo[i].Id + '">' + currentinfo[i].SiteName + '</dd>';
+                }
+                if (!localStorage.getItem('siteId'))
+                    localStorage.setItem('siteId', currentinfo[0].Id);
+                if (!localStorage.getItem('siteName'))
+                    localStorage.setItem('siteName', currentinfo[0].SiteName);
+            }
+            else {
+                localStorage.setItem('siteName', "选择站点");
+            }
+        } else {
+            tips.showFail(json.msg);
+        }
+        $('.layui-nav-child.changesitebox').html(sitestr);
+    }
+})
 layui.use(['element', 'layer'], function () {
     elment = layui.element;
     layer = layui.layer;
+
+    var sitename = localStorage.getItem('siteName');
+    $('.choosesite').text(sitename);
     Init();
+})
+
+$('.changesitebox dd').click(function () {
+    var siteid = $(this).attr('data-siteid');
+    var sitename = $(this).text();
+
+    console.log(siteid)
+    console.log(sitename)
+    localStorage.removeItem('siteId');
+    localStorage.removeItem('siteName');
+    localStorage.setItem('siteId', siteid);
+    localStorage.setItem('siteName', sitename);
+    window.location.reload();
 })
 $('.loginout').on('click', function () {
     sessionStorage.removeItem('access_token');
@@ -14,7 +56,7 @@ $('.loginout').on('click', function () {
 function GetMsgCount() {
     ajaxHttp({
         url: api + "Message/GetNotReadMessageCount",
-        type:'Get',
+        type: 'Get',
         dataType: 'json',
         success: function (res) {
             if (res.code == 200) {
