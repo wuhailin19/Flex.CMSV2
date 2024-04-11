@@ -146,7 +146,7 @@ namespace Flex.Application.Aop
         private void LogExecuteError(Exception ex, IInvocation invocation, out string msg)
         {
             //Console.WriteLine(ex.Message, "执行{0}时发生错误！", GetMethodInfo(invocation));
-            msg = _env.IsDevelopment() ? GetMethodInfo(invocation) : "执行操作时发生错误！";
+            msg = _env.IsDevelopment() ? GetMethodInfo(invocation) : "操作失败，请根据事件ID进行错误追踪";
             //_logger.Log(LogLevel.Error, "执行{0}时发生错误！", string.Empty);
         }
         #endregion

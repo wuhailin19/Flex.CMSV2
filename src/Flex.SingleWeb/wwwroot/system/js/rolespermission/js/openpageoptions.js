@@ -122,12 +122,12 @@
         //iframe窗
         layer.open({
             type: 2,
-            title: '数据权限',
+            title: '站点权限',
             shadeClose: true,
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: routePageLink + 'DataPermission',
+            content: routePageLink + 'SitePermission',
             end: function () {
             }
         });

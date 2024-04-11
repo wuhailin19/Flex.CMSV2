@@ -1,7 +1,9 @@
 ﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Core.Config;
 using Flex.Domain.Dtos.ContentModel;
 using Flex.Domain.Dtos.Field;
 using Flex.Domain.Dtos.System.ContentModel;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
 namespace Flex.Application.Services
@@ -14,17 +16,19 @@ namespace Flex.Application.Services
         {
             _sqlServerServices = sqlServerServices;
         }
+        //获取本站或者公有的模型
+        protected Expression<Func<SysContentModel, bool>> expression = m => m.SiteId == CurrentSiteInfo.SiteId || !m.SelfUse;
         public async Task<IEnumerable<ContentModelColumnDto>> ListAsync()
         {
             var responsity = _unitOfWork.GetRepository<SysContentModel>();
-            var list = await responsity.GetAllAsync();
+            var list = await responsity.GetAllAsync(expression);
             return _mapper.Map<List<ContentModelColumnDto>>(list);
         }
 
         public async Task<IEnumerable<ContentSelectItemDto>> GetSelectItem()
         {
             var responsity = _unitOfWork.GetRepository<SysContentModel>();
-            var list = await responsity.GetAllAsync();
+            var list = await responsity.GetAllAsync(expression);
             return _mapper.Map<List<ContentSelectItemDto>>(list);
         }
         public async Task<ProblemDetails<string>> GetFormHtml(int ModelId)
@@ -42,13 +46,16 @@ namespace Flex.Application.Services
             _unitOfWork.SetTransaction();
             try
             {
+                if (CurrentSiteInfo.SiteId == 0)
+                    return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+                contentmodel.SiteId = CurrentSiteInfo.SiteId;
                 responsity.Insert(contentmodel);
                 _unitOfWork.ExecuteSqlCommand(_sqlServerServices.CreateContentTableSql(contentmodel.TableName));
                 await _unitOfWork.SaveChangesTranAsync();
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
-            { 
+            {
                 await _unitOfWork.RollbackAsync();
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataInsertError.GetEnumDescription(), ex);
             }
@@ -205,7 +212,7 @@ namespace Flex.Application.Services
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
-        
+
         public async Task<ProblemDetails<string>> QuickEdit(QuickEditContentModelDto model)
         {
             var responsity = _unitOfWork.GetRepository<SysContentModel>();
@@ -250,7 +257,7 @@ namespace Flex.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }

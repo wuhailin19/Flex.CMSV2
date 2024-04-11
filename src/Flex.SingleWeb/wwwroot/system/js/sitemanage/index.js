@@ -130,6 +130,9 @@ layui.use(['table','form'], function () {
                     return;
                 //获取所有选中节点id数组
                 var nodeIds = defaultOptions.getCheckedId(data);
+
+                var currentsiteid = localStorage.getItem('siteId');
+                
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
                     ajaxHttp({
                         url: routeLink + nodeIds,
@@ -138,6 +141,11 @@ layui.use(['table','form'], function () {
                         success: function (json) {
                             if (json.code == 200) {
                                 tips.showSuccess(json.msg);
+                                if (('-' + nodeIds + '-').indexOf('-' + currentsiteid + '-') > -1) {
+                                    localStorage.removeItem('siteId');
+                                    localStorage.removeItem('siteName');
+                                    top.initSiteList();
+                                }
                                 // 删除
                                 delete_index = [];
                                 defaultOptions.callBack(insTb);
@@ -161,6 +169,7 @@ layui.use(['table','form'], function () {
         switch (obj.event) {
             case 'del':
                 let indexid = obj.data[defaultOptions.IdName];
+                var currentsiteid = localStorage.getItem('siteId');
                 layer.confirm('确定删除本行么', function (index) {
                     ajaxHttp({
                         url: routeLink +indexid,
@@ -168,6 +177,11 @@ layui.use(['table','form'], function () {
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {
+                                if (('-' + indexid + '-').indexOf('-' + currentsiteid + '-') > -1) {
+                                    localStorage.removeItem('siteId');
+                                    localStorage.removeItem('siteName');
+                                    top.initSiteList();
+                                }
                                 tips.showSuccess(json.msg);
                                 // 删除
                                 delete_index = [];

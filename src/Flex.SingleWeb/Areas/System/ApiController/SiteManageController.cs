@@ -1,5 +1,6 @@
 ﻿using Autofac.Core;
 using Flex.Core.Attributes;
+using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ContentModel;
 using Flex.Domain.Dtos.Field;
 using Flex.Domain.Dtos.Menu;
@@ -32,6 +33,15 @@ namespace Flex.SingleWeb.Areas.System.ApiController
         public async Task<string> ListAsync()
         {
             return Success((await _Services.ListAsync()));
+        }
+
+        [HttpGet("SiteManageListAsync")]
+        [Descriper(Name = "站点数据权限列表页")]
+        public async Task<string> SiteManageListAsync()
+        {
+            var list = (await _Services.ListAsync()).ToList();
+            list.Add(new SiteManageColumnDto() { Id = -10000, SiteName = "快捷选择" });
+            return Success(list.OrderBy(m => m.Id));
         }
 
         [Descriper(Name = "新增站点")]

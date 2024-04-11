@@ -1,8 +1,10 @@
 ﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Core.Config;
+using Flex.Core.Extensions;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.Role;
 using Newtonsoft.Json;
-using ShardingCore.Extensions;
+using System.Linq.Expressions;
 
 namespace Flex.Application.Services
 {
@@ -17,6 +19,9 @@ namespace Flex.Application.Services
             _roleServices = roleServices;
             _systemIndexSetServices = systemIndexSetServices;
         }
+
+        //获取本站或者公有的模型
+        protected Expression<Func<SysColumn, bool>> expression = m => m.SiteId == CurrentSiteInfo.SiteId;
 
         /// <summary>
         /// 用于递归
@@ -40,7 +45,7 @@ namespace Flex.Application.Services
         public async Task<IEnumerable<TreeColumnListDto>> GetTreeColumnListDtos()
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
-            var list = (await coreRespository.GetAllAsync()).OrderBy(m => m.OrderId).ToList();
+            var list = (await coreRespository.GetAllAsync(expression)).OrderBy(m => m.OrderId).ToList();
             if (!_claims.IsSystem)
             {
             }
@@ -60,7 +65,7 @@ namespace Flex.Application.Services
         public async Task<IEnumerable<TreeColumnListDto>> GetManageTreeListAsync()
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
-            var list = (await coreRespository.GetAllAsync()).OrderBy(m => m.OrderId).ToList();
+            var list = (await coreRespository.GetAllAsync(expression)).OrderBy(m => m.OrderId).ToList();
             if (!_claims.IsSystem)
             {
                 var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
@@ -80,7 +85,7 @@ namespace Flex.Application.Services
         public async Task<IEnumerable<TreeColumnListDto>> GetTreeSelectListDtos()
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
-            var list = (await coreRespository.GetAllAsync()).OrderBy(m => m.OrderId).ToList();
+            var list = (await coreRespository.GetAllAsync(expression)).OrderBy(m => m.OrderId).ToList();
             if (!_claims.IsSystem)
             {
             }
@@ -99,7 +104,9 @@ namespace Flex.Application.Services
             var repository = _unitOfWork.GetRepository<SysColumn>();
             if (_claims.IsSystem)
             {
-                lists = _mapper.Map<List<TreeColumnListDto>>(await repository.GetAllAsync(m => m.ModelId != 0));
+                var currentexpression = expression;
+                currentexpression = currentexpression.And(m => m.ModelId != 0);
+                lists = _mapper.Map<List<TreeColumnListDto>>(await repository.GetAllAsync(currentexpression));
             }
             else
             {
@@ -113,11 +120,11 @@ namespace Flex.Application.Services
             switch (mode)
             {
                 case "5":
-                    if (systemindexset.Shortcut.IsEmpty())
+                    if (systemindexset.Shortcut.IsNullOrEmpty())
                         return new List<TreeColumnListDto>();
                     return lists.Where(m => systemindexset.Shortcut.ToList().Contains(m.id.ToString()));
                 case "6":
-                    if (systemindexset.Shortcut.IsEmpty())
+                    if (systemindexset.Shortcut.IsNullOrEmpty())
                         return lists;
                     return lists.Where(m => !systemindexset.Shortcut.ToList().Contains(m.id.ToString()));
             }
@@ -126,7 +133,7 @@ namespace Flex.Application.Services
         public async Task<IEnumerable<ColumnListDto>> ListAsync()
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
-            var list = (await coreRespository.GetAllAsync()).OrderBy(m => m.OrderId).ToList();
+            var list = (await coreRespository.GetAllAsync(expression)).OrderBy(m => m.OrderId).ToList();
 
             List<ColumnListDto> treeColumns = new List<ColumnListDto>();
             treeColumns.AddRange(_mapper.Map<List<ColumnListDto>>(list));
@@ -156,6 +163,55 @@ namespace Flex.Application.Services
             }
             return treeColumns;
         }
+        public async Task<IEnumerable<RoleDataColumnListDto>> DataPermissionListAsync()
+        {
+            var coreRespository = _unitOfWork.GetRepository<SysColumn>();
+            var siteRespository = _unitOfWork.GetRepository<sysSiteManage>();
+            var sitelist = (await siteRespository.GetAllAsync()).ToList();
+
+            var list = (await coreRespository.GetAllAsync()).OrderBy(m => m.OrderId).ToList();
+
+            List<RoleDataColumnListDto> treeColumns = new List<RoleDataColumnListDto>();
+            treeColumns.AddRange(_mapper.Map<List<RoleDataColumnListDto>>(list));
+            if (_claims.IsSystem)
+            {
+                treeColumns.Each(m =>
+                {
+                    m.IsDelete = true;
+                    m.IsEdit = true;
+                    m.IsSelect = true;
+                    m.IsAdd = true;
+                    m.SiteName = sitelist.FirstOrDefault(d => d.Id == m.SiteId)?.SiteName ?? "未找到站点";
+                });
+            }
+            else
+            {
+                var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
+                var jObj = JsonConvert.DeserializeObject<DataPermissionDto>(currentrole.DataPermission);
+                var selectstr = jObj.sp.ToList("-");
+                treeColumns = treeColumns.Where(m => selectstr.Contains(m.Id.ToString())).ToList();
+                foreach (var tc in treeColumns)
+                {
+                    tc.IsDelete = jObj.dp.ToList("-").Contains(tc.Id.ToString());
+                    tc.IsEdit = jObj.ed.ToList("-").Contains(tc.Id.ToString());
+                    tc.IsSelect = jObj.sp.ToList("-").Contains(tc.Id.ToString());
+                    tc.IsAdd = jObj.ad.ToList("-").Contains(tc.Id.ToString());
+                    tc.SiteName = sitelist.FirstOrDefault(d => d.Id == tc.SiteId)?.SiteName ?? "未找到站点";
+                }
+            }
+            var distinctlist = treeColumns.Distinct(m => m.SiteId).ToList();
+
+            foreach (var item in distinctlist)
+            {
+                treeColumns.Add(new RoleDataColumnListDto() { Id = -item.SiteId, ParentId = -3, Name = item.SiteName });
+            }
+            var plist = treeColumns.Where(m => m.ParentId == 0);
+            foreach (var item in plist)
+            {
+                item.ParentId = -item.SiteId;
+            }
+            return treeColumns;
+        }
         public async Task<ProblemDetails<string>> AddColumn(AddColumnDto addColumnDto)
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
@@ -163,13 +219,16 @@ namespace Flex.Application.Services
             AddIntEntityBasicInfo(model);
             try
             {
+                if (CurrentSiteInfo.SiteId == 0)
+                    return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+                model.SiteId = CurrentSiteInfo.SiteId;
                 coreRespository.Insert(model);
                 await _unitOfWork.SaveChangesAsync();
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataInsertError.GetEnumDescription(),ex);
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataInsertError.GetEnumDescription(), ex);
             }
         }
         public async Task<ProblemDetails<string>> Delete(string Id)
@@ -194,9 +253,9 @@ namespace Flex.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(),ex);
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }
         }
         public async Task<ProblemDetails<string>> UpdateColumn(UpdateColumnDto updateColumnDto)

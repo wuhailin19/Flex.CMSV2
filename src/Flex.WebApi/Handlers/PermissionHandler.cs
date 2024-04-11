@@ -132,7 +132,7 @@ namespace Flex.WebApi.Handlers
             Dictionary<int, List<string>> RoleList;
             if (_caching.Get(userid) == null)
             {
-                RoleList = await _roleServices.CurrentPermissionDtosAsync();
+                RoleList = await _roleServices.CurrentUrlPermissionDtosAsync();
                 _caching.Set(userid, RoleList, new TimeSpan(1, 0, 0));
             }
             else

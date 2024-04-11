@@ -43,7 +43,8 @@ var HttpRequest = function (options) {
         type: o.type,
         headers: {
             'Authorization': "Bearer " + o.token,
-            'Refresh_token': o.refreshtoken
+            'Refresh_token': "Bearer " +o.refreshtoken,
+            'siteId': o.siteId
         },
         processData: o.processData,
         contentType: o.contentType,
@@ -83,7 +84,7 @@ var ajaxHttp = function (options) {
     // 每次请求携带token
     options.token = sessionStorage.getItem('access_token');
     options.refreshtoken = sessionStorage.getItem('refresh_token');
-    options.siteId = sessionStorage.getItem('siteId');
+    options.siteId = localStorage.getItem('siteId');
     HttpRequest(options);
 }
 

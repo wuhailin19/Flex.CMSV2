@@ -31,6 +31,10 @@ namespace Flex.LayuiWeb.Areas.System.Controllers.ViewController
         {
             return View();
         }
+        public ActionResult SitePermission()
+        {
+            return View();
+        }
         public ActionResult ApiPermission()
         {
             return View();

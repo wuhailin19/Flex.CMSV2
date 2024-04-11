@@ -5,7 +5,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>菜单管理</title>
     <link href="~/scripts/layui/css/layui2.5.7.css" rel="stylesheet" />
     <link href="~/scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
     <script src="~/scripts/layui/layui2.5.7.js" type="text/javascript"></script>
@@ -19,6 +18,7 @@
 <body>
     <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
         <div class="layui-form-item">栏目数据</div>
+        @* 栏目数据权限分配 *@
         <table id="demo_tree" lay-filter="test"></table>
         <div class="layui-form-item">
             <div class="layui-input-block">
@@ -28,7 +28,7 @@
         </div>
     </form>
     <script type="text/html" id="barDemo">
-        {{#if(d.Id==-1){}}
+        {{#if(d.Id==-10000){}}
         <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="sp">
         <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="ad">
         <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="ed">

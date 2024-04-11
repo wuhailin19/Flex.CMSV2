@@ -1,15 +1,10 @@
 ﻿using Flex.Application.Authorize;
-using Flex.Application.Contracts.Exceptions;
-using Flex.Core;
-using Flex.Core.Helper;
+using Flex.Core.Config;
 using Flex.Core.Helper.MemoryCacheHelper;
 using Flex.Core.Timing;
 using Flex.Domain.Cache;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using ShardingCore.Extensions;
-using System.Collections.Concurrent;
 using System.Security.Claims;
 
 namespace Flex.WebApi.Handlers
@@ -40,6 +35,8 @@ namespace Flex.WebApi.Handlers
                 var authHeader = httpContext.Request.Headers["Authorization"].ToString();
                 if (authHeader != null && authHeader.StartsWith(JwtBearerDefaults.AuthenticationScheme, StringComparison.OrdinalIgnoreCase))
                 {
+                    CurrentSiteInfo.SiteId = httpContext.Request.Headers["siteId"].ToString().ToInt();
+
                     //Console.WriteLine("过期时间：" + DateTime.Parse(context.User.Claims.First(m => m.Type == ClaimTypes.Expiration).Value));
                     var expirationtime = DateTime.Parse(context.User.Claims.First(m => m.Type == ClaimTypes.Expiration)?.Value);
                     if (expirationtime < Clock.Now)
@@ -132,7 +129,7 @@ namespace Flex.WebApi.Handlers
             Dictionary<int, List<string>> RoleList;
             if (_caching.Get(userid) == null)
             {
-                RoleList = await _roleServices.CurrentPermissionDtosAsync();
+                RoleList = await _roleServices.CurrentUrlPermissionDtosAsync();
                 _caching.Set(userid, RoleList, new TimeSpan(1, 0, 0));
             }
             else

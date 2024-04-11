@@ -1,24 +1,16 @@
 ﻿var columnlist;
-var datamission = [];
+var websitepermission = [];
 var parent_json = parent.req_Data;
+
 ajaxHttp({
-    url: api + 'ColumnCategory/ColumnDataPermission',
-    type: 'Get',
-    async: false,
-    success: function (result) {
-        columnlist = result.content;
-    },
-    complete: function () { }
-})
-ajaxHttp({
-    url: api + 'RolePermission/GetDataPermissionListById',
+    url: api + 'RolePermission/GetSitePermissionListById',
     data: { Id: parent_json.Id },
     type: 'Get',
     async: false,
     dataType:'json',
     success: function (json) {
         if (json.code == 200) {
-            datamission = json.content;
+            websitepermission = json.msg;
         }
     },
     complete: function () { }
@@ -33,7 +25,7 @@ layui.config({
     // 渲染表格
     var insTb = treeTable.render({
         elem: '#demo_tree',
-        url: api + 'ColumnCategory/DataPermissionListAsync',
+        url: api + 'SiteManage/SiteManageListAsync',
         method: 'Get',
         height: 'full',
         headers: httpTokenHeaders,
@@ -50,7 +42,9 @@ layui.config({
             icon: 'layui-icon-tips'
         }],
         cols: [
-            columnlist
+            { type: "checkbox", fixed: "left", sort: false },
+            { field: "SiteName", title: "站点名", sort: false },
+            { title: "授权", align: "center", sort: false, templet: "#barDemo", fixed: "right" }
         ],
         parseData: function (res) {
             if (res.code != 200) {
@@ -101,14 +95,13 @@ layui.config({
         let ids = '';
         $.each($('input[type=checkbox][name=select_all]'), function () {
             if (ids == '') {
-                ids = "{" + getCheckListArray($(this).attr('lay-event'));
+                ids =  getCheckListArray($(this).attr('lay-event'));
             } else {
                 ids += "," + getCheckListArray($(this).attr('lay-event'));
             }
         })
-        ids += "}";
         ajaxHttp({
-            url: api + 'RolePermission/UpdateDataPermission',
+            url: api + 'RolePermission/UpdateSitePermission',
             type: 'Post',
             datatype: 'json',
             data: JSON.stringify({ Id: parent_json.Id, chooseId: ids }),
@@ -163,7 +156,7 @@ layui.config({
                 id = $(checkbox[i]).data('id');
             }
         }
-        return '"' + event + '":"' + id + '"';
+        return id;
     }
 
     function setCheckboxstatus(datas) {

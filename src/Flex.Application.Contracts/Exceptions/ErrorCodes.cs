@@ -133,6 +133,6 @@ namespace Flex.Application.Contracts.Exceptions
         AccountOrPwdWrong = 220,
         /// <summary> 用户名或密码为空 </summary>
         [Description("用户名或密码为空")]
-        AccountOrPwdEmpty = 221,
+        AccountOrPwdEmpty = 221
     }
 }

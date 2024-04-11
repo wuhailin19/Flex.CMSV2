@@ -16,7 +16,7 @@ namespace Flex.Core.Reflection
         {
             Type T = typeof(HttpMethodAttribute);
             List<ReflectMenuModel> controls = new List<ReflectMenuModel>();
-            var assemblies = DAssemblyFinder.Instance.FindAll().Where(m => m.GetName().Name.EndsWith("WebApi"));
+            var assemblies = DAssemblyFinder.Instance.FindAll().Where(m => m.GetName().Name.EndsWith("SingleWeb"));
             List<Type> typeList = new List<Type>();
             assemblies.Foreach(asm =>
             {

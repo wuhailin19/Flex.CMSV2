@@ -20,6 +20,7 @@ layui.define(['laytpl', 'form', 'util'], function (exports) {
         headers: undefined,                              // url模式请求headers
         parseData: undefined,                            // url模式处理请求数据
         request: { pidName: 'pid' },                       // url模式请求字段自定义
+        asyncrequest: false,
         toolbar: undefined,                              // 表头工具栏
         defaultToolbar: undefined,                       // 表头工具栏右侧按钮
         width: undefined,                                // 容器宽度

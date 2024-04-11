@@ -93,7 +93,7 @@ layui.config({
                     setTimeout(function () {
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭
-                        parent.parent.Init();
+                        top.Init();
                     }, 300)
                 } else {
                     tips.showFail(json.msg);

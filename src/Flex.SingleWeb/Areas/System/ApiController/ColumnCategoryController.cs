@@ -61,8 +61,8 @@ namespace Flex.WebApi.SystemControllers
         [Descriper(Name = "数据权限分配页面数据")]
         public async Task<string> DataPermissionListAsync()
         {
-            var columns = (await _columnServices.ListAsync()).ToList();
-            columns.Add(new ColumnListDto() { Id = -1, ParentId = -2, Name = "快捷选择" });
+            var columns = (await _columnServices.DataPermissionListAsync()).ToList();
+            columns.Add(new RoleDataColumnListDto() { Id = -10000, ParentId = -2, Name = "快捷选择" });
             return Success(columns.OrderBy(m => m.Id));
         }
 

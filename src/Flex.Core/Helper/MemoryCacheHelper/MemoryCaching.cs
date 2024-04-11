@@ -24,7 +24,7 @@ namespace Flex.Core.Helper.MemoryCacheHelper
         public bool Exist(string cacheKey)
         {
             string value = default;
-            if (_cache.TryGetValue(cacheKey, out value).ToString().IsNullOrEmpty())
+            if (!_cache.TryGetValue(cacheKey, out value))
                 return false;
             return true;
         }

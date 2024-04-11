@@ -20,4 +20,5 @@ global using Flex.Domain.Dtos.Menu;
 global using Flex.Domain.Entities;
 global using Flex.Core.Extensions;
 global using Flex.Domain.Collections;
+using Flex.Core.Config;
 

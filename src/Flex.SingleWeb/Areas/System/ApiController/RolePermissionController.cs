@@ -54,6 +54,14 @@ namespace Flex.WebApi.SystemControllers
                 return Success(new DataPermissionDto());
         }
 
+        [HttpGet("GetSitePermissionListById")]
+        [Descriper(Name = "传入角色Id获取站点权限字符串")]
+        public async Task<string> GetSitePermissionListById(int Id)
+        {
+            var result = await _roleServices.GetSitePermissionListById(Id);
+            return Success(result);
+        }
+
         /// <summary>
         /// 新增角色
         /// </summary>
@@ -109,6 +117,21 @@ namespace Flex.WebApi.SystemControllers
         public async Task<string> UpdateDataPermission(InputRoleDatapermissionDto roledataDto)
         {
             var result = await _roleServices.UpdateDataPermission(roledataDto);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+
+        /// <summary>
+        /// 修改站点数据权限
+        /// </summary>
+        /// <param name="roleMenuDto"></param>
+        /// <returns></returns>
+        [HttpPost("UpdateSitePermission")]
+        [Descriper(Name = "修改站点数据权限")]
+        public async Task<string> UpdateSitePermission(InputRoleSitepermissionDto roledataDto)
+        {
+            var result = await _roleServices.UpdateSitePermission(roledataDto);
             if (result.IsSuccess)
                 return Success(result.Detail);
             return Fail(result.Detail);
