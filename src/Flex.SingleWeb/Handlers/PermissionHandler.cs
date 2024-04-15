@@ -127,7 +127,7 @@ namespace Flex.WebApi.Handlers
             #endregion
             var userid = RoleKeys.userRoleKey + _claims.UserRole;
             Dictionary<int, List<string>> RoleList;
-            if (_caching.Get(userid) == null)
+            if (!_caching.Exist(userid))
             {
                 RoleList = await _roleServices.CurrentUrlPermissionDtosAsync();
                 _caching.Set(userid, RoleList, new TimeSpan(1, 0, 0));

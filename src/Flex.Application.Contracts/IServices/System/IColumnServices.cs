@@ -11,7 +11,7 @@ namespace Flex.Application.Contracts.IServices
     public interface IColumnServices
     {
         Task<ProblemDetails<string>> AddColumn(AddColumnDto addColumnDto);
-        Task<IEnumerable<RoleDataColumnListDto>> DataPermissionListAsync();
+        Task<IEnumerable<RoleDataColumnListDto>> DataPermissionListAsync(int siteId);
         Task<ProblemDetails<string>> Delete(string Id);
         Task<UpdateColumnDto> GetColumnById(int Id);
         Task<IEnumerable<TreeColumnListDto>> getColumnShortcut(string mode = "5");

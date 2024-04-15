@@ -6,12 +6,15 @@ using Flex.Core.Extensions.CommonExtensions;
 using Flex.Core.Framework.Enum;
 using Flex.Dapper;
 using Flex.Domain.Cache;
+using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.Role;
 using Flex.Domain.WhiteFileds;
 using Flex.SqlSugarFactory.Seed;
+using SqlSugar;
 using System.Collections;
 using System.Linq;
 using System.Text;
+using static Flex.Domain.Dtos.Role.DataPermissionDto;
 
 namespace Flex.Application.Services
 {
@@ -152,7 +155,7 @@ namespace Flex.Application.Services
                 }
                 return Problem(HttpStatusCode.BadRequest, 0, ErrorCodes.DataInsertError.GetEnumDescription());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Problem<int>(HttpStatusCode.InternalServerError, ErrorCodes.DataInsertError.GetEnumDescription(), ex);
             }
@@ -169,16 +172,19 @@ namespace Flex.Application.Services
                 var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
                 if (currentrole == null)
                     return false;
-                var datapermission = JsonHelper.Json<DataPermissionDto>(currentrole.DataPermission ?? string.Empty);
+                var datapermission = JsonHelper.Json<List<sitePermissionDto>>(currentrole.DataPermission ?? string.Empty);
                 if (datapermission == null)
+                    return false;
+                var currentsitepermission = datapermission.Where(m => m.siteId == CurrentSiteInfo.SiteId).FirstOrDefault();
+                if (currentsitepermission == null)
                     return false;
                 datapermissionList = new Dictionary<int, Dictionary<string, List<string>>>();
                 Dictionary<string, List<string>> filedvalue = new Dictionary<string, List<string>>
                 {
-                    { nameof(DataPermissionDto.sp), datapermission.sp.ToList("-") },
-                    { nameof(DataPermissionDto.ed), datapermission.ed.ToList("-") },
-                    { nameof(DataPermissionDto.ad), datapermission.ad.ToList("-") },
-                    { nameof(DataPermissionDto.dp), datapermission.dp.ToList("-") }
+                    { nameof(DataPermissionDto.sp), currentsitepermission.columnPermission.sp.ToList("-") },
+                    { nameof(DataPermissionDto.ed), currentsitepermission.columnPermission.ed.ToList("-") },
+                    { nameof(DataPermissionDto.ad), currentsitepermission.columnPermission.ad.ToList("-") },
+                    { nameof(DataPermissionDto.dp), currentsitepermission.columnPermission.dp.ToList("-") }
                 };
                 datapermissionList.Add(_claims.UserRole, filedvalue);
                 _caching.Set(cachekey, datapermissionList, new TimeSpan(1, 0, 0));
@@ -208,7 +214,7 @@ namespace Flex.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Split(',').Count()}条数据");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }

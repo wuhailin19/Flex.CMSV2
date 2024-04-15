@@ -45,9 +45,9 @@ namespace Flex.WebApi.SystemControllers
 
         [HttpGet("GetDataPermissionListById")]
         [Descriper(Name = "传入角色Id获取栏目权限列表")]
-        public async Task<string> GetDataPermissionListById(int Id)
+        public async Task<string> GetDataPermissionListById(int Id, int siteId)
         {
-            var result = await _roleServices.GetDataPermissionListById(Id);
+            var result = await _roleServices.GetDataPermissionListById(Id, siteId);
             if (result != null)
                 return Success(result);
             else

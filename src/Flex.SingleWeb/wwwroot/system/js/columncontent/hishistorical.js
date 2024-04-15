@@ -1,5 +1,5 @@
 ﻿var routeLink = api + 'ColumnContent/';
-var routePageLink = '/system/ColumnContent/';
+var routePageLink = SystempageRoute + 'ColumnContent/';
 var columnlist;
 var parentjson = parent.req_Data;
 var currentparentId = $.getUrlParam("ParentId");

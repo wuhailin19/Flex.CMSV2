@@ -11,7 +11,7 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<string>> Delete(string Id);
         Task<IEnumerable<RoleDto>> GetCurrentAdminRoleByTokenAsync();
         Task<SysRole> GetCurrentRoldDtoAsync();
-        Task<DataPermissionDto> GetDataPermissionListById(int Id);
+        Task<DataPermissionDto> GetDataPermissionListById(int Id, int siteId);
         Task<SysRole> GetRoleByIdAsync(int Id);
         Task<IEnumerable<SysRole>> GetRoleByRoleIdAsync(int roleId);
         Task<PagedList<RoleColumnDto>> GetRoleListAsync(int page, int pagesize);

@@ -27,6 +27,13 @@
             </div>
         </div>
     </form>
+    <script type="text/html" id="siteName">
+        {{#if(d.Id==-10000){}}
+        <a href="javascript:;">{{d.SiteName}}</a>
+        {{#}else{}}
+        <a href="javascript:;" class="openDataPermission" data-href="/system/RolesPermission/DataPermission?siteId={{d.Id}}">{{d.SiteName}}【点击管理栏目】</a>
+        {{#}}}
+    </script>
     <script type="text/html" id="barDemo">
         {{#if(d.Id==-10000){}}
         <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="sp">

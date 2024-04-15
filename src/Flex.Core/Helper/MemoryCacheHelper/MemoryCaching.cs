@@ -1,6 +1,8 @@
 ﻿using Flex.Core.Extensions;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using System;
+using System.Text;
 
 namespace Flex.Core.Helper.MemoryCacheHelper
 {
@@ -21,12 +23,12 @@ namespace Flex.Core.Helper.MemoryCacheHelper
         {
             return _cache.Get(cacheKey);
         }
+
         public bool Exist(string cacheKey)
         {
-            string value = default;
-            if (!_cache.TryGetValue(cacheKey, out value))
-                return false;
-            return true;
+            _cache.TryGetValue(cacheKey, out var result);
+
+            return result != null;
         }
         public void Remove(string cacheKey)
         {

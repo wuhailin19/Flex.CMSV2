@@ -61,7 +61,7 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
                     currentitem = $(evt.dragged);
                     realteditem = $(evt.related);
 
-                    
+
                     return false;
                 },
                 onEnd: function (evt) {
@@ -72,7 +72,7 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
                     if (realteditem == undefined) {
                         return false;
                     }
-                    
+
 
                     let data = fileManager.cache["fmTest"];
 
@@ -89,7 +89,7 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
                     let requestdata = {
                         oldpath: currentdata.path, newpath: newpath, name: currentdata.name, type: currentdata.type, Isoverride: false
                     }
-                    if (currentdata.type == "directory") { 
+                    if (currentdata.type == "directory") {
                         layer.confirm("确定移动文件夹吗", { icon: 3 }, function (index) {
                             layer.close(index)
                             excutechangedir(requestdata);
@@ -150,7 +150,7 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
                 shadeClose: true,
                 maxmin: true, //开启最大化最小化按钮
                 area: ['100%', '100%'],
-                content: "/system/FileManage/Preview?path=" + data.path
+                content: SystempageRoute + "FileManage/Preview?path=" + data.path
             });
         }
         else if (data.type == "mp4") {

@@ -1,5 +1,5 @@
 ﻿var routeLink = api + 'ColumnContent/';
-var routePageLink = '/system/ColumnContent/';
+var routePageLink = SystempageRoute + 'ColumnContent/';
 var columnlist;
 var req_Data;
 var parentjson;
@@ -67,6 +67,8 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
         toolbarhtml += '<button class="layui-btn layui-btn-sm" id="setProperty">设置属性<i class="layui-icon layui-icon-down layui-font-12"></i></button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" id="cacelProperty">取消属性<i class="layui-icon layui-icon-down layui-font-12"></i></button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Copy">复制</button>';
+        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Import">导入</button>';
+        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Export">导出</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Move">移动</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="History">修改历史</button>';
     }
@@ -180,9 +182,9 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
             }
         }
         value = parseInt(value);
-        
+
         UpdateStatus(data.Id, field, value);
-       
+
     });
     function UpdateStatus(ids, event, result, reload) {
         if (ids == "") {

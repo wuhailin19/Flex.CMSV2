@@ -80,7 +80,7 @@ var defaultOptions = {
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: '/system/Field/Index',
+            content: SystempageRoute + 'Field/Index',
             end: function () {
                 if (isreload) {
                 }

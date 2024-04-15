@@ -15,7 +15,7 @@ $(function () {
             jQuery("#LoginBtn").click();
         }
     })
-    
+
     //登录验证
     jQuery("#LoginBtn").click(function () {
         var LoginName = jQuery("#LoginName");
@@ -74,7 +74,7 @@ $(function () {
                         sessionStorage.setItem('access_token', json.content.AccessToken);
                         sessionStorage.setItem('refresh_token', json.content.RefreshToken);
                         tips.showSuccess("登录成功")
-                        setTimeout(function () { window.location = '/system/Main'; }, 1300);
+                        setTimeout(function () { window.location = SystempageRoute + 'Main'; }, 1300);
                     } else {
                         tips.showFail(json.msg);
                         reloadcode();
@@ -156,7 +156,7 @@ $(function () {
         }
     });
 });
-function EncryptoStr(k,str) {
+function EncryptoStr(k, str) {
     let t1 = k.encrypt(str);
     let ec1 = 0;
     while (t1.length != 172 && ec1 < 10) {

@@ -124,7 +124,7 @@ $('#addrecord').on('click', function () {
         shade: false,
         maxmin: true, //开启最大化最小化按钮
         area: ['80%', '80%'],
-        content: '/system/Product/AddRecord',
+        content: SystempageRoute+'Product/AddRecord',
         end: function () {
             //window.location.reload();
             initList();

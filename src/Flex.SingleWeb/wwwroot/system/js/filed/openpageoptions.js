@@ -34,7 +34,7 @@
     callBack: function (tableIns) {
         //第二次调用
         tableIns.reload({
-            where: {  } // 设定异步数据接口的额外参数，任意设
+            where: {} // 设定异步数据接口的额外参数，任意设
         });
         //console.log(tableIns)
     },
@@ -71,7 +71,7 @@
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: '/system/Field/Index',
+            content: SystempageRoute + 'Field/Index',
             end: function () {
                 if (isreload) {
                 }
@@ -98,7 +98,7 @@
                 }
             }
         });
-    },openDataPermissionIframe: function (layer, insTb) {
+    }, openDataPermissionIframe: function (layer, insTb) {
         var self = this;
         let widthstr = self.datawidths + 'px';
         let heightstr = '90%';

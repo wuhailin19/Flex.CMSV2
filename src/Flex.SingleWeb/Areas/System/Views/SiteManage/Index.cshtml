@@ -18,7 +18,7 @@
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
-   
+
     <script type="text/html" id="tablethstatusPxy">
         {{#if(d.ShowInTable==true){}}
         <input type="checkbox" name="xxx" lay-skin="switch" lay-filter="tablethstatusPxy" lay-text="启用|不启用" checked value="{{d.Id}}">
@@ -34,7 +34,7 @@
     </script>
     <script>
         var routeLink = api + 'SiteManage/';
-        var routePageLink = '/system/SiteManage/';
+        var routePageLink = SystempageRoute + 'SiteManage/';
         defaultOptions.isOperaReload = false;
         defaultOptions.IsEditReload = false;
         defaultOptions.addheights = 600;

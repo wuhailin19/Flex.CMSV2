@@ -69,7 +69,7 @@ namespace Flex.Application.Services
             if (!_claims.IsSystem)
             {
                 var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
-                var jObj = JsonConvert.DeserializeObject<DataPermissionDto>(currentrole.DataPermission);
+                var jObj = GetSitePermissionDto(currentrole.DataPermission);
                 var selectstr = jObj.sp.ToList("-");
                 list = list.Where(m => selectstr.Contains(m.Id.ToString())).ToList();
             }
@@ -112,7 +112,7 @@ namespace Flex.Application.Services
             {
                 var roles = await _roleServices.GetCurrentRoldDtoAsync();
                 var datamission = roles.DataPermission;
-                var jObj = JsonConvert.DeserializeObject<DataPermissionDto>(datamission);
+                var jObj = GetSitePermissionDto(datamission);
                 lists = _mapper.Map<List<TreeColumnListDto>>(await repository.GetAllAsync(m => jObj.sp.ToList("-").Contains(m.Id.ToString()) && m.ModelId != 0));
             }
             var systemindexset = await _systemIndexSetServices.GetbyCurrentIdAsync();
@@ -150,7 +150,7 @@ namespace Flex.Application.Services
             else
             {
                 var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
-                var jObj = JsonConvert.DeserializeObject<DataPermissionDto>(currentrole.DataPermission);
+                var jObj = GetSitePermissionDto(currentrole.DataPermission);
                 var selectstr = jObj.sp.ToList("-");
                 treeColumns = treeColumns.Where(m => selectstr.Contains(m.Id.ToString())).ToList();
                 foreach (var tc in treeColumns)
@@ -163,13 +163,12 @@ namespace Flex.Application.Services
             }
             return treeColumns;
         }
-        public async Task<IEnumerable<RoleDataColumnListDto>> DataPermissionListAsync()
+        public async Task<IEnumerable<RoleDataColumnListDto>> DataPermissionListAsync(int siteId)
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
             var siteRespository = _unitOfWork.GetRepository<sysSiteManage>();
-            var sitelist = (await siteRespository.GetAllAsync()).ToList();
 
-            var list = (await coreRespository.GetAllAsync()).OrderBy(m => m.OrderId).ToList();
+            var list = (await coreRespository.GetAllAsync(m=>m.SiteId== siteId)).OrderBy(m => m.OrderId).ToList();
 
             List<RoleDataColumnListDto> treeColumns = new List<RoleDataColumnListDto>();
             treeColumns.AddRange(_mapper.Map<List<RoleDataColumnListDto>>(list));
@@ -181,13 +180,12 @@ namespace Flex.Application.Services
                     m.IsEdit = true;
                     m.IsSelect = true;
                     m.IsAdd = true;
-                    m.SiteName = sitelist.FirstOrDefault(d => d.Id == m.SiteId)?.SiteName ?? "未找到站点";
                 });
             }
             else
             {
                 var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
-                var jObj = JsonConvert.DeserializeObject<DataPermissionDto>(currentrole.DataPermission);
+                var jObj = GetSitePermissionDto(currentrole.DataPermission);
                 var selectstr = jObj.sp.ToList("-");
                 treeColumns = treeColumns.Where(m => selectstr.Contains(m.Id.ToString())).ToList();
                 foreach (var tc in treeColumns)
@@ -196,19 +194,7 @@ namespace Flex.Application.Services
                     tc.IsEdit = jObj.ed.ToList("-").Contains(tc.Id.ToString());
                     tc.IsSelect = jObj.sp.ToList("-").Contains(tc.Id.ToString());
                     tc.IsAdd = jObj.ad.ToList("-").Contains(tc.Id.ToString());
-                    tc.SiteName = sitelist.FirstOrDefault(d => d.Id == tc.SiteId)?.SiteName ?? "未找到站点";
                 }
-            }
-            var distinctlist = treeColumns.Distinct(m => m.SiteId).ToList();
-
-            foreach (var item in distinctlist)
-            {
-                treeColumns.Add(new RoleDataColumnListDto() { Id = -item.SiteId, ParentId = -3, Name = item.SiteName });
-            }
-            var plist = treeColumns.Where(m => m.ParentId == 0);
-            foreach (var item in plist)
-            {
-                item.ParentId = -item.SiteId;
             }
             return treeColumns;
         }

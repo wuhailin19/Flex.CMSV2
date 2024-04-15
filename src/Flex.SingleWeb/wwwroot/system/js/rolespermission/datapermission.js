@@ -1,6 +1,7 @@
 ﻿var columnlist;
 var datamission = [];
-var parent_json = parent.req_Data;
+var parent_json = parent.parent_json;
+var siteId = $.getUrlParam('siteId');
 ajaxHttp({
     url: api + 'ColumnCategory/ColumnDataPermission',
     type: 'Get',
@@ -12,10 +13,10 @@ ajaxHttp({
 })
 ajaxHttp({
     url: api + 'RolePermission/GetDataPermissionListById',
-    data: { Id: parent_json.Id },
+    data: { Id: parent_json.Id, siteId: siteId },
     type: 'Get',
     async: false,
-    dataType:'json',
+    dataType: 'json',
     success: function (json) {
         if (json.code == 200) {
             datamission = json.content;
@@ -49,6 +50,9 @@ layui.config({
             layEvent: 'LAYTABLE_TIPS',
             icon: 'layui-icon-tips'
         }],
+        where: {
+            siteId: siteId
+        },
         cols: [
             columnlist
         ],
@@ -111,7 +115,7 @@ layui.config({
             url: api + 'RolePermission/UpdateDataPermission',
             type: 'Post',
             datatype: 'json',
-            data: JSON.stringify({ Id: parent_json.Id, chooseId: ids }),
+            data: JSON.stringify({ Id: parent_json.Id, chooseId: ids, siteId: siteId }),
             async: false,
             success: function (json) {
                 if (json.code == 200) {
@@ -121,7 +125,7 @@ layui.config({
                         parent.layer.close(index); //再执行关闭
                     }, 300)
                 } else {
-                    tips.showFail(json.msg); 
+                    tips.showFail(json.msg);
                 }
             },
             complete: function () {

@@ -30,9 +30,8 @@ layui.config({
         height: 'full',
         headers: httpTokenHeaders,
         tree: {
-            iconIndex: 1,
-            isPidData: true,
-            openName: 'Name',
+            iconIndex: -1,
+            isPidData: false,
             idName: 'Id',
             pidName: 'ParentId'
         },
@@ -43,7 +42,7 @@ layui.config({
         }],
         cols: [
             { type: "checkbox", fixed: "left", sort: false },
-            { field: "SiteName", title: "站点名", sort: false },
+            { title: "站点名", align: "center", templet: "#siteName", sort: false, fixed: "right" },
             { title: "授权", align: "center", sort: false, templet: "#barDemo", fixed: "right" }
         ],
         parseData: function (res) {
@@ -87,8 +86,27 @@ layui.config({
                     $(this).prev().attr('checked', false);
                 }
             })
+
+            $('.openDataPermission').click(function () {
+                var boxtitle = $(this).text();
+                var boxurl = $(this).attr('data-href');
+                //iframe窗
+                layer.open({
+                    type: 2,
+                    title: boxtitle,
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['90%', '90%'],
+                    content: boxurl,
+                    end: function () {
+                        
+                    }
+                });
+            })
         }
     });
+
     //监听提交
     form.on('submit(formDemo)', function (data) {
         var json = data.field;

@@ -146,7 +146,7 @@ layui.config({
                     //var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                     //parent.layer.close(index); //再执行关闭
                     setTimeout(function () {
-                        top.location.href = "/system/Login/Logout";
+                        top.location.href = SystempageRoute + "Login/Logout";
                     }, 300);
                 } else {
                     tips.showFail(json.msg);

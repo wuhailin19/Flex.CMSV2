@@ -16,7 +16,7 @@ function initList() {
         dataType: 'json',
         success: function (result) {
             var json = result.content;
-            $('.detail_iframe').attr('src', '/system/product/detail?Id=' + json[0].Id)
+            $('.detail_iframe').attr('src', SystempageRoute+'product/detail?Id=' + json[0].Id)
             var htmlstr = '';
             for (var i = 0; i < json.length; i++) {
                 htmlstr += '<li class="' + (i == 0 ? "active" : "") + '"><span class="prodelete" data-id="' + json[i].Id + '">-</span><span class="proname"  data-id="' + json[i].Id + '">' + json[i].ProductName + '</span><span class="editpro layui-icon" data-id="' + json[i].Id + '">&#xe642;</span></li>';
@@ -55,7 +55,7 @@ $('#projectlist').on('click', 'li span.proname', function () {
     if (!id)
         return false;
     $(this).parent('li').addClass('active').siblings().removeClass('active');
-    $('.detail_iframe').attr('src', '/system/product/detail?Id=' + id)
+    $('.detail_iframe').attr('src', SystempageRoute+'product/detail?Id=' + id)
 })
 $('#add-project').on('click', function () {
     if (addindex != undefined)
@@ -68,7 +68,7 @@ $('#add-project').on('click', function () {
         shade: false,
         maxmin: true, //开启最大化最小化按钮
         area: ['80%', '80%'],
-        content: '/system/Product/AddPage',
+        content: SystempageRoute+'Product/AddPage',
         end: function () {
             //window.location.reload();
             initList();
@@ -91,9 +91,9 @@ $('#projectlist').on('click','.editpro', function () {
         shade: false,
         maxmin: true, //开启最大化最小化按钮
         area: ['80%', '80%'],
-        content: '/system/Product/EditPage',
+        content: SystempageRoute+'Product/EditPage',
         end: function () {
-            $('.detail_iframe').attr('src', '/system/product/detail?Id=' + id)
+            $('.detail_iframe').attr('src', SystempageRoute+'product/detail?Id=' + id)
         }
     });
 })

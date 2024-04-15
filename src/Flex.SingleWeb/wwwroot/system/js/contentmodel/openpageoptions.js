@@ -71,7 +71,7 @@
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: '/system/Field/Index',
+            content: SystempageRoute + 'Field/Index',
             end: function () {
                 if (isreload) {
                 }
@@ -91,14 +91,14 @@
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: '/system/FormDesigner/Index',
+            content: SystempageRoute + 'FormDesigner/Index',
             end: function () {
                 if (isreload) {
                     defaultOptions.callBack(insTb);
                 }
             }
         });
-    },openDataPermissionIframe: function (layer, insTb) {
+    }, openDataPermissionIframe: function (layer, insTb) {
         var self = this;
         let widthstr = self.datawidths + 'px';
         let heightstr = '90%';

@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Org.BouncyCastle.Tls;
 using ShardingCore.Extensions;
 using System.Data;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 
 namespace Flex.Application.Services
@@ -93,7 +94,7 @@ namespace Flex.Application.Services
         /// </summary>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        public async Task<DataPermissionDto> GetDataPermissionListById(int Id)
+        public async Task<DataPermissionDto> GetDataPermissionListById(int Id,int siteId)
         {
             var role = await _unitOfWork
                 .GetRepository<SysRole>()
@@ -103,7 +104,7 @@ namespace Flex.Application.Services
             var model = role.FirstOrDefault();
             if (model.DataPermission.IsEmpty())
                 return default;
-            DataPermissionDto permissionDtos = JsonConvert.DeserializeObject<DataPermissionDto>(model.DataPermission);
+            DataPermissionDto permissionDtos = GetSitePermissionDto(model.DataPermission, siteId);
             return permissionDtos;
         }
 
@@ -298,12 +299,24 @@ namespace Flex.Application.Services
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             try
             {
-                model.DataPermission = role.chooseId;
+                var datapermission = JsonHelper.Json<List<sitePermissionDto>>(model.DataPermission ?? string.Empty);
+                if (datapermission == null)
+                    datapermission = new List<sitePermissionDto>();
+
+                var currentrolepermission = datapermission.Where(m => m.siteId == role.siteId).FirstOrDefault();
+                if (currentrolepermission != null)
+                    currentrolepermission.columnPermission = JsonHelper.Json<DataPermissionDto>(role.chooseId);
+                else
+                {
+                    datapermission.Add(new sitePermissionDto() { siteId = role.siteId, columnPermission = JsonHelper.Json<DataPermissionDto>(role.chooseId) });
+                }
+                model.DataPermission = JsonHelper.ToJson(datapermission);
+
                 UpdateIntEntityBasicInfo(model);
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
                 _caching.Remove(RoleKeys.userDataPermissionKey + model.Id);
-                _caching.Remove(RoleKeys.RoleCache+ model.Id);
+                _caching.Remove(RoleKeys.RoleCache + model.Id);
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
@@ -325,7 +338,8 @@ namespace Flex.Application.Services
                 UpdateIntEntityBasicInfo(model);
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                _caching.Remove(RoleKeys.userRoleKey + model.Id);
+                string userid = RoleKeys.userRoleKey + model.Id;
+                _caching.Remove(userid);
                 _caching.Remove(RoleKeys.RoleCache + model.Id);
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }

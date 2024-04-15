@@ -12,7 +12,6 @@ namespace Flex.Domain.Dtos.Column
         public int SiteId { set; get; }
         public int ParentId { set; get; }
         public string Name { set; get; }
-        public string SiteName { set; get; }
         public bool IsShow { set; get; }
         public string ColumnUrl { set; get; }
         public int OrderId { set; get; }

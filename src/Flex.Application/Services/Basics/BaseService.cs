@@ -1,5 +1,7 @@
 ﻿using Flex.Application.Contracts.IServices.Basics;
+using Flex.Core.Config;
 using Flex.Domain.Base;
+using Flex.Domain.Dtos.Role;
 
 namespace Flex.Application.Services
 {
@@ -47,6 +49,18 @@ namespace Flex.Application.Services
             temp = temp.Replace("**!20**", "/**/");
 
             return temp;
+        }
+        protected DataPermissionDto GetSitePermissionDto(string datapermission, int siteId = 0)
+        {
+            var sitepermissionmodel = JsonHelper.Json<List<sitePermissionDto>>(datapermission ?? string.Empty);
+            if (sitepermissionmodel == null)
+                return new DataPermissionDto();
+            var resultmodel = sitepermissionmodel.Where(m => m.siteId == (siteId == 0 ? CurrentSiteInfo.SiteId : siteId)).FirstOrDefault();
+            if (resultmodel == null)
+            {
+                return new DataPermissionDto();
+            }
+            return resultmodel.columnPermission;
         }
         public virtual void AddIntEntityBasicInfo<T>(T model) where T : BaseIntEntity
         {

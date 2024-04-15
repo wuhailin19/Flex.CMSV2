@@ -106,7 +106,7 @@ function openEditFlowStepDialog(flowId, step, stepName) {
         , scrollbar: false
         , shade: [0.3, '#393D49']
         , maxmin: false
-        , content: '/system/workflow/EditWorkflowManager?flowId=' + parent_json.Id + '&stepDesc=' + step
+        , content: SystempageRoute+'workflow/EditWorkflowManager?flowId=' + parent_json.Id + '&stepDesc=' + step
         , area: ['850px', '80%']
         , end: function () {
         }

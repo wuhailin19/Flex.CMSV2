@@ -11,7 +11,7 @@ initSiteList();
 $('.loginout').on('click', function () {
     sessionStorage.removeItem('access_token');
     sessionStorage.removeItem('refresh_token');
-    window.location.href = '/system/login'
+    window.location.href = SystempageRoute + 'login'
 })
 function initSiteList() {
     var sitestr = '';
