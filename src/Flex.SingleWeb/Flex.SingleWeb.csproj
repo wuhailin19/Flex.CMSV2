@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings_初始.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Areas\Normal\ViewController\" />
     <Folder Include="Areas\Normal\Views\" />
     <Folder Include="wwwroot\111\222\" />
