@@ -25,12 +25,14 @@ function initSiteList() {
                 currentinfo = json.content;
                 if (currentinfo.length > 0) {
                     for (var i = 0; i < currentinfo.length; i++) {
-                        sitestr += '<dd data-siteid="' + currentinfo[i].Id + '">' + currentinfo[i].SiteName + '</dd>';
+                        sitestr += '<dd data-siteid="' + currentinfo[i].Id + '" data-sitelink="' + currentinfo[i].RoutePrefix +'">' + currentinfo[i].SiteName + '</dd>';
                     }
                     if (!localStorage.getItem('siteId'))
                         localStorage.setItem('siteId', currentinfo[0].Id);
                     if (!localStorage.getItem('siteName'))
                         localStorage.setItem('siteName', currentinfo[0].SiteName);
+                    if (!localStorage.getItem('sitelink'))
+                        localStorage.setItem('sitelink', currentinfo[0].RoutePrefix);
                 }
                 else {
                     localStorage.setItem('siteName', "选择站点");
@@ -41,12 +43,18 @@ function initSiteList() {
             $('.layui-nav-child.changesitebox').html(sitestr);
         }
     })
-    var sitename = localStorage.getItem('siteName');
-    $('.choosesite').text(sitename);
+    let currentsitename = localStorage.getItem('siteName');
+    $('.choosesite').text(currentsitename);
+
+    let currentsitelink = localStorage.getItem('sitelink');
+    $('.sitelink').attr('href',currentsitelink);
     $('.changesitebox dd').click(function () {
         var siteid = $(this).attr('data-siteid');
+        var sitelink = $(this).attr('data-sitelink');
         var sitename = $(this).text();
 
+
+        localStorage.setItem('sitelink', sitelink);
         localStorage.setItem('siteId', siteid);
         localStorage.setItem('siteName', sitename);
         window.location.reload();

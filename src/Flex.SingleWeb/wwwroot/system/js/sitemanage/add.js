@@ -60,8 +60,9 @@ layui.config({
             success: function (json) {
                 if (json.code == 200) {
                     tips.showSuccess(json.msg);
-                    localStorage.removeItem('siteName');
-                    localStorage.removeItem('siteId');
+                    //localStorage.removeItem('siteName');
+                    //localStorage.removeItem('siteId');
+                    //localStorage.removeItem('sitelink');
                     top.initSiteList();
                     setTimeout(function () {
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引

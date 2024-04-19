@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\en1\**" />
+    <Content Remove="wwwroot\en1\**" />
+    <EmbeddedResource Remove="wwwroot\en1\**" />
+    <None Remove="wwwroot\en1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="appsettings_初始.json" />
   </ItemGroup>
 

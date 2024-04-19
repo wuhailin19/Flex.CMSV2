@@ -49,17 +49,21 @@ layui.config({
     var model = parent_json;
     //监听提交
     form.on('submit(formDemo)', function (data) {
-        var json = data.field;
+        var formjson = data.field;
         ajaxHttp({
             url: routeLink,
             type: 'Post',
             datatype: 'json',
-            data: JSON.stringify(json),
+            data: JSON.stringify(formjson),
             async: false,
             success: function (json) {
                 if (json.code == 200) {
                     tips.showSuccess(json.msg);
-                    localStorage.removeItem('siteName');
+                    if (formjson.Id == localStorage.getItem('siteId')) {
+                        localStorage.setItem('siteName', formjson.SiteName);
+                        localStorage.setItem('siteId', formjson.Id);
+                        localStorage.setItem('sitelink', formjson.RoutePrefix);
+                    }
                     top.initSiteList();
                     setTimeout(function () {
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引

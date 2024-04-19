@@ -1,4 +1,5 @@
 using Autofac;
+using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
 using Flex.Application.Aop;
@@ -9,6 +10,7 @@ using Flex.Application.Extensions.Register.AutoMapper;
 using Flex.Application.Extensions.Register.MemoryCacheExtension;
 using Flex.Application.Extensions.Register.WebCoreExtensions;
 using Flex.Application.Extensions.Swagger;
+using Flex.Application.Middlewares;
 using Flex.Application.SetupExtensions.OrmInitExtension;
 using Flex.Core.Helper;
 using Flex.EFSql;
@@ -17,7 +19,9 @@ using Flex.SqlSugarFactory.UnitOfWorks;
 using Flex.WebApi.Jwt;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using NLog;
 using NLog.Config;
@@ -88,13 +92,12 @@ builder.Services.Configure<StaticFileOptions>(options =>
     options.ContentTypeProvider = new FileExtensionContentTypeProvider
     {
         // 添加 Less 文件的 MIME 类型映射
-        Mappings = { [".less"] = "text/less" }
+        Mappings = { [".less"] = "text/less", [".html"]="text/html" }
     };
 });
 LogManager.Configuration = new XmlLoggingConfiguration("nlog.config");
 builder.Host.UseNLog();
 builder.Services.AddLogging();
-
 var app = builder.Build();
 
 // 初始化自动创建数据库
@@ -135,6 +138,15 @@ if (app.Environment.IsDevelopment())
     await myService.CreateUrlList();
 }
 
+//重写放到最前面
+app.UseRewritePathMiddleware();
+
+var options = new DefaultFilesOptions();
+options.DefaultFileNames.Clear();
+options.DefaultFileNames.Add("index.html");
+options.DefaultFileNames.Add("*.html");
+app.UseDefaultFiles(options);
+
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -156,24 +168,28 @@ app.UseAuthentication();
 app.UseCors(WebCoreSetupExtension.MyAllowSpecificOrigins);
 app.UseAuthorization();
 
+
 // 添加自定义中间件来处理根路径重定向到登录页
 app.Use(async (context, next) =>
 {
-    if (context.Request.Path == "/")
+    if (context.Request.Path == "/system")
     {
         // 重定向到登录页
         context.Response.Redirect("/System/Login/Index");
         return;
     }
-
     await next();
 });
 
-app.UseEndpoints(options => {
+app.UseEndpoints(options =>
+{
     options.MapControllerRoute(
         name: "AreaRoute",
         pattern: "{area:exists}/{controller=Login}/{action=Index}/{id?}");
 
     options.MapControllers();
 });
+
+
 app.Run();
+

@@ -36,7 +36,7 @@
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">站点描述</label>
             <div class="layui-input-block">
-                <input type="text" name="SiteDesc" placeholder="请输入站点描述" autocomplete="off" value="" class="layui-input">
+                <textarea placeholder="请输入站点描述" name="SiteDesc" class="layui-textarea"></textarea>
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
@@ -46,9 +46,15 @@
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">路由前缀</label>
+            <label class="layui-form-label">自定义路由</label>
             <div class="layui-input-block">
-                <input type="text" name="RoutePrefix" placeholder="请输入路由前缀" value="" autocomplete="off" class="layui-input">
+                <input type="text" name="RoutePrefix" placeholder="请输入自定义路由" value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">目标路由</label>
+            <div class="layui-input-block">
+                <input type="text" name="TargetRoutePrefix" placeholder="请输入目标路由" value="" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">

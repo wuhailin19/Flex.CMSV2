@@ -1,5 +1,7 @@
 ﻿using Flex.Application.Contracts.Aop;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Core.Helper.MemoryCacheHelper;
+using Flex.Domain.Cache;
 using Flex.Domain.Dtos.System.SiteManage;
 using Flex.EFSql.Repositories;
 
@@ -8,10 +10,12 @@ namespace Flex.Application.Services.System
     public class SiteManageServices : BaseService, ISiteManageServices
     {
         IEfCoreRespository<sysSiteManage> responsity;
-        public SiteManageServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims)
+        private ICaching _caching;
+        public SiteManageServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, ICaching caching)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             responsity = _unitOfWork.GetRepository<sysSiteManage>();
+            _caching = caching;
         }
 
         public async Task<IEnumerable<SiteManageColumnDto>> ListAsync()
@@ -27,6 +31,7 @@ namespace Flex.Application.Services.System
             try
             {
                 Repository.Insert(model);
+                _caching.Remove(SiteKeys.SiteRouteKeys);
                 await _unitOfWork.SaveChangesAsync();
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
@@ -44,6 +49,7 @@ namespace Flex.Application.Services.System
                 _mapper.Map(updatemodel, model);
                 UpdateIntEntityBasicInfo(model);
                 _unitOfWork.GetRepository<sysSiteManage>().Update(model);
+                _caching.Remove(SiteKeys.SiteRouteKeys);
                 await _unitOfWork.SaveChangesAsync();
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
@@ -71,6 +77,7 @@ namespace Flex.Application.Services.System
                     UpdateIntEntityBasicInfo(item);
                     softdels.Add(item);
                 }
+                _caching.Remove(SiteKeys.SiteRouteKeys);
                 Repository.Update(softdels);
                 await _unitOfWork.SaveChangesAsync();
                 return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");

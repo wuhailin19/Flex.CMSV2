@@ -25,6 +25,10 @@ namespace Flex.Domain.Entities.System
         /// </summary>
         public string RoutePrefix { set; get; }
         /// <summary>
+        /// 目标路由
+        /// </summary>
+        public string TargetRoutePrefix { set; get; }
+        /// <summary>
         /// 选择复制站点，为0则不复制
         /// </summary>
         public int CopySiteId { set; get; } = 0;
