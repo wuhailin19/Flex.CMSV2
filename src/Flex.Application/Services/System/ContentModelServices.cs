@@ -47,7 +47,7 @@ namespace Flex.Application.Services
             try
             {
                 if (CurrentSiteInfo.SiteId == 0)
-                    return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+                    return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataExist.GetEnumDescription());
                 contentmodel.SiteId = CurrentSiteInfo.SiteId;
                 responsity.Insert(contentmodel);
                 _unitOfWork.ExecuteSqlCommand(_sqlServerServices.CreateContentTableSql(contentmodel.TableName));

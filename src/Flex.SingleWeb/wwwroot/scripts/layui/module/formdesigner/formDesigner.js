@@ -3421,7 +3421,8 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                         _html += '</div>';
                     }
                     $block.append(_html);
-                    that.renderForm();
+                    that.bindGridSortEvent(json);
+                    //that.renderForm();
                 },
                 /**
                  * 根据components组件对象获取组件属性
