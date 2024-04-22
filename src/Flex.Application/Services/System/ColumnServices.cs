@@ -1,9 +1,12 @@
 ﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Application.Contracts.IServices.System;
 using Flex.Core.Config;
 using Flex.Core.Extensions;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.Role;
+using Flex.Domain.Enums.LogLevel;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Crypto;
 using System.Linq.Expressions;
 
 namespace Flex.Application.Services
@@ -12,12 +15,15 @@ namespace Flex.Application.Services
     public class ColumnServices : BaseService, IColumnServices
     {
         IRoleServices _roleServices;
+        protected ISystemLogServices _logServices;
         private ISystemIndexSetServices _systemIndexSetServices;
-        public ColumnServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IRoleServices roleServices, ISystemIndexSetServices systemIndexSetServices)
+        public ColumnServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims
+            , IRoleServices roleServices, ISystemIndexSetServices systemIndexSetServices, ISystemLogServices logServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _roleServices = roleServices;
             _systemIndexSetServices = systemIndexSetServices;
+            _logServices = logServices;
         }
 
         //获取本站或者公有的模型
@@ -168,7 +174,7 @@ namespace Flex.Application.Services
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
             var siteRespository = _unitOfWork.GetRepository<sysSiteManage>();
 
-            var list = (await coreRespository.GetAllAsync(m=>m.SiteId== siteId)).OrderBy(m => m.OrderId).ToList();
+            var list = (await coreRespository.GetAllAsync(m => m.SiteId == siteId)).OrderBy(m => m.OrderId).ToList();
 
             List<RoleDataColumnListDto> treeColumns = new List<RoleDataColumnListDto>();
             treeColumns.AddRange(_mapper.Map<List<RoleDataColumnListDto>>(list));
@@ -210,6 +216,7 @@ namespace Flex.Application.Services
                 model.SiteId = CurrentSiteInfo.SiteId;
                 coreRespository.Insert(model);
                 await _unitOfWork.SaveChangesAsync();
+                await _logServices.AddContentLog(SystemLogLevel.Normal, $"新增栏目{model.Name}", "新增");
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
@@ -237,6 +244,7 @@ namespace Flex.Application.Services
                 }
                 adminRepository.Update(softdels);
                 await _unitOfWork.SaveChangesAsync();
+                await _logServices.AddContentLog(SystemLogLevel.Warning, $"删除栏目数据，Id为{Ids}", "删除");
                 return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
             }
             catch (Exception ex)
@@ -254,6 +262,7 @@ namespace Flex.Application.Services
             {
                 coreRespository.Update(model);
                 await _unitOfWork.SaveChangesAsync();
+                await _logServices.AddContentLog(SystemLogLevel.Warning, $"修改栏目{model.Name}", "修改");
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)

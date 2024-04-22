@@ -1,5 +1,8 @@
 ﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Application.Contracts.IServices.System;
 using Flex.Application.Contracts.Logs;
+using Flex.Domain.Dtos.System.SystemLog;
+using Flex.Domain.Enums.LogLevel;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -14,12 +17,14 @@ namespace Flex.Application.Exceptions
         private readonly ILogger<GlobalExceptionFilter> _logger;
         private readonly IWebHostEnvironment _env;
         private readonly IClaimsAccessor _claimsAccessor;
-
-        public GlobalExceptionFilter(IWebHostEnvironment env, ILogger<GlobalExceptionFilter> logger, IClaimsAccessor claimsAccessor)
+        private ISystemLogServices _logServices;
+        public GlobalExceptionFilter(IWebHostEnvironment env, ILogger<GlobalExceptionFilter> logger, IClaimsAccessor claimsAccessor,
+            ISystemLogServices logServices)
         {
             _logger = logger;
             _env = env;
             _claimsAccessor = claimsAccessor;
+            _logServices = logServices;
         }
         public override void OnException(ExceptionContext context)
         {
@@ -30,8 +35,8 @@ namespace Flex.Application.Exceptions
             var hostAndPort = context.HttpContext.Request.Host.HasValue ? context.HttpContext.Request.Host.Value : string.Empty;
             var requestUrl = string.Concat(hostAndPort, context.HttpContext.Request.Path);
             var type = string.Concat("https://httpstatuses.com/", status);
-            
-            var exceptionmodel =new FillExceptionModel(_env.IsDevelopment(), exception, requestId);
+
+            var exceptionmodel = new FillExceptionModel(_env.IsDevelopment(), exception, requestId);
 
             var userid = "用户未认证";
             if (_claimsAccessor.IsAuthenticated)
@@ -49,6 +54,16 @@ namespace Flex.Application.Exceptions
                 Exception = exception
             };
             _logger.Log(exceptionmodel.logLevel, JsonHelper.ToJson(exlog));
+
+            if (exceptionmodel.logLevel == LogLevel.Warning || exceptionmodel.logLevel == LogLevel.Error)
+            {
+                var logmodel = new InputSystemLogDto();
+                logmodel.LogLevel = exceptionmodel.logLevel == LogLevel.Warning ? SystemLogLevel.Warning : SystemLogLevel.Error;
+                logmodel.OperationContent = $"请求Id为：{requestId}，请到日志文件内查看详细记录";
+                logmodel.LogSort = LogSort.Api;
+                logmodel.Url = requestUrl;
+                _logServices.AddLog(logmodel);
+            }
             var problemDetails = new ExceptionMsg
             {
                 code = status,

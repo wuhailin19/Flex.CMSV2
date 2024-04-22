@@ -163,7 +163,9 @@ namespace Flex.Application.Services
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.RolesName == role.RolesName);
             if (model != null)
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataExist.GetEnumDescription());
-            var result = await _unitOfWork.GetRepository<SysRole>().InsertAsync(_mapper.Map<SysRole>(role));
+            var insertmodel = _mapper.Map<SysRole>(role);
+            AddIntEntityBasicInfo(insertmodel);
+            var result = await _unitOfWork.GetRepository<SysRole>().InsertAsync(insertmodel);
             await _unitOfWork.SaveChangesAsync();
             if (result.Entity.Id > 0)
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
@@ -178,6 +180,7 @@ namespace Flex.Application.Services
             {
                 model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
                 _mapper.Map(role, model);
+                UpdateIntEntityBasicInfo(model);
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
                 _caching.Remove(RoleKeys.RoleCache + model.Id);

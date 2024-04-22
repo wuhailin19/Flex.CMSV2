@@ -1,5 +1,8 @@
 ﻿using Flex.Application.Aop;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Application.Contracts.IServices.System;
+using Flex.Domain.Dtos.System.SystemLog;
+using Flex.Domain.Enums.LogLevel;
 using Flex.EFSql.UnitOfWork;
 
 namespace Flex.Application.Services
@@ -7,10 +10,13 @@ namespace Flex.Application.Services
     public class AccountServices : BaseService, IAccountServices
     {
         private ICaching _caching;
-        public AccountServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, ICaching caching)
+        protected ISystemLogServices _logServices;
+        public AccountServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims
+            , ICaching caching, ISystemLogServices logServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _caching = caching;
+            _logServices = logServices;
         }
         /// <summary>
         /// 判断验证码
@@ -29,7 +35,7 @@ namespace Flex.Application.Services
             }
             return true;
         }
-        private ProblemDetails<UserData> DecryptStringObj(string StringObj)
+        private async Task<ProblemDetails<UserData>> DecryptStringObj(string StringObj)
         {
             try
             {
@@ -38,6 +44,8 @@ namespace Flex.Application.Services
             }
             catch (Exception ex)
             {
+                await _logServices.AddLoginLog(new LoginSystemLogDto() { systemLogLevel = SystemLogLevel.Error, operationContent = $"密码解析失败，密文为{StringObj}，密钥为{RSAHepler.RSAPrivateKey}" });
+
                 return Problem<UserData>(HttpStatusCode.InternalServerError, "解析失败，重试", ex);
             }
         }
@@ -49,9 +57,18 @@ namespace Flex.Application.Services
             }
             if (admin.Islock && !admin.IsSystem)
             {
-                return Problem<UserData>(HttpStatusCode.Locked, ErrorCodes.AccountLocked.GetEnumDescription());
+                return Problem<UserData>(HttpStatusCode.Locked, ErrorCodes.AccountLocked.GetEnumDescription()+"，请联系管理员解锁");
             }
-            var result = DecryptStringObj(Password);
+            if (admin.LockTime != null)
+            {
+                var locktime = admin.LockTime - Clock.Now;
+                if (locktime > TimeSpan.Zero && !admin.IsSystem)
+                {
+                    var lockstr = $"{locktime?.Milliseconds}分{locktime?.Seconds}";
+                    return Problem<UserData>(HttpStatusCode.Locked, ErrorCodes.AccountLocked.GetEnumDescription() + $"，请{lockstr}后再尝试");
+                }
+            }
+            var result = await DecryptStringObj(Password);
             if (result.IsSuccess)
             {
                 Password = result.Detail;
@@ -68,18 +85,21 @@ namespace Flex.Application.Services
                     var msg = "密码不正确，还有" + (admin.MaxErrorCount - admin.ErrorCount) + "次机会";
                     if (admin.MaxErrorCount - admin.ErrorCount == 0)
                     {
-                        admin.Islock = true;
+                        //admin.Islock = true;
                         admin.ErrorCount = 0;
-                        admin.LockTime = Clock.Now;
-                        msg = "该账户已被锁定，请联系超级管理员解锁";
+                        admin.LockTime = Clock.Now.AddMinutes(30);
+                        msg = "该账户已被锁定，请联系超级管理员解锁，或者等待半小时解锁";
                     }
                     _unitOfWork.SetTransaction();
                     _unitOfWork.GetRepository<SysAdmin>().Update(admin);
                     await _unitOfWork.SaveChangesTranAsync();
+
+                    await _logServices.AddLoginLog(new LoginSystemLogDto() { systemLogLevel = SystemLogLevel.Warning, operationContent = msg, inoperator = admin.UserName });
                     return Problem<UserData>(HttpStatusCode.BadRequest, msg);
                 }
                 else
                 {
+                    await _logServices.AddLoginLog(new LoginSystemLogDto() { systemLogLevel = SystemLogLevel.Warning, operationContent = ErrorCodes.AccountOrPwdWrong.GetEnumDescription(), inoperator = admin.UserName });
                     return Problem<UserData>(HttpStatusCode.BadRequest, ErrorCodes.AccountOrPwdWrong.GetEnumDescription());
                 }
             }
@@ -99,7 +119,7 @@ namespace Flex.Application.Services
             var admin_unit = _unitOfWork.GetRepository<SysAdmin>();
             var Account = string.Empty;
             var Password = string.Empty;
-            ProblemDetails<UserData> result = DecryptStringObj(adminLoginDto.Account);
+            ProblemDetails<UserData> result = await DecryptStringObj(adminLoginDto.Account);
             if (!result.IsSuccess)
             {
                 return result;

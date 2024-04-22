@@ -2,6 +2,7 @@
 using Flex.Application.Contracts.Exceptions;
 using Flex.Core.Extensions.CommonExtensions;
 using Flex.Domain.Dtos.Role;
+using Flex.Domain.Enums.LogLevel;
 using Flex.Domain.WhiteFileds;
 using Microsoft.Data.SqlClient;
 using System;
@@ -37,7 +38,7 @@ namespace Flex.Application.Services
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
-          
+
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
@@ -52,7 +53,7 @@ namespace Flex.Application.Services
             {
                 fileds.Add(item.FieldName);
             }
-            return await UpdateContentCore(table, contentmodel, fileds);
+            return await UpdateContentCore(table, contentmodel, fileds, column);
         }
 
         private static void ClearNotUseFields(Hashtable table, List<string> white_fileds, IList<sysField> filedmodel)
@@ -89,7 +90,7 @@ namespace Flex.Application.Services
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
-       
+
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
@@ -109,7 +110,7 @@ namespace Flex.Application.Services
                 _sqlTableServices.InitDapperColumnContentSwheresql(ref swhere, ref parameters, dict);
 
 
-                var result = (await _dapperDBContext.GetDynamicAsync("select ReviewAddUser from " + contentmodel.TableName + " where"+ swhere, parameters)).FirstOrDefault();
+                var result = (await _dapperDBContext.GetDynamicAsync("select ReviewAddUser from " + contentmodel.TableName + " where" + swhere, parameters)).FirstOrDefault();
                 if (result == null)
                     return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
                 if (result.ReviewAddUser != _claims.UserId && !_claims.IsSystem)
@@ -126,7 +127,7 @@ namespace Flex.Application.Services
             }
             foreach (var key in keysToRemove)
                 table.Remove(key);
-            return await UpdateContentCore(table, contentmodel, null);
+            return await UpdateContentCore(table, contentmodel, null, column);
         }
 
         /// <summary>
@@ -152,7 +153,7 @@ namespace Flex.Application.Services
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
-            
+
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
@@ -167,10 +168,11 @@ namespace Flex.Application.Services
             }
             foreach (var key in keysToRemove)
                 table.Remove(key);
-            return await UpdateContentCore(table, contentmodel, null);
+
+            return await UpdateContentCore(table, contentmodel, null, column);
         }
 
-        private async Task<ProblemDetails<int>> UpdateContentCore(Hashtable table, SysContentModel contentmodel, List<string> fileds)
+        private async Task<ProblemDetails<int>> UpdateContentCore(Hashtable table, SysContentModel contentmodel, List<string> fileds, SysColumn column)
         {
             StringBuilder builder = new StringBuilder();
             SqlSugar.SugarParameter[] parameters;
@@ -189,18 +191,22 @@ namespace Flex.Application.Services
                 _sqlsugar.Db.Ado.ExecuteCommand(createcopysql.ToString(), parameters);
             }
 
-            parameters= new SqlSugar.SugarParameter[] { };
+            parameters = new SqlSugar.SugarParameter[] { };
             builder = _sqlTableServices.CreateSqlsugarUpdateSqlString(table, contentmodel.TableName, out parameters);
             try
             {
                 var result = _sqlsugar.Db.Ado.ExecuteCommand(builder.ToString(), parameters);
                 if (result > 0)
                 {
+                    if (table.ContainsKey("Title"))
+                    {
+                        await _logServices.AddContentLog(SystemLogLevel.Warning, $"修改栏目{column.Name}数据{table.GetValue("Title")}", $"修改");
+                    }
                     return Problem<int>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
                 }
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Problem<int>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }

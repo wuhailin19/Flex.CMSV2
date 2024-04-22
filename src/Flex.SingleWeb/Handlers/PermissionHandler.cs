@@ -1,8 +1,11 @@
 ﻿using Flex.Application.Authorize;
+using Flex.Application.Contracts.IServices.System;
 using Flex.Core.Config;
 using Flex.Core.Helper.MemoryCacheHelper;
 using Flex.Core.Timing;
 using Flex.Domain.Cache;
+using Flex.Domain.Dtos.System.SystemLog;
+using Flex.Domain.Enums.LogLevel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
@@ -16,14 +19,17 @@ namespace Flex.WebApi.Handlers
         private readonly IClaimsAccessor _claims;
         private readonly IRoleServices _roleServices;
         private readonly ILogger<PermissionHandler> _logger;
+        protected ISystemLogServices _logServices;
         private ICaching _caching;
-        public PermissionHandler(IHttpContextAccessor Context, IClaimsAccessor claims, IRoleServices roleServices, ILogger<PermissionHandler> logger, ICaching caching)
+        public PermissionHandler(IHttpContextAccessor Context, IClaimsAccessor claims, IRoleServices roleServices, ILogger<PermissionHandler> logger
+            , ICaching caching, ISystemLogServices logServices)
         {
             _Context = Context;
             _claims = claims;
             _roleServices = roleServices;
             _logger = logger;
             _caching = caching;
+            _logServices = logServices;
         }
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
@@ -41,7 +47,8 @@ namespace Flex.WebApi.Handlers
                     var expirationtime = DateTime.Parse(context.User.Claims.First(m => m.Type == ClaimTypes.Expiration)?.Value);
                     if (expirationtime < Clock.Now)
                     {
-                        _logger.LogWarning("该用户{0}（{2}），登录已超时，链接{1}", _claims.UserName, nowurl, _claims.UserId);
+                        var logstr = string.Format("该用户{0}（{2}），登录已超时，链接{1}", _claims.UserName, nowurl, _claims.UserId);
+                        AddLog(logstr);
                         Fail(context, httpContext, StatusCodes.Status419AuthenticationTimeout);
                         return;
                     }
@@ -53,7 +60,8 @@ namespace Flex.WebApi.Handlers
                     var userrole = _claims.UserRole;
                     if (userrole == 0)
                     {
-                        _logger.LogWarning("该用户{0}（{2}），没有角色信息，链接{1}", _claims.UserName, nowurl, _claims.UserId);
+                        var logstr = string.Format("该用户{0}（{2}），没有角色信息，链接{1}", _claims.UserName, nowurl, _claims.UserId);
+                        AddLog(logstr);
                         Fail(context, httpContext);
                         return;
                     }
@@ -77,7 +85,8 @@ namespace Flex.WebApi.Handlers
                     }
                     else
                     {
-                        _logger.LogWarning("该用户{0}（{1}），没有权限访问，链接{2}", _claims.UserName, _claims.UserId, nowurl);
+                        var logstr = string.Format("该用户{0}（{1}），没有权限访问，链接{2}", _claims.UserName, _claims.UserId, nowurl);
+                        AddLog(logstr);
                         Fail(context, httpContext);
                         return;
                     }
@@ -85,6 +94,11 @@ namespace Flex.WebApi.Handlers
             }
         }
 
+        private async void AddLog(string logstr)
+        {
+            _logger.LogWarning(logstr);
+            await _logServices.AddLoginLog(new LoginSystemLogDto() { systemLogLevel = SystemLogLevel.Warning, operationContent = logstr, inoperator = _claims.UserName });
+        }
         /// <summary>
         /// 获取角色和权限Url对应关系的字典
         /// </summary>
