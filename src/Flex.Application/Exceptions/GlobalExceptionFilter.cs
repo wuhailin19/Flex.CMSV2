@@ -26,7 +26,7 @@ namespace Flex.Application.Exceptions
             _claimsAccessor = claimsAccessor;
             _logServices = logServices;
         }
-        public override void OnException(ExceptionContext context)
+        public override async void OnException(ExceptionContext context)
         {
             var status = 206;
             var exception = context.Exception;
@@ -59,10 +59,10 @@ namespace Flex.Application.Exceptions
             {
                 var logmodel = new InputSystemLogDto();
                 logmodel.LogLevel = exceptionmodel.logLevel == LogLevel.Warning ? SystemLogLevel.Warning : SystemLogLevel.Error;
-                logmodel.OperationContent = $"请求Id为：{requestId}，请到日志文件内查看详细记录";
+                logmodel.OperationContent = $"{exceptionmodel.title}，请求Id为：{requestId}，请到日志文件内查看详细记录";
                 logmodel.LogSort = LogSort.Api;
                 logmodel.Url = requestUrl;
-                _logServices.AddLog(logmodel);
+                await _logServices.AddLog(logmodel);
             }
             var problemDetails = new ExceptionMsg
             {

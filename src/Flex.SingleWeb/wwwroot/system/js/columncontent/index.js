@@ -71,6 +71,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Export">导出</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Move">移动</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="History">修改历史</button>';
+        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Delete">回收站</button>';
     }
     if (btnpermission.IsDelete)
         toolbarhtml += '<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteAll">删除</button>';

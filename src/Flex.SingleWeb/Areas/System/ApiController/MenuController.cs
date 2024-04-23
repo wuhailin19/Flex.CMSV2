@@ -3,6 +3,7 @@ using Flex.Application.Services;
 using Flex.Core.Attributes;
 using Flex.Domain.Dtos.Admin;
 using Flex.Domain.Dtos.Menu;
+using Flex.Domain.Dtos.System.Menu;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -73,7 +74,18 @@ namespace Flex.WebApi.SystemControllers
                 return Success(result.Detail);
             return Fail(result.Detail);
         }
-
+        [HttpPost("QuickEdit")]
+        [Descriper(Name = "快速修改菜单状态")]
+        public async Task<string> QuickEdit()
+        {
+            var model = await ValidateModel<MenuQuickEditDto>();
+            if(!model.IsSuccess)
+                return Fail(model.Detail);
+            var result = await _menuServices.QuickEditMenu(model.Content);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
         [HttpPost("CreateMenu")]
         [Descriper(Name = "新增菜单")]
         public async Task<string> AddMenu()

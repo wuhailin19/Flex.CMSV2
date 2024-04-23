@@ -9,9 +9,20 @@ namespace Flex.Core.Config
 {
     public class CurrentSiteInfo
     {
-        public static int SiteId
+        public static int SiteId { get; set; }
+        /// <summary>
+        /// 站点文件夹
+        /// </summary>
+        public static string? SiteUploadPath
         {
-            get; set;
+            get
+            {
+                if (SiteId != 0)
+                {
+                    return $"/site" + SiteId;
+                }
+                else { return string.Empty; }
+            }
         }
     }
 }

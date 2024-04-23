@@ -1,9 +1,11 @@
 ﻿using Castle.DynamicProxy;
 using Flex.Application.Contracts.Aop;
+using Flex.Core.Attributes;
 using Flex.Core.Serialize;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace Flex.Application.Aop
 {
@@ -23,6 +25,11 @@ namespace Flex.Application.Aop
         /// <param name="invocation"></param>
         public void InterceptSynchronous(IInvocation invocation)
         {
+            if (invocation.Method.IsDefined(typeof(NoLogAttribute), true))
+            {
+                invocation.Proceed();
+                return;
+            }
             try
             {
                 //调用业务方法
@@ -52,6 +59,11 @@ namespace Flex.Application.Aop
         /// <param name="invocation"></param>
         public void InterceptAsynchronous(IInvocation invocation)
         {
+            if (invocation.Method.IsDefined(typeof(NoLogAttribute), true))
+            {
+                invocation.Proceed();
+                return;
+            }
             try
             {
                 //调用业务方法
@@ -87,6 +99,14 @@ namespace Flex.Application.Aop
         }
         private async Task<TResult> InternalInterceptAsynchronous<TResult>(IInvocation invocation)
         {
+            if (invocation.Method.IsDefined(typeof(NoLogAttribute), true))
+            {
+                //调用业务方法
+                invocation.Proceed();
+                Task<TResult> task = (Task<TResult>)invocation.ReturnValue;
+                TResult result = await task;//获得返回结果
+                return result;
+            }
             try
             {
                 //调用业务方法

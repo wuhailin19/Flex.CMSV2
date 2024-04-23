@@ -200,7 +200,7 @@ namespace Flex.Application.Services
                 {
                     if (table.ContainsKey("Title"))
                     {
-                        await _logServices.AddContentLog(SystemLogLevel.Warning, $"修改栏目{column.Name}数据{table.GetValue("Title")}", $"修改");
+                        await _logServices.AddContentLog(SystemLogLevel.Warning, $"修改栏目【{column.Name}】数据【{table.GetValue("Title")}】", $"修改");
                     }
                     return Problem<int>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
                 }

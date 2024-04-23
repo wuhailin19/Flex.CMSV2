@@ -36,6 +36,8 @@
   
   <ItemGroup>
     <None Include="wwwroot\scripts\layui\module\notice\.DS_Store" />
+    <None Include="wwwroot\system\js\systemlog\index.js" />
+    <None Include="wwwroot\system\js\systemlog\openPageOptions.js" />
   </ItemGroup>
   
   <ItemGroup>

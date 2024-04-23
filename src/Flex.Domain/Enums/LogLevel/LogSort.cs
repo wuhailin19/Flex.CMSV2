@@ -10,10 +10,10 @@ namespace Flex.Domain.Enums.LogLevel
     public enum LogSort
     {
         [Description("登录")]
-        Login,
+        Login = 0,
         [Description("接口日志")]
-        Api,
+        Api = 1,
         [Description("内容日志")]
-        DataOperation
+        DataOperation = 2
     }
 }

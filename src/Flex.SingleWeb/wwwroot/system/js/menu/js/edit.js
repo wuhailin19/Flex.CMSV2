@@ -43,18 +43,7 @@ layui.config({
         iconHhysFa.clearValue("iconHhysFa", fonttype);
         $('#iconHhysFa').val('');
     })
-    form.val("formTest", {
-        'Name': parent_json.Name
-        , 'ID': parent_json.ID
-        , 'ParentID': parent_json.ParentID
-        , 'FontSort': parent_json.FontSort
-        , 'Icode': parent_json.Icode
-        , 'Status': parent_json.Status
-        , 'LinkUrl': parent_json.LinkUrl
-        , 'OrderId': parent_json.OrderId
-        , 'isMenu': parent_json.isMenu
-        , 'IsControllerUrl': parent_json.IsControllerUrl
-    });
+    form.val("formTest", parent_json);
     var icondom = iconHhysFa.render({
         // 选择器，推荐使用input
         elem: '#iconHhysFa',
@@ -80,6 +69,7 @@ layui.config({
 
     //监听提交
     form.on('submit(formDemo)', function (data) {
+
         ajaxHttp({
             url: api + 'Menu',
             type: 'Post',

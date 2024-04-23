@@ -1,13 +1,14 @@
 ﻿var req_Data = null;
+var routeLink = api + 'Menu/';
 layui.config({
     base: '/scripts/layui/module/'
-}).use(['layer', 'table', 'treeTable'], function () {
-    var table = layui.table;
+}).use(['layer', 'treeTable','form'], function () {
+    var form = layui.form;
     var layer = layui.layer;
     var $ = layui.jquery;
     var columnlist;
     ajaxHttp({
-        url: api + 'Menu/Column',
+        url: routeLink + 'Column',
         type: 'Get',
         //data: { _type: 'getTableColumn' },
         async: false,
@@ -21,7 +22,7 @@ layui.config({
     // 渲染表格
     var insTb = treeTable.render({
         elem: '#demo_tree',
-        url: api + 'Menu/ListAsync',
+        url: routeLink + 'ListAsync',
         //where: { _type: 'getMenuTreeTableDataList' },
         method: 'Get',
         toolbar: '#toolbarDemo',
@@ -78,6 +79,46 @@ layui.config({
             delete delete_index[index]
         }
     });
+    form.on('switch(menustatusPxy)', function (data) {
+        // 得到开关的value值，实际是需要修改的ID值。
+        var status = this.checked ? 'true' : 'false';
+        const model = { Id: data.value, isMenu: status };
+        ajaxHttp({
+            url: routeLink + "QuickEdit",
+            data: JSON.stringify(model),
+            type: 'Post',
+            async: false,
+            success: function (json) {
+                if (json.code == 200) {
+                    parent.Init();
+                    tips.showSuccess(json.msg);
+                } else {
+                    tips.showFail(json.msg);
+                }
+            },
+            complete: function () { }
+        })
+    })
+    form.on('switch(showstatusPxy)', function (data) {
+        // 得到开关的value值，实际是需要修改的ID值。
+        var status = this.checked ? 'true' : 'false';
+        const model = { Id: data.value, Status: status };
+        ajaxHttp({
+            url: routeLink + "QuickEdit",
+            data: JSON.stringify(model),
+            type: 'Post',
+            async: false,
+            success: function (json) {
+                if (json.code == 200) {
+                    parent.Init();
+                    tips.showSuccess(json.msg);
+                } else {
+                    tips.showFail(json.msg);
+                }
+            },
+            complete: function () { }
+        })
+    })
     //监听事件
     treeTable.on('toolbar(demo_tree)', function (obj) {
         var data = insTb.checkStatus(false);
@@ -100,7 +141,7 @@ layui.config({
 
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
                     ajaxHttp({
-                        url: api + 'Menu/' + nodeIds,
+                        url: routeLink + nodeIds,
                         type: 'Post',
                         //data: { Ids: nodeIds },
                         async: false,
@@ -133,7 +174,7 @@ layui.config({
             let indexid = obj.data.ID;
             layer.confirm('确定删除本行么', function (index) {
                 ajaxHttp({
-                    url: api + 'Menu/' + indexid,
+                    url: routeLink + indexid,
                     type: 'Post',
                     //data: { Ids: indexid },
                     async: false,

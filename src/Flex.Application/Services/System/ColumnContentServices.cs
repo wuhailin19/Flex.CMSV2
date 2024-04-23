@@ -154,7 +154,7 @@ namespace Flex.Application.Services
                 {
                     if (table.ContainsKey("Title"))
                     {
-                        await _logServices.AddContentLog(SystemLogLevel.Normal, $"新增数据{table.GetValue("Title")}到栏目{column.Name}", $"普通新增");
+                        await _logServices.AddContentLog(SystemLogLevel.Normal, $"新增数据【{table.GetValue("Title")}】到栏目【{column.Name}】", $"普通新增");
                     }
                     return Problem(HttpStatusCode.OK, result, ErrorCodes.DataInsertSuccess.GetEnumDescription());
                 }
@@ -216,9 +216,8 @@ namespace Flex.Application.Services
             try
             {
                 _unitOfWork.ExecuteSqlCommand(_sqlTableServices.DeleteContentTableData(contentmodel.TableName, Ids));
-
-                await _logServices.AddContentLog(SystemLogLevel.Warning, $"删除栏目{column.Name}{Ids.Split(',').Count()}数据，Id为{Ids}", $"删除");
                 await _unitOfWork.SaveChangesAsync();
+                await _logServices.AddContentLog(SystemLogLevel.Warning, $"删除栏目【{column.Name}】{Ids.Split(',').Count()}条数据，Id为【{Ids}】", $"删除");
                 return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Split(',').Count()}条数据");
             }
             catch (Exception ex)

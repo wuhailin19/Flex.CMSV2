@@ -138,7 +138,10 @@ if (app.Environment.IsDevelopment())
     await myService.CreateUrlList();
 }
 
-//重写放到最前面
+//跨域需要放到最前面，对静态文件才生效
+app.UseCors(WebCoreSetupExtension.MyAllowSpecificOrigins);
+
+//重写放到StaticFiles前面
 app.UseRewritePathMiddleware();
 
 var options = new DefaultFilesOptions();
@@ -165,7 +168,6 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseRouting();
 app.UseAuthentication();
 
-app.UseCors(WebCoreSetupExtension.MyAllowSpecificOrigins);
 app.UseAuthorization();
 
 

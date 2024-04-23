@@ -8,6 +8,7 @@ namespace Flex.Domain.AutoMapper.System
     {
         public SystemLogProfile()
         {
+            CreateMap<InputSystemLogDto, sysSystemLog>();
             CreateMap<sysSystemLog, SystemLogColumnDto>()
                 .ForMember(m => m.LogLevel, n => n.MapFrom(c => c.LogLevel.GetEnumDescription()))
                 .ForMember(m => m.LogSort, n => n.MapFrom(c => c.LogSort.GetEnumDescription()));

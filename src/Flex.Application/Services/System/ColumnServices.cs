@@ -216,7 +216,7 @@ namespace Flex.Application.Services
                 model.SiteId = CurrentSiteInfo.SiteId;
                 coreRespository.Insert(model);
                 await _unitOfWork.SaveChangesAsync();
-                await _logServices.AddContentLog(SystemLogLevel.Normal, $"新增栏目{model.Name}", "新增");
+                await _logServices.AddContentLog(SystemLogLevel.Normal, $"新增栏目【{model.Name}】", "新增");
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
@@ -244,7 +244,7 @@ namespace Flex.Application.Services
                 }
                 adminRepository.Update(softdels);
                 await _unitOfWork.SaveChangesAsync();
-                await _logServices.AddContentLog(SystemLogLevel.Warning, $"删除栏目数据，Id为{Ids}", "删除");
+                await _logServices.AddContentLog(SystemLogLevel.Warning, $"删除栏目数据，Id为{Id}", "删除");
                 return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
             }
             catch (Exception ex)
@@ -262,7 +262,7 @@ namespace Flex.Application.Services
             {
                 coreRespository.Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                await _logServices.AddContentLog(SystemLogLevel.Warning, $"修改栏目{model.Name}", "修改");
+                await _logServices.AddContentLog(SystemLogLevel.Warning, $"修改栏目【{model.Name}】", "修改");
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)

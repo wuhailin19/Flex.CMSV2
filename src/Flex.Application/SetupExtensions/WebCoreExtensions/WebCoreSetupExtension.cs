@@ -23,7 +23,7 @@ namespace Flex.Application.Extensions.Register.WebCoreExtensions
                 builder =>
                 {
                     builder
-                    .WithOrigins(configuration.GetSection("Startup:Cors:AllowOrigins").Value.Split(','))
+                    .WithOrigins("*")
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });

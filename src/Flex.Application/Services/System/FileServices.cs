@@ -1,4 +1,5 @@
 ﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Core.Config;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -16,7 +17,7 @@ namespace Flex.Application.Services
         /// <summary>
         /// 文件储存位置
         /// </summary>
-        private string uploadsFolder = $"/upload/files/{DateTime.Now.ToDefaultDateTimeStr()}";
+        private string uploadsFolder = CurrentSiteInfo.SiteUploadPath + $"/upload/files/{DateTime.Now.ToDefaultDateTimeStr()}";
         public FileServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IWebHostEnvironment env)
             : base(unitOfWork, mapper, idWorker, claims)
         {

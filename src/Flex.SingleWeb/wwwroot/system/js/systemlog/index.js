@@ -1,12 +1,12 @@
 ﻿var columnlist;
 var req_Data;
-$.ajax({
+ajaxHttp({
     url: routeLink + 'Column',
     type: 'Get',
     async: false,
     dataType: 'json',
     success: function (result) {
-        columnlist = result.data;
+        columnlist = result.content;
     },
     complete: function () { }
 });
@@ -15,15 +15,27 @@ layui.use('table', function () {
     //JS 调用：
     var insTb = table.render({
         elem: '#demo_tree'
-        , url: routeLink + 'List'
+        , url: routeLink + 'ListAsync'
         , height: 'full-110'
         , toolbar: '#toolbarDemo'
         , limits: [1, 5, 10, 15, 20]
+        , headers: httpTokenHeaders
         , response: {
             statusCode: 200
         },
         where: {
             LogSort: 0
+        },
+        parseData: function (res) {
+            if (res.code != 200) {
+                tips.showFail(res.msg);
+                return false;
+            }
+            return {
+                "code": res.code, //数据状态的字段名称，默认：code
+                "count": res.content.TotalCount, //状态信息的字段名称，默认：msg
+                "data": res.content.Items//数据总数的字段名称，默认：count
+            };
         }
         , id: 'testReloadf'
         , limit: 15
@@ -33,13 +45,27 @@ layui.use('table', function () {
     });
     var insTbs = table.render({
         elem: '#demo_trees'
-        , url: routeLink + 'List'
+        , url: routeLink + 'ListAsync'
         , height: 'full-110'
+        , headers: httpTokenHeaders
         , toolbar: '#toolbarDemo'
         , limits: [1, 5, 10, 15, 20]
         , response: {
             statusCode: 200
-        },
+        }
+        ,
+        parseData: function (res) {
+            if (res.code != 200) {
+                tips.showFail(res.msg);
+                return false;
+            }
+            return {
+                "code": res.code, //数据状态的字段名称，默认：code
+                "count": res.content.TotalCount, //状态信息的字段名称，默认：msg
+                "data": res.content.Items//数据总数的字段名称，默认：count
+            };
+        }
+        ,
         where: {
             LogSort: 1
         }
@@ -71,13 +97,26 @@ layui.use('table', function () {
     });
     var insTbt = table.render({
         elem: '#demo_treet'
-        , url: routeLink + 'List'
+        , url: routeLink + 'ListAsync'
         , height: 'full-110'
         , toolbar: '#toolbarDemo'
         , limits: [1, 5, 10, 15, 20]
+        , headers: httpTokenHeaders
         , response: {
             statusCode: 200
         },
+        parseData: function (res) {
+            if (res.code != 200) {
+                tips.showFail(res.msg);
+                return false;
+            }
+            return {
+                "code": res.code, //数据状态的字段名称，默认：code
+                "count": res.content.TotalCount, //状态信息的字段名称，默认：msg
+                "data": res.content.Items//数据总数的字段名称，默认：count
+            };
+        }
+        ,
         where: {
             LogSort: 2
         }
@@ -103,25 +142,22 @@ layui.use('table', function () {
     table.on('toolbar(test)', function (obj) {
         switch (obj.event) {
             case "Normal":
-                searchbybutton(insTb, obj.event);
+                searchbybutton(insTb, 2);
                 break;
             case "":
-                searchbybutton(insTb, obj.event);
-                break;
-            case "Login":
-                searchbybutton(insTb, obj.event);
+                searchbybutton(insTb, 2);
                 break;
             case "Warning":
-                searchbybutton(insTb, obj.event);
+                searchbybutton(insTb, -1);
                 break;
             case "Error":
-                searchbybutton(insTb, obj.event);
+                searchbybutton(insTb, -2);
                 break;
         }
     });
     function searchbybutton($table, $event) {
         $table.reload({
-            url: routeLink + 'List'
+            url: routeLink + 'ListAsync'
             , where: {
                 LogLevel: $event
             }
@@ -131,19 +167,16 @@ layui.use('table', function () {
     table.on('toolbar(tests)', function (obj) {
         switch (obj.event) {
             case "Normal":
-                searchbybutton(insTbs, obj.event);
+                searchbybutton(insTbs, 2);
                 break;
             case "":
-                searchbybutton(insTbs, obj.event);
-                break;
-            case "Login":
-                searchbybutton(insTbs, obj.event);
+                searchbybutton(insTbs, 0);
                 break;
             case "Warning":
-                searchbybutton(insTbs, obj.event);
+                searchbybutton(insTbs, -1);
                 break;
             case "Error":
-                searchbybutton(insTbs, obj.event);
+                searchbybutton(insTbs, -2);
                 break;
         }
     });
@@ -151,19 +184,16 @@ layui.use('table', function () {
     table.on('toolbar(testt)', function (obj) {
         switch (obj.event) {
             case "Normal":
-                searchbybutton(insTbt, obj.event);
+                searchbybutton(insTbt, 2);
                 break;
             case "":
-                searchbybutton(insTbt, obj.event);
-                break;
-            case "Login":
-                searchbybutton(insTbt, obj.event);
+                searchbybutton(insTbt, 0);
                 break;
             case "Warning":
-                searchbybutton(insTbt, obj.event);
+                searchbybutton(insTbt, -1);
                 break;
             case "Error":
-                searchbybutton(insTbt, obj.event);
+                searchbybutton(insTbt, -2);
                 break;
         }
     });

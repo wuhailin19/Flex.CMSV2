@@ -26,25 +26,19 @@
     </script>
     <script type="text/html" id="statusPxy">
         {{#if(d.Status==true){}}
-        <input type="checkbox" name="yyy" lay-skin="switch" lay-text="显示|隐藏" checked>
+        <input type="checkbox" name="yyy" lay-skin="switch" lay-filter="showstatusPxy" value="{{d.ID}}" lay-text="显示|隐藏" checked>
         {{#}else{}}
-        <input type="checkbox" name="yyy" lay-skin="switch" lay-text="显示|隐藏">
+        <input type="checkbox" name="yyy" lay-skin="switch" lay-filter="showstatusPxy" value="{{d.ID}}" lay-text="显示|隐藏">
         {{#}}}
     </script>
     <script type="text/html" id="menuPxy">
         {{#if(d.isMenu==true){}}
-        <input type="checkbox" name="xxx" lay-skin="switch" lay-text="是|否" checked>
+        <input type="checkbox" name="xxx" lay-skin="switch" lay-filter="menustatusPxy" value="{{d.ID}}" lay-text="是|否" checked>
         {{#}else{}}
-        <input type="checkbox" name="xxx" lay-skin="switch" lay-text="是|否">
+        <input type="checkbox" name="xxx" lay-skin="switch" lay-filter="menustatusPxy" value="{{d.ID}}" lay-text="是|否">
         {{#}}}
     </script>
-    <script type="text/html" id="controllerPxy">
-        {{#if(d.IsControllerUrl==true){}}
-        <input type="checkbox" name="xxx" lay-skin="switch" lay-text="aspx|mvc" checked>
-        {{#}else{}}
-        <input type="checkbox" name="xxx" lay-skin="switch" lay-text="aspx|mvc">
-        {{#}}}
-    </script>
+    
     <script type="text/html" id="iconPxy">
         {{#if(d.FontSort=='fontclass'||d.FontSort==''){}}
         <i class="layui-icon {{d.Icode}}"></i>

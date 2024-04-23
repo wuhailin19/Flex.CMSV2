@@ -73,6 +73,7 @@ namespace Flex.Application.Services
             model.Id = _idWorker.NextId();
             model.AddUser = _claims.UserId;
             model.AddUserName = _claims.UserName;
+            model.AddTime = Clock.Now;
         }
         public virtual void AddStringEntityBasicInfo<T>(T model) where T : BaseEntity
         {

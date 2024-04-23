@@ -1,5 +1,6 @@
 ﻿using Flex.Application.Contracts.Exceptions;
 using Flex.Application.Contracts.IServices.System;
+using Flex.Core.Attributes;
 using Flex.Domain.Dtos.System.SystemLog;
 using Flex.Domain.Enums.LogLevel;
 using Microsoft.AspNetCore.Http;
@@ -14,11 +15,11 @@ namespace Flex.Application.Services.System
             : base(unitOfWork, mapper, idWorker, claims)
         {
         }
-        public async Task<PagedList<SystemLogColumnDto>> ListAsync(int page, int limit, LogSort LogSort, SystemLogLevel LogLevel = SystemLogLevel.Normal, string msg = null)
+        public async Task<PagedList<SystemLogColumnDto>> ListAsync(int page, int limit, LogSort LogSort, SystemLogLevel LogLevel = SystemLogLevel.All, string msg = null)
         {
             Expression<Func<sysSystemLog, bool>> extension = null;
-            extension = m => m.LogSort == LogSort;
-            if (LogLevel == SystemLogLevel.Normal)
+            extension = m => (int)m.LogSort == (int)LogSort;
+            if (LogLevel == SystemLogLevel.All)
             {
                 if (!_claims.IsSystem)
                     extension = extension.And(m => m.AddUser == _claims.UserId);
@@ -26,14 +27,14 @@ namespace Flex.Application.Services.System
             else
             {
                 if (!_claims.IsSystem)
-                    extension = extension.And(m => m.LogLevel == LogLevel && m.AddUser == _claims.UserId);
+                    extension = extension.And(m => (int)m.LogLevel == (int)LogLevel && m.AddUser == _claims.UserId);
                 else
-                    extension = extension.And(m => m.LogLevel == LogLevel);
+                    extension = extension.And(m => (int)m.LogLevel == (int)LogLevel);
             }
             if (!msg.IsNullOrEmpty())
                 extension = extension.And(m => m.OperationContent.Contains(msg) || m.Operator.Contains(msg) || m.Url.Contains(msg));
             Func<IQueryable<sysSystemLog>, IOrderedQueryable<sysSystemLog>> orderBy = m => m.OrderByDescending(n => n.AddTime);
-            var list = _unitOfWork.GetRepository<sysSystemLog>().GetPagedListAsync(extension, orderBy, null, page, limit);
+            var list =await _unitOfWork.GetRepository<sysSystemLog>().GetPagedListAsync(extension, orderBy, null, page, limit);
             return _mapper.Map<PagedList<SystemLogColumnDto>>(list);
         }
         /// <summary>
@@ -41,7 +42,7 @@ namespace Flex.Application.Services.System
         /// </summary>
         /// <param name="log"></param>
         /// <returns></returns>
-        public async Task<ProblemDetails<string>> AddLog(InputSystemLogDto log)
+        public async Task AddLog(InputSystemLogDto log)
         {
             var insertmodel = _mapper.Map<sysSystemLog>(log);
             AddLongEntityBasicInfo(insertmodel);
@@ -50,9 +51,6 @@ namespace Flex.Application.Services.System
             insertmodel.Operator = _claims.UserName;
             var result = await _unitOfWork.GetRepository<sysSystemLog>().InsertAsync(insertmodel);
             await _unitOfWork.SaveChangesAsync();
-            if (result.Entity.Id > 0)
-                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
-            return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
         }
         /// <summary>
         /// 数据操作日志
@@ -61,7 +59,7 @@ namespace Flex.Application.Services.System
         /// <param name="operationContent"></param>
         /// <param name="request">使用方法</param>
         /// <returns></returns>
-        public async Task<ProblemDetails<string>> AddContentLog(SystemLogLevel systemLogLevel, string operationContent, string request)
+        public async Task AddContentLog(SystemLogLevel systemLogLevel, string operationContent, string request)
         {
             var insertmodel = new sysSystemLog();
             AddLongEntityBasicInfo(insertmodel);
@@ -74,17 +72,13 @@ namespace Flex.Application.Services.System
             insertmodel.OperationContent = operationContent;
             var result = await _unitOfWork.GetRepository<sysSystemLog>().InsertAsync(insertmodel);
             await _unitOfWork.SaveChangesAsync();
-            if (result.Entity.Id > 0)
-                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
-            return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
         }
         /// <summary>
         /// 登录日志
         /// </summary>
-        /// <param name="systemLogLevel"></param>
-        /// <param name="operationContent"></param>
+        /// <param name="loginSystemLogDto"></param>
         /// <returns></returns>
-        public async Task<ProblemDetails<string>> AddLoginLog(LoginSystemLogDto loginSystemLogDto)
+        public async Task AddLoginLog(LoginSystemLogDto loginSystemLogDto)
         {
             var insertmodel = new sysSystemLog();
             insertmodel.Ip = AcbHttpContext.ClientIp;
@@ -95,11 +89,9 @@ namespace Flex.Application.Services.System
             insertmodel.LogSort = LogSort.Login;
             insertmodel.OperationContent = loginSystemLogDto.operationContent;
             insertmodel.AddTime = DateTime.Now;
+            insertmodel.Id = _idWorker.NextId();
             var result = await _unitOfWork.GetRepository<sysSystemLog>().InsertAsync(insertmodel);
             await _unitOfWork.SaveChangesAsync();
-            if (result.Entity.Id > 0)
-                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
-            return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
         }
     }
 }

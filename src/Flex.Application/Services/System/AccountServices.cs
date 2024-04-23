@@ -10,13 +10,15 @@ namespace Flex.Application.Services
     public class AccountServices : BaseService, IAccountServices
     {
         private ICaching _caching;
+        private IRoleServices _roleServices;
         protected ISystemLogServices _logServices;
         public AccountServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims
-            , ICaching caching, ISystemLogServices logServices)
+            , ICaching caching, ISystemLogServices logServices, IRoleServices roleServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _caching = caching;
             _logServices = logServices;
+            _roleServices = roleServices;
         }
         /// <summary>
         /// 判断验证码
@@ -57,7 +59,7 @@ namespace Flex.Application.Services
             }
             if (admin.Islock && !admin.IsSystem)
             {
-                return Problem<UserData>(HttpStatusCode.Locked, ErrorCodes.AccountLocked.GetEnumDescription()+"，请联系管理员解锁");
+                return Problem<UserData>(HttpStatusCode.Locked, ErrorCodes.AccountLocked.GetEnumDescription() + "，请联系管理员解锁");
             }
             if (admin.LockTime != null)
             {
@@ -136,6 +138,16 @@ namespace Flex.Application.Services
             {
                 return result;
             }
+            var RolesName = string.Empty;
+            if (admin.RoleId == 0)
+            {
+                RolesName = "超级管理员";
+            }
+            else
+            {
+                var role = await _roleServices.GetRoleByIdAsync(admin.RoleId);
+                RolesName = role.RolesName;
+            }
             AdminLoginLog loginLog = new AdminLoginLog();
             loginLog.CurrentLoginTime = DateTime.Now;
             loginLog.CurrentLoginIP = AcbHttpContext.ClientIp;
@@ -159,7 +171,10 @@ namespace Flex.Application.Services
             _unitOfWork.SetTransaction();
             admin_unit.Update(admin);
             await _unitOfWork.SaveChangesTranAsync().ConfigureAwait(false);
-            return Problem(HttpStatusCode.OK, _mapper.Map<UserData>(admin));
+            await _logServices.AddLoginLog(new LoginSystemLogDto() { systemLogLevel = SystemLogLevel.Normal, operationContent = "登录成功", inoperator = admin.UserName });
+            var userdata = _mapper.Map<UserData>(admin);
+            userdata.UserRoleName = RolesName;
+            return Problem(HttpStatusCode.OK, userdata);
         }
     }
 }

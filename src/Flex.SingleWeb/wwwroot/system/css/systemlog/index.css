@@ -1,0 +1,8 @@
+﻿.layui-btn { height: 28px; line-height: 28px; }
+.layui-btn.btn_search { height: 38px; line-height: 38px; }
+.demoTable { top: 38px; position: fixed; z-index: 10000; width: 100%; background: #fff; height: 30px; padding: 10px; border-top: 1px solid #f1f1f1; }
+.layui-tab-title { position: fixed; left: 220px; height: 38px; white-space: nowrap; border-bottom-width: 1px; border-bottom-style: solid; transition: all .2s; -webkit-transition: all .2s; background-color: #fff; width: 100%; }
+.layui-tab-title { top: 0px; z-index: 10000; display: flex; }
+.layui-tab-title li { position: relative; line-height: 39px; min-width: 65px; margin: 0; padding: 0 15px; text-align: center; cursor: pointer; transition:all .2s;}
+.layui-tab-title .layui-this { color: #000; background-color: rgb(102, 177, 255); color: #fff; }
+.layui-btn-login{background-color: #009688;}

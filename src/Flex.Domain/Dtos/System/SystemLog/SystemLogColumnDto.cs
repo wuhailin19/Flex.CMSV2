@@ -4,7 +4,8 @@ namespace Flex.Domain.Dtos.System.SystemLog
 {
     public class SystemLogColumnDto
     {
-
+        [ToolAttr(NameAttr = "编号", AlignAttr = AlignEnum.Center)]
+        public long Id { set; get; }
         /// <summary>
         /// 操作人
         /// </summary>
@@ -23,7 +24,7 @@ namespace Flex.Domain.Dtos.System.SystemLog
         /// <summary>
         /// IP
         /// </summary>
-        [ToolAttr(NameAttr = "Ip地址")]
+        [ToolAttr(NameAttr = "IP地址", AlignAttr = AlignEnum.Center)]
         public string Ip { get; set; }
         /// <summary>
         /// Url地址
@@ -41,7 +42,7 @@ namespace Flex.Domain.Dtos.System.SystemLog
         /// <summary>
         /// 操作时间
         /// </summary>
-        [ToolAttr(NameAttr = "操作时间", HideFiled = true)]
+        [ToolAttr(NameAttr = "操作时间")]
         public DateTime AddTime { get; set; }
     }
 }

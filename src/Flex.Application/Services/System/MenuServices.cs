@@ -1,4 +1,5 @@
 ﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Domain.Dtos.System.Menu;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -266,7 +267,7 @@ namespace Flex.Application.Services
             menumodel.Name = model.Name;
             menumodel.OrderId = model.OrderId;
             menumodel.ParentID = model.ParentID;
-            menumodel.isMenu = model.isMenu;
+            menumodel.ShowStatus = model.Status;
             UpdateIntEntityBasicInfo(menumodel);
             try
             {
@@ -277,6 +278,28 @@ namespace Flex.Application.Services
             catch (Exception ex)
             {
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(),ex);
+            }
+        }
+        public async Task<ProblemDetails<string>> QuickEditMenu(MenuQuickEditDto menuQuickEditDto)
+        {
+            var adminRepository = _unitOfWork.GetRepository<SysMenu>();
+            var model = await adminRepository.GetFirstOrDefaultAsync(m => m.Id == menuQuickEditDto.Id);
+            if (model is null)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            if (menuQuickEditDto.isMenu.IsNotNullOrEmpty())
+                model.isMenu = menuQuickEditDto.isMenu.CastTo<bool>();
+            if (menuQuickEditDto.Status.IsNotNullOrEmpty())
+                model.ShowStatus = menuQuickEditDto.Status.CastTo<bool>();
+            try
+            {
+                UpdateIntEntityBasicInfo(model);
+                adminRepository.Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
         public async Task<ProblemDetails<string>> AddMenu(MenuAddDto model)

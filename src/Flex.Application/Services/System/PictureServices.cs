@@ -15,7 +15,7 @@ namespace Flex.Application.Services
         /// <summary>
         /// 图片储存位置
         /// </summary>
-        private string imgpath = $"/upload/images/{DateTime.Now.ToDefaultDateTimeStr()}";
+        private string imgpath = CurrentSiteInfo.SiteUploadPath + $"/upload/images/{DateTime.Now.ToDefaultDateTimeStr()}";
         public PictureServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IWebHostEnvironment env)
             : base(unitOfWork, mapper, idWorker, claims)
         {
@@ -36,11 +36,11 @@ namespace Flex.Application.Services
                     else
                         imgremoteresult.Add(new CatchRemoteImagesDto { source = item, url = result.Detail, state = "ERROR" });
                 }
-                return Problem<List<CatchRemoteImagesDto>>(HttpStatusCode.OK, imgremoteresult);
+                return Problem(HttpStatusCode.OK, imgremoteresult);
             }
             catch (Exception ex)
             {
-                return Problem<List<CatchRemoteImagesDto>>(HttpStatusCode.OK, ErrorCodes.UploadFail.GetEnumDescription(), ex);
+                return Problem<List<CatchRemoteImagesDto>>(HttpStatusCode.BadRequest, ErrorCodes.UploadFail.GetEnumDescription(), ex);
             }
         }
         public async Task<IFormFileCollection> DownloadAndSaveImageAsync(string imageUrl)

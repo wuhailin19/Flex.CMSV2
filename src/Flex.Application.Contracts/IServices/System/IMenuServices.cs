@@ -1,4 +1,5 @@
 ﻿using Flex.Application.Contracts.Basics.ResultModels;
+using Flex.Domain.Dtos.System.Menu;
 using Flex.Domain.Entities;
 
 namespace Flex.Application.Contracts.IServices
@@ -14,5 +15,6 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<string>> AddMenu(MenuAddDto model);
         Task<IEnumerable<MenuDto>> GetMenuDtoByRoleIdAsync(int Id);
         Task<ProblemDetails<string>> Delete(string Id);
+        Task<ProblemDetails<string>> QuickEditMenu(MenuQuickEditDto menuQuickEditDto);
     }
 }

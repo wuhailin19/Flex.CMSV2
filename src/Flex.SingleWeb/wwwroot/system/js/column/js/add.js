@@ -5,7 +5,7 @@ var options = {
     valueElement: 'input[name=ColumnImage]'
 };
 ___initUpload("#uploader-show", options);
-var parent_json = parent.req_Data == null ? { Id: 0, ModelId: 0 } : parent.req_Data;
+var parent_json = parent.req_Data == null ? { Id: 0, ModelId: 0, ReviewMode: 0 } : parent.req_Data;
 
 //Demo
 ajaxHttp({
@@ -38,7 +38,21 @@ ajaxHttp({
         }
     }
 })
-
+ajaxHttp({
+    url: api + 'WorkFlow/GetWorkFlowSelectDtoListAsync',
+    type: 'Get',
+    datatype: 'json',
+    async: false,
+    success: function (json) {
+        if (json.code == 200) {
+            for (var i = 0; i < json.content.length; i++) {
+                $('#ReviewMode').append('<option value="' + json.content[i].Id + '" ' + (parent_json.ReviewMode == json.content[i].Id ? "selected" : "") + '>' + json.content[i].Name + '</option>');
+            }
+        } else {
+            tips.showFail(json.msg);
+        }
+    }
+})
 layui.config({
     base: '/scripts/layui/module/cropper/' //layui自定义layui组件目录
 }).use('croppers', function () {

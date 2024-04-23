@@ -8373,6 +8373,7 @@
             };
             xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('access_token'));
             xhr.setRequestHeader("Refresh_token", "Bearer " + sessionStorage.getItem('refresh_token'));
+            xhr.setRequestHeader("siteId", localStorage.getItem('siteId'));
             if (method == "POST") {
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.send(submitStr);
@@ -24507,6 +24508,7 @@
             xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
             xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('access_token'));
             xhr.setRequestHeader("Refresh_token", "Bearer " + sessionStorage.getItem('refresh_token'));
+            xhr.setRequestHeader("siteId", localStorage.getItem('siteId'));
             xhr.addEventListener('load', function (e) {
                 try {
                     var json = (new Function("return " + utils.trim(e.target.response)))();

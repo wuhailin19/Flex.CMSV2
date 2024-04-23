@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flex.Core.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -16,21 +17,29 @@ namespace Flex.Domain.Enums.LogLevel
         /// 错误
         /// </summary>
         [Description("错误")]
+        [Color(Color = "layui-btn-danger")]
         Error = -1,
         /// <summary>
         /// 警告
         /// </summary>
         [Description("警告")]
+        [Color(Color = "layui-btn-warm")]
         Warning = -2,
         /// <summary>
         /// 登录
         /// </summary>
         [Description("登录")]
+        [Color(Color = "layui-btn-login")]
         Login = 1,
         /// <summary>
-        /// 普通
+        /// 正常
         /// </summary>
-        [Description("普通")]
-        Normal = 2
+        [Description("正常")]
+        [Color(Color = "layui-btn-normal")]
+        Normal = 2,
+        /// <summary>
+        /// 全部
+        /// </summary>
+        All = 0
     }
 }
