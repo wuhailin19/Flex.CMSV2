@@ -96,7 +96,6 @@ namespace Flex.Application.Services
         /// <summary>
         /// 获取当前登录账户数据
         /// </summary>
-        /// <param name="sysIndexSet"></param>
         /// <returns></returns>
         public async Task<SysIndexSet> GetbyCurrentIdAsync()
         {

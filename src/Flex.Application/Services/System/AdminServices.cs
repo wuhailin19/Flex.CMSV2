@@ -39,7 +39,7 @@ namespace Flex.Application.Services
         /// 获取账号列表
         /// </summary>
         /// <param name="page"></param>
-        /// <param name="limit"></param>
+        /// <param name="pagesize"></param>
         /// <returns></returns>
         public async Task<PagedList<AdminColumnDto>> GetAdminListAsync(int page, int pagesize)
         {

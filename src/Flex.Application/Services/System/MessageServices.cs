@@ -48,7 +48,7 @@ namespace Flex.Application.Services
         /// 获取消息列表
         /// </summary>
         /// <param name="page"></param>
-        /// <param name="limit"></param>
+        /// <param name="pagesize"></param>
         /// <returns></returns>
         public async Task<PagedList<MessageTitleListDto>> GetMessageTitleListDtoAsync(int page, int pagesize)
         {
@@ -65,8 +65,6 @@ namespace Flex.Application.Services
         /// <summary>
         /// 获取未读消息数量
         /// </summary>
-        /// <param name="page"></param>
-        /// <param name="limit"></param>
         /// <returns></returns>
         public int GetNotReadMessageCount()
         {

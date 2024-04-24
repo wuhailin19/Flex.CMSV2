@@ -10,15 +10,12 @@ using System.Threading.Tasks;
 
 namespace Flex.Application.Contracts.IServices.System
 {
+    [NoLog]
     public interface ISystemLogServices
     {
-        [NoLog]
         Task AddContentLog(SystemLogLevel systemLogLevel, string operationContent, string request);
-        [NoLog]
         Task AddLog(InputSystemLogDto log);
-        [NoLog]
         Task AddLoginLog(LoginSystemLogDto loginSystemLogDto);
-        [NoLog]
         Task<PagedList<SystemLogColumnDto>> ListAsync(int page, int limit, LogSort LogSort, SystemLogLevel LogLevel = SystemLogLevel.All, string msg = null);
     }
 }

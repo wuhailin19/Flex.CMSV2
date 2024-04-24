@@ -45,8 +45,7 @@ namespace Flex.Application.Jwt
         /// <summary>
         /// 生成主Token
         /// </summary>
-        /// <param name="userName">用户名</param>
-        /// <param name="roleName">登录时的角色</param>
+        /// <param name="userData">用户数据</param>
         /// <returns></returns>
         public string CreateAccessToken(UserData userData)
         {
@@ -68,8 +67,7 @@ namespace Flex.Application.Jwt
         /// <summary>
         /// 生成刷新Token
         /// </summary>
-        /// <param name="jwtConfig"></param>
-        /// <param name="user"></param>
+        /// <param name="userData">用户数据</param>
         /// <returns></returns>
         public string CreateRefreshToken(UserData userData)
         {
@@ -84,6 +82,7 @@ namespace Flex.Application.Jwt
         /// 生成jwt令牌
         /// </summary>
         /// <param name="claims">自定义的claim</param>
+        /// <param name="tokens"></param>
         /// <returns></returns>
         public string BuildToken(Claim[] claims, Tokens tokens)
         {

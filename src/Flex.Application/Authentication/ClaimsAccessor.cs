@@ -61,6 +61,7 @@ namespace Flex.Application.Authorize
         /// 判断是不是系统管理员
         /// </summary>
         public bool IsSystem { get { return UserRole == 0; } }
+
         public string UserRoleDisplayName
         {
             get

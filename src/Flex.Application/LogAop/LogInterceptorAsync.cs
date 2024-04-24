@@ -25,7 +25,7 @@ namespace Flex.Application.Aop
         /// <param name="invocation"></param>
         public void InterceptSynchronous(IInvocation invocation)
         {
-            if (invocation.Method.IsDefined(typeof(NoLogAttribute), true))
+            if (invocation.Method.DeclaringType?.IsDefined(typeof(NoLogAttribute), true) ?? false)
             {
                 invocation.Proceed();
                 return;
@@ -59,7 +59,7 @@ namespace Flex.Application.Aop
         /// <param name="invocation"></param>
         public void InterceptAsynchronous(IInvocation invocation)
         {
-            if (invocation.Method.IsDefined(typeof(NoLogAttribute), true))
+            if (invocation.Method.DeclaringType?.IsDefined(typeof(NoLogAttribute), true) ?? false)
             {
                 invocation.Proceed();
                 return;
@@ -88,10 +88,10 @@ namespace Flex.Application.Aop
         }
 
         /// <summary>
-        /// 异步方法返回Task<T>时使用
-        /// </summary>
+        /// 异步方法返回Task<T></T>时使用
         /// <typeparam name="TResult"></typeparam>
         /// <param name="invocation"></param>
+        /// </summary>
         public void InterceptAsynchronous<TResult>(IInvocation invocation)
         {
             //调用业务方法
@@ -99,7 +99,7 @@ namespace Flex.Application.Aop
         }
         private async Task<TResult> InternalInterceptAsynchronous<TResult>(IInvocation invocation)
         {
-            if (invocation.Method.IsDefined(typeof(NoLogAttribute), true))
+            if (invocation.Method.DeclaringType?.IsDefined(typeof(NoLogAttribute), true) ?? false)
             {
                 //调用业务方法
                 invocation.Proceed();

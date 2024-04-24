@@ -24,7 +24,7 @@ namespace Flex.Application.Services
         /// 获取工作流列表
         /// </summary>
         /// <param name="page"></param>
-        /// <param name="limit"></param>
+        /// <param name="pagesize"></param>
         /// <returns></returns>
         public async Task<PagedList<WorkFlowColumnDto>> GetWorkFlowListAsync(int page, int pagesize)
         {
@@ -35,8 +35,6 @@ namespace Flex.Application.Services
         /// <summary>
         /// 获取工作流下拉集合
         /// </summary>
-        /// <param name="page"></param>
-        /// <param name="limit"></param>
         /// <returns></returns>
         public async Task<IEnumerable<WorkFlowSelectDto>> GetWorkFlowSelectDtoListAsync()
         {

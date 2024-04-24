@@ -1,5 +1,4 @@
 using Autofac;
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
 using Flex.Application.Aop;
@@ -19,9 +18,7 @@ using Flex.SqlSugarFactory.UnitOfWorks;
 using Flex.WebApi.Jwt;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using NLog;
 using NLog.Config;
@@ -100,6 +97,23 @@ builder.Host.UseNLog();
 builder.Services.AddLogging();
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{AssemblyName} v1");
+        c.RoutePrefix = "swagger";
+    });
+    // 初始化接口数据
+    var myService = app.Services.GetRequiredService<IRoleUrlServices>();
+    await myService.CreateUrlList();
+
+
+}
+
 // 初始化自动创建数据库
 using (var scope = app.Services.CreateScope())
 {
@@ -122,21 +136,6 @@ app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
 
     return Task.CompletedTask;
 });
-
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{AssemblyName} v1");
-        c.RoutePrefix = "swagger";
-    });
-    // 初始化接口数据
-    var myService = app.Services.GetRequiredService<IRoleUrlServices>();
-    await myService.CreateUrlList();
-}
 
 //跨域需要放到最前面，对静态文件才生效
 app.UseCors(WebCoreSetupExtension.MyAllowSpecificOrigins);
@@ -164,12 +163,9 @@ app.UseStaticFiles(new StaticFileOptions
     }
 });
 //app.UseMiddleware<FileProviderMiddleware>(builder.Environment.WebRootPath);
-
 app.UseRouting();
 app.UseAuthentication();
-
 app.UseAuthorization();
-
 
 // 添加自定义中间件来处理根路径重定向到登录页
 app.Use(async (context, next) =>
@@ -191,7 +187,6 @@ app.UseEndpoints(options =>
 
     options.MapControllers();
 });
-
 
 app.Run();
 

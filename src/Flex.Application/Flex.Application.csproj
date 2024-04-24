@@ -8,6 +8,14 @@
     <DocumentationFile>bin\Debug\net6.0\Flex.WebApi.xml</DocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1591;0168</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;1591;0168</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Handlers\**" />
     <EmbeddedResource Remove="Handlers\**" />

@@ -34,7 +34,7 @@ namespace Flex.Application.Services.System
             if (!msg.IsNullOrEmpty())
                 extension = extension.And(m => m.OperationContent.Contains(msg) || m.Operator.Contains(msg) || m.Url.Contains(msg));
             Func<IQueryable<sysSystemLog>, IOrderedQueryable<sysSystemLog>> orderBy = m => m.OrderByDescending(n => n.AddTime);
-            var list =await _unitOfWork.GetRepository<sysSystemLog>().GetPagedListAsync(extension, orderBy, null, page, limit);
+            var list = await _unitOfWork.GetRepository<sysSystemLog>().GetPagedListAsync(extension, orderBy, null, page, limit);
             return _mapper.Map<PagedList<SystemLogColumnDto>>(list);
         }
         /// <summary>
@@ -48,9 +48,16 @@ namespace Flex.Application.Services.System
             AddLongEntityBasicInfo(insertmodel);
             insertmodel.Ip = AcbHttpContext.ClientIp;
             insertmodel.RoleName = _claims.UserRoleDisplayName;
-            insertmodel.Operator = _claims.UserName;
-            var result = await _unitOfWork.GetRepository<sysSystemLog>().InsertAsync(insertmodel);
-            await _unitOfWork.SaveChangesAsync();
+            insertmodel.Operator = _claims.UserAccount;
+            try
+            {
+                var result = await _unitOfWork.GetRepository<sysSystemLog>().InsertAsync(insertmodel);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch
+            {
+                //跳过
+            }
         }
         /// <summary>
         /// 数据操作日志
@@ -65,13 +72,20 @@ namespace Flex.Application.Services.System
             AddLongEntityBasicInfo(insertmodel);
             insertmodel.Ip = AcbHttpContext.ClientIp;
             insertmodel.RoleName = _claims.UserRoleDisplayName;
-            insertmodel.Operator = _claims.UserName;
+            insertmodel.Operator = _claims.UserAccount;
             insertmodel.LogLevel = systemLogLevel;
             insertmodel.Url = request;
             insertmodel.LogSort = LogSort.DataOperation;
             insertmodel.OperationContent = operationContent;
-            var result = await _unitOfWork.GetRepository<sysSystemLog>().InsertAsync(insertmodel);
-            await _unitOfWork.SaveChangesAsync();
+            try
+            {
+                var result = await _unitOfWork.GetRepository<sysSystemLog>().InsertAsync(insertmodel);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch
+            {
+                //跳过
+            }
         }
         /// <summary>
         /// 登录日志
@@ -90,8 +104,15 @@ namespace Flex.Application.Services.System
             insertmodel.OperationContent = loginSystemLogDto.operationContent;
             insertmodel.AddTime = DateTime.Now;
             insertmodel.Id = _idWorker.NextId();
-            var result = await _unitOfWork.GetRepository<sysSystemLog>().InsertAsync(insertmodel);
-            await _unitOfWork.SaveChangesAsync();
+            try
+            {
+                var result = await _unitOfWork.GetRepository<sysSystemLog>().InsertAsync(insertmodel);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch
+            {
+                //跳过
+            }
         }
     }
 }

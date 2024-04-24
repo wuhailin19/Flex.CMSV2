@@ -16,8 +16,7 @@ namespace Flex.Application.Services.Normal
         /// <summary>
         /// 获取项目详情列表
         /// </summary>
-        /// <param name="page"></param>
-        /// <param name="limit"></param>
+        /// <param name="projectid">项目Id</param>
         /// <returns></returns>
         public async Task<List<ProductDetailListDto>> GetProjectDetailListAsync(int projectid)
         {
@@ -31,8 +30,7 @@ namespace Flex.Application.Services.Normal
         /// <summary>
         /// 获取项目详情
         /// </summary>
-        /// <param name="page"></param>
-        /// <param name="limit"></param>
+        /// <param name="id">修改ID</param>
         /// <returns></returns>
         public async Task<ProjectDetailDto> GetProjectDetailAsync(int id)
         {
@@ -45,8 +43,6 @@ namespace Flex.Application.Services.Normal
         /// <summary>
         /// 获取项目列表
         /// </summary>
-        /// <param name="page"></param>
-        /// <param name="limit"></param>
         /// <returns></returns>
         public async Task<List<ProjectListDto>> GetProjectListAsync()
         {

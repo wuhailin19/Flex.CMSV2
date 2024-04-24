@@ -26,7 +26,7 @@ namespace Flex.Application.Exceptions
             _claimsAccessor = claimsAccessor;
             _logServices = logServices;
         }
-        public override async void OnException(ExceptionContext context)
+        public override void OnException(ExceptionContext context)
         {
             var status = 206;
             var exception = context.Exception;
@@ -41,7 +41,7 @@ namespace Flex.Application.Exceptions
             var userid = "用户未认证";
             if (_claimsAccessor.IsAuthenticated)
             {
-                userid = _claimsAccessor?.UserId.ToString();
+                userid = _claimsAccessor?.UserId.ToString() ?? "用户未认证";
             }
             var ActionAndController = context.ActionDescriptor as ControllerActionDescriptor;
             var exlog = new ExceptionLog()
@@ -62,7 +62,14 @@ namespace Flex.Application.Exceptions
                 logmodel.OperationContent = $"{exceptionmodel.title}，请求Id为：{requestId}，请到日志文件内查看详细记录";
                 logmodel.LogSort = LogSort.Api;
                 logmodel.Url = requestUrl;
-                await _logServices.AddLog(logmodel);
+                try
+                {
+                    _logServices.AddLog(logmodel).GetAwaiter().GetResult();
+                }
+                catch (AggregateException ex)
+                {
+                    _logger.Log(LogLevel.Error, "日志记录失败：" + ex.InnerException?.Message ?? string.Empty);
+                }
             }
             var problemDetails = new ExceptionMsg
             {

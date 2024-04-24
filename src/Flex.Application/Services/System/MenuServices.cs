@@ -140,7 +140,6 @@ namespace Flex.Application.Services
         /// <summary>
         /// 获取当前角色菜单树
         /// </summary>
-        /// <param name="Id"></param>
         /// <returns></returns>
         public async Task<IEnumerable<MenuDto>> GetCurrentMenuDtoByRoleIdAsync()
         {

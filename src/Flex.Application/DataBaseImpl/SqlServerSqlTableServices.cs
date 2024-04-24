@@ -194,7 +194,7 @@ namespace Flex.Application.SqlServerSQLString
         /// <summary>
         /// 转换数据类型(数据库数据类型)
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="FieldType">字段类型</param>
         /// <returns></returns>
         private string ConvertDataType(string FieldType)
         {

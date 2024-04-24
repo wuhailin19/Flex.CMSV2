@@ -37,7 +37,7 @@ namespace Flex.Application.Services
         /// 获取角色列表
         /// </summary>
         /// <param name="page"></param>
-        /// <param name="limit"></param>
+        /// <param name="pagesize"></param>
         /// <returns></returns>
         public async Task<PagedList<RoleColumnDto>> GetRoleListAsync(int page, int pagesize)
         {
@@ -92,7 +92,8 @@ namespace Flex.Application.Services
         /// <summary>
         /// 传入roleId获取栏目权限列表
         /// </summary>
-        /// <param name="roleId"></param>
+        /// <param name="Id"></param>
+        /// <param name="siteId"></param>
         /// <returns></returns>
         public async Task<DataPermissionDto> GetDataPermissionListById(int Id,int siteId)
         {
@@ -129,7 +130,6 @@ namespace Flex.Application.Services
         /// <summary>
         /// 获取角色列表
         /// </summary>
-        /// <param name="roleId"></param>
         /// <returns></returns>
         public async Task<IEnumerable<RoleSelectDto>> GetRoleListAsync()
         {
@@ -142,7 +142,6 @@ namespace Flex.Application.Services
         /// <summary>
         /// 获取角色列表
         /// </summary>
-        /// <param name="roleId"></param>
         /// <returns></returns>
         public async Task<IEnumerable<RoleStepDto>> GetStepRoleListAsync()
         {

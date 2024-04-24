@@ -11,7 +11,7 @@ using System.Text.Json;
 public abstract class ApiBaseController : ControllerBase
 {
     /// <summary>
-    /// 获取传递的Json并转换为T
+    /// 【不验证】获取传递的Json并转换为T
     /// </summary>
     /// <returns></returns>
     public async Task<T> GetModel<T>()
@@ -21,6 +21,11 @@ public abstract class ApiBaseController : ControllerBase
 
         return JsonHelper.Json<T>(stream);
     }
+    /// <summary>
+    /// 【验证】传递的Json并转换为T
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public async Task<ProblemDetails<T>> ValidateModel<T>()
     {
         // 使用验证器验证实体
@@ -49,7 +54,8 @@ public abstract class ApiBaseController : ControllerBase
     /// <summary>
     /// 返回成功
     /// </summary>
-    /// <param name="msg">消息</param>
+    /// <param name="data">泛型</param>
+    /// <param name="code"></param>
     /// <returns></returns>
     public static string Success<T>(T data = default, int code = ErrorCode.Success)
     {
@@ -60,6 +66,7 @@ public abstract class ApiBaseController : ControllerBase
     /// 返回失败
     /// </summary>
     /// <param name="msg">消息</param>
+    /// <param name="code"></param>
     /// <returns></returns>
     public static string Fail<T>(T msg = default, int code = ErrorCode.Fail)
     {
@@ -68,7 +75,7 @@ public abstract class ApiBaseController : ControllerBase
     /// <summary>
     /// 返回失败
     /// </summary>
-    /// <param name="msg">消息</param>
+    /// <param name="message">消息</param>
     /// <returns></returns>
     public static string Fail(string message)
     {
@@ -77,7 +84,8 @@ public abstract class ApiBaseController : ControllerBase
     /// <summary>
     /// 返回失败，带消息
     /// </summary>
-    /// <param name="msg">消息</param>
+    /// <param name="message">消息</param>
+    /// <param name="code"></param>
     /// <returns></returns>
     public static string Fail(string message, int code)
     {
@@ -86,7 +94,7 @@ public abstract class ApiBaseController : ControllerBase
     /// <summary>
     /// 返回未找到
     /// </summary>
-    /// <param name="msg">消息</param>
+    /// <param name="code">404</param>
     /// <returns></returns>
     public static string NotFound(int code = ErrorCode.NotFound)
     {

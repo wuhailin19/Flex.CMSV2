@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Flex.Core.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Flex.Application.Authorize
 {
+    [NoLog]
     public interface IClaimsAccessor
     {
         string UserName { get; }

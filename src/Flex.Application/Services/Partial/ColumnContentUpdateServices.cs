@@ -76,7 +76,7 @@ namespace Flex.Application.Services
         /// 审核后修改的内容
         /// </summary>
         /// <param name="table"></param>
-        /// <param name="white_fileds"></param>
+        /// <param name="IsReview"></param>
         /// <param name="IsCancelReview"></param>
         /// <returns></returns>
         public async Task<ProblemDetails<int>> UpdateReviewContent(
@@ -135,6 +135,7 @@ namespace Flex.Application.Services
         /// </summary>
         /// <param name="table"></param>
         /// <param name="IsReview"></param>
+        /// <param name="whitefields"></param>
         /// <returns></returns>
         public async Task<ProblemDetails<int>> SimpleUpdateContent(
             Hashtable table,
