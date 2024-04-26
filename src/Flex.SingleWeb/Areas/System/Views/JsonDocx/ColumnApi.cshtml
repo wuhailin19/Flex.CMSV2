@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="~/scripts/layui/css/layui2.5.7.css" rel="stylesheet" />
+    <script src="~/scripts/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <style>
+        .layui-input { width: 100px }
+        .layui-input-long { width: 200px }
+        .head { margin-top: 10px; }
+        .iframe { border: none; }
+        #pageframe { border: none; }
+        .layui-form-label { width: auto; }
+        .layui-btn { margin-left: 10px; }
+        .layui-input-block { margin-left: 0px }
+    </style>
+</head>
+<body>
+    <div class="head">
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="display: flex;">
+                <label class="layui-form-label">栏目ID</label>
+                <input type="text" placeholder="" autocomplete="off" class="layui-input inputs layui-input-long" id="columnid" value="" />
+                <label class="layui-form-label">当前页码</label>
+                <input type="text" placeholder="" autocomplete="off" class="layui-input inputs" id="page" value="1" />
+                <label class="layui-form-label">每页个数</label>
+                <input type="text" placeholder="" autocomplete="off" class="layui-input inputs" id="pagesize" value="10" />
+                <label class="layui-form-label">模型ID</label>
+                <input type="text" placeholder="" autocomplete="off" class="layui-input inputs" id="modeid" value="0" />
+                <label class="layui-form-label">PID</label>
+                <input type="text" placeholder="" autocomplete="off" class="layui-input inputs" id="pid" value="0" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="display: flex;">
+                <label class="layui-form-label">搜索词</label>
+                <input type="text" placeholder="" autocomplete="off" class="layui-input inputs layui-input-long" id="kw" value="" />
+                <button class="layui-btn" id="submits">立即提交</button>
+            </div>
+        </div>
+    </div>
+    <div class="contentbox">
+        <iframe src="" id="pageframe" name="pageframe" style="border: none"></iframe>
+    </div>
+    <script src="~/scripts/core/commonutil.js"></script>
+    <script>
+        var paramid = $.getUrlParam("Id");
+        $("#columnid").val(paramid);
+        var ifm = document.getElementById("pageframe");
+        ifm.height = document.documentElement.clientHeight - 118;
+        ifm.width = document.documentElement.clientWidth;
+        var paramjson = {
+            modelId: undefined,
+            page: undefined,
+            pagesize: undefined,
+            columnId: undefined,
+            PId: undefined,
+            k: undefined,
+        };
+        $('.inputs').keyup(function (event) {
+            var k = event.keyCode;
+            if (k == 13)
+                $('#submits').click();
+        })
+        $('#submits').click(function () {
+            paramjson.columnId = $('#columnid').val();
+            paramjson.page = $('#page').val();
+            paramjson.pagesize = $('#pagesize').val();
+            paramjson.modelId = $('#modeid').val();
+            paramjson.PId = $('#pid').val();
+            paramjson.k = $('#kw').val();
+            window.frames["pageframe"].location = "/system/JsonDocx/Index";
+        })
+        window.resize = function () {
+            var ifm = document.getElementById("pageframe");
+            ifm.height = document.documentElement.clientHeight;
+            ifm.width = document.documentElement.clientWidth;
+        }
+    </script>
+</body>
+</html>

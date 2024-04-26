@@ -65,7 +65,8 @@ namespace Flex.Application.Services
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             string filed = "Title,Id";
             var options = new List<ContentOptions>();
-            var result = await _dapperDBContext.GetDynamicAsync("select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName + " where ParentId=" + ParentId + " and StatusCode=1");
+            var result = await _dapperDBContext.GetDynamicAsync("select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName 
+                + " where ParentId=" + ParentId + " and StatusCode=1");
             result.Each(item =>
             {
                 options.Add(new ContentOptions()

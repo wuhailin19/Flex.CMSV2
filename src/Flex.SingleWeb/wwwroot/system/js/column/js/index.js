@@ -1,4 +1,20 @@
 ﻿var req_Data = null;
+function openapi($element) {
+    var id = $($element).attr('data-id');
+    layer.open({
+        type: 2,
+        title: '接口数据',
+        shadeClose: true,
+        shade: false,
+        maxmin: true, //开启最大化最小化按钮
+        area: ['95%', '95%'],
+        content: SystempageRoute + 'JsonDocx/ColumnApi?Id=' + id,
+        success: function (layero, index) {
+        }, end: function () {
+
+        }
+    });
+}
 layui.config({
     base: '/scripts/layui/module/'
 }).use(['layer', 'table', 'treeTable'], function () {
@@ -57,6 +73,7 @@ layui.config({
         style: 'margin-top:0;'
     });
     var delete_index = [];
+    
     //监听表格复选框选择
     treeTable.on('checkbox(demo_tree)', function (obj) { // layui 内置方法
         var data = insTb.checkStatus();

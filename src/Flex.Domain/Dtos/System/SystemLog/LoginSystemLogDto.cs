@@ -12,5 +12,8 @@ namespace Flex.Domain.Dtos.System.SystemLog
        public SystemLogLevel systemLogLevel { set; get; }
         public string operationContent { set; get; }
         public string inoperator { set; get; } = "";
+        public bool IsAuthenticated { set; get; } = false;
+        public long? UserId { set; get; }
+        public string? UserName { set; get; }
     }
 }

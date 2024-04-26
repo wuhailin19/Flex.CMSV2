@@ -20,6 +20,8 @@ namespace Flex.Domain.Dtos.Column
         public int ParentId { set; get; }
         [ToolAttr(NameAttr = "栏目名", Width = "100%")]
         public string Name { set; get; }
+        [ToolAttr(NameAttr = "接口数据", Width = "15%", AlignAttr = AlignEnum.Center, Toolbar = "#apidocx")]
+        public string ApiDocx { set; get; }
         [ToolAttr(NameAttr = "链接", Width = "20%")]
         public string ColumnUrl { set; get; }
         [ToolAttr(NameAttr = "显示状态", Toolbar = "#statusPxy", AlignAttr = AlignEnum.Center, Width = "10%")]

@@ -17,6 +17,9 @@
             <button class="layui-btn layui-btn-sm" lay-event="deleteAll">删除选中</button>
         </div>
     </script>
+    <script type="text/html" id="apidocx">
+        <a href="javascript:;" data-id="{{d.Id}}" class="layui-btn layui-btn-sm" onclick="openapi(this)">接口数据</a>
+    </script>
     <script type="text/html" id="statusPxy">
         {{#if(d.IsShow==true){}}
         <input type="checkbox" name="statusPxy" lay-skin="switch" lay-filter="statusPxy" value="{{d.Id}}" lay-text="显示|隐藏" checked>

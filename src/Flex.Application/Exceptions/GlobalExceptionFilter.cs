@@ -4,6 +4,7 @@ using Flex.Application.Contracts.Logs;
 using Flex.Domain.Dtos.System.SystemLog;
 using Flex.Domain.Enums.LogLevel;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -65,6 +66,7 @@ namespace Flex.Application.Exceptions
                 try
                 {
                     _logServices.AddLog(logmodel).GetAwaiter().GetResult();
+                    //await _logServices.AddLog(logmodel);
                 }
                 catch (AggregateException ex)
                 {

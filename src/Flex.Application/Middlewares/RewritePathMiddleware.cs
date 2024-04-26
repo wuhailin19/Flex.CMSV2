@@ -27,7 +27,7 @@ namespace Flex.Application.Middlewares
             List<SiteManageColumnDto> list = new List<SiteManageColumnDto>();
             if (_caching.Exist(SiteKeys.SiteRouteKeys))
             {
-                list = _caching.Get(SiteKeys.SiteRouteKeys) as List<SiteManageColumnDto>;
+                list = _caching.Get(SiteKeys.SiteRouteKeys) as List<SiteManageColumnDto> ?? new List<SiteManageColumnDto>();
             }
             else
             {

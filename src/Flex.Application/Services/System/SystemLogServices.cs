@@ -32,7 +32,10 @@ namespace Flex.Application.Services.System
                     extension = extension.And(m => (int)m.LogLevel == (int)LogLevel);
             }
             if (!msg.IsNullOrEmpty())
-                extension = extension.And(m => m.OperationContent.Contains(msg) || m.Operator.Contains(msg) || m.Url.Contains(msg));
+                extension = extension.And(m => m.OperationContent.Contains(msg)
+                || m.Operator.Contains(msg)
+                || m.RoleName.Contains(msg)
+                || m.Url.Contains(msg));
             Func<IQueryable<sysSystemLog>, IOrderedQueryable<sysSystemLog>> orderBy = m => m.OrderByDescending(n => n.AddTime);
             var list = await _unitOfWork.GetRepository<sysSystemLog>().GetPagedListAsync(extension, orderBy, null, page, limit);
             return _mapper.Map<PagedList<SystemLogColumnDto>>(list);
@@ -48,7 +51,7 @@ namespace Flex.Application.Services.System
             AddLongEntityBasicInfo(insertmodel);
             insertmodel.Ip = AcbHttpContext.ClientIp;
             insertmodel.RoleName = _claims.UserRoleDisplayName;
-            insertmodel.Operator = _claims.UserAccount;
+            insertmodel.Operator = _claims.UserName + $"({_claims.UserId})";
             try
             {
                 var result = await _unitOfWork.GetRepository<sysSystemLog>().InsertAsync(insertmodel);
@@ -72,7 +75,7 @@ namespace Flex.Application.Services.System
             AddLongEntityBasicInfo(insertmodel);
             insertmodel.Ip = AcbHttpContext.ClientIp;
             insertmodel.RoleName = _claims.UserRoleDisplayName;
-            insertmodel.Operator = _claims.UserAccount;
+            insertmodel.Operator = _claims.UserName + $"({_claims.UserId})";
             insertmodel.LogLevel = systemLogLevel;
             insertmodel.Url = request;
             insertmodel.LogSort = LogSort.DataOperation;
@@ -104,6 +107,11 @@ namespace Flex.Application.Services.System
             insertmodel.OperationContent = loginSystemLogDto.operationContent;
             insertmodel.AddTime = DateTime.Now;
             insertmodel.Id = _idWorker.NextId();
+            if (loginSystemLogDto.IsAuthenticated)
+            {
+                insertmodel.AddUser = loginSystemLogDto.UserId;
+                insertmodel.AddUserName = loginSystemLogDto.UserName;
+            }
             try
             {
                 var result = await _unitOfWork.GetRepository<sysSystemLog>().InsertAsync(insertmodel);

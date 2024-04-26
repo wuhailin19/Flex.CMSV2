@@ -97,7 +97,15 @@ namespace Flex.WebApi.Handlers
         private async void AddLog(string logstr)
         {
             _logger.LogWarning(logstr);
-            await _logServices.AddLoginLog(new LoginSystemLogDto() { systemLogLevel = SystemLogLevel.Warning, operationContent = logstr, inoperator = _claims.UserName });
+            await _logServices.AddLoginLog(new LoginSystemLogDto()
+            {
+                systemLogLevel = SystemLogLevel.Warning,
+                operationContent = logstr,
+                inoperator = _claims.UserName,
+                IsAuthenticated = true,
+                UserId = _claims.UserId,
+                UserName = _claims.UserName
+            });
         }
         /// <summary>
         /// 获取角色和权限Url对应关系的字典

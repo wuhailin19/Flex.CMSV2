@@ -42,7 +42,7 @@ namespace Flex.Domain.Dtos.System.SystemLog
         /// <summary>
         /// 操作时间
         /// </summary>
-        [ToolAttr(NameAttr = "操作时间")]
+        [ToolAttr(NameAttr = "操作时间", AlignAttr = AlignEnum.Center)]
         public DateTime AddTime { get; set; }
     }
 }

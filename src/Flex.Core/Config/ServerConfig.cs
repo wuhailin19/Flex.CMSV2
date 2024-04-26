@@ -11,5 +11,6 @@ namespace Flex.Core.Config
     {
         public static string ImageServerUrl => "ImageServerUrl".Config(string.Empty);
         public static string FileServerUrl => "FileServerUrl".Config(string.Empty);
+        public static string ServerUrl => "ServerUrl".Config(string.Empty);
     }
 }

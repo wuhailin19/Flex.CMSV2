@@ -1,4 +1,5 @@
-﻿using Flex.Application.Contracts.Exceptions;
+﻿using Flex.Application.ContentModel;
+using Flex.Application.Contracts.Exceptions;
 using Flex.Application.Contracts.IServices;
 using Flex.Application.SetupExtensions;
 using Flex.Application.SqlServerSQLString;
@@ -105,6 +106,7 @@ namespace Flex.Application.Services
             {
                 UpdateStringEntityBasicInfo(model);
                 fieldRepository.Update(model);
+                ContentModelHelper.clearData();
                 await _unitOfWork.SaveChangesAsync();
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }

@@ -46,7 +46,10 @@ namespace Flex.Application.Services
             }
             catch (Exception ex)
             {
-                await _logServices.AddLoginLog(new LoginSystemLogDto() { systemLogLevel = SystemLogLevel.Error, operationContent = $"密码解析失败，密文为{StringObj}，密钥为{RSAHepler.RSAPrivateKey}" });
+                await _logServices.AddLoginLog(new LoginSystemLogDto() { 
+                    systemLogLevel = SystemLogLevel.Error, 
+                    operationContent = $"密码解析失败，密文为{StringObj}，密钥为{RSAHepler.RSAPrivateKey}"
+                });
 
                 return Problem<UserData>(HttpStatusCode.InternalServerError, "解析失败，重试", ex);
             }
@@ -96,12 +99,19 @@ namespace Flex.Application.Services
                     _unitOfWork.GetRepository<SysAdmin>().Update(admin);
                     await _unitOfWork.SaveChangesTranAsync();
 
-                    await _logServices.AddLoginLog(new LoginSystemLogDto() { systemLogLevel = SystemLogLevel.Warning, operationContent = msg, inoperator = admin.UserName });
+                    await _logServices.AddLoginLog(new LoginSystemLogDto() { 
+                        systemLogLevel = SystemLogLevel.Warning, 
+                        operationContent = msg, 
+                        inoperator = $"{admin.UserName}({admin.Id})",
+                        IsAuthenticated = true,
+                        UserId = admin.Id,
+                        UserName = admin.UserName
+                    });
                     return Problem<UserData>(HttpStatusCode.BadRequest, msg);
                 }
                 else
                 {
-                    await _logServices.AddLoginLog(new LoginSystemLogDto() { systemLogLevel = SystemLogLevel.Warning, operationContent = ErrorCodes.AccountOrPwdWrong.GetEnumDescription(), inoperator = admin.UserName });
+                    await _logServices.AddLoginLog(new LoginSystemLogDto() { systemLogLevel = SystemLogLevel.Warning, operationContent = ErrorCodes.AccountOrPwdWrong.GetEnumDescription(), inoperator = $"{admin.UserName}({admin.Id})" });
                     return Problem<UserData>(HttpStatusCode.BadRequest, ErrorCodes.AccountOrPwdWrong.GetEnumDescription());
                 }
             }
@@ -171,7 +181,15 @@ namespace Flex.Application.Services
             _unitOfWork.SetTransaction();
             admin_unit.Update(admin);
             await _unitOfWork.SaveChangesTranAsync().ConfigureAwait(false);
-            await _logServices.AddLoginLog(new LoginSystemLogDto() { systemLogLevel = SystemLogLevel.Normal, operationContent = "登录成功", inoperator = admin.UserName });
+            await _logServices.AddLoginLog(new LoginSystemLogDto()
+            {
+                systemLogLevel = SystemLogLevel.Normal,
+                operationContent = "登录成功",
+                inoperator = $"{admin.UserName}({admin.Id})",
+                IsAuthenticated = true,
+                UserId = admin.Id,
+                UserName = admin.UserName
+            });
             var userdata = _mapper.Map<UserData>(admin);
             userdata.UserRoleName = RolesName;
             return Problem(HttpStatusCode.OK, userdata);
