@@ -11,7 +11,7 @@ ajaxHttp({
     complete: function () { }
 })
 
-layui.extend({ 'formDesigner': '/scripts/layui/module/formdesigner/formdesigner' });
+layui.extend({ 'formDesigner': '/scripts/layui/module/formdesigner/formDesigner' });
 layui.use(['layer', 'formDesigner'], function () {
     var formDesigner = layui.formDesigner;
     let formdata = json_data ? json_data.slice() : [];
