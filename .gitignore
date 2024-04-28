@@ -361,9 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/src/Flex.Web/appsettings.json
-/src/Flex.Web/wwwroot/upload/image/2023-12-15
-/src/Flex.Web/appsettings.json
+/src/Flex.SingleWeb/appsettings.json
+/src/Flex.SingleWeb/wwwroot/upload/
+/src/Flex.SingleWeb/appsettings.json
 /src/Flex.EFSql/Migrations/
 /src/Flex.EFSql/Migrations/20231229032836_AddTableContentmodel.Designer.cs
 /src/Flex.EFSql/Migrations/20231228120703_FlexCmsDbInit.Designer.cs
@@ -386,9 +386,11 @@ FodyWeavers.xsd
 /src/Flex.EFSql/Migrations/20231228120703_FlexCmsDbInit.cs
 /src/Flex.EFSql/Migrations/20240103121345_FlexCmsDbInit.cs
 /src/Flex.EFSql/Migrations/SqlServerContextModelSnapshot.cs
-/src/Flex.Web/appsettings.json
-/src/Flex.Web/wwwroot/upload/image/2024-01-19
-/src/Flex.Web/wwwroot/upload
+/src/Flex.SingleWeb/wwwroot/upload
 /src/Flex.EFSql/Migrations/20240318075716_Initmenudata.cs
 /src/Flex.EFSql/Migrations/SqlServerContextModelSnapshot.cs
 /src/Flex.EFSql/Migrations/SqlServerContextModelSnapshot.cs
+/src/Flex.WebApi/appsettings.json
+/src/Flex.LayuiWeb/appsettings.json
+/src/Flex.SingleWeb/wwwroot/en1
+/src/Flex.SingleWeb/wwwroot/html

@@ -53,10 +53,22 @@ namespace Flex.Application.Services
                 var datamission = role.UrlPermission;
                 var jObj = JsonConvert.DeserializeObject<ApiPermissionDto>(datamission);
                 var model = new List<SysRoleUrl>();
+                var allparentdata = await repository.GetAllAsync(m => m.ParentId == "-1");
                 if (cid == 1)
+                {
                     model = (await repository.GetAllAsync(m => jObj.dataapi.ToList("-").Contains(m.Id))).ToList();
+                }
                 else
+                {
                     model = (await repository.GetAllAsync(m => jObj.pageapi.ToList("-").Contains(m.Id))).ToList();
+                }
+                var distinctmodel = model.Distinct(m => m.ParentId).ToList();
+                foreach (var item in distinctmodel)
+                {
+                    var pm = allparentdata.Where(m => m.Id == item.ParentId).FirstOrDefault();
+                    if (pm != null)
+                        model.Add(pm);
+                }
                 Func<SysRoleUrl, bool> expression = m => m.Category == cateid.ToInt();
                 if (k != null)
                     expression = m => m.Category == cateid.ToInt() && m.Url.Contains(k);
@@ -122,11 +134,11 @@ namespace Flex.Application.Services
                     await _unitOfWork.GetRepository<SysRoleUrl>().InsertAsync(menuapis);
                     await _unitOfWork.SaveChangesAsync();
                 }
-                return new ProblemDetails<string>(HttpStatusCode.OK, "共添加" + menuapis.Count + "条数据");
+                return Problem<string>(HttpStatusCode.OK, "共添加" + menuapis.Count + "条数据");
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ex.Message);
+                return Problem<string>(HttpStatusCode.BadRequest, ex.Message);
             }
         }
     }

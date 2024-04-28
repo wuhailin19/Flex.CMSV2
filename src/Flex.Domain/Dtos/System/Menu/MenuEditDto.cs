@@ -16,7 +16,7 @@ namespace Flex.Domain.Dtos.Menu
         public string Name { set; get; }
         public int OrderId { set; get; }
         public int ParentID { set; get; }
-        public bool Status { set; get; }
-        public bool isMenu { set; get; }
+        public bool Status { set; get; } = false;
+        public bool isMenu { set; get; } = false;
     }
 }

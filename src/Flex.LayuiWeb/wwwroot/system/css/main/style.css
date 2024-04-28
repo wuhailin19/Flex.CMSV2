@@ -1,0 +1,59 @@
+.first-tab i.layui-tab-close { display: none !important; }
+.last-tab i.layui-tab-close { display: none !important; }
+.last-tab { position: fixed !important; right: 0; }
+.now_time { color: #fff; position: absolute; z-index: 1003; line-height: 50px; }
+.now_time { top: 0; left: 75%; }
+.layui-nav-item .iconfont { font-size: 16px; display: inline-block; width: 28px; }
+.layui-nav-item a.changesite { display: flex; }
+.changesite a { padding: 0 20px !important; }
+.changesite .layui-nav-more { display: none; }
+.email_extension { font-size: 22px !important; position: relative; }
+.email_extension .email_num { color: #fff !important; font-size: 10px; position: absolute; background-color: red; width: 20px; height: 20px; border-radius: 10px; right: -10px; top: -10px; line-height: 20px; text-align: center; }
+.messagebox { position: absolute; left: 50%; background: #fff; z-index: 10000; border: solid #f1f1f1; display: none; }
+.messagebox a.rabbit_email { padding: 5px 15px 5px 15px; display: block; font-size: 16px; color: #535353 }
+.messagebox .layui-icon { color: darkcyan }
+.layui_close_tab { position: fixed; right: 0px; top: 51px; height: 38px; width: 150px; text-align: center; cursor: pointer; z-index: 100003; }
+.layui-body.active { left: 50px; }
+
+.layui-bg-black.active .layui-nav-tree .layui-nav-child { padding: 0px; }
+.layui-layout-admin .layui-side.active { width: 50px; overflow-x: unset; }
+.layui-layout-admin .layui-side.active .layui-nav .layui-nav-item a { padding: 0; }
+.layui-layout-admin .layui-side.active .layui-nav-item a i { width: 50px; text-align: center; background: #2f363c; height: 60px; line-height: 60px; }
+.layui-bg-black.active .layui-nav-tree .layui-nav-item a { background-color: unset; height: 60px; line-height: 60px; }
+
+
+/*.layui-bg-black.active { background-color: unset !important; }*/
+.layui-bg-black.active .layui-nav-tree .layui-nav-child a i { background-color: #000; }
+/*.layui-bg-black.active .layui-nav-item.layui-this { background-color: unset; }
+.layui-bg-black.active .layui-nav-itemed.layui-this { background-color: unset; }
+.layui-bg-black.active .layui-nav-child .layui-this { background-color: unset; }*/
+/*.layui-layout-admin .layui-side.active .layui-nav { background-color: unset; }*/
+.layui-bg-black.active .layui-this a i { background-color: rgb(102, 177, 255) !important; }
+/*.layui-bg-black.active .layui-nav-itemed a i { background-color: rgb(102, 177, 255); }*/
+/*.layui-bg-black.active .layui-nav-itemed.layui-this a i { background-color: rgb(102, 177, 255); }*/
+/*.layui-bg-black.active .layui-nav-child a i { background-color: rgba(0,0,0,.3); }*/
+
+.layui-bg-black.active .layui-nav.layui-nav-tree { width: 50px; overflow: unset; }
+.layui-bg-black.active .layui-side-scroll { width: 50px; overflow-x: hidden; overflow-y: scroll; }
+/*.layui-layout-admin .layui-side.active a cite { position: absolute;width:fit-content; height:20px; padding: 10px;color:#fff; background: #000;border-radius:5px; line-height: 20px; display:none; left: 51px; top: 5px; animation:slideIn 0.35s ease-out; }*/
+.layui-layout-admin .layui-side.active a .layui-nav-more { display: none; }
+
+.layui-layout-admin .layui-side.active .layui-nav-tree .layui-nav-item a { overflow: unset; }
+
+/*.layui-layout-admin .layui-side.active .layui-nav-item a i:hover + cite{display:block;}*/
+.layui-tab-title.active { left: 50px; }
+::-webkit-scrollbar { /*滚动条整体样式*/ width: 0; /*高宽分别对应横竖滚动条的尺寸*/ height: 1px; }
+::-webkit-scrollbar-thumb { /*滚动条里面小方块*/ border-radius: 10px; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); /* background: #535353; */ }
+::-webkit-scrollbar-track { /*滚动条里面轨道*/ box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2); border-radius: 10px; background: #ededed; }
+.layui_menu_tree i.layui-icon { font-size: 16px; display: inline-block; width: 28px; }
+.layui-layout-admin .layui-logo { text-align: left; }
+.choosesite { padding-right: 5px; }
+/*@keyframes slideIn {
+  from {
+    transform: translateX(30%);*/ /* 从下面移入 */
+/*}
+  to {
+    transform: translateX(0%);*/ /* 移动到正常位置 */
+/*}
+}*/
+

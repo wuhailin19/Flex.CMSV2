@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <link href="~/scripts/layui/css/adminui.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <script src="~/scripts/jquery-3.4.1.min.js"></script>
+    <title>后台管理系统</title>
+    <link href="~/system/css/main/style.css" rel="stylesheet" />
+</head>
+<body class="layui-layout-body">
+    <div class="messagebox layui-anim layui-anim-scale" style="display:none;">
+        <a href="javascript:;" layadmin-event="email" class="rabbit_email">
+            <i class="layui-icon layui-icon-release"></i>
+            <span class="msginfo">新消息</span>
+        </a>
+    </div>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">
+                <img src="" class="layui-nav-img admin_useravatar" />
+                <span id="sitename">后台管理系统</span>
+            </div>
+            <!-- Header -->
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item layadmin-flexible" lay-unselect>
+                    <a href="javascript:;" layadmin-event="flexible" class="flexible" title="收缩">
+                        <i class="layui-icon layui-icon-shrink-right"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="/" target="_blank" class="sitelink" title="访问首页">
+                        <i class="layui-icon layui-icon-website"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;" layadmin-event="refresh" class="refresh" title="刷新">
+                        <i class="layui-icon layui-icon-refresh-3"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;" layadmin-event="email" class="rabbit_email" title="信息">
+                        <i class="layui-icon layui-icon-email email_extension">
+                            <span class="email_num"></span>
+                        </i>
+                    </a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;" layadmin-event="changesite" class="changesite" title="切换站点">
+                        <div class="choosesite"></div>
+                        <i class="layui-icon layui-icon-down"></i>
+                    </a>
+                    <dl class="layui-nav-child changesitebox">
+                    </dl>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">今天是：</li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img src="" class="layui-nav-img admin_useravatar" />
+                        <span class="admin_username"></span>
+                    </a>
+                    <dl class="layui-nav-child addnewIframe">
+                        <dd><a href="javascript:void(0);" data-type="addtype" data-id="a_a_a" data-cite="基本资料" data-linkstatus="false" data-href="Admin/SimpleEdit">基本资料</a></dd>
+                        <dd><a href="javascript:void(0);" data-type="addtype" data-id="u_p_a" data-cite="修改密码" data-linkstatus="false" data-href="Admin/EditPassword">修改密码</a></dd>
+                        @*<dd><a href="adminUpdatePassword.aspx">安全设置</a></dd>*@
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="javascript:;" class="loginout">退出</a></li>
+            </ul>
+        </div>
+
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree layui_menu_tree" lay-shrink="all" lay-filter="menu">
+                </ul>
+            </div>
+        </div>
+        <!-- 页面标签 -->
+        <div class="layui-body" id="nav1">
+            <div class="layui-tab" lay-allowclose="true" lay-filter="main_content">
+                <ul class="layui-tab-title" id="main_content">
+                    <li class="layui-this first-tab">主页</li>
+                </ul>
+                <div class="layui-tab-content" lay-filter="test1">
+                    <div class="layui-tab-item layui-show" id="0_0_0">
+                        <div class="loadings">
+                            <i class="layui-icon layui-anim layui-anim-loop">&#xe63d;</i>
+                            <iframe src="/system/Main/Welcome" class="layadmin-iframe" id="iframe0_0_0" frameborder="0"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/scripts/layui/layui.js"></script>
+    <script src="~/scripts/route.js?v=0.1" type="text/javascript"></script>
+    <script src="~/system/js/main/index.js"></script>
+    <script src="~/scripts/layui/menujs.js?v=1.0"></script>
+</body>
+</html>

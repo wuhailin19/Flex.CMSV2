@@ -1,0 +1,93 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/scripts/layui/layui.js" type="text/javascript"></script>
+    <script src="~/scripts/route.js" type="text/javascript"></script>
+    <script src="~/scripts/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <style>
+        .layui-form-item .layui-form-label { text-align: center; }
+        .edui-editor.edui-default { width: 100% !important; }
+        .layui-input-block > .edui-default { width: 100% !important; }
+        .layui-select-title .layui-anim.layui-anim-upbit { display: none; }
+        .iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <form class="layui-form" action="" onclick="return false;" style="padding: 2%;" lay-filter="formTest">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">字段含义</label>
+            <div class="layui-input-block">
+                <input type="text" name="Name" placeholder="请输入字段含义" autocomplete="off" value="" class="layui-input" lay-verify='required'>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">字段名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="FieldName" placeholder="请输入字段名称" autocomplete="off" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">字段描述</label>
+            <div class="layui-input-block">
+                <input type="text" name="FieldDescription" placeholder="请输入字段描述" value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">字段类型</label>
+            <div class="layui-input-block">
+                <select name="FieldType" lay-search="" id="FieldType" required lay-verify="required">
+                    <option value="TextBox">文本框</option>
+                    <option value="Editor">编辑器</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">字段验证</label>
+            <div class="layui-input-block">
+                <input type="checkbox" class="Validation" name="ValidateNumber" title="数字" value="lay-verify='number'">
+                <input type="checkbox" class="Validation" name="ValidateEmpty" title="非空" value="lay-verify='required'">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">宽度</label>
+            <div class="layui-input-block">
+                <input type="text" name="Width" placeholder="请输入宽度" value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">高度</label>
+            <div class="layui-input-block">
+                <input type="text" name="Height" placeholder="请输入高度" value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">接口字段名</label>
+            <div class="layui-input-block">
+                <input type="text" name="ApiName" placeholder="请输入接口字段名" value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">属性选择</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="IsApiField" title="接口显示" value="true" checked>
+                <input type="checkbox" name="IsSearch" title="用于搜索" value="true">
+                <input type="checkbox" name="ShowInTable" title="在表格显示" value="true">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
+            </div>
+        </div>
+    </form>
+    <script src="~/system/js/filed/add.js"></script>
+</body>
+</html>

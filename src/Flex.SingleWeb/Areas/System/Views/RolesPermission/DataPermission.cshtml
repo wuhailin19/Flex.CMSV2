@@ -1,0 +1,78 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/scripts/layui/css/layui2.5.7.css" rel="stylesheet" />
+    <link href="~/scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/scripts/layui/layui2.5.7.js" type="text/javascript"></script>
+    <script src="~/scripts/route.js" type="text/javascript"></script>
+    <script src="~/scripts/jquery-3.4.1.js" type="text/javascript"></script>
+    <style>
+        th[data-key='0-0'] .ew-tree-table-cell { display: none; }
+        tr[data-index='0'] td[data-key='0-0'] .ew-tree-table-cell-content { display: none; }
+    </style>
+</head>
+<body>
+    <form class="layui-form" action="" style="padding: 2%;" lay-filter="formTest">
+        <div class="layui-form-item">栏目数据</div>
+        @* 栏目数据权限分配 *@
+        <table id="demo_tree" lay-filter="test"></table>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
+            </div>
+        </div>
+    </form>
+    <script type="text/html" id="barDemo">
+        {{#if(d.Id==-10000){}}
+        <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="sp">
+        <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="ad">
+        <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="ed">
+        <input type="checkbox" name="select_all" title="全选" lay-skin="primary" lay-event="dp">
+        {{#}else{}}
+
+        {{#if(d.IsSelect){}}
+        @*查看*@
+        {{#if(('-'+datamission.sp+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
+        <input type="checkbox" name="sp" title="查看" data-id="{{d.Id}}" lay-skin="primary" checked>
+        {{#}else{}}
+        <input type="checkbox" name="sp" title="查看" data-id="{{d.Id}}" lay-skin="primary">
+        {{#}}}
+        {{#}}}
+
+        {{#if(d.IsAdd){}}
+        @*添加*@
+        {{#if(('-'+datamission.ad+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
+        <input type="checkbox" name="ad" title="添加" data-id="{{d.Id}}" lay-skin="primary" checked>
+        {{#}else{}}
+        <input type="checkbox" name="ad" title="添加" data-id="{{d.Id}}" lay-skin="primary">
+        {{#}}}
+        {{#}}}
+
+        {{#if(d.IsEdit){}}
+        @*编辑*@
+        {{#if(('-'+datamission.ed+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
+        <input type="checkbox" name="ed" title="编辑" data-id="{{d.Id}}" lay-skin="primary" checked>
+        {{#}else{}}
+        <input type="checkbox" name="ed" title="编辑" data-id="{{d.Id}}" lay-skin="primary">
+        {{#}}}
+        {{#}}}
+
+        {{#if(d.IsDelete){}}
+        @*删除*@
+        {{#if(('-'+datamission.dp+'-').indexOf(('-'+d.Id+'-'))!=-1){}}
+        <input type="checkbox" name="dp" title="删除" data-id="{{d.Id}}" lay-skin="primary" checked>
+        {{#}else{}}
+        <input type="checkbox" name="dp" title="删除" data-id="{{d.Id}}" lay-skin="primary">
+        {{#}}}
+        {{#}}}
+
+        {{#}}}
+    </script>
+    <script src="~/scripts/core/commonutil.js"></script>
+    <script src="~/system/js/rolespermission/datapermission.js"></script>
+</body>

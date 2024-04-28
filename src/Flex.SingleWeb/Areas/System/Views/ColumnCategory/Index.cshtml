@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>栏目管理</title>
+    <link href="~/scripts/layui/css/layui2.5.7.css" rel="stylesheet" />
+    <script src="~/scripts/layui/layui2.5.7.js" type="text/javascript"></script>
+    <script src="~/scripts/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <script src="~/scripts/route.js" type="text/javascript"></script>
+    <link href="~/scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+</head>
+<body>
+    <table id="demo_tree" lay-filter="test"></table>
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="addRole">添加</button>
+            <button class="layui-btn layui-btn-sm" lay-event="deleteAll">删除选中</button>
+        </div>
+    </script>
+    <script type="text/html" id="apidocx">
+        <a href="javascript:;" data-id="{{d.Id}}" class="layui-btn layui-btn-sm" onclick="openapi(this)">接口数据</a>
+    </script>
+    <script type="text/html" id="statusPxy">
+        {{#if(d.IsShow==true){}}
+        <input type="checkbox" name="statusPxy" lay-skin="switch" lay-filter="statusPxy" value="{{d.Id}}" lay-text="显示|隐藏" checked>
+        {{#}else{}}
+        <input type="checkbox" name="statusPxy" lay-skin="switch" lay-filter="statusPxy" value="{{d.Id}}" lay-text="显示|隐藏">
+        {{#}}}
+    </script>
+    <script type="text/html" id="barDemo">
+        {{#if(d.IsAdd==true){}}
+        <a class="layui-btn layui-btn-xs" lay-event="add">添加</a>
+        {{#}}}
+        {{#if(d.IsEdit==true){}}
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        {{#}}}
+        {{#if(d.IsDelete==true){}}
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        {{#}}}
+    </script>
+    <script>
+        var routePageLink = '/system/ColumnCategory/';
+    </script>
+    <script src="~/system/js/column/js/index.js"></script>
+</body>
+</html>

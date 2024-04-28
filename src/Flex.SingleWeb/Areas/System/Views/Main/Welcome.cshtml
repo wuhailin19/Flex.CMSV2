@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <link href="~/system/css/main/index.css" rel="stylesheet" />
+    <link href="~/scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/scripts/layui/css/iconfont/iconfont.css" rel="stylesheet" />
+    <link href="~/system/css/main/hover.css" rel="stylesheet" />
+    <script src="~/system/js/main/echarts/echarts.min.js"></script>
+    <script src="~/scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/scripts/layui/layui.js"></script>
+    <link href="~/system/css/main/welcome.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="welcome">
+        <div class="welcome_box">
+            <div class="layui-container leftbox">
+                <div class="layui-row layui-col-space12">
+                    <div class="layui-col-md6  layui-anim layui-anim-scale">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                <span>网站情况</span><div class="operation mode_1" data-name="3"><span class="iconfont iconbianji"></span></div>
+                            </div>
+                            <div class="layui-card-body card_css">
+                                <div class="layui-card-box">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6  layui-anim layui-anim-scale">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                <span>系统设置</span><div class="operation mode_2" data-name="4"><span class="iconfont iconbianji"></span></div>
+                            </div>
+                            <div class="layui-card-body card_css">
+                                <div class="layui-card-box">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md12">
+                        <div class="layui-card">
+                            <div class="layui-card-header">访问数据</div>
+                            <div class="layui-card-body">
+                                <div class="layui-carousel layadmin-carousel layadmin-dataview" style="width: 100%; height: 350px;">
+                                    <div carousel-item="" id="LAY-index-dataview">
+                                        <div class="box_item layui-this" id="maint">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md12">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                <span>快捷栏目</span><div class="operation mode_5" data-name="6"><span class="iconfont iconbianji" title="编辑"></span></div>
+                            </div>
+                            <div class="layui-card-body card_css">
+                                <div class="layui-card-box typess">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-container rightbox  layui-anim layui-anim-scale">
+                <div class="layui-row layui-col-space12">
+                    <div class="layui-col-md12">
+                        <div class="layui-card">
+                            <div class="layui-card-header"><span>最新新闻</span></div>
+                            <div class="layui-card-body">
+                                <div class="layui-card-box">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md12">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                <span>文件管理</span><div class="operation mode_7" data-name="8"><span class="iconfont iconbianji"></span></div>
+                            </div>
+                            <div class="layui-card-body card_css">
+                                <div class="layui-card-box File">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="Popup" style="display: none;">
+        <div class="layui-row layui-col-space12" style="height: 100%;">
+            <div class="layui-col-md12" style="height: 100%;">
+                <div class="layui-card popbox" style="height: 100%;">
+                    <div class="layui-card-body card_css" style="height: calc(100% - 58px);">
+                        <div class="layui-card-box" style="height: 100%;">
+                        </div>
+                    </div>
+                    <div class="btn_box">
+                        <div class="layui-btn" onclick="chooseShortCut($(this))">确定</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/scripts/route.js"></script>
+    <script src="~/system/js/main/welcome.js"></script>
+    <script src="~/system/js/main/statistics.js"></script>
+</body>
+</html>

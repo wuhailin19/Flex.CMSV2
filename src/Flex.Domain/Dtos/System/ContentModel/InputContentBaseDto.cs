@@ -17,5 +17,6 @@ namespace Flex.Domain.Dtos.ContentModel
         [StringLength(50, MinimumLength = 3, ErrorMessage = "表名的长度必须在3到50个字符之间")]
         [RegularExpression("^[a-zA-Z0-9_]+$", ErrorMessage = "表名只能包含字母、数字和下划线")]
         public string TableName { set; get; }
+        public bool SelfUse { set; get; }
     }
 }

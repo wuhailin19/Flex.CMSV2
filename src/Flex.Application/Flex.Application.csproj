@@ -4,6 +4,16 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>bin\Debug\net6.0\Flex.WebApi.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1591;0168</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;1591;0168</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,9 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DmProvider" Version="1.1.0.16649" />
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Dm" Version="6.0.0.16623" />
     <PackageReference Include="DotNetCore.CAP.RabbitMQ" Version="7.2.2" />
     <PackageReference Include="DotNetCore.CAP.Dashboard" Version="7.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.25" />
@@ -23,6 +31,7 @@
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
     <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +40,12 @@
     <ProjectReference Include="..\Flex.Dapper\Flex.Dapper.csproj" />
     <ProjectReference Include="..\Flex.EFSql\Flex.EFSql.csproj" />
     <ProjectReference Include="..\Flex.SqlSugar\Flex.SqlSugarFactory.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.EntityFrameworkCore.Dm">
+      <HintPath>..\Flex.EFSql\ExtensionDll\Microsoft.EntityFrameworkCore.Dm.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

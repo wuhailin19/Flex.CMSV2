@@ -10,5 +10,6 @@ namespace Flex.Domain.Dtos.Role
     {
         public int Id { get; set; }
         public string chooseId { get; set; }
+        public int siteId { get; set; }
     }
 }

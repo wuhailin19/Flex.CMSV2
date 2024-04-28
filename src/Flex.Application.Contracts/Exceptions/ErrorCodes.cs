@@ -100,11 +100,14 @@ namespace Flex.Application.Contracts.Exceptions
         /// <summary> 审批通过 </summary>
         [Description("审批通过")]
         ReviewSuccess = 10020,
-
-
+        
         /// <summary> 审批已结束 </summary>
         [Description("审批已结束")]
         ReviewAlreadyComplete = 10021,
+
+        /// <summary> 解析失败，重试 </summary>
+        [Description("解析失败，重试")]
+        RedirectKeepVerb = 10022,
 
         /// <summary> 登录已超时 </summary>
         [Description("登录已超时")]
@@ -121,5 +124,15 @@ namespace Flex.Application.Contracts.Exceptions
         /// <summary> 数据已存在 </summary>
         [Description("数据已存在")]
         DataExist = 218,
+
+        /// <summary> 账号已锁定 </summary>
+        [Description("账号已锁定")]
+        AccountLocked = 219,
+        /// <summary> 用户名或密码错误 </summary>
+        [Description("用户名或密码错误")]
+        AccountOrPwdWrong = 220,
+        /// <summary> 用户名或密码为空 </summary>
+        [Description("用户名或密码为空")]
+        AccountOrPwdEmpty = 221
     }
 }

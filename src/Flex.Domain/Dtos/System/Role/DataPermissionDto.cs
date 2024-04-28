@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Flex.Domain.Dtos.Role
 {
+    public class sitePermissionDto
+    {
+        public int siteId { set; get; }
+
+        public DataPermissionDto columnPermission { set; get; }
+    }
     public class DataPermissionDto
     {
         /// <summary>

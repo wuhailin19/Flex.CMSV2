@@ -1,11 +1,7 @@
-﻿using AutoMapper;
-using Flex.Application.Authorize;
-using Flex.Application.Contracts.Basics.ResultModels;
-using Flex.Application.Contracts.IServices.Basics;
-using Flex.Core.IDCode;
+﻿using Flex.Application.Contracts.IServices.Basics;
+using Flex.Core.Config;
 using Flex.Domain.Base;
-using Flex.EFSql.UnitOfWork;
-using System.Net;
+using Flex.Domain.Dtos.Role;
 
 namespace Flex.Application.Services
 {
@@ -15,7 +11,14 @@ namespace Flex.Application.Services
         public readonly IMapper _mapper;
         public readonly IdWorker _idWorker;
         public readonly IClaimsAccessor _claims;
-        protected ProblemDetails<T> Problem<T>(HttpStatusCode? statusCode,string detail=null) => new ProblemDetails<T>(statusCode, default, detail);
+        protected ProblemDetails<T> Problem<T>(HttpStatusCode? statusCode, string detail = null, Exception exception = null)
+        {
+            if (statusCode == HttpStatusCode.OK)
+                return new ProblemDetails<T>(statusCode, default, detail);
+            if (statusCode == HttpStatusCode.InternalServerError)
+                throw new AopHandledException(detail, exception);
+            throw new WarningHandledException(detail, exception);
+        }
         protected ProblemDetails<T> Problem<T>(HttpStatusCode? statusCode, T Content, string detail = null) => new ProblemDetails<T>(statusCode, Content, detail);
         public BaseService(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims)
         {
@@ -47,9 +50,22 @@ namespace Flex.Application.Services
 
             return temp;
         }
-        public virtual void AddIntEntityBasicInfo<T>(T model) where T : BaseIntEntity  {
+        protected DataPermissionDto GetSitePermissionDto(string datapermission, int siteId = 0)
+        {
+            var sitepermissionmodel = JsonHelper.Json<List<sitePermissionDto>>(datapermission ?? string.Empty);
+            if (sitepermissionmodel == null)
+                return new DataPermissionDto();
+            var resultmodel = sitepermissionmodel.Where(m => m.siteId == (siteId == 0 ? CurrentSiteInfo.SiteId : siteId)).FirstOrDefault();
+            if (resultmodel == null)
+            {
+                return new DataPermissionDto();
+            }
+            return resultmodel.columnPermission;
+        }
+        public virtual void AddIntEntityBasicInfo<T>(T model) where T : BaseIntEntity
+        {
             model.AddUser = _claims.UserId;
-            model.AddUserName= _claims.UserName;
+            model.AddUserName = _claims.UserName;
             model.AddTime = Clock.Now;
         }
         public virtual void AddLongEntityBasicInfo<T>(T model) where T : BaseLongEntity
@@ -57,6 +73,7 @@ namespace Flex.Application.Services
             model.Id = _idWorker.NextId();
             model.AddUser = _claims.UserId;
             model.AddUserName = _claims.UserName;
+            model.AddTime = Clock.Now;
         }
         public virtual void AddStringEntityBasicInfo<T>(T model) where T : BaseEntity
         {

@@ -1,5 +1,6 @@
 ﻿using Flex.Application.Contracts.Basics.ResultModels;
 using Flex.Domain.Dtos.ContentModel;
+using Flex.Domain.Dtos.System.ContentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<string>> GetFormHtml(int ModelId);
         Task<IEnumerable<ContentSelectItemDto>> GetSelectItem();
         Task<IEnumerable<ContentModelColumnDto>> ListAsync();
+        Task<ProblemDetails<string>> QuickEdit(QuickEditContentModelDto model);
         Task<ProblemDetails<string>> Update(UpdateContentModelDto model);
         Task<ProblemDetails<string>> UpdateFormString(UpdateFormHtmlStringDto model);
     }

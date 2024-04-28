@@ -1,14 +1,24 @@
-﻿using Flex.EFSql.UnitOfWork;
+﻿using Flex.Application.Aop;
+using Flex.Application.Contracts.Exceptions;
+using Flex.Application.Contracts.IServices.System;
+using Flex.Domain.Dtos.System.SystemLog;
+using Flex.Domain.Enums.LogLevel;
+using Flex.EFSql.UnitOfWork;
 
 namespace Flex.Application.Services
 {
     public class AccountServices : BaseService, IAccountServices
     {
         private ICaching _caching;
-        public AccountServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, ICaching caching)
+        private IRoleServices _roleServices;
+        protected ISystemLogServices _logServices;
+        public AccountServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims
+            , ICaching caching, ISystemLogServices logServices, IRoleServices roleServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _caching = caching;
+            _logServices = logServices;
+            _roleServices = roleServices;
         }
         /// <summary>
         /// 判断验证码
@@ -27,29 +37,43 @@ namespace Flex.Application.Services
             }
             return true;
         }
-        private ProblemDetails<UserData> DecryptStringObj(string StringObj)
+        private async Task<ProblemDetails<UserData>> DecryptStringObj(string StringObj)
         {
             try
             {
                 StringObj = EncryptHelper.RsaDecrypt(StringObj, RSAHepler.RSAPrivateKey);
                 return Problem<UserData>(HttpStatusCode.OK, StringObj);
             }
-            catch
+            catch (Exception ex)
             {
-                return Problem<UserData>(HttpStatusCode.RedirectKeepVerb, "解析失败，重试");
+                await _logServices.AddLoginLog(new LoginSystemLogDto() { 
+                    systemLogLevel = SystemLogLevel.Error, 
+                    operationContent = $"密码解析失败，密文为{StringObj}，密钥为{RSAHepler.RSAPrivateKey}"
+                });
+
+                return Problem<UserData>(HttpStatusCode.InternalServerError, "解析失败，重试", ex);
             }
         }
         private async Task<ProblemDetails<UserData>> CheckPasswordAsync(SysAdmin admin, string Password)
         {
             if (admin is null)
             {
-                return Problem<UserData>(HttpStatusCode.BadRequest, "用户名或密码错误");
+                return Problem<UserData>(HttpStatusCode.BadRequest, ErrorCodes.AccountOrPwdWrong.GetEnumDescription());
             }
             if (admin.Islock && !admin.IsSystem)
             {
-                return Problem<UserData>(HttpStatusCode.Locked, "账号已锁定");
+                return Problem<UserData>(HttpStatusCode.Locked, ErrorCodes.AccountLocked.GetEnumDescription() + "，请联系管理员解锁");
             }
-            var result = DecryptStringObj(Password);
+            if (admin.LockTime != null)
+            {
+                var locktime = admin.LockTime - Clock.Now;
+                if (locktime > TimeSpan.Zero && !admin.IsSystem)
+                {
+                    var lockstr = $"{locktime?.Milliseconds}分{locktime?.Seconds}";
+                    return Problem<UserData>(HttpStatusCode.Locked, ErrorCodes.AccountLocked.GetEnumDescription() + $"，请{lockstr}后再尝试");
+                }
+            }
+            var result = await DecryptStringObj(Password);
             if (result.IsSuccess)
             {
                 Password = result.Detail;
@@ -66,19 +90,29 @@ namespace Flex.Application.Services
                     var msg = "密码不正确，还有" + (admin.MaxErrorCount - admin.ErrorCount) + "次机会";
                     if (admin.MaxErrorCount - admin.ErrorCount == 0)
                     {
-                        admin.Islock = true;
+                        //admin.Islock = true;
                         admin.ErrorCount = 0;
-                        admin.LockTime = Clock.Now;
-                        msg = "该账户已被锁定，请联系超级管理员解锁";
+                        admin.LockTime = Clock.Now.AddMinutes(30);
+                        msg = "该账户已被锁定，请联系超级管理员解锁，或者等待半小时解锁";
                     }
                     _unitOfWork.SetTransaction();
                     _unitOfWork.GetRepository<SysAdmin>().Update(admin);
                     await _unitOfWork.SaveChangesTranAsync();
+
+                    await _logServices.AddLoginLog(new LoginSystemLogDto() { 
+                        systemLogLevel = SystemLogLevel.Warning, 
+                        operationContent = msg, 
+                        inoperator = $"{admin.UserName}({admin.Id})",
+                        IsAuthenticated = true,
+                        UserId = admin.Id,
+                        UserName = admin.UserName
+                    });
                     return Problem<UserData>(HttpStatusCode.BadRequest, msg);
                 }
                 else
                 {
-                    return Problem<UserData>(HttpStatusCode.BadRequest, "用户名或密码错误");
+                    await _logServices.AddLoginLog(new LoginSystemLogDto() { systemLogLevel = SystemLogLevel.Warning, operationContent = ErrorCodes.AccountOrPwdWrong.GetEnumDescription(), inoperator = $"{admin.UserName}({admin.Id})" });
+                    return Problem<UserData>(HttpStatusCode.BadRequest, ErrorCodes.AccountOrPwdWrong.GetEnumDescription());
                 }
             }
             return Problem<UserData>(HttpStatusCode.OK, "");
@@ -93,11 +127,11 @@ namespace Flex.Application.Services
             if (adminLoginDto.CodeId.IsNotNullOrEmpty())
                 _caching.Remove(adminLoginDto.CodeId);//删除验证码
             if (adminLoginDto.Account.IsNullOrEmpty() || adminLoginDto.Password.IsNullOrEmpty())
-                return Problem<UserData>(HttpStatusCode.BadRequest, "用户名或密码为空");
+                return Problem<UserData>(HttpStatusCode.BadRequest, ErrorCodes.AccountOrPwdEmpty.GetEnumDescription());
             var admin_unit = _unitOfWork.GetRepository<SysAdmin>();
             var Account = string.Empty;
             var Password = string.Empty;
-            ProblemDetails<UserData> result = DecryptStringObj(adminLoginDto.Account);
+            ProblemDetails<UserData> result = await DecryptStringObj(adminLoginDto.Account);
             if (!result.IsSuccess)
             {
                 return result;
@@ -105,14 +139,24 @@ namespace Flex.Application.Services
             Account = result.Detail;
             if (!admin_unit.Exists(m => m.Account == Account))
             {
-                return Problem<UserData>(HttpStatusCode.BadRequest, "用户名或密码错误");
+                return Problem<UserData>(HttpStatusCode.BadRequest, ErrorCodes.AccountOrPwdWrong.GetEnumDescription());
             }
             var admin = await admin_unit.GetFirstOrDefaultAsync(m => m.Account == Account, null, null, true, false);
-            
+
             result = await CheckPasswordAsync(admin, adminLoginDto.Password).ConfigureAwait(false);
             if (!result.IsSuccess)
             {
                 return result;
+            }
+            var RolesName = string.Empty;
+            if (admin.RoleId == 0)
+            {
+                RolesName = "超级管理员";
+            }
+            else
+            {
+                var role = await _roleServices.GetRoleByIdAsync(admin.RoleId);
+                RolesName = role.RolesName;
             }
             AdminLoginLog loginLog = new AdminLoginLog();
             loginLog.CurrentLoginTime = DateTime.Now;
@@ -137,7 +181,18 @@ namespace Flex.Application.Services
             _unitOfWork.SetTransaction();
             admin_unit.Update(admin);
             await _unitOfWork.SaveChangesTranAsync().ConfigureAwait(false);
-            return Problem(HttpStatusCode.OK, _mapper.Map<UserData>(admin));
+            await _logServices.AddLoginLog(new LoginSystemLogDto()
+            {
+                systemLogLevel = SystemLogLevel.Normal,
+                operationContent = "登录成功",
+                inoperator = $"{admin.UserName}({admin.Id})",
+                IsAuthenticated = true,
+                UserId = admin.Id,
+                UserName = admin.UserName
+            });
+            var userdata = _mapper.Map<UserData>(admin);
+            userdata.UserRoleName = RolesName;
+            return Problem(HttpStatusCode.OK, userdata);
         }
     }
 }

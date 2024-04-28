@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\en1\**" />
+    <Content Remove="wwwroot\en1\**" />
+    <EmbeddedResource Remove="wwwroot\en1\**" />
+    <None Remove="wwwroot\en1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="appsettings_初始.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Normal\ViewController\" />
+    <Folder Include="Areas\Normal\Views\" />
+    <Folder Include="wwwroot\111\222\" />
+    <Folder Include="wwwroot\222333\" />
+    <Folder Include="wwwroot\222\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.25" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="System.Text.Json" Version="8.0.2" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.2.0" />
+    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.1" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="wwwroot\scripts\layui\module\notice\.DS_Store" />
+    <None Include="wwwroot\system\js\systemlog\index.js" />
+    <None Include="wwwroot\system\js\systemlog\openPageOptions.js" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Flex.Application.Contracts\Flex.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Flex.Application\Flex.Application.csproj" />
+    <ProjectReference Include="..\Flex.Core\Flex.Core.csproj" />
+    <ProjectReference Include="..\Flex.Domain\Flex.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
+

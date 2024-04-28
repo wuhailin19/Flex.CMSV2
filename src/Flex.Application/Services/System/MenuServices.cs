@@ -1,4 +1,5 @@
 ﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Domain.Dtos.System.Menu;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -139,7 +140,6 @@ namespace Flex.Application.Services
         /// <summary>
         /// 获取当前角色菜单树
         /// </summary>
-        /// <param name="Id"></param>
         /// <returns></returns>
         public async Task<IEnumerable<MenuDto>> GetCurrentMenuDtoByRoleIdAsync()
         {
@@ -266,17 +266,39 @@ namespace Flex.Application.Services
             menumodel.Name = model.Name;
             menumodel.OrderId = model.OrderId;
             menumodel.ParentID = model.ParentID;
-            menumodel.isMenu = model.isMenu;
+            menumodel.ShowStatus = model.Status;
             UpdateIntEntityBasicInfo(menumodel);
             try
             {
                 menuRepository.Update(menumodel);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(),ex);
+            }
+        }
+        public async Task<ProblemDetails<string>> QuickEditMenu(MenuQuickEditDto menuQuickEditDto)
+        {
+            var adminRepository = _unitOfWork.GetRepository<SysMenu>();
+            var model = await adminRepository.GetFirstOrDefaultAsync(m => m.Id == menuQuickEditDto.Id);
+            if (model is null)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            if (menuQuickEditDto.isMenu.IsNotNullOrEmpty())
+                model.isMenu = menuQuickEditDto.isMenu.CastTo<bool>();
+            if (menuQuickEditDto.Status.IsNotNullOrEmpty())
+                model.ShowStatus = menuQuickEditDto.Status.CastTo<bool>();
+            try
+            {
+                UpdateIntEntityBasicInfo(model);
+                adminRepository.Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
         public async Task<ProblemDetails<string>> AddMenu(MenuAddDto model)
@@ -288,11 +310,11 @@ namespace Flex.Application.Services
             {
                 menuRepository.Insert(menumodel);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataInsertError.GetEnumDescription(), ex);
             }
         }
 
@@ -300,11 +322,11 @@ namespace Flex.Application.Services
         {
             var adminRepository = _unitOfWork.GetRepository<SysMenu>();
             if (Id.IsNullOrEmpty())
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
             var Ids = Id.ToList("-");
             var delete_list = adminRepository.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
             if (delete_list.Count == 0)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             try
             {
                 var softdels = new List<SysMenu>();
@@ -316,11 +338,11 @@ namespace Flex.Application.Services
                 }
                 adminRepository.Update(softdels);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
+                return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }
         }
     }

@@ -1,0 +1,12 @@
+﻿.layui-form-item .layui-form-label { text-align: center; }
+.edui-editor.edui-default { width: 100% !important; }
+.layui-input-block > .edui-default { width: 100% !important; }
+.layui-select-title .layui-anim.layui-anim-upbit { display: none; }
+.iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
+.layui-layer-page { width: 95% !important; }
+.layui-col-xs9 { width: 70% }
+.img-box { width: auto !important; border: 4px solid #f2f2f2; border-radius: 3px; cursor: pointer; overflow: hidden; }
+.message-info { width: auto !important; line-height: 50px; color: #535353 }
+.img-box .img-box-corner { position: absolute; right: -11px; bottom: -11px; width: 20px; height: 20px; background-color: rgb(102, 177, 255); transform: rotate( 40deg ); }
+.tips { width: 100%; background-color: #bbb; color: #fff; height: 20px; border: 1px solid #fff; line-height: 20px; text-align: center; }
+.tips.active { background-color: rgb(102, 177, 255); border-color: rgb(102, 177, 255); }

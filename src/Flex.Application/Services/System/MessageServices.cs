@@ -48,7 +48,7 @@ namespace Flex.Application.Services
         /// 获取消息列表
         /// </summary>
         /// <param name="page"></param>
-        /// <param name="limit"></param>
+        /// <param name="pagesize"></param>
         /// <returns></returns>
         public async Task<PagedList<MessageTitleListDto>> GetMessageTitleListDtoAsync(int page, int pagesize)
         {
@@ -65,8 +65,6 @@ namespace Flex.Application.Services
         /// <summary>
         /// 获取未读消息数量
         /// </summary>
-        /// <param name="page"></param>
-        /// <param name="limit"></param>
         /// <returns></returns>
         public int GetNotReadMessageCount()
         {
@@ -109,12 +107,12 @@ namespace Flex.Application.Services
             var messagemodel = _mapper.Map<sysMessage>(model);
             var contentmodel = await contentServices.GetSysContentModelByColumnId(model.ParentId);
             if (contentmodel == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
 
             if (model.ToPathId.IsNullOrEmpty())
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
             if (model.BaseFormContent.IsNullOrEmpty())
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
 
             string updatesql = string.Empty;
             var step = await _unitOfWork.GetRepository<sysWorkFlowStep>().GetFirstOrDefaultAsync(m => m.stepPathId == model.ToPathId);
@@ -122,7 +120,7 @@ namespace Flex.Application.Services
             {
                 updatesql = _sqlTableServices.UpdateContentReviewStatus(contentmodel.TableName, model.ContentId, StatusCode.PendingApproval, string.Empty);
                 _unitOfWork.ExecuteSqlCommand(updatesql);
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
             }
             messagemodel.Title += $"【{step.stepName}】";
 
@@ -135,7 +133,7 @@ namespace Flex.Application.Services
 
             var content = await contentServices.GetContentForReviewById(model.ParentId, model.ContentId);
             if (content == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
 
             content.TryGetValue("MsgGroupId", out object gid);
             content.TryGetValue("ReviewAddUser", out object rauer);
@@ -147,7 +145,7 @@ namespace Flex.Application.Services
             //判断当前流程是否已结束
             if (endmsg != null)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewAlreadyComplete.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewAlreadyComplete.GetEnumDescription());
             }
 
             var fromstep = await _unitOfWork.GetRepository<sysWorkFlowStep>().GetFirstOrDefaultAsync(m => m.stepPathId == model.FromPathId);
@@ -156,7 +154,7 @@ namespace Flex.Application.Services
             {
                 updatesql = _sqlTableServices.UpdateContentReviewStatus(contentmodel.TableName, model.ContentId, StatusCode.PendingApproval, string.Empty);
                 _unitOfWork.ExecuteSqlCommand(updatesql);
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewRest.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewRest.GetEnumDescription());
             }
 
             if (fromstep.isStart != StepProperty.Start)
@@ -166,7 +164,7 @@ namespace Flex.Application.Services
                     && !("," + fromstep.stepMan + ",").Contains(_claims.UserId.ToString())
                     && !("," + fromstep.stepRole + ",").Contains(_claims.UserRole.ToString()))
                 {
-                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+                    return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
                 }
             }
 
@@ -241,7 +239,7 @@ namespace Flex.Application.Services
                 if (!result.IsSuccess)
                 {
                     _IUnitOfWorkManage.RollbackTran();
-                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
+                    return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
                 }
                 if (model.ContentId == 0)
                     messagemodel.ContentId = result.Content;
@@ -250,15 +248,15 @@ namespace Flex.Application.Services
                 if (res <= 0)
                 {
                     _IUnitOfWorkManage.RollbackTran();
-                    return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
+                    return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
                 }
                 _IUnitOfWorkManage.CommitTran();
-                return new ProblemDetails<string>(HttpStatusCode.OK, result_msg);
+                return Problem<string>(HttpStatusCode.OK, result_msg);
             }
             catch (Exception ex)
             {
                 _IUnitOfWorkManage.RollbackTran();
-                throw;
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.ReviewCreateError.GetEnumDescription(), ex);
             }
         }
     }

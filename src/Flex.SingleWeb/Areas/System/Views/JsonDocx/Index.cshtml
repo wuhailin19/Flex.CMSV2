@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Api-Json文档</title>
+    <script src="~/scripts/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <link href="~/system/css/jsondocx/jsonview.css" rel="stylesheet" />
+</head>
+<body>
+    <section class="main">
+        <div class="header">
+        </div>
+        <div class="content">
+            <div class="content-left-box">
+            </div>
+            <div class="content-middle-box">
+                <div class="middle-link">
+                    <div class="css-npueup">
+                        <h4 class="apipost-table-title">请求地址</h4>
+                        <a href="" target="_blank" id="apilink">点击查看</a>
+                    </div>
+                    <div class="css-npueup">
+                        <h4 class="apipost-table-title">接口状态</h4>
+                        <span class="json-property bolder">开发中</span>
+                    </div>
+                    <div class="css-npueup">
+                        <h4 class="apipost-table-title">请求方式</h4>
+                        <span class="json-string bolder">GET</span>
+                    </div>
+                    <div class="css-npueup">
+                        <h4 class="apipost-table-title">接口URL</h4>
+                        <span style="text-decoration: underline;" id="spanapilink"></span>
+                    </div>
+                    <div class="css-npueup">
+                        <h4 class="apipost-table-title">请求参数</h4>
+                        <table style="table-layout: auto;">
+                            <colgroup></colgroup>
+                            <thead class="ant-table-thead">
+                                <tr>
+                                    <th class="ant-table-cell" scope="col">参数名</th>
+                                    <th class="ant-table-cell" scope="col">参数值</th>
+                                    <th class="ant-table-cell" scope="col">是否必填</th>
+                                </tr>
+                            </thead>
+                            <tbody class="ant-table-tbody">
+                                <tr data-row-key="page" class="ant-table-row ant-table-row-level-0">
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 100px;">page</div>
+                                    </td>
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 100px;">
+                                            <div>
+                                                <div id="page"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 80px;">是</div>
+                                    </td>
+                                </tr>
+                                <tr data-row-key="pagesize" class="ant-table-row ant-table-row-level-0">
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 100px;">pagesize</div>
+                                    </td>
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 100px;">
+                                            <div>
+                                                <div id="pagesize"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 80px;">是</div>
+                                    </td>
+                                </tr>
+                                <tr data-row-key="columnId" class="ant-table-row ant-table-row-level-0">
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 100px;">columnId</div>
+                                    </td>
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 100px;">
+                                            <div>
+                                                <div id="columnId"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 80px;">是</div>
+                                    </td>
+                                </tr>
+                                <tr data-row-key="modelId" class="ant-table-row ant-table-row-level-0">
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 100px;">modelId</div>
+                                    </td>
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 100px;">
+                                            <div>
+                                                <div id="modelId"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 80px;">否</div>
+                                    </td>
+                                </tr>
+                                <tr data-row-key="PId" class="ant-table-row ant-table-row-level-0">
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 100px;">PId</div>
+                                    </td>
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 100px;">
+                                            <div>
+                                                <div id="PId"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 80px;">否</div>
+                                    </td>
+                                </tr>
+                                <tr data-row-key="k" class="ant-table-row ant-table-row-level-0">
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 100px;">k</div>
+                                    </td>
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 100px;">
+                                            <div>
+                                                <div id="kw"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="ant-table-cell">
+                                        <div style="min-width: 80px;">否</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="filedlist">
+
+                    </div>
+                </div>
+            </div>
+            <div class="content-right-box">
+                <pre class="json-editor-blackbord"></pre>
+
+            </div>
+        </div>
+        <div class="footer"></div>
+    </section>
+    <script src="~/scripts/layui/layui.js"></script>
+    <script src="~/scripts/route.js"></script>
+    <script src="~/system/js/jsondocx/index.js"></script>
+</body>
+</html>

@@ -1,4 +1,5 @@
-﻿using Flex.Core.Extensions;
+﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Core.Extensions;
 using Flex.Core.Helper;
 using System.Net;
 
@@ -11,6 +12,7 @@ namespace Flex.Application.Contracts.Basics.ResultModels
             var status = statusCode.HasValue ? (int)statusCode.Value : (int)HttpStatusCode.BadRequest;
             Status = status;
             Detail = detail;
+            
         }
         public ProblemDetails(HttpStatusCode? statusCode, T content, string detail = null)
         {

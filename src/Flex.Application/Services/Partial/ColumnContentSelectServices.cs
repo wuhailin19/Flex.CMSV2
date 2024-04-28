@@ -65,7 +65,8 @@ namespace Flex.Application.Services
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             string filed = "Title,Id";
             var options = new List<ContentOptions>();
-            var result = await _dapperDBContext.GetDynamicAsync("select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName + " where ParentId=" + ParentId + " and StatusCode=1");
+            var result = await _dapperDBContext.GetDynamicAsync("select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName 
+                + " where ParentId=" + ParentId + " and StatusCode=1");
             result.Each(item =>
             {
                 options.Add(new ContentOptions()
@@ -246,8 +247,8 @@ namespace Flex.Application.Services
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, "没有选择有效模型");
-            return new ProblemDetails<string>(HttpStatusCode.OK, contentmodel.FormHtmlString);
+                return Problem<string>(HttpStatusCode.BadRequest, "没有选择有效模型");
+            return Problem<string>(HttpStatusCode.OK, contentmodel.FormHtmlString);
         }
     }
 }

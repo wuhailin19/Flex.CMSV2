@@ -45,8 +45,7 @@ namespace Flex.Application.Jwt
         /// <summary>
         /// 生成主Token
         /// </summary>
-        /// <param name="userName">用户名</param>
-        /// <param name="roleName">登录时的角色</param>
+        /// <param name="userData">用户数据</param>
         /// <returns></returns>
         public string CreateAccessToken(UserData userData)
         {
@@ -56,7 +55,8 @@ namespace Flex.Application.Jwt
                 new Claim(UserClaimType.Id,userData.Id.ToString()),//id
                 new Claim(UserClaimType.Account,userData.Account),//account
                 new Claim(UserClaimType.Name,userData.UserName),//name
-                new Claim(UserClaimType.RoleId,userData.RoleId),//rolename
+                new Claim(UserClaimType.RoleId,userData.RoleId),//roleId
+                new Claim(UserClaimType.RoleDisplayName,userData.UserRoleName),//rolename
                 new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()),
                 //这个就是过期时间，可自定义，注意JWT有自己的缓冲过期时间
                 new Claim (ClaimTypes.Expiration,DateTime.Now.Add(_tokenLifeTime).ToString()),
@@ -67,8 +67,7 @@ namespace Flex.Application.Jwt
         /// <summary>
         /// 生成刷新Token
         /// </summary>
-        /// <param name="jwtConfig"></param>
-        /// <param name="user"></param>
+        /// <param name="userData">用户数据</param>
         /// <returns></returns>
         public string CreateRefreshToken(UserData userData)
         {
@@ -83,6 +82,7 @@ namespace Flex.Application.Jwt
         /// 生成jwt令牌
         /// </summary>
         /// <param name="claims">自定义的claim</param>
+        /// <param name="tokens"></param>
         /// <returns></returns>
         public string BuildToken(Claim[] claims, Tokens tokens)
         {

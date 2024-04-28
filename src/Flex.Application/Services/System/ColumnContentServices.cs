@@ -1,16 +1,17 @@
-﻿using Dapper;
-using Dm;
-using Flex.Application.Contracts.Exceptions;
+﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Application.Contracts.IServices.System;
 using Flex.Core.Config;
 using Flex.Core.Extensions.CommonExtensions;
 using Flex.Core.Framework.Enum;
 using Flex.Dapper;
 using Flex.Domain.Cache;
 using Flex.Domain.Dtos.Role;
+using Flex.Domain.Enums.LogLevel;
 using Flex.Domain.WhiteFileds;
 using Flex.SqlSugarFactory.Seed;
+using NLog;
+using SqlSugar;
 using System.Collections;
-using System.Linq;
 using System.Text;
 
 namespace Flex.Application.Services
@@ -21,11 +22,13 @@ namespace Flex.Application.Services
         protected MyContext _sqlsugar;
         protected IRoleServices _roleServices;
         protected IWorkFlowServices _workFlowServices;
-
         protected ICaching _caching;
+        protected ISystemLogServices _logServices;
 
         ISqlTableServices _sqlTableServices;
-        public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, MyDBContext dapperDBContext, ISqlTableServices sqlTableServices, IRoleServices roleServices, ICaching caching, IWorkFlowServices workFlowServices, MyContext sqlsugar)
+        public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims
+            , MyDBContext dapperDBContext, ISqlTableServices sqlTableServices, IRoleServices roleServices, ICaching caching
+            , IWorkFlowServices workFlowServices, MyContext sqlsugar, ISystemLogServices logServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _dapperDBContext = dapperDBContext;
@@ -34,6 +37,7 @@ namespace Flex.Application.Services
             _caching = caching;
             _workFlowServices = workFlowServices;
             _sqlsugar = sqlsugar;
+            _logServices = logServices;
         }
         private void InitCreateTable(Hashtable table)
         {
@@ -84,16 +88,17 @@ namespace Flex.Application.Services
         }
         public async Task<ProblemDetails<int>> Add(Hashtable table, bool IsReview = false)
         {
-            if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ad)))
-                return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.NoOperationPermission.GetEnumDescription());
-            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
+            int parentId = table["ParentId"].ToInt();
+            if (!await CheckPermission(parentId, nameof(DataPermissionDto.ad)))
+                return Problem(HttpStatusCode.BadRequest, 0, ErrorCodes.NoOperationPermission.GetEnumDescription());
+            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == parentId);
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
-                return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataNeedReview.GetEnumDescription());
+                return Problem<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataNeedReview.GetEnumDescription());
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
-                return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataUpdateError.GetEnumDescription());
-            table["ParentId"] = table["ParentId"].ToInt();
+                return Problem(HttpStatusCode.BadRequest, 0, ErrorCodes.DataUpdateError.GetEnumDescription());
+            table.SetValue("ParentId", parentId);
 
             var filedmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             var keysToRemove = new List<object>();
@@ -131,8 +136,7 @@ namespace Flex.Application.Services
             InitCreateTable(table);
 
             //生成内容组Id
-            table["ContentGroupId"] = _idWorker.NextId();
-
+            table.SetValue("ContentGroupId", _idWorker.NextId());
             string orderSql = _sqlTableServices.GetNextOrderIdDapperSqlString(contentmodel.TableName);
 
             var orderId = _sqlsugar.Db.Ado.GetDataTable(orderSql)?.Rows[0][0].ToInt() ?? 0;
@@ -140,7 +144,7 @@ namespace Flex.Application.Services
             //DynamicParameters parameters = new DynamicParameters();
             //StringBuilder builder = _sqlTableServices.CreateDapperInsertSqlString(table, contentmodel.TableName, orderId, out parameters);
 
-            SqlSugar.SugarParameter[] parameters = new SqlSugar.SugarParameter[] { };
+            SugarParameter[] parameters = new SugarParameter[] { };
             StringBuilder builder = _sqlTableServices.CreateSqlsugarInsertSqlString(table, contentmodel.TableName, orderId, out parameters);
             try
             {
@@ -148,13 +152,17 @@ namespace Flex.Application.Services
                 var result = _sqlsugar.Db.Ado.GetScalar(builder.ToString(), parameters).ToInt();
                 if (result > 0)
                 {
-                    return new ProblemDetails<int>(HttpStatusCode.OK, result, ErrorCodes.DataInsertSuccess.GetEnumDescription());
+                    if (table.ContainsKey("Title"))
+                    {
+                        await _logServices.AddContentLog(SystemLogLevel.Normal, $"新增数据【{table.GetValue("Title")}】到栏目【{column.Name}】", $"普通新增");
+                    }
+                    return Problem(HttpStatusCode.OK, result, ErrorCodes.DataInsertSuccess.GetEnumDescription());
                 }
-                return new ProblemDetails<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataInsertError.GetEnumDescription());
+                return Problem(HttpStatusCode.BadRequest, 0, ErrorCodes.DataInsertError.GetEnumDescription());
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                return Problem<int>(HttpStatusCode.InternalServerError, ErrorCodes.DataInsertError.GetEnumDescription(), ex);
             }
         }
         private async Task<bool> CheckPermission(int ParentId, string permissioncate)
@@ -169,16 +177,19 @@ namespace Flex.Application.Services
                 var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
                 if (currentrole == null)
                     return false;
-                var datapermission = JsonHelper.Json<DataPermissionDto>(currentrole.DataPermission ?? string.Empty);
+                var datapermission = JsonHelper.Json<List<sitePermissionDto>>(currentrole.DataPermission ?? string.Empty);
                 if (datapermission == null)
+                    return false;
+                var currentsitepermission = datapermission.Where(m => m.siteId == CurrentSiteInfo.SiteId).FirstOrDefault();
+                if (currentsitepermission == null)
                     return false;
                 datapermissionList = new Dictionary<int, Dictionary<string, List<string>>>();
                 Dictionary<string, List<string>> filedvalue = new Dictionary<string, List<string>>
                 {
-                    { nameof(DataPermissionDto.sp), datapermission.sp.ToList("-") },
-                    { nameof(DataPermissionDto.ed), datapermission.ed.ToList("-") },
-                    { nameof(DataPermissionDto.ad), datapermission.ad.ToList("-") },
-                    { nameof(DataPermissionDto.dp), datapermission.dp.ToList("-") }
+                    { nameof(DataPermissionDto.sp), currentsitepermission.columnPermission.sp.ToList("-") },
+                    { nameof(DataPermissionDto.ed), currentsitepermission.columnPermission.ed.ToList("-") },
+                    { nameof(DataPermissionDto.ad), currentsitepermission.columnPermission.ad.ToList("-") },
+                    { nameof(DataPermissionDto.dp), currentsitepermission.columnPermission.dp.ToList("-") }
                 };
                 datapermissionList.Add(_claims.UserRole, filedvalue);
                 _caching.Set(cachekey, datapermissionList, new TimeSpan(1, 0, 0));
@@ -196,23 +207,23 @@ namespace Flex.Application.Services
         public async Task<ProblemDetails<string>> Delete(int ParentId, string Id)
         {
             if (!await CheckPermission(ParentId, nameof(DataPermissionDto.dp)))
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             string Ids = Id.Replace("-", ",");
             try
             {
                 _unitOfWork.ExecuteSqlCommand(_sqlTableServices.DeleteContentTableData(contentmodel.TableName, Ids));
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Split(',').Count()}条数据");
+                await _logServices.AddContentLog(SystemLogLevel.Warning, $"删除栏目【{column.Name}】{Ids.Split(',').Count()}条数据，Id为【{Ids}】", $"删除");
+                return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Split(',').Count()}条数据");
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }
         }
-
     }
 }

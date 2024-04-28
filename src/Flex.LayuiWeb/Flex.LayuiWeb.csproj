@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Normal\ViewController\" />
+    <Folder Include="Areas\Normal\Views\" />
+    <Folder Include="wwwroot\111\222\" />
+    <Folder Include="wwwroot\222333\" />
+    <Folder Include="wwwroot\222\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\scripts\layui\module\notice\.DS_Store" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Flex.Core\Flex.Core.csproj" />
+  </ItemGroup>
+
+</Project>

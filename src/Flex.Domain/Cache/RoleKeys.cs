@@ -9,6 +9,10 @@ namespace Flex.Domain.Cache
     public class RoleKeys
     {
         /// <summary>
+        /// 角色缓存键
+        /// </summary>
+        public const string RoleCache = "RoleCache";
+        /// <summary>
         /// 角色可访问的接口缓存键
         /// </summary>
         public const string userRoleKey = "userRoleUrlKey";

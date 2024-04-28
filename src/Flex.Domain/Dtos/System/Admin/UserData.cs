@@ -9,6 +9,7 @@ namespace Flex.Domain.Dtos.Admin
         public long Id { get; set; }
         public string Account { get; set; }
         public string UserName { get; set; }
+        public string UserRoleName { get; set; }
         public string RoleId { get; set; }
     }
 }

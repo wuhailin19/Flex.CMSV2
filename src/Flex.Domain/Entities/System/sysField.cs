@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Flex.Domain.Entities
 {
+    [SqlSugar.SugarTable("tbl_core_field")]
     public class sysField : BaseEntity, EntityContext
     {
         /// <summary>

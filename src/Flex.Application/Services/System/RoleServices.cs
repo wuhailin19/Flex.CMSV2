@@ -1,12 +1,15 @@
 ﻿using Consul;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Application.ServicesHelper;
 using Flex.Domain.Cache;
 using Flex.Domain.Dtos.Role;
 using Flex.Domain.Dtos.RoleUrl;
+using Flex.Domain.Entities.System;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Tls;
 using ShardingCore.Extensions;
 using System.Data;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 
 namespace Flex.Application.Services
@@ -34,7 +37,7 @@ namespace Flex.Application.Services
         /// 获取角色列表
         /// </summary>
         /// <param name="page"></param>
-        /// <param name="limit"></param>
+        /// <param name="pagesize"></param>
         /// <returns></returns>
         public async Task<PagedList<RoleColumnDto>> GetRoleListAsync(int page, int pagesize)
         {
@@ -62,8 +65,12 @@ namespace Flex.Application.Services
         /// <returns></returns>
         public async Task<SysRole> GetCurrentRoldDtoAsync()
         {
+            var rolekey = RoleKeys.RoleCache + _claims.UserRole;
+            if (_caching.Exist(rolekey))
+                return _caching.Get(rolekey) as SysRole;
             var currentrole = await _unitOfWork.GetRepository<SysRole>()
                         .GetFirstOrDefaultAsync(m => _claims.UserRole == m.Id, null, null, true, false);
+            _caching.Set(rolekey, currentrole, 60);
             if (currentrole is null)
                 return default(SysRole);
             return currentrole;
@@ -85,9 +92,10 @@ namespace Flex.Application.Services
         /// <summary>
         /// 传入roleId获取栏目权限列表
         /// </summary>
-        /// <param name="roleId"></param>
+        /// <param name="Id"></param>
+        /// <param name="siteId"></param>
         /// <returns></returns>
-        public async Task<DataPermissionDto> GetDataPermissionListById(int Id)
+        public async Task<DataPermissionDto> GetDataPermissionListById(int Id,int siteId)
         {
             var role = await _unitOfWork
                 .GetRepository<SysRole>()
@@ -97,14 +105,31 @@ namespace Flex.Application.Services
             var model = role.FirstOrDefault();
             if (model.DataPermission.IsEmpty())
                 return default;
-            DataPermissionDto permissionDtos = JsonConvert.DeserializeObject<DataPermissionDto>(model.DataPermission);
+            DataPermissionDto permissionDtos = GetSitePermissionDto(model.DataPermission, siteId);
             return permissionDtos;
+        }
+
+        /// <summary>
+        /// 传入roleId获取站点权限
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public async Task<string> GetSitePermissionListById(int Id)
+        {
+            var role = await _unitOfWork
+                .GetRepository<SysRole>()
+                .GetAllAsync(m => m.Id == Id);
+            if (role.Count == 0)
+                return default;
+            var model = role.FirstOrDefault();
+            if (model.WebsitePermissions.IsEmpty())
+                return default;
+            return model.WebsitePermissions;
         }
 
         /// <summary>
         /// 获取角色列表
         /// </summary>
-        /// <param name="roleId"></param>
         /// <returns></returns>
         public async Task<IEnumerable<RoleSelectDto>> GetRoleListAsync()
         {
@@ -117,7 +142,6 @@ namespace Flex.Application.Services
         /// <summary>
         /// 获取角色列表
         /// </summary>
-        /// <param name="roleId"></param>
         /// <returns></returns>
         public async Task<IEnumerable<RoleStepDto>> GetStepRoleListAsync()
         {
@@ -137,97 +161,204 @@ namespace Flex.Application.Services
         {
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.RolesName == role.RolesName);
             if (model != null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataExist.GetEnumDescription());
-            var result = await _unitOfWork.GetRepository<SysRole>().InsertAsync(_mapper.Map<SysRole>(role));
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataExist.GetEnumDescription());
+            var insertmodel = _mapper.Map<SysRole>(role);
+            AddIntEntityBasicInfo(insertmodel);
+            var result = await _unitOfWork.GetRepository<SysRole>().InsertAsync(insertmodel);
             await _unitOfWork.SaveChangesAsync();
             if (result.Entity.Id > 0)
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
-            return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
+            return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
         }
         public async Task<ProblemDetails<string>> UpdateRole(InputUpdateRoleDto role)
         {
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.RolesName == role.RolesName);
             if (model != null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataExist.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataExist.GetEnumDescription());
             try
             {
                 model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
                 _mapper.Map(role, model);
+                UpdateIntEntityBasicInfo(model);
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                _caching.Remove(RoleKeys.RoleCache + model.Id);
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
-            catch
+            catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
 
         public async Task<ProblemDetails<string>> UpdateMenuPermission(InputRoleMenuDto role)
         {
+            var checkres = await CheckCurrentRoleIsUltravires("menu", role.MenuPermissions);
+            if (!checkres)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
             if (model == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             try
             {
                 model.MenuPermissions = role.MenuPermissions;
                 UpdateIntEntityBasicInfo(model);
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                _caching.Remove(RoleKeys.RoleCache + model.Id);
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
-            catch
+            catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
+            }
+        }
+        /// <summary>
+        /// 判断是否越权进行授权操作
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> CheckCurrentRoleIsUltravires(string cate, string rolestr)
+        {
+            if (_claims.IsSystem)
+                return true;
+            var role = await GetCurrentRoldDtoAsync();
+            switch (cate)
+            {
+                case "api":
+                    var currentobject = JsonConvert.DeserializeObject<ApiPermissionDto>(role.UrlPermission);
+                    var updateobject = JsonConvert.DeserializeObject<ApiPermissionDto>(rolestr);
+                    var currentroleidlist = currentobject.dataapi.ToList("-");
+                    if (currentroleidlist.Count == 0)
+                        return false;
+                    var updateidlist = updateobject.dataapi.ToList("-");
+                    foreach (var item in updateidlist)
+                    {
+                        if (!currentroleidlist.Contains(item))
+                            return false;
+                    }
+                    return true;
+                case "menu":
+                    if (role.MenuPermissions.IsNullOrEmpty())
+                        return false;
+                    var currentmenulist = role.MenuPermissions.ToList(",");
+                    var updatemenulist = rolestr.ToList(",");
+                    if (currentmenulist.Count == 0)
+                        return false;
+                    foreach (var item in updatemenulist)
+                    {
+                        if (!currentmenulist.Contains(item))
+                            return false;
+                    }
+                    return true;
+                case "datapermission":
+                    var datapermission = JsonHelper.Json<DataPermissionDto>(rolestr);
+                    var currentpermission = JsonHelper.Json<DataPermissionDto>(role.DataPermission);
+                    return CheckColumnPermission.CheckPermission(currentpermission, datapermission);
+                case "sitepermission":
+                    var currentsiteper = role.WebsitePermissions;
+                    if (currentsiteper.IsNullOrEmpty())
+                        return false;
+                    var currentsitelist = currentsiteper.ToList("-");
+                    var updatesitelist = rolestr.ToList("-");
+                    foreach (var item in updatesitelist)
+                    {
+                        if (!currentsitelist.Contains(item))
+                            return false;
+                    }
+                    return true;
+            }
+            return false;
+        }
+        public async Task<ProblemDetails<string>> UpdateSitePermission(InputRoleSitepermissionDto role)
+        {
+            var checkres = await CheckCurrentRoleIsUltravires("sitepermission", role.chooseId);
+            if (!checkres)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+            var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
+            if (model == null)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            try
+            {
+                model.WebsitePermissions = role.chooseId;
+                UpdateIntEntityBasicInfo(model);
+                _unitOfWork.GetRepository<SysRole>().Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                _caching.Remove(RoleKeys.RoleCache + model.Id);
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
         public async Task<ProblemDetails<string>> UpdateDataPermission(InputRoleDatapermissionDto role)
         {
+            var checkres = await CheckCurrentRoleIsUltravires("datapermission", role.chooseId);
+            if (!checkres)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
             if (model == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             try
             {
-                model.DataPermission = role.chooseId;
+                var datapermission = JsonHelper.Json<List<sitePermissionDto>>(model.DataPermission ?? string.Empty);
+                if (datapermission == null)
+                    datapermission = new List<sitePermissionDto>();
+
+                var currentrolepermission = datapermission.Where(m => m.siteId == role.siteId).FirstOrDefault();
+                if (currentrolepermission != null)
+                    currentrolepermission.columnPermission = JsonHelper.Json<DataPermissionDto>(role.chooseId);
+                else
+                {
+                    datapermission.Add(new sitePermissionDto() { siteId = role.siteId, columnPermission = JsonHelper.Json<DataPermissionDto>(role.chooseId) });
+                }
+                model.DataPermission = JsonHelper.ToJson(datapermission);
+
                 UpdateIntEntityBasicInfo(model);
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                _caching.Remove(RoleKeys.userDataPermissionKey + role.Id);
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                _caching.Remove(RoleKeys.userDataPermissionKey + model.Id);
+                _caching.Remove(RoleKeys.RoleCache + model.Id);
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
-            catch
+            catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
         public async Task<ProblemDetails<string>> UpdateApiPermission(InputRoleUrlDto role)
         {
+            var checkres = await CheckCurrentRoleIsUltravires("api", role.sysapis);
+            if (!checkres)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var model = await _unitOfWork.GetRepository<SysRole>().GetFirstOrDefaultAsync(m => m.Id == role.Id);
             if (model == null)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             try
             {
                 model.UrlPermission = role.sysapis;
                 UpdateIntEntityBasicInfo(model);
                 _unitOfWork.GetRepository<SysRole>().Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                _caching.Remove(RoleKeys.userRoleKey + role.Id);
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                string userid = RoleKeys.userRoleKey + model.Id;
+                _caching.Remove(userid);
+                _caching.Remove(RoleKeys.RoleCache + model.Id);
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
-            catch
+            catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
         public async Task<ProblemDetails<string>> Delete(string Id)
         {
             var adminRepository = _unitOfWork.GetRepository<SysRole>();
             if (Id.IsNullOrEmpty())
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
             var Ids = Id.ToList("-");
             var delete_list = adminRepository.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
             if (delete_list.Count == 0)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             try
             {
                 var softdels = new List<SysRole>();
@@ -241,11 +372,11 @@ namespace Flex.Application.Services
                 }
                 adminRepository.Update(softdels);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
+                return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
             }
-            catch
+            catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }
         }
         public async Task<Dictionary<string, List<string>>> PermissionDtosAsync()
@@ -277,7 +408,7 @@ namespace Flex.Application.Services
         }
         private const string pattern = "{[a-zA-Z]+}/?";
 
-        public async Task<Dictionary<int, List<string>>> CurrentPermissionDtosAsync()
+        public async Task<Dictionary<int, List<string>>> CurrentUrlPermissionDtosAsync()
         {
             var result = new Dictionary<int, List<string>>();
             var currentRole = await GetCurrentRoldDtoAsync();

@@ -9,9 +9,9 @@ namespace Flex.Application.Extensions.CAP
         /// <summary>
         /// 注册CAP组件的订阅者(实现事件总线及最终一致性（分布式事务）的一个开源的组件)
         /// </summary>
-        /// <param name="tableNamePrefix">cap表面前缀</param>
-        /// <param name="groupName">群组名子</param>
-        /// <param name="func">回调函数</param>
+        /// <typeparam name="TSubscriber"></typeparam>
+        /// <param name="Services"></param>
+        /// <param name="AssemblyName"></param>
         public static void AddEventBusSubscribers<TSubscriber>(this IServiceCollection Services, string AssemblyName)
             where TSubscriber : class, ICapSubscribe
         {

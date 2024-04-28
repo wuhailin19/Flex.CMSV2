@@ -24,7 +24,7 @@ namespace Flex.Application.Services
         /// 获取工作流列表
         /// </summary>
         /// <param name="page"></param>
-        /// <param name="limit"></param>
+        /// <param name="pagesize"></param>
         /// <returns></returns>
         public async Task<PagedList<WorkFlowColumnDto>> GetWorkFlowListAsync(int page, int pagesize)
         {
@@ -35,8 +35,6 @@ namespace Flex.Application.Services
         /// <summary>
         /// 获取工作流下拉集合
         /// </summary>
-        /// <param name="page"></param>
-        /// <param name="limit"></param>
         /// <returns></returns>
         public async Task<IEnumerable<WorkFlowSelectDto>> GetWorkFlowSelectDtoListAsync()
         {
@@ -87,7 +85,7 @@ namespace Flex.Application.Services
                         .GetRepository<sysWorkFlowAction>()
                         .GetAllAsync(m => m.flowId == stepDto.flowId && m.stepToCate.Contains("end")))
                             .ToList()
-                            .Distinct(m=>m.stepToCate)
+                            .Distinct(m => m.stepToCate)
                             .ToList();
                     }
                 }
@@ -98,11 +96,11 @@ namespace Flex.Application.Services
         {
             var adminRepository = _unitOfWork.GetRepository<sysWorkFlow>();
             if (Id.IsNullOrEmpty())
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NotChooseData.GetEnumDescription());
             var Ids = Id.ToList("-");
             var delete_list = adminRepository.GetAll(m => Ids.Contains(m.Id.ToString())).ToList();
             if (delete_list.Count == 0)
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             try
             {
                 var softdels = new List<sysWorkFlow>();
@@ -114,11 +112,11 @@ namespace Flex.Application.Services
                 }
                 adminRepository.Update(softdels);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
+                return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }
         }
 
@@ -131,11 +129,11 @@ namespace Flex.Application.Services
             {
                 workflowresponsity.Insert(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataInsertError.GetEnumDescription(),ex);
             }
         }
         public async Task<ProblemDetails<string>> Update(InputWorkFlowUpdateDto updatedto)
@@ -148,11 +146,11 @@ namespace Flex.Application.Services
             {
                 workflowresponsity.Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(),ex);
             }
         }
 
@@ -198,12 +196,12 @@ namespace Flex.Application.Services
                 workflowresponsity.Update(_mapper.Map(model, workflow));
 
                 await _unitOfWork.SaveChangesTranAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackAsync();
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
         private async Task<bool> DeleteExistingEntities(int flowId)
@@ -219,9 +217,9 @@ namespace Flex.Application.Services
                 workflowaction.Delete(actions);
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                throw new AopHandledException(ErrorCodes.DataDeleteError, ex);
             }
         }
         private List<sysWorkFlowStep> CreateWorkFlowSteps(Dictionary<string, State> states, List<Dictionary<string, StepObject>> step, int flowId)
@@ -318,11 +316,11 @@ namespace Flex.Application.Services
             {
                 workflowresponsity.Update(model);
                 await _unitOfWork.SaveChangesAsync();
-                return new ProblemDetails<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
             catch (Exception ex)
             {
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
     }

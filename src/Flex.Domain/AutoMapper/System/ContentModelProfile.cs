@@ -1,4 +1,6 @@
 ﻿using Flex.Domain.Dtos.ContentModel;
+using Flex.Domain.Dtos.System.ContentModel;
+using System.Text.RegularExpressions;
 
 namespace Flex.Domain.AutoMapper
 {
@@ -11,7 +13,8 @@ namespace Flex.Domain.AutoMapper
             CreateMap<AddContentModelDto, SysContentModel>()
                 .ForMember(a => a.TableName, b => b.MapFrom(c => 
                 "tbl_normal_" + c.TableName
-                .Replace("tbl_normal_", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase)));
+                .Replace("tbl_normal_", "",RegexOptions.IgnoreCase)));
+
         }
     }
 }

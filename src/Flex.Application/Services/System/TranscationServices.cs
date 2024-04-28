@@ -63,12 +63,12 @@
                 _unitOfWork.GetRepository<TestTranscation>().Insert(model2);
                 _unitOfWork.SaveChangesTran();
                 //tran.Commit();
-                return new ProblemDetails<string>(HttpStatusCode.OK);
+                return Problem<string>(HttpStatusCode.OK);
             }
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                return new ProblemDetails<string>(HttpStatusCode.BadRequest, JsonHelper.ToJson(ex));
+                return Problem<string>(HttpStatusCode.BadRequest, JsonHelper.ToJson(ex));
             }
         }
     }
