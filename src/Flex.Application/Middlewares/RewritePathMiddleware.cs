@@ -24,14 +24,21 @@ namespace Flex.Application.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            List<SiteManageColumnDto> list = new List<SiteManageColumnDto>();
+            List<SiteManageColumnDto> list = null;
             if (_caching.Exist(SiteKeys.SiteRouteKeys))
             {
                 list = _caching.Get(SiteKeys.SiteRouteKeys) as List<SiteManageColumnDto> ?? new List<SiteManageColumnDto>();
             }
             else
             {
-                list = (await _siteManageServices.ListAsync()).ToList();
+                try
+                {
+                    list = (await _siteManageServices.ListAsync()).ToList();
+                }
+                catch 
+                {
+                    list = new List<SiteManageColumnDto>();
+                }
                 _caching.Set(SiteKeys.SiteRouteKeys, list, new TimeSpan(24, 0, 0));
             }
 

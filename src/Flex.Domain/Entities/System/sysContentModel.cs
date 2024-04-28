@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Flex.Domain.Entities
 {
+    [SqlSugar.SugarTable("tbl_core_contentmodel")]
     public class SysContentModel : BaseIntEntity, EntityContext
     {
         public string Name { set; get; }

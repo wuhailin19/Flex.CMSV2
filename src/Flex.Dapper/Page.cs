@@ -38,9 +38,7 @@ namespace Flex.Dapper
             // Split the SQL
             if (!PagingHelper.SplitSQL(sql, out PagingHelper.SQLParts parts))
                 throw new Exception("Unable to parse SQL statement for paged query");
-
             var usedb = "DataConfig:UseDb".Config(string.Empty) ?? "Sqlserver";
-            var sqlconnection = "DataConfig:Sqlserver:ConnectionString".Config(string.Empty);
             switch (usedb)
             {
                 case "Sqlserver":

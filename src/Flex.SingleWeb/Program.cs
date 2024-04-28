@@ -110,8 +110,6 @@ if (app.Environment.IsDevelopment())
     // 初始化接口数据
     var myService = app.Services.GetRequiredService<IRoleUrlServices>();
     await myService.CreateUrlList();
-
-
 }
 
 // 初始化自动创建数据库

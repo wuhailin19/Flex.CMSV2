@@ -73,6 +73,13 @@ namespace Flex.SqlSugarFactory.Seed
             return result;
         }
 
+        public System.Data.DataTable GetPageDataList(int pageIndex, int pageSize, string sql,ref int recount, object param = null) {
+            DapperPage.BuildPageQueries((pageIndex - 1) * pageSize, pageSize, sql, out string sqlCount, out string sqlPage);
+            recount = _db.Ado.SqlQuerySingle<int>(sqlCount, param);
+            var dt= _db.Ado.GetDataTable(sqlPage, param);
+            return dt;
+        }
+
 
         /// <summary>
         /// 功能描述:构造函数
@@ -95,6 +102,8 @@ namespace Flex.SqlSugarFactory.Seed
                 },
                 MoreSettings = new ConnMoreSettings()
                 {
+                    PgSqlIsAutoToLower = false,//增删查改支持驼峰表
+                    PgSqlIsAutoToLowerCodeFirst = false, // 建表建驼峰表。5.1.3.30
                     //IsWithNoLockQuery = true,
                     IsAutoRemoveDataCache = true
                 }

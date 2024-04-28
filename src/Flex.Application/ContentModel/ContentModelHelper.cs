@@ -3,6 +3,7 @@ using Flex.SqlSugarFactory.Seed;
 using ShardingCore.Extensions;
 using SqlSugar;
 using System.Data;
+using System.Linq.Expressions;
 
 namespace Flex.Application.ContentModel
 {
@@ -40,7 +41,8 @@ namespace Flex.Application.ContentModel
             {
                 if (_column == null)
                 {
-                    var columnCategory = instance._sqlsugar.Db.Ado.GetDataTable("select ModelId,Id from tbl_core_column where StatusCode=1");
+                    Expression<Func<SysColumn, bool>> express = m => (int)m.StatusCode == 1;
+                    var columnCategory = instance._sqlsugar.Db.Queryable<SysColumn>().Where(express).ToDataTable();
                     _column = columnCategory;
                 }
                 return _column;
@@ -56,7 +58,8 @@ namespace Flex.Application.ContentModel
             {
                 if (_contentlist == null)
                 {
-                    var ContentModel = instance._sqlsugar.Db.Ado.GetDataTable("select Id,TableName,Name from tbl_core_contentmodel where StatusCode=1");
+                    Expression<Func<SysContentModel, bool>> express = m => (int)m.StatusCode == 1;
+                    var ContentModel = instance._sqlsugar.Db.Queryable<SysContentModel>().Where(express).ToDataTable();
                     _contentlist = ContentModel;
                 }
                 return _contentlist;
@@ -88,7 +91,8 @@ namespace Flex.Application.ContentModel
             {
                 if (_filedlist == null)
                 {
-                    var filedlist = instance._sqlsugar.Db.Ado.GetDataTable("select Name,FieldName,ModelId,FieldType,ApiName,IsSearch from tbl_core_field where StatusCode=1 order by OrderId asc");
+                    Expression<Func<sysField, bool>> express = m => (int)m.StatusCode == 1;
+                    var filedlist = instance._sqlsugar.Db.Queryable<sysField>().Where(express).ToDataTable();
                     _filedlist = filedlist;
                 }
                 return _filedlist;
@@ -109,12 +113,11 @@ namespace Flex.Application.ContentModel
         {
             string where = "StatusCode=1";
             where += " and " + swhere;
-            string pagesql = $"select {fileds} from {tableName} where {where} order by {orderby} offset";
+            string pagesql = $"select {fileds} from {tableName} where {where} order by {orderby}";
             if (page <= 0)
                 page = 1;
-            pagesql += $" ({(page - 1) * pagesize}) rows fetch next {pagesize} rows only";
-            recount = instance._sqlsugar.Db.Ado.SqlQuerySingle<int>($"select count(1) from {tableName} where StatusCode=1");
-            return instance._sqlsugar.Db.Ado.GetDataTable(pagesql);
+            var dt = instance._sqlsugar.GetPageDataList(page, pagesize, pagesql, ref recount);
+            return dt;
         }
 
 
