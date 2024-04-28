@@ -1,0 +1,54 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./js/jquery.min.js"></script>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LcfSsYpAAAAAFkgIQJ7DzosoIGGVkE0L8DH-JRh">
+    </script>
+    <!-- Your code -->
+
+</head>
+
+<body>
+    <button onclick="createtoken()">testtoken</button>
+    <script>
+        function createtoken() {
+    grecaptcha.enterprise.ready(async () => {
+      const token = await grecaptcha.enterprise.execute(
+        '6LcfSsYpAAAAAFkgIQJ7DzosoIGGVkE0L8DH-JRh', {action: 'submitform'});
+      var event={
+        "event":{
+            "token": token,
+            "expectedAction": "submitform",
+            "siteKey": "6LcfSsYpAAAAAFkgIQJ7DzosoIGGVkE0L8DH-JRh"
+            }
+        };
+      $.ajax({
+        url:'https://recaptchaenterprise.googleapis.com/v1/projects/my-project-23496-1713875598409/assessments?key=AIzaSyC3_v45QUiXK_jpxE8tos6Q57_3FRyqbdo'
+        ,type:'post'
+        ,data:JSON.stringify(event)
+        ,dataType:'json'
+        ,contentType:'application/json; charset=utf-8'
+        ,success:function(res){
+            if(res.tokenProperties.valid)
+            {
+                let score=res.riskAnalysis.score;
+                if(score>=0.7)
+                {
+                    alert("你是真人，得分："+score)
+                }else{
+                    alert("你是机器人，得分："+score)
+                }
+            }else{
+                alert("机器人，验证不通过")
+            }
+        }
+      })
+    });
+  }
+    </script>
+</body>
+
+</html>
