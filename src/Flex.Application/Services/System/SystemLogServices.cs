@@ -48,10 +48,16 @@ namespace Flex.Application.Services.System
         public async Task AddLog(InputSystemLogDto log)
         {
             var insertmodel = _mapper.Map<sysSystemLog>(log);
-            AddLongEntityBasicInfo(insertmodel);
+            if (_claims.IsAuthenticated)
+            {
+                AddLongEntityBasicInfo(insertmodel);
+            }
             insertmodel.Ip = AcbHttpContext.ClientIp;
-            insertmodel.RoleName = _claims.UserRoleDisplayName;
-            insertmodel.Operator = _claims.UserName + $"({_claims.UserId})";
+            if (_claims.IsAuthenticated)
+            {
+                insertmodel.RoleName = _claims.UserRoleDisplayName;
+                insertmodel.Operator = _claims.UserName + $"({_claims.UserId})";
+            }
             try
             {
                 var result = await _unitOfWork.GetRepository<sysSystemLog>().InsertAsync(insertmodel);

@@ -112,15 +112,15 @@ if (app.Environment.IsDevelopment())
     await myService.CreateUrlList();
 }
 
-// 初始化自动创建数据库
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<EfCoreDBContext>();
+//// 初始化自动创建数据库
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    var context = services.GetRequiredService<EfCoreDBContext>();
 
-    // 确保数据库已创建
-    context.Database.EnsureCreated();
-}
+//    // 确保数据库已创建
+//    context.Database.EnsureCreated();
+//}
 
 app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
 {

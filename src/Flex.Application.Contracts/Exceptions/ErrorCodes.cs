@@ -109,6 +109,10 @@ namespace Flex.Application.Contracts.Exceptions
         [Description("解析失败，重试")]
         RedirectKeepVerb = 10022,
 
+        /// <summary> 未添加任何站点 </summary>
+        [Description("未添加任何站点")]
+        NotInsertAnySite = 10023,
+
         /// <summary> 登录已超时 </summary>
         [Description("登录已超时")]
         LoginTimeoutError = 215,

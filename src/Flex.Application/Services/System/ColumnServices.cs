@@ -209,11 +209,14 @@ namespace Flex.Application.Services
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
             var model = _mapper.Map<SysColumn>(addColumnDto);
             AddIntEntityBasicInfo(model);
+
+            if (CurrentSiteInfo.SiteId == 0)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NotInsertAnySite.GetEnumDescription());
+            if (!_unitOfWork.GetRepository<sysSiteManage>().Exists())
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NotInsertAnySite.GetEnumDescription());
+            model.SiteId = CurrentSiteInfo.SiteId;
             try
             {
-                if (CurrentSiteInfo.SiteId == 0)
-                    return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
-                model.SiteId = CurrentSiteInfo.SiteId;
                 coreRespository.Insert(model);
                 await _unitOfWork.SaveChangesAsync();
                 await _logServices.AddContentLog(SystemLogLevel.Normal, $"新增栏目【{model.Name}】", "新增");
