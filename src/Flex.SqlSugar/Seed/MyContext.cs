@@ -20,17 +20,18 @@ namespace Flex.SqlSugarFactory.Seed
                 {
                     default:
                         _dbType = DbType.SqlServer;
-                        return "DataConfig:Sqlserver:ConnectionString".Config(string.Empty);
+                        break;
                     case DataBaseType.Mysql:
                         _dbType = DbType.MySql;
-                        return "DataConfig:Mysql:ConnectionString".Config(string.Empty);
+                        break;
                     case DataBaseType.DM:
                         _dbType = DbType.Dm;
-                        return "DataConfig:DM8:ConnectionString".Config(string.Empty);
+                        break;
                     case DataBaseType.PgSql:
                         _dbType = DbType.PostgreSQL;
-                        return "DataConfig:PostgreSQL:ConnectionString".Config(string.Empty);
+                        break;
                 }
+                return DataBaseConfig.ConnectionString;
             }
         }
         private SqlSugarClient _db;

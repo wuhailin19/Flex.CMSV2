@@ -29,7 +29,7 @@ namespace Flex.SingleWeb.Areas.System.ApiController
         [AllowAnonymous]
         public string GetPageContentByColumnId(string columnId, int page, int pagesize, string k)
         {
-            string swhere = "IsHide='false' and ParentId in(" + columnId + ")";
+            string swhere = "IsHide=0 and ParentId in(" + columnId + ")";
             var contentDto = ContentModelHelper.GetProductTableColumnHashTable(columnId);
             int recount = 0;
 
@@ -77,7 +77,7 @@ namespace Flex.SingleWeb.Areas.System.ApiController
         [AllowAnonymous]
         public string GetPageContentByModelId(int modelId, int page, int pagesize, string columnId, string PId, string k)
         {
-            string swhere = "IsHide='false'";
+            string swhere = "IsHide=0";
             if (columnId.IsNotNullOrEmpty())
                 swhere += " and ParentId in(" + columnId + ")";
             if (!PId.IsEmpty())
@@ -128,7 +128,7 @@ namespace Flex.SingleWeb.Areas.System.ApiController
             #region 拼接条件
             //columnId = "61,62,63";
             int recount = 0;
-            string swhere = "IsHide='false'";
+            string swhere = "IsHide=0";
             if (inputJsondocxDto.columnId.IsNotNullOrEmpty())
                 swhere += " and ParentId in(" + inputJsondocxDto.columnId + ")";
             if (inputJsondocxDto.PId != 0 && inputJsondocxDto.modelId != 0)

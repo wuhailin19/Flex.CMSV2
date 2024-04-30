@@ -1,5 +1,7 @@
 ﻿using System.Text.RegularExpressions;
+using Flex.Core.Config;
 using Flex.Core.Extensions;
+using Flex.Core.Framework.Enum;
 
 namespace Flex.Dapper
 {
@@ -38,22 +40,17 @@ namespace Flex.Dapper
             // Split the SQL
             if (!PagingHelper.SplitSQL(sql, out PagingHelper.SQLParts parts))
                 throw new Exception("Unable to parse SQL statement for paged query");
-            var usedb = "DataConfig:UseDb".Config(string.Empty) ?? "Sqlserver";
-            switch (usedb)
+            switch (DataBaseConfig.dataBase)
             {
-                case "Sqlserver":
-                    sqlPage = BuildPageSql.BuildPageQuery2(skip, take, parts);
-                    sqlCount = parts.sqlCount;
-                    break;
-                case "Mysql":
+                case DataBaseType.Mysql:
                     sqlPage = BuildMysqlPageSql.BuildPageQuery2(skip, take, parts);
                     sqlCount = parts.sqlCount;
                     break;
-                case "DM8":
+                case DataBaseType.DM:
                     sqlPage = BuildDMPageSql.BuildPageQuery2(skip, take, parts);
                     sqlCount = parts.sqlCount;
                     break;
-                case "PgSql":
+                case DataBaseType.PgSql:
                     sqlPage = BuildPgSqlPageSql.BuildPageQuery2(skip, take, parts);
                     sqlCount = parts.sqlCount;
                     break;

@@ -20,19 +20,19 @@ namespace Flex.Application.SetupExtensions.OrmInitExtension
             switch (DataBaseConfig.dataBase)
             {
                 case DataBaseType.SqlServer:
-                    services.AddUnitOfWorkService<EfCoreDBContext>(item => item.UseSqlServer($"DataConfig:Sqlserver:ConnectionString".Config(string.Empty)));
+                    services.AddUnitOfWorkService<EfCoreDBContext>(item => item.UseSqlServer(DataBaseConfig.ConnectionString));
                     services.AddScoped<ISqlTableServices, SqlServerSqlTableServices>();
                     break;
                 case DataBaseType.Mysql:
-                    services.AddUnitOfWorkService<EfCoreDBContext>(item => item.UseMySql($"DataConfig:Mysql:ConnectionString".Config(string.Empty), new MySqlServerVersion(new Version("8.0.27"))));
+                    services.AddUnitOfWorkService<EfCoreDBContext>(item => item.UseMySql(DataBaseConfig.ConnectionString, new MySqlServerVersion(new Version("8.0.27"))));
                     services.AddScoped<ISqlTableServices, MySqlSqlTableServices>();
                     break;
                 case DataBaseType.DM:
-                    services.AddUnitOfWorkService<EfCoreDBContext>(item => item.UseDm($"DataConfig:DM8:ConnectionString".Config(string.Empty)));
+                    services.AddUnitOfWorkService<EfCoreDBContext>(item => item.UseDm(DataBaseConfig.ConnectionString));
                     services.AddScoped<ISqlTableServices, DamengSqlTableServices>();
                     break;
                 case DataBaseType.PgSql:
-                    services.AddUnitOfWorkService<EfCoreDBContext>(item => item.UseNpgsql($"DataConfig:PostgreSQL:ConnectionString".Config(string.Empty)));
+                    services.AddUnitOfWorkService<EfCoreDBContext>(item => item.UseNpgsql(DataBaseConfig.ConnectionString));
                     services.AddScoped<ISqlTableServices, PostgreSqlTableServices>();
                     break;
             }
