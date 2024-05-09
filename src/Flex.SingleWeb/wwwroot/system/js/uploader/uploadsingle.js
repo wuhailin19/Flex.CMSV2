@@ -54,7 +54,7 @@
         })();
     var uploader;// WebUploader实例
     var extensionsf = options.isImage ? options.imageExtensions : options.FileExtensions
-    SizeLimit = 20, FullSizeLimit = 60;
+    SizeLimit = 500, FullSizeLimit = 1000;
     function init() {
 
         $wrap.addClass("webUploader");
@@ -86,10 +86,12 @@
         chunkSize: 512 * 1024,
         server: options.serverUrl,
         // runtimeOrder: 'flash',
-        accept: {
-            extensions: extensionsf,
-            mimeTypes: '*'
-        },
+        //accept: {
+        //    extensions: extensionsf,
+        //    mimeTypes: '*'
+        //},
+        acceptExt: extensionsf,
+        accept: getAccept(),
         headers: httpTokenHeaders,
         // 禁掉全局的拖拽功能。这样不会出现图片拖进页面的时候，把图片打开。
         disableGlobalDnd: true,
@@ -456,7 +458,58 @@
     uploader.onError = function (code) {
         tips.showFail(showError(code));
     };
-
+    function getAccept() {
+        var accept;
+        //常用类型的mimetype，可以控制文件选择框只能选择指定的文件
+        var mimeTypes = {
+            'avi': 'video/x-msvideo',
+            'bmp': 'image/bmp',
+            'doc': 'application/msword',
+            'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'gif': 'image/gif',
+            'gz': 'application/x-gzip',
+            'jpeg': 'image/jpeg',
+            'jpg': 'image/jpeg',
+            'mid': 'audio/midi',
+            'mkv': 'video/x-matroska',
+            'mov': 'video/quicktime',
+            'mp3': 'audio/mpeg',
+            'mp4': 'video/mp4',
+            'mpeg': 'video/mpeg',
+            'mpg': 'video/mpeg',
+            'ogv': 'video/ogg',
+            'pdf': 'application/pdf',
+            'png': 'image/png',
+            'ppt': 'application/vnd.ms-powerpoint',
+            'pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'swf': 'application/x-shockwave-flash',
+            'tar': 'application/x-tar',
+            'txt': 'text/plain',
+            'wav': 'audio/x-wav',
+            'webm': 'video/webm',
+            'wmv': 'video/x-ms-wmv',
+            'xls': 'application/vnd.ms-excel',
+            'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'xml': 'application/xml',
+            'zip': 'application/zip'
+        };
+        var acceptExtArr = extensionsf.split(",");
+        var mimeTypeArr = [];
+        for (var key in mimeTypes) {
+            if (acceptExtArr.indexOf(key) !== -1) {
+                mimeTypeArr.push(mimeTypes[key]);
+            }
+        }
+        if (acceptExtArr.length === mimeTypeArr.length) {
+            //都获取到了才配置accept
+            accept = {
+                title: extensionsf,
+                extensions: extensionsf,
+                mimeTypes: mimeTypeArr.join(",")
+            };
+        }
+        return accept;
+    }
     $upload.on('click', function () {
         if ($(this).hasClass('disabled')) {
             return false;

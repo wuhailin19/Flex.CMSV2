@@ -1,4 +1,5 @@
 using Autofac;
+using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
 using Flex.Application.Aop;
@@ -17,6 +18,8 @@ using Flex.SqlSugarFactory;
 using Flex.SqlSugarFactory.UnitOfWorks;
 using Flex.WebApi.Jwt;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
@@ -95,6 +98,15 @@ builder.Services.Configure<StaticFileOptions>(options =>
 LogManager.Configuration = new XmlLoggingConfiguration("nlog.config");
 builder.Host.UseNLog();
 builder.Services.AddLogging();
+// 配置 Kestrel 服务器选项
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 2147483648; // 或者设置为您想要的最大值
+});
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 2147483648; // 或者设置为您想要的最大值
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
