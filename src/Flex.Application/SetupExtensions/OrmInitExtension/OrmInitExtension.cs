@@ -14,7 +14,7 @@ namespace Flex.Application.SetupExtensions.OrmInitExtension
     //新增数据库判断，新增PostgreSQL,Mysql,达梦版本语句
     public static class OrmInitExtension
     {
-        public static void RegisterDbConnectionString(this IServiceCollection services)
+        public static IServiceCollection RegisterDbConnectionString(this IServiceCollection services)
         {
 
             switch (DataBaseConfig.dataBase)
@@ -40,6 +40,8 @@ namespace Flex.Application.SetupExtensions.OrmInitExtension
             services.AddScoped<MyContext>();
             //注册dapper
             services.AddSingleton<MyDBContext>();
+
+            return services;
         }
     }
 }

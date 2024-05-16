@@ -100,9 +100,9 @@ namespace Flex.Application.Services
             AddLongEntityBasicInfo(model);
             model.Mutiloginccode = saltvalue;
 
-            if (insertAdmin.PwdExpiredTime != 0)
+            if (insertAdmin.PwdExpiredTime.ToInt() != 0)
             {
-                model.PwdUpdateTime = Clock.Now.AddDays(insertAdmin.PwdExpiredTime);
+                model.PwdUpdateTime = Clock.Now.AddDays(insertAdmin.PwdExpiredTime.ToInt());
                 model.PwdExpiredTime = insertAdmin.PwdExpiredTime.ToString();
             }
             var result = await adminRepository.InsertAsync(model);
@@ -139,9 +139,9 @@ namespace Flex.Application.Services
                 model.Password = EncryptHelper.MD5Encoding(editAdmin.Password, model.SaltValue);
             }
             //重置密码修改时间
-            if (editAdmin.PwdExpiredTime != 0)
+            if (editAdmin.PwdExpiredTime.ToInt() != 0)
             {
-                model.PwdUpdateTime = Clock.Now.AddDays(editAdmin.PwdExpiredTime);
+                model.PwdUpdateTime = Clock.Now.AddDays(editAdmin.PwdExpiredTime.ToInt());
                 model.PwdExpiredTime = editAdmin.PwdExpiredTime.ToString();
             }
             else

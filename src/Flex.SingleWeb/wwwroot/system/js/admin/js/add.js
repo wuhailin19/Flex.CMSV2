@@ -27,16 +27,19 @@ ajaxHttp({
 var ischeck = true;
 layui.config({
     base: '/scripts/layui/module/cropper/' //layui自定义layui组件目录
-}).use(['form', 'croppers'], function () {
-    var form = layui.form, croppers = layui.croppers, layer = layui.layer;
-    
+}).use(['form', 'croppers', 'laydate'], function () {
+    var form = layui.form, croppers = layui.croppers, layer = layui.layer, laydate= layui.laydate;
+    laydate.render({
+        elem: '#ExpiredTime',
+        type: 'datetime'
+    });
     //创建一个头像上传组件
     croppers.render({
         elem: '#editimg'
         , saveW: 150     //保存宽度
         , saveH: 150
         , mark: 1 / 1    //选取比例
-        , area: '900px'  //弹窗宽度
+        , area: ['80%', '80%']  //弹窗宽度
         , url: api + "Admin/OnloadUserAvatar"  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
         , done: function (data) { //上传完毕回调
             $("#inputimgurl").val(data);

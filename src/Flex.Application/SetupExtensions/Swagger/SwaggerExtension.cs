@@ -11,7 +11,7 @@ namespace Flex.Application.Extensions.Swagger
 {
     public static class SwaggerExtension
     {
-        public static void AddSwagger(this IServiceCollection services, string ApiName)
+        public static IServiceCollection AddSwagger(this IServiceCollection services, string ApiName)
         {
             services.AddSwaggerGen(c =>
             {
@@ -44,6 +44,7 @@ namespace Flex.Application.Extensions.Swagger
                 });
                 //c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{ApiName}.xml"), true);
             });
+            return services;
         }
     }
 }

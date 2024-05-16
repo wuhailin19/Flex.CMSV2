@@ -12,19 +12,18 @@ namespace Flex.Application.Extensions.Register.WebCoreExtensions
         /// 添加跨域策略，从appsetting中读取配置
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IServiceCollection AddCorsPolicy(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddCorsPolicy(this IServiceCollection services)
         {
-
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
                     builder
-                    .WithOrigins("*")
+                    .WithOrigins("Startup:Cors:AllowOrigins".Config(string.Empty).Split(","))
                     .AllowAnyHeader()
+                    .AllowCredentials()
                     .AllowAnyMethod();
                 });
             });
@@ -35,16 +34,12 @@ namespace Flex.Application.Extensions.Register.WebCoreExtensions
         /// do other things
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IServiceCollection AddWebCoreService(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddWebCoreService(this IServiceCollection services)
         {
-            //绑定appsetting中的SiteSetting
-            services.Configure<SiteSetting>(configuration.GetSection(nameof(SiteSetting)));
-
             #region 单例化雪花算法
-            string workIdStr = configuration.GetSection("SiteSetting:WorkerId").Value;
-            string datacenterIdStr = configuration.GetSection("SiteSetting:DataCenterId").Value;
+            string workIdStr = "SiteSetting:WorkerId".Config(string.Empty);
+            string datacenterIdStr = "SiteSetting:DataCenterId".Config(string.Empty); 
             long workId;
             long datacenterId;
             try

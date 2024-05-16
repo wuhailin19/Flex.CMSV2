@@ -13,11 +13,8 @@ namespace Flex.WebApi.Jwt
 {
     public static class JwtServiceExtensions
     {
-        public static IServiceCollection AddJwtService(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddJwtService(this IServiceCollection services)
         {
-            //绑定appsetting中的jwtsetting
-            services.Configure<JwtSetting>(configuration.GetSection(nameof(JwtSetting)));
-
             //注册jwtservice
             services.AddSingleton<JwtService>();
             //注册IHttpContextAccessor

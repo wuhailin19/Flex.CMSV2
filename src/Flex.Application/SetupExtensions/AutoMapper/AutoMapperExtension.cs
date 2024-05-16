@@ -9,7 +9,7 @@ namespace Flex.Application.Extensions.Register.AutoMapper
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static void AddAutomapperService(this IServiceCollection services)
+        public static IServiceCollection AddAutomapperService(this IServiceCollection services)
         {
             var assemblies = DAssemblyFinder.Instance.FindAll();
             assemblies = assemblies
@@ -20,6 +20,8 @@ namespace Flex.Application.Extensions.Register.AutoMapper
                                         ).Count() > 0);
             //将AutoMapper映射配置所在的程序集名称注册
             services.AddAutoMapper(assemblies);
+
+            return services;
         }
     }
 }

@@ -1,25 +1,20 @@
 using Autofac;
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
 using Flex.Application.Aop;
 using Flex.Application.Contracts.Exceptions;
 using Flex.Application.Exceptions;
-using Flex.Application.Extensions.AutoFacExtension;
 using Flex.Application.Extensions.Register.AutoMapper;
 using Flex.Application.Extensions.Register.MemoryCacheExtension;
 using Flex.Application.Extensions.Register.WebCoreExtensions;
 using Flex.Application.Extensions.Swagger;
 using Flex.Application.Middlewares;
 using Flex.Application.SetupExtensions.OrmInitExtension;
-using Flex.Application.WeChatOAuth;
 using Flex.Core.Helper;
-using Flex.EFSql;
 using Flex.SqlSugarFactory;
 using Flex.SqlSugarFactory.UnitOfWorks;
 using Flex.WebApi.Jwt;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.StaticFiles;
@@ -29,7 +24,6 @@ using NLog.Config;
 using NLog.Web;
 using System.Reflection;
 using System.Text;
-
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
@@ -48,16 +42,21 @@ builder.Services
     options.OutputFormatters.OfType<StringOutputFormatter>().FirstOrDefault().SupportedEncodings.Add(Encoding.UTF8);
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services
-    .AddEndpointsApiExplorer();
+builder.Services.AddEndpointsApiExplorer()
 //注册swagger
-builder.Services.AddSwagger(AssemblyName);
+.AddSwagger(AssemblyName)
 //注册EFcoreSqlserver
-builder.Services.RegisterDbConnectionString();
+.RegisterDbConnectionString()
 //注册Automapper
-builder.Services.AddAutomapperService();
+.AddAutomapperService()
 //跨域配置
-builder.Services.AddCorsPolicy(builder.Configuration);
+.AddCorsPolicy()
+//注册jwt
+.AddJwtService()
+//注册雪花算法
+.AddWebCoreService()
+//注册缓存
+.AddMemoryCacheSetup();
 
 string webpath = builder.Environment.WebRootPath;
 //builder.Services.HtmlTemplateDictInit();
@@ -71,7 +70,6 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
         builder.RegisterType<PhysicalFileProvider>().As<IFileProvider>().WithParameter("root", webpath).SingleInstance();
 
         builder.RegisterGeneric(typeof(BaseRepository<>)).As(typeof(IBaseRepository<>)).InstancePerDependency(); //注册Sqlsugar仓储
-        builder.RegisterAutoFacExtension();
         //注册业务层，同时对业务层的方法进行拦截
         builder.RegisterAssemblyTypes(Assembly.Load("Flex.Application"))
              .Where(t => !t.Name.EndsWith("SqlTableServices")) // 排除以 "SqlTableServices" 结尾的类型
@@ -85,13 +83,6 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
                 .InstancePerLifetimeScope()
                 .PropertiesAutowired();
     });
-
-builder.Services.AddJwtService(builder.Configuration);
-//注册webcore服务（网站主要配置）
-builder.Services.AddWebCoreService(builder.Configuration);
-//注册缓存
-builder.Services.AddMemoryCacheSetup();
-
 // 添加自定义的 MIME 类型
 builder.Services.Configure<StaticFileOptions>(options =>
 {
@@ -116,12 +107,6 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartBodyLengthLimit = 2147483648; // 或者设置为您想要的最大值
 });
 
-//if (builder.Environment.IsDevelopment())
-//{
-//    builder.Services
-//        .AddRazorPages()
-//        .AddRazorRuntimeCompilation();
-//}
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -138,8 +123,6 @@ if (app.Environment.IsDevelopment())
     var myService = app.Services.GetRequiredService<IRoleUrlServices>();
     await myService.CreateUrlList();
 }
-
-
 //// 初始化自动创建数据库
 //using (var scope = app.Services.CreateScope())
 //{
@@ -149,7 +132,6 @@ if (app.Environment.IsDevelopment())
 //    // 确保数据库已创建
 //    context.Database.EnsureCreated();
 //}
-
 app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
 {
     var context = statusCodeContext.HttpContext;
@@ -164,16 +146,13 @@ app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
 
 //跨域需要放到最前面，对静态文件才生效
 app.UseCors(WebCoreSetupExtension.MyAllowSpecificOrigins);
-
 //重写放到StaticFiles前面
 app.UseRewritePathMiddleware();
-
 var options = new DefaultFilesOptions();
 options.DefaultFileNames.Clear();
 options.DefaultFileNames.Add("index.html");
 options.DefaultFileNames.Add("*.html");
 app.UseDefaultFiles(options);
-
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {

@@ -12,11 +12,11 @@ namespace Flex.Application.Jwt
         private readonly TimeSpan _tokenLifeTime;
         private readonly TimeSpan _refreshtokenLifeTime;
 
-        public JwtService(IOptions<JwtSetting> options)
+        public JwtService()
         {
-            _jwtSetting = options.Value;
-            _tokenLifeTime = TimeSpan.FromMinutes(options.Value.LifeTime);
-            _refreshtokenLifeTime = TimeSpan.FromMinutes(options.Value.RefreshTokenExpire);
+            _jwtSetting = nameof(JwtSetting).Config<JwtSetting>();
+            _tokenLifeTime = TimeSpan.FromMinutes(_jwtSetting.LifeTime);
+            _refreshtokenLifeTime = TimeSpan.FromMinutes(_jwtSetting.RefreshTokenExpire);
         }
         /*
              iss (issuer)：签发人

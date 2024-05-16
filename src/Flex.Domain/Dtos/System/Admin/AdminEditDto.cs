@@ -29,7 +29,7 @@ namespace Flex.Domain.Dtos.Admin
         public DateTime? LockTime { get; set; }
         public DateTime? PwdUpdateTime { get; set; }
         public DateTime? ExpiredTime { get; set; }
-        public int PwdExpiredTime { get; set; } = 0;
+        public string? PwdExpiredTime { get; set; }
         public int Version { set; get; }
     }
 }

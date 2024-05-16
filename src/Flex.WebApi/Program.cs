@@ -45,7 +45,7 @@ builder.Services.RegisterDbConnectionString();
 //×¢²áAutomapper
 builder.Services.AddAutomapperService();
 //¿çÓòÅäÖÃ
-builder.Services.AddCorsPolicy(builder.Configuration);
+builder.Services.AddCorsPolicy();
 
 string webpath = builder.Environment.WebRootPath;
 //builder.Services.HtmlTemplateDictInit();
@@ -74,9 +74,9 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
                 .PropertiesAutowired();
     });
 
-builder.Services.AddJwtService(builder.Configuration);
+builder.Services.AddJwtService();
 //×¢²áwebcore·şÎñ£¨ÍøÕ¾Ö÷ÒªÅäÖÃ£©
-builder.Services.AddWebCoreService(builder.Configuration);
+builder.Services.AddWebCoreService();
 //×¢²á»º´æ
 builder.Services.AddMemoryCacheSetup();
 

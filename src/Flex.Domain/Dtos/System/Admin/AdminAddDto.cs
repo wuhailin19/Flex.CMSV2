@@ -26,7 +26,7 @@ namespace Flex.Domain.Dtos.Admin
         public int MaxErrorCount { get; set; }
         public bool AllowMultiLogin { get; set; }
         public bool Islock { get; set; }
-        public int PwdExpiredTime { get; set; } = 0;
+        public string? PwdExpiredTime { get; set; }
         public string FilterIp { set; get; }
         public DateTime? ExpiredTime { get; set; }
     }
