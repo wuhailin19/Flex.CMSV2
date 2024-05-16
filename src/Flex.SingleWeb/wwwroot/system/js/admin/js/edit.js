@@ -10,10 +10,22 @@ $(".show").on("click", ".iconyanjing_kai", function () {
 var ischeck = false;
 layui.config({
     base: '/scripts/layui/module/cropper/' //layui自定义layui组件目录
-}).use(['form', 'croppers'], function () {
+}).use(['form', 'croppers', 'laydate'], function () {
     var form = layui.form, croppers = layui.croppers, layer = layui.layer;
     var userId = parent.req_Data.Id;
+    var laydate = layui.laydate;
     var parent_json;
+
+    // 日期
+    laydate.render({
+        elem: '#LockTime',
+        type: 'datetime'
+    });
+
+    laydate.render({
+        elem: '#ExpiredTime',
+        type: 'datetime'
+    });
     function Init() {
         ajaxHttp({
             url: api + 'Admin/GetEditDtoInfoById/' + userId,
@@ -148,7 +160,10 @@ layui.config({
             , 'Account': parent_json.Account
             , 'UserName': parent_json.UserName
             , 'UserSign': parent_json.UserSign
+            , 'LockTime': parent_json.LockTime
             , 'UserAvatar': parent_json.UserAvatar
+            , 'PwdExpiredTime': parent_json.PwdExpiredTime
+            , 'ExpiredTime': parent_json.ExpiredTime
             , 'ErrorCount': parent_json.ErrorCount
             , 'MaxErrorCount': parent_json.MaxErrorCount
             , 'AllowMultiLogin': parent_json.AllowMultiLogin
@@ -164,6 +179,7 @@ layui.config({
     $('#LoginCount').html(parent_json.LoginCount);
     $('#Addtime').html(parent_json.AddTime);
     $('#LastEditDate').html(parent_json.LastEditDate);
+    $('#PwdUpdateTime').html(parent_json.PwdUpdateTime);
     $('#LastEditUserName').html(parent_json.LastEditUserName);
     $('#AddUserName').html(parent_json.AddUserName);
     $('#editimg').attr('data-id', parent_json.Id);

@@ -41,6 +41,7 @@ namespace Flex.Domain.AutoMapper
                         .ForMember(dest => dest.ErrorCount, opt => opt.MapFrom(src => src.ErrorCount))
                         .ForMember(dest => dest.MaxErrorCount, opt => opt.MapFrom(src => src.MaxErrorCount))
                         .ForMember(dest => dest.AllowMultiLogin, opt => opt.MapFrom(src => src.AllowMultiLogin))
+                        .ForMember(dest => dest.LockTime, opt => opt.MapFrom(src => src.LockTime))
                         .ForMember(dest => dest.Islock, opt => opt.MapFrom(src => src.Islock));
 
             CreateMap<PagedList<SysAdmin>, PagedList<AdminDto>>();

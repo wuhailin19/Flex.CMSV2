@@ -30,13 +30,18 @@ namespace Flex.Domain.Dtos.Admin
         {
             get; set;
         }
-        [ToolAttr(NameAttr = "多用户登录", Toolbar = "#loginstatusPxy")]
+        [ToolAttr(NameAttr = "多用户登录", Toolbar = "#loginstatusPxy", AlignAttr = AlignEnum.Center)]
         public bool AllowMultiLogin
         {
             get; set;
         }
-        [ToolAttr(NameAttr = "锁定状态", Toolbar = "#lockstatusPxy")]
+        [ToolAttr(NameAttr = "启用状态", Toolbar = "#lockstatusPxy", AlignAttr = AlignEnum.Center)]
         public bool Islock
+        {
+            get; set;
+        }
+        [ToolAttr(NameAttr = "解锁时间", AlignAttr = AlignEnum.Center)]
+        public DateTime? LockTime
         {
             get; set;
         }

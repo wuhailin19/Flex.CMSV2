@@ -24,7 +24,7 @@ namespace Flex.Application.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            List<SiteManageColumnDto> list = null;
+            List<SiteManageColumnDto> list;
             if (_caching.Exist(SiteKeys.SiteRouteKeys))
             {
                 list = _caching.Get(SiteKeys.SiteRouteKeys) as List<SiteManageColumnDto> ?? new List<SiteManageColumnDto>();
@@ -41,7 +41,7 @@ namespace Flex.Application.Middlewares
                 }
                 _caching.Set(SiteKeys.SiteRouteKeys, list, new TimeSpan(24, 0, 0));
             }
-
+            
             // 检查请求路径是否以 "/en/" 开头
             foreach (var item in list)
             {
@@ -52,6 +52,8 @@ namespace Flex.Application.Middlewares
                 if (context.Request.Path.ToString().StartsWith(customroute))
                 {
                     // 替换路径中的 "/en/" 为 "/111/"
+                    if (context.Request.Path.Value.IsNullOrEmpty())
+                        continue;
                     context.Request.Path = context.Request.Path.Value.Replace(customroute, targetroute);
                 }
             }

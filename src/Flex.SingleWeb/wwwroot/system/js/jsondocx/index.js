@@ -1,13 +1,17 @@
-﻿$('.middle-link a').click(function (event) {
-    $(this).addClass('active').siblings().removeClass('active');
-    //animateScroll($(this).attr('href');
-})
+﻿
 function animateScroll($elment) {
     var itop = $($elment).position().top;
-    $(".content-right-box").stop().animate({
-        scrollTop: itop - 100
-    }, 1000);
+    $(".content-middle-box").stop().animate({
+        scrollTop: itop+200
+    }, 200);
 }
+
+$(document).on('click', 'span.json-property', function () {
+    var $element = $($(this).attr('href'));
+    $('tr.ant-table-row').removeClass('active');
+    $element.addClass('active');
+    window.location.href = $(this).attr('href');
+})
 
 var jsonmodel = parent.paramjson;
 $('#columnId').text(jsonmodel.columnId);
@@ -33,7 +37,7 @@ ajaxHttp({
                 return false;
             $.each(data, function (key, value) {
                 htmlstr += "<div class=\"css-npueup\">";
-                htmlstr += "<h4 class=\"apipost-table-title\">" + key + "</h4>";
+                htmlstr += "<h4 class=\"apipost-table-title\" id='" + key.split('：')[0]+"'>" + key + "</h4>";
                 htmlstr += "<table style=\"table-layout: auto;\">";
                 htmlstr += "<colgroup></colgroup>";
                 htmlstr += "<thead class=\"ant-table-thead\">";
@@ -46,7 +50,7 @@ ajaxHttp({
                 htmlstr += "</thead>";
                 htmlstr += "<tbody class=\"ant-table-tbody\">";
                 $.each(value, function (index, item) {
-                    htmlstr += "<tr data-row-key=\"" + item.FiledName +"\" class=\"ant-table-row ant-table-row-level-0\">";
+                    htmlstr += "<tr data-row-key=\"" + item.FiledName + "\" class=\"ant-table-row ant-table-row-level-0\" id=\"" + item.FiledName +"\">";
                     htmlstr += "<td class=\"ant-table-cell\">";
                     htmlstr += "<div style=\"min-width: 100px;\">" + item.FiledName +"</div>";
                     htmlstr += "</td>";

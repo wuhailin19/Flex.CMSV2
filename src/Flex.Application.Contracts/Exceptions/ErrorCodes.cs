@@ -112,6 +112,12 @@ namespace Flex.Application.Contracts.Exceptions
         /// <summary> 未添加任何站点 </summary>
         [Description("未添加任何站点")]
         NotInsertAnySite = 10023,
+        /// <summary> 消息发送失败 </summary>
+        [Description("消息发送失败")]
+        MsgSendError = 10024,
+        /// <summary> 消息发送成功 </summary>
+        [Description("消息发送成功")]
+        MsgSendSuccess = 10025,
 
         /// <summary> 登录已超时 </summary>
         [Description("登录已超时")]
@@ -137,6 +143,12 @@ namespace Flex.Application.Contracts.Exceptions
         AccountOrPwdWrong = 220,
         /// <summary> 用户名或密码为空 </summary>
         [Description("用户名或密码为空")]
-        AccountOrPwdEmpty = 221
+        AccountOrPwdEmpty = 221,
+        /// <summary> 账号已禁用 </summary>
+        [Description("账号已禁用")]
+        AccountDisabled = 222,
+        /// <summary> 账号已过期 </summary>
+        [Description("账号已过期")]
+        AccountExpried = 223,
     }
 }

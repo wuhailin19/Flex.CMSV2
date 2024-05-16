@@ -144,7 +144,7 @@ namespace Flex.Application.Services
             //DynamicParameters parameters = new DynamicParameters();
             //StringBuilder builder = _sqlTableServices.CreateDapperInsertSqlString(table, contentmodel.TableName, orderId, out parameters);
 
-            SugarParameter[] parameters = new SugarParameter[] { };
+            SugarParameter[] parameters = [];
             StringBuilder builder = _sqlTableServices.CreateSqlsugarInsertSqlString(table, contentmodel.TableName, orderId, out parameters);
             try
             {
@@ -196,7 +196,7 @@ namespace Flex.Application.Services
             }
             else
             {
-                datapermissionList = _caching.Get(cachekey) as Dictionary<int, Dictionary<string, List<string>>>;
+                datapermissionList = _caching.Get(cachekey) as Dictionary<int, Dictionary<string, List<string>>> ?? new Dictionary<int, Dictionary<string, List<string>>>();
             }
             if (datapermissionList == null)
                 return false;

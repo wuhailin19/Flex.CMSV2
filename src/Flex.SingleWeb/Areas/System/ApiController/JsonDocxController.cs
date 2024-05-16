@@ -105,19 +105,19 @@ namespace Flex.SingleWeb.Areas.System.ApiController
         public string GetJsonDocxContent(InputJsondocxDto inputJsondocxDto)
         {
             string jsonstr = string.Empty;
-            
-           string urlext = ServerConfig.ServerUrl
-                + "JsonDocx/GetPageContentByColumnId?page="
-                + inputJsondocxDto.page + "&pagesize=" 
-                + inputJsondocxDto.pagesize + "&columnId=" 
-                + inputJsondocxDto.columnId;
+
+            string urlext = ServerConfig.ServerUrl
+                 + "JsonDocx/GetPageContentByColumnId?page="
+                 + inputJsondocxDto.page + "&pagesize="
+                 + inputJsondocxDto.pagesize + "&columnId="
+                 + inputJsondocxDto.columnId;
 
             if (inputJsondocxDto.modelId != 0)
                 urlext = ServerConfig.ServerUrl +
                     "JsonDocx/GetPageContentByModelId?page="
-                    + inputJsondocxDto.page + "&pagesize=" 
-                    + inputJsondocxDto.pagesize + "&columnId=" 
-                    + inputJsondocxDto.columnId + "&modelId=" 
+                    + inputJsondocxDto.page + "&pagesize="
+                    + inputJsondocxDto.pagesize + "&columnId="
+                    + inputJsondocxDto.columnId + "&modelId="
                     + inputJsondocxDto.modelId;
 
             if (!inputJsondocxDto.k.IsEmpty())
@@ -168,7 +168,7 @@ namespace Flex.SingleWeb.Areas.System.ApiController
                         data = model
                     };
                     string tbname = ContentModelHelper.GetvirtualTableName(contentDto[0].TableName);
-                    full_fileds.Add(tbname + "【" + contentDto[0].ModelName + "】", fileds);
+                    full_fileds.Add(tbname + "：【" + contentDto[0].ModelName + "】", fileds);
                     List<string> filedlist = new List<string>
                     {
                         "code",
@@ -190,7 +190,7 @@ namespace Flex.SingleWeb.Areas.System.ApiController
                     //var regexmodel= Regex.Matches(jsonstr, "([^>]\"[a-zA-Z]+\":)");
                     foreach (var item in filedlist)
                     {
-                        jsonstr = jsonstr.Replace("\"" + item + "\"", "<span class='json-property' id='" + tbname + "_" + item + "'>\"" + item + "\"</span>");
+                        jsonstr = jsonstr.Replace("\"" + item + "\"", "<span class='json-property' href='#" + item + "'>\"" + item + "\"</span>");
                     }
                     #endregion
                 }
@@ -222,7 +222,7 @@ namespace Flex.SingleWeb.Areas.System.ApiController
                         contents.Add(tbname, model);
 
                         var nowfileds = firstDto.TableColumnList;
-                        full_fileds.Add(tbname + "【" + firstDto.ModelName + "】", nowfileds);
+                        full_fileds.Add(tbname + "：【" + firstDto.ModelName + "】", nowfileds);
                         foreach (var item in nowfileds)
                         {
                             if (filedlist.Contains(item.FiledName))
@@ -238,7 +238,7 @@ namespace Flex.SingleWeb.Areas.System.ApiController
                     jsonstr = JsonHelper.ToJson(contents);
                     foreach (var item in filedlist)
                     {
-                        jsonstr = jsonstr.Replace("\"" + item + "\"", "<span class='json-property' id='" + item + "'>\"" + item + "\"</span>");
+                        jsonstr = jsonstr.Replace("\"" + item + "\"", "<span class='json-property' href='#" + item + "'>\"" + item + "\"</span>");
                     }
                     #endregion
                 }

@@ -11,14 +11,16 @@ namespace Flex.Application.Services
     {
         private ICaching _caching;
         private IRoleServices _roleServices;
+        private IMessageServices _msgServices;
         protected ISystemLogServices _logServices;
         public AccountServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims
-            , ICaching caching, ISystemLogServices logServices, IRoleServices roleServices)
+            , ICaching caching, ISystemLogServices logServices, IRoleServices roleServices, IMessageServices msgServices)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _caching = caching;
             _logServices = logServices;
             _roleServices = roleServices;
+            _msgServices = msgServices;
         }
         /// <summary>
         /// 判断验证码
@@ -46,8 +48,9 @@ namespace Flex.Application.Services
             }
             catch (Exception ex)
             {
-                await _logServices.AddLoginLog(new LoginSystemLogDto() { 
-                    systemLogLevel = SystemLogLevel.Error, 
+                await _logServices.AddLoginLog(new LoginSystemLogDto()
+                {
+                    systemLogLevel = SystemLogLevel.Error,
                     operationContent = $"密码解析失败，密文为{StringObj}，密钥为{RSAHepler.RSAPrivateKey}"
                 });
 
@@ -62,14 +65,19 @@ namespace Flex.Application.Services
             }
             if (admin.Islock && !admin.IsSystem)
             {
-                return Problem<UserData>(HttpStatusCode.Locked, ErrorCodes.AccountLocked.GetEnumDescription() + "，请联系管理员解锁");
+                return Problem<UserData>(HttpStatusCode.Locked, ErrorCodes.AccountDisabled.GetEnumDescription() + "，请联系管理员解封");
             }
+            if (admin.ExpiredTime <= Clock.Now)
+            {
+                return Problem<UserData>(HttpStatusCode.Locked, ErrorCodes.AccountExpried.GetEnumDescription() + "，请联系管理员解封");
+            }
+
             if (admin.LockTime != null)
             {
                 var locktime = admin.LockTime - Clock.Now;
                 if (locktime > TimeSpan.Zero && !admin.IsSystem)
                 {
-                    var lockstr = $"{locktime?.Milliseconds}分{locktime?.Seconds}";
+                    var lockstr = $"{locktime?.Minutes}分{locktime?.Seconds}秒";
                     return Problem<UserData>(HttpStatusCode.Locked, ErrorCodes.AccountLocked.GetEnumDescription() + $"，请{lockstr}后再尝试");
                 }
             }
@@ -99,9 +107,10 @@ namespace Flex.Application.Services
                     _unitOfWork.GetRepository<SysAdmin>().Update(admin);
                     await _unitOfWork.SaveChangesTranAsync();
 
-                    await _logServices.AddLoginLog(new LoginSystemLogDto() { 
-                        systemLogLevel = SystemLogLevel.Warning, 
-                        operationContent = msg, 
+                    await _logServices.AddLoginLog(new LoginSystemLogDto()
+                    {
+                        systemLogLevel = SystemLogLevel.Warning,
+                        operationContent = msg,
                         inoperator = $"{admin.UserName}({admin.Id})",
                         IsAuthenticated = true,
                         UserId = admin.Id,
@@ -177,7 +186,17 @@ namespace Flex.Application.Services
             admin.CurrentLoginIP = AcbHttpContext.ClientIp;
             admin.CurrentLoginTime = DateTime.Now;
             admin.LoginCount += 1;
+            admin.LockTime = null;
             admin.ErrorCount = 0;
+            if (admin.PwdExpiredTime.IsNotNullOrEmpty() && admin.PwdUpdateTime != null)
+            {
+                var time = admin.PwdUpdateTime - Clock.Now;
+                var days = time?.Days;
+                if (days <= 3)
+                {
+                    await _msgServices.SendNormalMsg("密码即将过期", $"密码将于{admin.PwdUpdateTime}过期，请及时修改，当前还剩{days}天{time?.Hours}时", admin.Id);
+                }
+            }
             _unitOfWork.SetTransaction();
             admin_unit.Update(admin);
             await _unitOfWork.SaveChangesTranAsync().ConfigureAwait(false);

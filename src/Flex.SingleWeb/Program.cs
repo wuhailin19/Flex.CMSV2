@@ -12,6 +12,7 @@ using Flex.Application.Extensions.Register.WebCoreExtensions;
 using Flex.Application.Extensions.Swagger;
 using Flex.Application.Middlewares;
 using Flex.Application.SetupExtensions.OrmInitExtension;
+using Flex.Application.WeChatOAuth;
 using Flex.Core.Helper;
 using Flex.EFSql;
 using Flex.SqlSugarFactory;
@@ -37,13 +38,18 @@ var builder = WebApplication.CreateBuilder(args);
 var AssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
 // Add services to the container.
 builder.Services.AddControllers(options => options.Filters.Add(typeof(GlobalExceptionFilter)));
-builder.Services.AddControllersWithViews().AddMvcOptions(options =>
+
+builder.Services
+    .AddControllersWithViews()
+    .AddRazorRuntimeCompilation()
+    .AddMvcOptions(options =>
 {
     // 设置默认的响应字符编码为 UTF-8
     options.OutputFormatters.OfType<StringOutputFormatter>().FirstOrDefault().SupportedEncodings.Add(Encoding.UTF8);
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+builder.Services
+    .AddEndpointsApiExplorer();
 //注册swagger
 builder.Services.AddSwagger(AssemblyName);
 //注册EFcoreSqlserver
@@ -92,9 +98,11 @@ builder.Services.Configure<StaticFileOptions>(options =>
     options.ContentTypeProvider = new FileExtensionContentTypeProvider
     {
         // 添加 Less 文件的 MIME 类型映射
-        Mappings = { [".less"] = "text/less", [".html"]="text/html" }
+        Mappings = { [".less"] = "text/less", [".html"] = "text/html" }
     };
 });
+
+
 LogManager.Configuration = new XmlLoggingConfiguration("nlog.config");
 builder.Host.UseNLog();
 builder.Services.AddLogging();
@@ -107,6 +115,13 @@ builder.Services.Configure<FormOptions>(options =>
 {
     options.MultipartBodyLengthLimit = 2147483648; // 或者设置为您想要的最大值
 });
+
+//if (builder.Environment.IsDevelopment())
+//{
+//    builder.Services
+//        .AddRazorPages()
+//        .AddRazorRuntimeCompilation();
+//}
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -123,6 +138,7 @@ if (app.Environment.IsDevelopment())
     var myService = app.Services.GetRequiredService<IRoleUrlServices>();
     await myService.CreateUrlList();
 }
+
 
 //// 初始化自动创建数据库
 //using (var scope = app.Services.CreateScope())
@@ -143,7 +159,6 @@ app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
         context.Response.ContentType = "application/json";
         return context.Response.WriteAsync(JsonHelper.ToJson(new Message<string> { code = ErrorCodes.NoOperationPermission.ToInt(), msg = ErrorCodes.NoOperationPermission.GetEnumDescription() }));
     }
-
     return Task.CompletedTask;
 });
 
@@ -169,10 +184,8 @@ app.UseStaticFiles(new StaticFileOptions
             [".css"] = "text/css; charset=utf-8",
             [".js"] = "text/js; charset=utf-8",
         },
-
     }
 });
-//app.UseMiddleware<FileProviderMiddleware>(builder.Environment.WebRootPath);
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -188,15 +201,10 @@ app.Use(async (context, next) =>
     }
     await next();
 });
-
-app.UseEndpoints(options =>
-{
-    options.MapControllerRoute(
+app.MapAreaControllerRoute(
         name: "AreaRoute",
+        areaName: "System",
         pattern: "{area:exists}/{controller=Login}/{action=Index}/{id?}");
-
-    options.MapControllers();
-});
 
 app.Run();
 

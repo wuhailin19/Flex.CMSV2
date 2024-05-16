@@ -13,6 +13,7 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<MessageOutputDto>> GetMessageById(int id);
         Task<PagedList<MessageTitleListDto>> GetMessageTitleListDtoAsync(int page, int pagesize);
         int GetNotReadMessageCount();
+        Task<ProblemDetails<string>> SendNormalMsg(string title, string content, long ToUserId, long ToRoleId = 0);
         Task<ProblemDetails<string>> SendReviewMessage(SendReviewMessageDto model);
     }
 }

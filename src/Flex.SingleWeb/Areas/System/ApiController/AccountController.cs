@@ -1,4 +1,5 @@
 ﻿using Flex.Application.Jwt;
+using Flex.Application.WeChatOAuth;
 using Flex.Core.Admin.Application;
 using Flex.Core.Attributes;
 using Flex.Core.Helper;
@@ -53,7 +54,7 @@ namespace Flex.WebApi.SystemControllers
             _caching.Set(codeid, str, 30);
             return Success(new AuthCodeOutputDto() { CodeId = codeid, ImageCode = codeimg, Publickey = RSAHepler.RSAPublicKey });
         }
-
+        
         /// <summary>
         /// 测试获取分页Admin信息
         /// </summary>

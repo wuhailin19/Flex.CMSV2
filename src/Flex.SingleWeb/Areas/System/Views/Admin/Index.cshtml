@@ -35,9 +35,9 @@
     </script>
     <script type="text/html" id="lockstatusPxy">
         {{#if(d.Islock==true){}}
-        <input type="checkbox" name="lockstatus" lay-skin="switch" lay-filter="lockstatus" value="{{d.Id}}" lay-text="锁定|未锁定" checked>
+        <input type="checkbox" name="lockstatus" lay-skin="switch" lay-filter="lockstatus" value="{{d.Id}}" lay-text="禁用|启用" checked>
         {{#}else{}}
-        <input type="checkbox" name="lockstatus" lay-skin="switch" lay-filter="lockstatus" value="{{d.Id}}" lay-text="锁定|未锁定">
+        <input type="checkbox" name="lockstatus" lay-skin="switch" lay-filter="lockstatus" value="{{d.Id}}" lay-text="禁用|启用">
         {{#}}}
     </script>
     <script>

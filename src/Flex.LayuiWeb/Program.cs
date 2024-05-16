@@ -7,7 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 var AssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddControllersWithViews().AddMvcOptions(options =>
+builder.Services.AddRazorPages();
+
+builder.Services
+    .AddControllersWithViews()
+    .AddRazorRuntimeCompilation()
+    .AddMvcOptions(options =>
 {
     // 设置默认的响应字符编码为 UTF-8
     options.OutputFormatters.OfType<StringOutputFormatter>().FirstOrDefault().SupportedEncodings.Add(Encoding.UTF8);

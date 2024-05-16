@@ -41,7 +41,7 @@ namespace Flex.Application.Services
             Expression<Func<sysMessage, bool>> expression =
                     m => ("," + m.ToRoleId + ",").Contains(userRoleString)
                   || ("," + m.ToUserId + ",").Contains(userIdString);
-            
+
             return expression;
         }
         /// <summary>
@@ -73,7 +73,32 @@ namespace Flex.Application.Services
             var count = _unitOfWork.GetRepository<sysMessage>().Count(exp);
             return count;
         }
-
+        public async Task<ProblemDetails<string>> SendNormalMsg(string title, string content, long ToUserId, long ToRoleId = 0)
+        {
+            var msg = new sysMessage();
+            msg.Title = title;
+            msg.AddTime = Clock.Now;
+            msg.ToUserId = ToUserId.ToString();
+            if (ToRoleId != 0)
+            {
+                msg.ToRoleId = ToRoleId.ToString();
+            }
+            msg.MsgContent = content;
+            try
+            {
+                var resultmodel = await _unitOfWork.GetRepository<sysMessage>().InsertAsync(msg);
+                await _unitOfWork.SaveChangesAsync();
+                if (resultmodel.Entity.Id <= 0)
+                {
+                    return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.MsgSendError.GetEnumDescription());
+                }
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.MsgSendSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.MsgSendError.GetEnumDescription(), ex);
+            }
+        }
         public async Task<ProblemDetails<MessageOutputDto>> GetMessageById(int id)
         {
             var exp = GetExpression();
@@ -244,7 +269,7 @@ namespace Flex.Application.Services
                 if (model.ContentId == 0)
                     messagemodel.ContentId = result.Content;
 
-               var res= await _msgrepository.AddReturnIntAsync(messagemodel);
+                var res = await _msgrepository.AddReturnIntAsync(messagemodel);
                 if (res <= 0)
                 {
                     _IUnitOfWorkManage.RollbackTran();

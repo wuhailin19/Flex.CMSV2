@@ -19,7 +19,7 @@ namespace Flex.Application.Extensions.Swagger
                 {
                     // {ApiName} 定义成全局变量，方便修改
                     Version = "v1",
-                    Title = $"{ApiName} 接口文档——Netcore 6.0",
+                    Title = $"{ApiName} 接口文档——Netcore 8.0",
                     Description = $"{ApiName} HTTP API v1"
                 });
                 // 开启加权小锁

@@ -11,6 +11,10 @@ namespace Flex.Domain.Entities.System
         public string? CurrentLoginIP { get; set; }
         public DateTime? CurrentLoginTime { get; set; }
         public DateTime? LockTime { get; set; }
+        public DateTime? ExpiredTime { get; set; }
+        //密码修改时间
+        public DateTime? PwdUpdateTime { get; set; }
+        public string? PwdExpiredTime { get; set; }
         public bool? AllowMultiLogin { get; set; }
         public bool Islock { get; set; }
         public int RoleId { get; set; }

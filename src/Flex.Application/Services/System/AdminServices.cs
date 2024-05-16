@@ -84,19 +84,27 @@ namespace Flex.Application.Services
 
         public async Task<ProblemDetails<string>> InsertAdmin(AdminAddDto insertAdmin)
         {
+            //禁止新增超管
+            if (insertAdmin.RoleId == 0)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var adminRepository = _unitOfWork.GetRepository<SysAdmin>();
-
             var model = await adminRepository.GetFirstOrDefaultAsync(m => m.Account == insertAdmin.Account, null, null, true, false);
             if (model != null)
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.AccountExist.GetEnumDescription());
-
             var saltvalue = SaltStringHelper.getSaltStr();
             model = _mapper.Map<SysAdmin>(insertAdmin);
 
             model.SaltValue = saltvalue;
             model.Password = EncryptHelper.MD5Encoding(insertAdmin.Password, model.SaltValue);
+
             AddLongEntityBasicInfo(model);
             model.Mutiloginccode = saltvalue;
+
+            if (insertAdmin.PwdExpiredTime != 0)
+            {
+                model.PwdUpdateTime = Clock.Now.AddDays(insertAdmin.PwdExpiredTime);
+                model.PwdExpiredTime = insertAdmin.PwdExpiredTime.ToString();
+            }
             var result = await adminRepository.InsertAsync(model);
             await _unitOfWork.SaveChangesAsync();
             if (result.Entity.Id > 0)
@@ -107,6 +115,9 @@ namespace Flex.Application.Services
 
         public async Task<ProblemDetails<string>> UpdateAdmin(AdminEditDto editAdmin)
         {
+            //禁止新增超管
+            if (editAdmin.RoleId == 0)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var adminRepository = _unitOfWork.GetRepository<SysAdmin>();
             var model = await GetAdminById(editAdmin.Id);
             if (model.Version != editAdmin.Version)
@@ -121,10 +132,22 @@ namespace Flex.Application.Services
             }
             var saltvalue = SaltStringHelper.getSaltStr();
             _mapper.Map(editAdmin, model);
+
             if (editAdmin.Password.IsNotNullOrEmpty())
             {
                 model.SaltValue = saltvalue;
                 model.Password = EncryptHelper.MD5Encoding(editAdmin.Password, model.SaltValue);
+            }
+            //重置密码修改时间
+            if (editAdmin.PwdExpiredTime != 0)
+            {
+                model.PwdUpdateTime = Clock.Now.AddDays(editAdmin.PwdExpiredTime);
+                model.PwdExpiredTime = editAdmin.PwdExpiredTime.ToString();
+            }
+            else
+            {
+                model.PwdUpdateTime = null;
+                model.PwdExpiredTime = null;
             }
             UpdateLongEntityBasicInfo(model);
             try
@@ -159,6 +182,11 @@ namespace Flex.Application.Services
             {
                 model.SaltValue = saltvalue;
                 model.Password = EncryptHelper.MD5Encoding(accountAndPasswordDto.Password, model.SaltValue);
+                var expiredtime = model.PwdExpiredTime.ToInt();
+                if (expiredtime != 0)
+                {
+                    model.PwdUpdateTime = Clock.Now.AddDays(expiredtime);
+                }
             }
             UpdateLongEntityBasicInfo(model);
             try

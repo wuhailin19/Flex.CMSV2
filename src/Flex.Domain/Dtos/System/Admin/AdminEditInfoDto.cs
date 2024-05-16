@@ -28,6 +28,10 @@ namespace Flex.Domain.Dtos.Admin
         public string LastEditUserName { set; get; }
         public DateTime LastEditDate { set; get; }
         public DateTime AddTime { set; get; }
+        public DateTime? LockTime { set; get; }
+        public DateTime? ExpiredTime { get; set; }
+        public DateTime? PwdUpdateTime { get; set; }
+        public string? PwdExpiredTime { get; set; }
         public DateTime CurrentLoginTime { set; get; }
         public int Version { set; get; }
     }

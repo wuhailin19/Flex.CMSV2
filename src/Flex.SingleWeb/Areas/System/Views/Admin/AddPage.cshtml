@@ -82,6 +82,15 @@
             </div>
         </div>
         <div class="layui-form-item">
+            <label class="layui-form-label">密码过期时间</label>
+            <div class="layui-input-inline" style="width:40%;">
+                <input type="text" name="PwdExpiredTime" lay-verify="number" placeholder="为空则不过期" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline message-info">
+                单位为天
+            </div>
+        </div>
+        <div class="layui-form-item">
             <label class="layui-form-label">最大登录错误次数</label>
             <div class="layui-input-block">
                 <input type="number" name="MaxErrorCount" placeholder="" autocomplete="off" class="layui-input" value="10">
@@ -94,9 +103,9 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">锁定状态</label>
+            <label class="layui-form-label">启用状态</label>
             <div class="layui-input-block">
-                <input type="checkbox" name="Islock" lay-skin="switch" lay-text="锁定|未锁定" value="true">
+                <input type="checkbox" name="Islock" lay-skin="switch" lay-text="禁用|启用" value="true">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">

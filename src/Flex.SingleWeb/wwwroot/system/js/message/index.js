@@ -20,8 +20,12 @@
                     Id: json.ContentId,
                     ParentId: json.ParentId
                 }
-                $('#bottomBtnbox').html('<button class="layui-btn layui-btn-sm viewcontent">查看内容</button>');
-
+                if (json.ContentId != 0) {
+                    $('#bottomBtnbox').show();
+                    $('#bottomBtnbox').html('<button class="layui-btn layui-btn-sm viewcontent">查看内容</button>');
+                } else {
+                    $('#bottomBtnbox').hide();
+                }
             }
         }
     })

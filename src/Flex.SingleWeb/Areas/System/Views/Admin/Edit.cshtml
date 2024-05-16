@@ -72,6 +72,7 @@
                 头像的尺寸限定150x150px,大小在50kb以内
             </div>
         </div>
+
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">角色选择</label>
@@ -86,6 +87,27 @@
             <label class="layui-form-label">后台名称</label>
             <div class="layui-input-block">
                 <input type="text" name="UserSign" autocomplete="off" placeholder="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">解锁时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="LockTime" id="LockTime" lay-verify="datetime" placeholder="为空则未锁定" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">账号过期时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="ExpiredTime" id="ExpiredTime" lay-verify="datetime" placeholder="为空则不过期" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码过期时间</label>
+            <div class="layui-input-inline" style="width:40%;">
+                <input type="text" name="PwdExpiredTime" lay-verify="number" placeholder="为空则不过期" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline message-info">
+                单位为天
             </div>
         </div>
         <div class="layui-form-item">
@@ -108,9 +130,9 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">锁定状态</label>
+            <label class="layui-form-label">启用状态</label>
             <div class="layui-input-block">
-                <input type="checkbox" name="Islock" lay-skin="switch" lay-text="锁定|未锁定" value="true">
+                <input type="checkbox" name="Islock" lay-skin="switch" lay-text="禁用|启用" value="true">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
@@ -146,6 +168,11 @@
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">修改时间</label>
             <div class="layui-input-inline" id="LastEditDate" style="width:30%;margin-top:10px ">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">密码过期时间</label>
+            <div class="layui-input-inline" id="PwdUpdateTime" style="width:30%;margin-top:10px ">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
