@@ -223,6 +223,7 @@ namespace Flex.Application.SqlServerSQLString
                 case "file": returntype = "nvarchar(255)"; break;
                 case "textarea": returntype = "nvarchar(max)"; break;
                 case "editor": returntype = "nvarchar(max)"; break;
+                case "multiimage": returntype = "nvarchar(max)"; break;
                 case "blockquote": returntype = "nvarchar(255)"; break;
                 case "line": returntype = "nvarchar(255)"; break;
                 case "spacing": returntype = "nvarchar(255)"; break;

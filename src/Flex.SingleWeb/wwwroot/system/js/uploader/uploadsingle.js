@@ -55,17 +55,18 @@
     var uploader;// WebUploader实例
     var extensionsf = options.isImage ? options.imageExtensions : options.FileExtensions
     SizeLimit = 500, FullSizeLimit = 1000;
+
     function init() {
 
         $wrap.addClass("webUploader");
         if (options.valueElement != undefined)
             $wrap.append('<input type="hidden" id="' + $elment + 'fujian" value="" />');
-        if (options.single) {
+        if (true) {
             $wrap.addClass("singleButton");
             return;
         }
         $wrap
-            .append('<div class=\"statusBar\" style=\"display: none;\">' +
+            .append('<div class=\"statusBar\" style=\"display: none !important;\">' +
                 '<div class=\"progress\"><span class=\"text\">0%</span><span class=\"percentage\"></span></div>' +
                 '<div class=\"info\"></div><div class=\"btns\"><div class=\"filePicker2\"></div>' +
                 '<div class=\"uploadBtn message-btn\">开始上传</div></div></div><div class=\"queueList\">' +
@@ -73,25 +74,22 @@
     }
     // 实例化
     uploader = WebUploader.create({
-        pick: options.single ? $elment : {
-            id: $elment + ' .filePicker',
-            label: '点击选择文件'
-        },
+        pick: $elment,
         formData: {
             fileType: 'file'
         },
-        dnd: options.single ? '' : $elment + ' .dndArea',
-        paste: options.single ? '' : $elment,
+        dnd: '',
+        paste: '',
         chunked: false,
         chunkSize: 512 * 1024,
         server: options.serverUrl,
         // runtimeOrder: 'flash',
-        //accept: {
-        //    extensions: extensionsf,
-        //    mimeTypes: '*'
-        //},
-        acceptExt: extensionsf,
-        accept: getAccept(),
+        accept: {
+            extensions: extensionsf,
+            mimeTypes: '*'
+        },
+        //acceptExt: extensionsf,
+        //accept: getAccept(),
         headers: httpTokenHeaders,
         // 禁掉全局的拖拽功能。这样不会出现图片拖进页面的时候，把图片打开。
         disableGlobalDnd: true,
@@ -535,14 +533,27 @@
     $upload.addClass('state-' + state);
     updateTotalProgress();
 
-
+    
     uploader.on('uploadSuccess', function (file, data) {
         if (options.single) { fileCount = 0; fileSize = 0; uploader.removeFile(file); }
 
         var idsobj = options.valueElement == undefined ? $('#' + $elment + 'fujian') : $(options.valueElement);
         if (data.code == 200) {
-            idsobj.val(data.msg);
-
+            if (options.single)
+                idsobj.val(data.msg);
+            else {
+                var imghtml = '<div class="layui-form-item uploadimg_box">' +
+                    '<div class="layui-input-inline uploadimg_inlinebox">' +
+                    '<img src="' + data.msg + '" class="uploadimg_item"/>' +
+                    '</div>' +
+                    '<div class="layui-input-inline"><input type="text" class="layui-input"/><textarea name="" placeholder="" class="layui-textarea"></textarea>' +
+                    '</div>' +
+                    '<div class="layui-input-inline otherbtn">' +
+                    '<span class="layui-btn layui-btn-sm layui-btn-danger">删除</span><br><br>' +
+                    '<span class="layui-btn layui-btn-sm layui-btn-login previewimg" data-src="' + data.msg+'">预览</span></div></div>';
+                idsobj.append(imghtml);
+            }
+            
             tips.showSuccess('上传成功');
         }
         else

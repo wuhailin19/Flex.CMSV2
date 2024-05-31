@@ -36,8 +36,9 @@ ajaxHttp({
             if (data.length <= 0)
                 return false;
             $.each(data, function (key, value) {
+                var tbname = key.split('：')[0];
                 htmlstr += "<div class=\"css-npueup\">";
-                htmlstr += "<h4 class=\"apipost-table-title\" id='" + key.split('：')[0]+"'>" + key + "</h4>";
+                htmlstr += "<h4 class=\"apipost-table-title\" id='" + tbname +"'>" + key + "</h4>";
                 htmlstr += "<table style=\"table-layout: auto;\">";
                 htmlstr += "<colgroup></colgroup>";
                 htmlstr += "<thead class=\"ant-table-thead\">";
@@ -50,7 +51,7 @@ ajaxHttp({
                 htmlstr += "</thead>";
                 htmlstr += "<tbody class=\"ant-table-tbody\">";
                 $.each(value, function (index, item) {
-                    htmlstr += "<tr data-row-key=\"" + item.FiledName + "\" class=\"ant-table-row ant-table-row-level-0\" id=\"" + item.FiledName +"\">";
+                    htmlstr += "<tr data-row-key=\"" + item.FiledName + "\" class=\"ant-table-row ant-table-row-level-0\" id=\"" + tbname + item.FiledName +"\">";
                     htmlstr += "<td class=\"ant-table-cell\">";
                     htmlstr += "<div style=\"min-width: 100px;\">" + item.FiledName +"</div>";
                     htmlstr += "</td>";

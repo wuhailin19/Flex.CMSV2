@@ -110,13 +110,45 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
         viewOrDesign: true
         //formData: {"textarea_1":"123","input_2":"123","password_3":"123"}
     });
+    var multiimages = render.getmultiImages();
+    for (var i = 0; i < multiimages.length; i++) {
+        let id = multiimages[i].select;
+        let imageinput = "#uploader-list-" + id;
+        //初始化上传工具
+        let options = { single: false, autoupload: true, valueElement: imageinput };
+        
+        ___initUpload("#" + id, options);
+
+    }
+    $(document).on('click', '.uploadimg_box .previewimg', function () {
+        previewimg($(this).attr('data-src'));
+    })
+    function previewimg(imgsrc) {
+        layer.photos({
+            photos: {
+                "title": "", // 相册标题
+                "start": 0, // 初始显示的图片序号，默认 0
+                "data": [   // 相册包含的图片，数组格式
+                    {
+                        "alt": imgsrc,
+                        "src": imgsrc, // 原图地址
+                        "thumb": imgsrc // 缩略图地址
+                    }
+                ],
+                error: function () {
+
+                }
+            }
+        });
+    }
+
     var images = render.getImages();
+    console.log(images)
     for (var i = 0; i < images.length; i++) {
         let id = images[i].select;
         let imageinput = "input[name=" + id + "]";
         //初始化上传工具
-        var options = { single: true, autoupload: true, valueElement: imageinput };
-
+        let options = { single: true, autoupload: true, valueElement: imageinput };
         ___initUpload("#uploader-show_" + id, options);
 
         //创建一个裁剪组件
@@ -131,6 +163,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
             }
         });
     }
+   
 
     var iceEditorObjects = render.geticeEditorObjects();
     var filesData = render.getFiles();

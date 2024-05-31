@@ -12,6 +12,7 @@ namespace Flex.Application.SetupExtensions
 {
     public static class HtmlTemplateDictInitExtension
     {
+        
         public static ConcurrentDictionary<string, BaseFieldType> fielddict
             = new ConcurrentDictionary<string, BaseFieldType>();
 

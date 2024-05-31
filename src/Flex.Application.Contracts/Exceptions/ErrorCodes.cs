@@ -150,5 +150,8 @@ namespace Flex.Application.Contracts.Exceptions
         /// <summary> 账号已过期 </summary>
         [Description("账号已过期")]
         AccountExpried = 223,
+        /// <summary> 密码已过期 </summary>
+        [Description("密码已过期")]
+        PwdExpried = 224,
     }
 }

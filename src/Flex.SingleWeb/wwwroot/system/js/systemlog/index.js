@@ -145,13 +145,13 @@ layui.use('table', function () {
                 searchbybutton(insTb, 2);
                 break;
             case "":
-                searchbybutton(insTb, 2);
+                searchbybutton(insTb, 0);
                 break;
             case "Warning":
-                searchbybutton(insTb, -1);
+                searchbybutton(insTb, -2);
                 break;
             case "Error":
-                searchbybutton(insTb, -2);
+                searchbybutton(insTb, -1);
                 break;
         }
     });
@@ -160,6 +160,9 @@ layui.use('table', function () {
             url: routeLink + 'ListAsync'
             , where: {
                 LogLevel: $event
+            },
+            page: {
+                curr: 1
             }
         });
     }
@@ -173,10 +176,10 @@ layui.use('table', function () {
                 searchbybutton(insTbs, 0);
                 break;
             case "Warning":
-                searchbybutton(insTbs, -1);
+                searchbybutton(insTbs, -2);
                 break;
             case "Error":
-                searchbybutton(insTbs, -2);
+                searchbybutton(insTbs, -1);
                 break;
         }
     });
@@ -190,10 +193,10 @@ layui.use('table', function () {
                 searchbybutton(insTbt, 0);
                 break;
             case "Warning":
-                searchbybutton(insTbt, -1);
+                searchbybutton(insTbt, -2);
                 break;
             case "Error":
-                searchbybutton(insTbt, -2);
+                searchbybutton(insTbt, -1);
                 break;
         }
     });

@@ -59,6 +59,7 @@ layui.define(['layer'], function (exports) {
             rate: "评分控件",
             switch: "开关",
             password: "密码框",
+            multiimage: "多图上传",
             carousel: "轮播",
             text: "显示文本",
             uploadUrl: "上传路径",
@@ -183,7 +184,7 @@ layui.define(['layer'], function (exports) {
             '            <div class="layui-tab layui-tab-brief" lay-filter="components-list">\n' +
             '                <ul class="layui-tab-title">\n' +
             '                    <li class="layui-this">组件</li>\n' +
-            '                    <li class="">模板</li>\n' +
+            '                    <li class="" style="display:none;">模板</li>\n' +
             '                </ul>\n' +
             '                <div class="layui-tab-content">\n' +
             '                    <div class="layui-tab-item layui-show">\n' +

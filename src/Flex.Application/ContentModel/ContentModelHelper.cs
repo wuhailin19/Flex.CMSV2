@@ -105,15 +105,17 @@ namespace Flex.Application.ContentModel
             string where = "StatusCode=1";
             where += " and " + swhere;
             if (swhere.IsNotNullOrEmpty())
-                where = " where " + swhere;
-            return instance._sqlsugar.Db.Ado.GetDataTable($"select {fileds} from {tableName} where {where} order by {orderby}");
+                where = " where " + where;
+            return instance._sqlsugar.Db.Ado.GetDataTable($"select {fileds} from {tableName} {where} order by {orderby}");
         }
 
         private static DataTable GetDataList(string tableName, string fileds, string swhere, string orderby, int page, int pagesize, ref int recount)
         {
             string where = "StatusCode=1";
             where += " and " + swhere;
-            string pagesql = $"select {fileds} from {tableName} where {where} order by {orderby}";
+            if (swhere.IsNotNullOrEmpty())
+                where = " where " + where;
+            string pagesql = $"select {fileds} from {tableName}  {where} order by {orderby}";
             if (page <= 0)
                 page = 1;
             var dt = instance._sqlsugar.GetPageDataList(page, pagesize, pagesql, ref recount);
@@ -262,9 +264,10 @@ namespace Flex.Application.ContentModel
         public static Dictionary<object, object> GetDictionaryByModelColumnList(ContentModelDto contentmodel, DataRow item, int mode = 1)
         {
             Dictionary<object, object> dict = new Dictionary<object, object>();
+            var tbname = GetvirtualTableName(contentmodel.TableName);
             foreach (var column in contentmodel.TableColumnList)
             {
-                SetupColumnData(item, dict, column.FiledName, column.FiledMode, mode);
+                SetupColumnData(item, dict, column.FiledName, column.FiledMode, mode, tbname);
             }
             return dict;
         }
@@ -275,7 +278,7 @@ namespace Flex.Application.ContentModel
         /// <param name="dict"></param>
         /// <param name="column"></param>
         /// <param name="columndesc"></param>
-        public static void SetupColumnData(DataRow item, Dictionary<object, object> dict, object column, string columndesc, int mode = 1)
+        public static void SetupColumnData(DataRow item, Dictionary<object, object> dict, object column, string columndesc, int mode = 1, string tablename = null)
         {
             //API模式
             if (mode == 1)
@@ -295,13 +298,13 @@ namespace Flex.Application.ContentModel
             {
                 switch (columndesc)
                 {
-                    case "DateType": dict.Add(column, "<span class='json-string'>" + item[column.ToString()].ToString() + "</span>"); break;
-                    case "editor": dict.Add(column, "<span class='json-string'>" + item[column.ToString()].ToHtmlEnconde().subString(100) + "...后续省略</span>"); break;
-                    case "PicType": dict.Add(column, "<span class='json-url'>" + item[column.ToString()].ToImgUrl() + "</span>"); break;
-                    case "MultipleTextType": dict.Add(column, "<span class='json-string'>" + item[column.ToString()].ToString().ReplaceDefaultStrEncode() + "</span>"); break;
-                    case "MutiImgSelect": dict.Add(column, item[column.ToString()].ToString().ToImgListUrl(mode)); break;
+                    case "DateType": dict.Add(tablename+column, "<span class='json-string'>" + item[column.ToString()].ToString() + "</span>"); break;
+                    case "editor": dict.Add(tablename + column, "<span class='json-string'>" + item[column.ToString()].ToHtmlEnconde().subString(100) + "...后续省略</span>"); break;
+                    case "PicType": dict.Add(tablename + column, "<span class='json-url'>" + item[column.ToString()].ToImgUrl() + "</span>"); break;
+                    case "MultipleTextType": dict.Add(tablename + column, "<span class='json-string'>" + item[column.ToString()].ToString().ReplaceDefaultStrEncode() + "</span>"); break;
+                    case "MutiImgSelect": dict.Add(tablename + column, item[column.ToString()].ToString().ToImgListUrl(mode)); break;
                     case "MutiImgExt": break;
-                    default: dict.Add(column, "<span class='json-string'>" + item[column.ToString()] + "</span>"); break;
+                    default: dict.Add(tablename + column, "<span class='json-string'>" + item[column.ToString()] + "</span>"); break;
                 }
             }
         }

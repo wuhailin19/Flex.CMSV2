@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShardingCore.Extensions;
 using SqlSugar;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Drawing.Printing;
 
 namespace Flex.SingleWeb.Areas.System.ApiController
@@ -169,28 +170,28 @@ namespace Flex.SingleWeb.Areas.System.ApiController
                     };
                     string tbname = ContentModelHelper.GetvirtualTableName(contentDto[0].TableName);
                     full_fileds.Add(tbname + "：【" + contentDto[0].ModelName + "】", fileds);
-                    List<string> filedlist = new List<string>
+                    Dictionary<string, string> filedlist = new Dictionary<string, string>
                     {
-                        "code",
-                        "data",
-                        "page",
-                        "pagesize",
-                        "dataCount",
-                        "pageCount",
-                        "msg",
-                        tbname
+                        { "code","code"},
+                        {"data","data" },
+                        {"page","page" },
+                        {"pagesize","pagesize" },
+                        {"dataCount","dataCount" },
+                        {"pageCount","pageCount" },
+                        {"msg","msg" },
+                        { tbname ,tbname}
                     };
                     foreach (var item in fileds)
                     {
-                        if (filedlist.Contains(item.FiledName))
+                        if (filedlist.ContainsKey(tbname + item.FiledName))
                             continue;
-                        filedlist.Add(item.FiledName);
+                        filedlist.Add(tbname + item.FiledName, item.FiledName);
                     }
                     jsonstr = JsonHelper.ToJson(contentModelPage);
                     //var regexmodel= Regex.Matches(jsonstr, "([^>]\"[a-zA-Z]+\":)");
-                    foreach (var item in filedlist)
+                    foreach (var item in filedlist.Keys)
                     {
-                        jsonstr = jsonstr.Replace("\"" + item + "\"", "<span class='json-property' href='#" + item + "'>\"" + item + "\"</span>");
+                        jsonstr = jsonstr.Replace("\"" + item + "\"", "<span class='json-property' href='#" + item + "'>\"" + filedlist[item] + "\"</span>");
                     }
                     #endregion
                 }
@@ -198,14 +199,13 @@ namespace Flex.SingleWeb.Areas.System.ApiController
                 {
                     #region 多个ID
                     Dictionary<string, object> contents = new Dictionary<string, object>();
-                    List<string> filedlist = new List<string>
+                    Dictionary<string, string> filedlist = new Dictionary<string, string>
                     {
-                        "code",
-                        "data",
-                        "msg",
-                        "PageModel"
+                        {"code","code"},
+                        { "data", "data" },
+                        { "msg", "msg" },
+                        { "PageModel", "PageModel" }
                     };
-
                     string oldswhere = swhere;
                     foreach (var firstDto in contentDto)
                     {
@@ -225,20 +225,20 @@ namespace Flex.SingleWeb.Areas.System.ApiController
                         full_fileds.Add(tbname + "：【" + firstDto.ModelName + "】", nowfileds);
                         foreach (var item in nowfileds)
                         {
-                            if (filedlist.Contains(item.FiledName))
+                            if (filedlist.ContainsKey(tbname + item.FiledName))
                                 continue;
-                            filedlist.Add(item.FiledName);
+                            filedlist.Add(tbname + item.FiledName, item.FiledName);
                         }
-                        if (filedlist.Contains(tbname))
+                        if (filedlist.ContainsKey(tbname))
                             continue;
                         else
-                            filedlist.Add(tbname);
+                            filedlist.Add(tbname, tbname);
                     }
 
                     jsonstr = JsonHelper.ToJson(contents);
-                    foreach (var item in filedlist)
+                    foreach (var item in filedlist.Keys)
                     {
-                        jsonstr = jsonstr.Replace("\"" + item + "\"", "<span class='json-property' href='#" + item + "'>\"" + item + "\"</span>");
+                        jsonstr = jsonstr.Replace("\"" + item + "\"", "<span class='json-property' href='#" + item + "'>\"" + filedlist[item] + " \"</span>");
                     }
                     #endregion
                 }

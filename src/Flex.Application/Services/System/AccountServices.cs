@@ -190,6 +190,8 @@ namespace Flex.Application.Services
             admin.ErrorCount = 0;
             if (admin.PwdExpiredTime.IsNotNullOrEmpty() && admin.PwdUpdateTime != null)
             {
+                if(admin.PwdUpdateTime< Clock.Now)
+                    return Problem<UserData>(HttpStatusCode.BadRequest, ErrorCodes.PwdExpried.GetEnumDescription());
                 var time = admin.PwdUpdateTime - Clock.Now;
                 var days = time?.Days;
                 if (days <= 3)

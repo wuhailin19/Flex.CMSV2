@@ -139,7 +139,11 @@ app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
     {
         context.Response.StatusCode = ErrorCodes.NoOperationPermission.ToInt();
         context.Response.ContentType = "application/json";
-        return context.Response.WriteAsync(JsonHelper.ToJson(new Message<string> { code = ErrorCodes.NoOperationPermission.ToInt(), msg = ErrorCodes.NoOperationPermission.GetEnumDescription() }));
+        return context.Response.WriteAsync(
+            JsonHelper.ToJson(new Message<string> { 
+                code = ErrorCodes.NoOperationPermission.ToInt(), 
+                msg = ErrorCodes.NoOperationPermission.GetEnumDescription() 
+            }));
     }
     return Task.CompletedTask;
 });
