@@ -175,6 +175,9 @@ namespace Flex.SingleWeb.Areas.System.ApiController
                         { "code","code"},
                         {"data","data" },
                         {"page","page" },
+                        {"img_src","img_src" },
+                        {"img_title","img_title" },
+                        {"img_content","img_content" },
                         {"pagesize","pagesize" },
                         {"dataCount","dataCount" },
                         {"pageCount","pageCount" },
@@ -204,6 +207,9 @@ namespace Flex.SingleWeb.Areas.System.ApiController
                         {"code","code"},
                         { "data", "data" },
                         { "msg", "msg" },
+                        {"img_src","img_src" },
+                        {"img_title","img_title" },
+                        {"img_content","img_content" },
                         { "PageModel", "PageModel" }
                     };
                     string oldswhere = swhere;

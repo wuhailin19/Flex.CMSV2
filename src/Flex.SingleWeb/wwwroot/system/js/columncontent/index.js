@@ -257,6 +257,10 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                 req_Data = data[0];
                 defaultOptions.openDataPermissionIframe(layer, insTb);
                 break;
+            case 'Delete':
+                req_Data = data[0];
+                defaultOptions.openSoftDeleteIframe(layer, insTb);
+                break;
             case 'Edit':
                 if (data.length != 1) {
                     layer.msg("选择一条数据", { icon: 5, time: 1000 })

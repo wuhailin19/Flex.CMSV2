@@ -71,7 +71,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
             , thisIns = function () {
                 var that = this
                     , options = that.config;
-                console.log(that.config)
+                //console.log(that.config)
                 return {
                     reload: function (options) {
                         that.reload.call(that
@@ -1999,7 +1999,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     _html += '</div>';
                     elem.append(_html);
                     if (that.config.viewOrDesign) {
-                        var data = { "select": input_id, "uploadUrl": json.uploadUrl };
+                        var data = { "select": input_id, "uploadUrl": json.uploadUrl, id: json.id };
                         var exists = images.some(item => item.select === data.select && item.uploadUrl === data.uploadUrl);
                         if (!exists)
                             images.push(data);
@@ -2075,7 +2075,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                 generateScript: function (json, that) {
                     var scriptHtmlCode = '';
                     //初始化上传工具
-                    
+
                     scriptHtmlCode += 'var options = {single: true,autoupload: true, valueElement: input[name=' + json.tag + json.id + ']};';
                     scriptHtmlCode += '___initUpload("#uploader-show_" + input_id, options);';
                     return scriptHtmlCode;
@@ -2100,12 +2100,28 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     _html += '<button type="button" class="layui-btn" id="{0}">多图片上传</button>'.format(json.id);
 
                     _html += '<div class="layui-upload-list uploader-list" style="" id="uploader-list-{0}">'.format(json.id);
+                    if (json.defaultValue !== null && json.defaultValue !== ""
+                        && json.defaultValue !== undefined) {
+                        var imagelist = JSON.parse(json.defaultValue);
+                        for (var i = 0; i < imagelist.length; i++) {
+                            _html += '<div class="layui-form-item uploadimg_box">' +
+                                '<div class="layui-input-inline uploadimg_inlinebox">' +
+                                '<img src="' + imagelist[i].imgsrc + '" class="uploadimg_item"/>' +
+                                '</div>' +
+                                '<div class="layui-input-inline"><input type="text" class="layui-input" value="' + imagelist[i].title + '"/>' +
+                                '<textarea name="" placeholder="" class="layui-textarea">' + imagelist[i].content+'</textarea>' +
+                                '</div>' +
+                                '<div class="layui-input-inline otherbtn">' +
+                                '<span class="layui-btn layui-btn-sm layui-btn-danger">删除</span><br><br>' +
+                                '<span class="layui-btn layui-btn-sm layui-btn-login previewimg" data-src="' + imagelist[i].imgsrc + '">预览</span></div></div>';
+                        } 
+                    }
                     _html += '</div>';
                     _html += '</div>';
                     _html += '</div>';
                     elem.append(_html);
                     if (that.config.viewOrDesign) {
-                        var data = { "select": json.id, "uploadUrl": "/api/upload/OnLoad" };
+                        var data = { "select": json.id, "uploadUrl": "/api/upload/OnLoad", id: json.id };
                         var exists = multiimages.some(item => item.select === data.select && item.uploadUrl === data.uploadUrl);
                         if (!exists)
                             multiimages.push(data);
@@ -5028,7 +5044,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     },
                     //拖动结束
                     onEnd: function (evt) {
-                        console.log(evt);
+                        //console.log(evt);
                     }
                 };
                 var gridSortable = Sortable.create(el, ops);
@@ -5232,7 +5248,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
         Class.prototype.renderComponents = function (jsondata, elem) {
             var that = this
                 , options = that.config;
-            console.log(jsondata)
+            //console.log(jsondata)
             $.each(jsondata, function (index, item) {
                 item.index = index;//设置index 仅仅为了传递给render对象，如果存在下级子节点那么 子节点的也要变动
                 if (options.selectItem === undefined) {

@@ -67,13 +67,26 @@ namespace Flex.WebApi.SystemControllers
         }
 
         [HttpPost]
-        [Descriper(Name = "通过Id获取字段数据")]
+        [Descriper(Name = "通过Id修改字段数据")]
         private async Task<string> Update()
         {
             var validate = await ValidateModel<UpdateFieldDto>();
             if (!validate.IsSuccess)
                 return Fail(validate.Detail);
             var result = await _services.Update(validate.Content);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
+        }
+
+        [HttpPost("UpdateApiName")]
+        [Descriper(Name = "通过Id修改字段接口别名")]
+        public async Task<string> UpdateApiName()
+        {
+            var validate = await ValidateModel<SimpleUpdateDto>();
+            if (!validate.IsSuccess)
+                return Fail(validate.Detail);
+            var result = await _services.SimpleUpdateDto(validate.Content);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
             return Success(result.Detail);

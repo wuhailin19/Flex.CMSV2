@@ -116,7 +116,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
         let imageinput = "#uploader-list-" + id;
         //初始化上传工具
         let options = { single: false, autoupload: true, valueElement: imageinput };
-        
+
         ___initUpload("#" + id, options);
 
     }
@@ -143,7 +143,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
     }
 
     var images = render.getImages();
-    console.log(images)
+    
     for (var i = 0; i < images.length; i++) {
         let id = images[i].select;
         let imageinput = "input[name=" + id + "]";
@@ -163,7 +163,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
             }
         });
     }
-   
+
 
     var iceEditorObjects = render.geticeEditorObjects();
     var filesData = render.getFiles();
@@ -203,6 +203,26 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
             data[key] = iceEditorObjects[key].getContent();
         }
         data.ParentId = parent.currentparentId;
+        if (multiimages.length > 0) {
+            for (var i = 0; i < multiimages.length; i++) {
+                let currentimglist = [];
+                $('#uploader-list-' + multiimages[i].id + ' .uploadimg_box').each(
+                    function (index, item) {
+                        let imgsrc = $(item).find('img.uploadimg_item').attr('src');
+                        let title = $(item).find('input.layui-input').val();
+                        let content = $(item).find('textarea.layui-textarea').val();
+                        currentimglist.push(
+                            {
+                                title: title,
+                                imgsrc: imgsrc,
+                                content: content
+                            }
+                        );
+                    }
+                )
+                data[multiimages[i].id] = currentimglist;
+            }
+        }
     }
     //监听提交
     form.on('submit(formDemo)', function (data) {
@@ -219,6 +239,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
         return false;
     })
     function AddContent(data) {
+
         ajaxHttp({
             url: api + 'ColumnContent/CreateColumnContent',
             type: 'Post',

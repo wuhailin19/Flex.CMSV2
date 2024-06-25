@@ -8,8 +8,13 @@ namespace Flex.Domain.Dtos.System.ContentModel
 {
     public class ImgListDto
     {
-        public string imglist_link { set; get; }
-        public string imglist_title { set; get; }
-        public string imglist_img { set; get; }
+        public string content { set; get; }
+        public string title { set; get; }
+        public string imgsrc { set; get; }
+    }
+    public class JsonDocxImages {
+        public string img_content { set; get; }
+        public string img_title { set; get; }
+        public string img_src { set; get; }
     }
 }

@@ -128,6 +128,28 @@ var defaultOptions = {
             }
         });
     },
+    openSoftDeleteIframe: function (layer, insTb) {
+        var self = this;
+        let widthstr = '30%';
+        let heightstr = '100%';
+        HasOpenHistroryBox = true;
+        //iframe窗
+        layer.open({
+            type: 2,
+            skin: 'layui-layer-lan',
+            title: '回收站',
+            shadeClose: true,
+            shade: false,
+            offset: 'rt',
+            maxmin: true, //开启最大化最小化按钮
+            area: [widthstr, heightstr],
+            content: routePageLink + 'SoftDelete?ParentId=' + currentparentId,
+            end: function () {
+                defaultOptions.callBack(insTb);
+                HasOpenHistroryBox = false;
+            }
+        });
+    },
     //获取所有选中的节点id
     getCheckedId: function (data) {
         var self = this;

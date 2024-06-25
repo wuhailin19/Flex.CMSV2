@@ -96,14 +96,14 @@ builder.Services.AddLogging();
 var app = builder.Build();
 
 // 初始化自动创建数据库
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<EfCoreDBContext>();
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    var context = services.GetRequiredService<EfCoreDBContext>();
 
-    // 确保数据库已创建
-    context.Database.EnsureCreated();
-}
+//    // 确保数据库已创建
+//    context.Database.EnsureCreated();
+//}
 
 app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
 {
@@ -129,8 +129,8 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = "swagger";
     });
     // 初始化接口数据
-    var myService = app.Services.GetRequiredService<IRoleUrlServices>();
-    await myService.CreateUrlList();
+    //var myService = app.Services.GetRequiredService<IRoleUrlServices>();
+    //await myService.CreateUrlList();
 }
 
 app.UseStaticFiles();

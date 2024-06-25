@@ -26,8 +26,4 @@
     <ProjectReference Include="..\Flex.Core\Flex.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="NormalControllers\" />
-  </ItemGroup>
-
 </Project>

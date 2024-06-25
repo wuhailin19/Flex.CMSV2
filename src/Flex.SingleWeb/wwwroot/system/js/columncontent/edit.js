@@ -160,7 +160,14 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
                 dateRanges[i]["dateRangeDefaultValue"] = model[dateRanges[i].id];
         }
     }
-
+    
+    var multiimagedata = demojs.filter(item => item.tag == "multiimage");
+    if (multiimagedata.length > 0) {
+        for (var i = 0; i < multiimagedata.length; i++) {
+            if (model.hasOwnProperty(multiimagedata[i].id))
+                multiimagedata[i]["defaultValue"] = model[multiimagedata[i].id];
+        }
+    }
     render = formDesigner.render({
         elem: '#view',
         data: demojs,
@@ -171,6 +178,37 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
         //formData: model
     });
 
+
+    var multiimages = render.getmultiImages();
+    for (var i = 0; i < multiimages.length; i++) {
+        let id = multiimages[i].select;
+        let imageinput = "#uploader-list-" + id;
+        //初始化上传工具
+        let options = { single: false, autoupload: true, valueElement: imageinput };
+
+        ___initUpload("#" + id, options);
+    }
+    $(document).on('click', '.uploadimg_box .previewimg', function () {
+        previewimg($(this).attr('data-src'));
+    })
+    function previewimg(imgsrc) {
+        layer.photos({
+            photos: {
+                "title": "", // 相册标题
+                "start": 0, // 初始显示的图片序号，默认 0
+                "data": [   // 相册包含的图片，数组格式
+                    {
+                        "alt": imgsrc,
+                        "src": imgsrc, // 原图地址
+                        "thumb": imgsrc // 缩略图地址
+                    }
+                ],
+                error: function () {
+
+                }
+            }
+        });
+    }
     for (var i = 0; i < checkboxs.length; i++) {
         setCheckboxValue(checkboxs[i].id, model[checkboxs[i].id]);
     }
@@ -286,6 +324,26 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
         }
         data.ParentId = parent_json.ParentId;
         data.Id = parent_json.Id;
+        if (multiimages.length > 0) {
+            for (var i = 0; i < multiimages.length; i++) {
+                let currentimglist = [];
+                $('#uploader-list-' + multiimages[i].id + ' .uploadimg_box').each(
+                    function (index, item) {
+                        let imgsrc = $(item).find('img.uploadimg_item').attr('src');
+                        let title = $(item).find('input.layui-input').val();
+                        let content = $(item).find('textarea.layui-textarea').val();
+                        currentimglist.push(
+                            {
+                                title: title,
+                                imgsrc: imgsrc,
+                                content: content
+                            }
+                        );
+                    }
+                )
+                data[multiimages[i].id] = currentimglist;
+            }
+        }
     }
 
     //监听提交

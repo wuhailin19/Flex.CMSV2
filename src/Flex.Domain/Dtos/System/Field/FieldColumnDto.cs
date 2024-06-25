@@ -16,8 +16,8 @@ namespace Flex.Domain.Dtos.ContentModel
         public string FieldName { set; get; }
         [ToolAttr(NameAttr = "字段含义")]
         public string Name { set; get; }
-        [ToolAttr(NameAttr = "字段描述")]
-        public string? FieldDescription { set; get; }
+        [ToolAttr(NameAttr = "接口别名", IsEdit = true)]
+        public string? ApiName { set; get; }
         [ToolAttr(NameAttr = "字段类型")]
         public string FieldType { set; get; }
         [ToolAttr(NameAttr = "接口字段", Toolbar = "#apistatusPxy", AlignAttr = AlignEnum.Center, maxWidth = "100")]

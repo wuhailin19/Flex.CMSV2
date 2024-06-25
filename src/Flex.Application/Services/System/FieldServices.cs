@@ -154,6 +154,25 @@ namespace Flex.Application.Services
             {
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
+        } 
+        
+        public async Task<ProblemDetails<string>> SimpleUpdateDto(SimpleUpdateDto updateFieldDto)
+        {
+            var model = await responsity.GetFirstOrDefaultAsync(m => m.Id == updateFieldDto.Id);
+            model.ApiName = updateFieldDto.ApiName;
+            UpdateStringEntityBasicInfo(model);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == model.ModelId);
+            try
+            {
+                responsity.Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                //await CreateModelHtmlString(contentmodel);
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
+            }
         }
         public async Task<UpdateFieldDto> GetFiledInfoById(string Id)
         {

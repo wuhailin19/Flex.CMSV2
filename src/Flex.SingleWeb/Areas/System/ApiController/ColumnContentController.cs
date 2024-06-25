@@ -32,6 +32,13 @@ namespace Flex.WebApi.SystemControllers
             return Success(await _columnServices.GetHistoryTableThs(ParentId));
         }
 
+        [HttpGet("SoftDeleteColumn/{ParentId}")]
+        [Descriper(IsFilter = true)]
+        public async Task<string> SoftDeleteColumn(int ParentId)
+        {
+            return Success(await _columnServices.GetSoftTableThs(ParentId));
+        }
+
         /// <summary>
         /// 多选checkbox数据用此接口
         /// </summary>
@@ -60,6 +67,15 @@ namespace Flex.WebApi.SystemControllers
             if (model == null)
                 return Fail("无数据");
             return Success(await _columnServices.HistoryListAsync(model));
+        }
+
+        [HttpGet("SoftDeleteListAsync")]
+        [Descriper(Name = "回收站列表分页数据")]
+        public async Task<string> SoftDeleteListAsync([FromQuery] ContentPageListParamDto model)
+        {
+            if (model == null)
+                return Fail("无数据");
+            return Success(await _columnServices.SoftDeleteListAsync(model));
         }
 
         [HttpGet("GetFormHtml/{ParentId}")]
@@ -130,8 +146,28 @@ namespace Flex.WebApi.SystemControllers
             return Success(result.Detail);
         }
 
+        [HttpPost("CompletelyDelete/{ParentId}/{Id}")]
+        [Descriper(Name = "完全删除栏目内容，不可恢复")]
+        public async Task<string> CompletelyDelete(int ParentId, string Id)
+        {
+            var result = await _columnServices.CompletelyDelete(ParentId, Id);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+        
+        [HttpPost("RestContent/{ParentId}/{Id}")]
+        [Descriper(Name = "从回收站恢复栏目内容")]
+        public async Task<string> RestContent(int ParentId, string Id)
+        {
+            var result = await _columnServices.RestContent(ParentId, Id);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
+        }
+
         [HttpPost("{ParentId}/{Id}")]
-        [Descriper(Name = "删除栏目内容")]
+        [Descriper(Name = "软删除栏目内容，可恢复")]
         public async Task<string> Delete(int ParentId, string Id)
         {
             var result = await _columnServices.Delete(ParentId, Id);

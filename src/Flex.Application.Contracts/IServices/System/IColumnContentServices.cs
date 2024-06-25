@@ -24,5 +24,9 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<int>> Update(Hashtable table, bool IsReview = false, List<string> white_fileds = null, bool IsCancelReview = false);
         Task<ProblemDetails<int>> SimpleUpdateContent(Hashtable table, bool IsReview = true, List<string> white_fileds = null);
         Task<ProblemDetails<int>> UpdateReviewContent(Hashtable table, bool IsReview = true, bool IsCancelReview = false);
+        Task<Page> SoftDeleteListAsync(ContentPageListParamDto contentPageListParam);
+        Task<ColumnPermissionAndTableHeadDto<SoftDeleteColumnDto>> GetSoftTableThs(int ParentId);
+        Task<ProblemDetails<string>> CompletelyDelete(int ParentId, string Id);
+        Task<ProblemDetails<string>> RestContent(int ParentId, string Id);
     }
 }

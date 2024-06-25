@@ -74,7 +74,11 @@
     }
     // 实例化
     uploader = WebUploader.create({
-        pick: $elment,
+        
+        pick: {
+            id: $elment,
+            multiple: options.single ? false : true,//是否可以多选
+        },
         formData: {
             fileType: 'file'
         },
@@ -88,6 +92,7 @@
             extensions: extensionsf,
             mimeTypes: '*'
         },
+        duplicate: true,
         //acceptExt: extensionsf,
         //accept: getAccept(),
         headers: httpTokenHeaders,
@@ -97,7 +102,6 @@
         fileSizeLimit: FullSizeLimit * 1024 * 1024,    // 30 M
         fileSingleSizeLimit: SizeLimit * 1024 * 1024    // 10 M
     });
-
     // 拖拽时不接受 js, txt 文件。
     uploader.on('dndAccept', function (items) {
         var denied = false,

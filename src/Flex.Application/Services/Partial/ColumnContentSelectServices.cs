@@ -13,45 +13,8 @@ using Flex.SqlSugarFactory.Seed;
 
 namespace Flex.Application.Services
 {
-    public partial class ColumnContentServices : BaseService, IColumnContentServices
+    public partial class ColumnContentServices
     {
-        public async Task<ColumnPermissionAndTableHeadDto<ColumnContentDto>> GetTableThs(int ParentId)
-        {
-            var tableths = ModelTools<ColumnContentDto>.getColumnDescList();
-            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
-            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId && m.ShowInTable == true)).ToList();
-            foreach (var item in fieldmodel)
-            {
-                tableths.Add(new ModelTools<ColumnContentDto>()
-                {
-                    title = item.Name,
-                    sort = false,
-                    align = "center",
-                    maxWidth = "200",
-                    field = item.FieldName
-                });
-            }
-            ColumnPermissionAndTableHeadDto<ColumnContentDto> columnPermission = new ColumnPermissionAndTableHeadDto<ColumnContentDto>();
-            columnPermission.TableHeads = tableths;
-            columnPermission.IsDelete = await CheckPermission(ParentId, nameof(DataPermissionDto.dp));
-            columnPermission.IsUpdate = await CheckPermission(ParentId, nameof(DataPermissionDto.ed));
-            columnPermission.IsAdd = await CheckPermission(ParentId, nameof(DataPermissionDto.ad));
-            columnPermission.IsSelect = await CheckPermission(ParentId, nameof(DataPermissionDto.sp));
-            return columnPermission;
-        }
-        public async Task<ColumnPermissionAndTableHeadDto<HistoryColumnDto>> GetHistoryTableThs(int ParentId)
-        {
-            var tableths = ModelTools<HistoryColumnDto>.getColumnDescList();
-            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
-            ColumnPermissionAndTableHeadDto<HistoryColumnDto> columnPermission = new ColumnPermissionAndTableHeadDto<HistoryColumnDto>();
-            columnPermission.TableHeads = tableths;
-            columnPermission.IsDelete = await CheckPermission(ParentId, nameof(DataPermissionDto.dp));
-            columnPermission.IsUpdate = await CheckPermission(ParentId, nameof(DataPermissionDto.ed));
-            columnPermission.IsAdd = await CheckPermission(ParentId, nameof(DataPermissionDto.ad));
-            columnPermission.IsSelect = await CheckPermission(ParentId, nameof(DataPermissionDto.sp));
-            return columnPermission;
-        }
-
         public async Task<SysContentModel> GetSysContentModelByColumnId(int ParentId)
         {
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
@@ -65,7 +28,7 @@ namespace Flex.Application.Services
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
             string filed = "Title,Id";
             var options = new List<ContentOptions>();
-            var result = await _dapperDBContext.GetDynamicAsync("select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName 
+            var result = await _dapperDBContext.GetDynamicAsync("select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName
                 + " where ParentId=" + ParentId + " and StatusCode=1");
             result.Each(item =>
             {
@@ -78,33 +41,28 @@ namespace Flex.Application.Services
             });
             return options;
         }
+        /// <summary>
+        /// 历史版本
+        /// </summary>
+        /// <param name="contentPageListParam"></param>
+        /// <returns></returns>
         public async Task<Page> HistoryListAsync(ContentPageListParamDto contentPageListParam)
         {
-            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == contentPageListParam.ParentId);
-            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
-            if (contentmodel == null)
-                return new Page();
-            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
-            string filed = ColumnContentUpdateFiledConfig.defaultFields;
-            foreach (var item in fieldmodel)
-            {
-                filed += item.FieldName + ",";
-            }
-            filed = filed.TrimEnd(',');
-            DynamicParameters parameters = new DynamicParameters();
-            string swhere = string.Empty;
-            _sqlTableServices.CreateDapperColumnContentSelectSql(contentPageListParam, out swhere, out parameters);
-            var result = await _dapperDBContext.PageAsync(contentPageListParam.page, contentPageListParam.limit, "select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName + " where StatusCode=6"+ swhere + " order by AddTime desc", parameters);
-
-            result.Items.Each(item =>
-            {
-                item.StatusColor = ((StatusCode)item.StatusCode).GetEnumColorDescription();
-                item.StatusCode = ((StatusCode)item.StatusCode).GetEnumDescription();
-            });
-            return result;
+            return await AbstractList(contentPageListParam, "StatusCode=6", " order by LastEditDate desc");
         }
-        public async Task<Page> ListAsync(ContentPageListParamDto contentPageListParam)
+        /// <summary>
+        /// 回收站
+        /// </summary>
+        /// <param name="contentPageListParam"></param>
+        /// <returns></returns>
+        public async Task<Page> SoftDeleteListAsync(ContentPageListParamDto contentPageListParam)
         {
+            return await AbstractList(contentPageListParam, "StatusCode=0", " order by LastEditDate desc");
+        }
+
+        private async Task<Page> AbstractList(ContentPageListParamDto contentPageListParam, string StatusCodeExpression, string orderby)
+        {
+
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == contentPageListParam.ParentId);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
             if (contentmodel == null)
@@ -119,7 +77,7 @@ namespace Flex.Application.Services
             DynamicParameters parameters = new DynamicParameters();
             string swhere = string.Empty;
             _sqlTableServices.CreateDapperColumnContentSelectSql(contentPageListParam, out swhere, out parameters);
-            var result = await _dapperDBContext.PageAsync(contentPageListParam.page, contentPageListParam.limit, "select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName + " where StatusCode not in (0,6)" + swhere, parameters);
+            var result = await _dapperDBContext.PageAsync(contentPageListParam.page, contentPageListParam.limit, "select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName + " where " + StatusCodeExpression + swhere + orderby, parameters);
 
             result.Items.Each(item =>
             {
@@ -127,6 +85,10 @@ namespace Flex.Application.Services
                 item.StatusCodeText = ((StatusCode)item.StatusCode).GetEnumDescription();
             });
             return result;
+        }
+        public async Task<Page> ListAsync(ContentPageListParamDto contentPageListParam)
+        {
+            return await AbstractList(contentPageListParam, "StatusCode not in (0,6)"," order by OrderId desc");
         }
         public async Task<OutputContentAndWorkFlowDto> GetButtonListByParentId(int ParentId)
         {

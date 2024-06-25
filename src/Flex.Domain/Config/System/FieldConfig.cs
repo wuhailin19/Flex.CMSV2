@@ -16,7 +16,7 @@ namespace Flex.Domain.Config
             builder.Property(m => m.FieldAttritude).HasMaxLength(500);
             builder.Property(m => m.ApiName).HasMaxLength(50);
             builder.Property(m => m.FieldType).HasMaxLength(50);
-            builder.Property(m => m.IsApiField).HasDefaultValue(false);
+            builder.Property(m => m.IsApiField).HasDefaultValue(true);
             builder.Property(m => m.IsSearch).HasDefaultValue(false);
             builder.Property(m => m.ShowInTable).HasDefaultValue(false);
             builder.Property(m => m.OrderId).HasDefaultValue(0);

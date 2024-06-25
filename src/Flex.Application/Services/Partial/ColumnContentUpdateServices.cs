@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Flex.Application.Services
 {
-    public partial class ColumnContentServices : BaseService, IColumnContentServices
+    public partial class ColumnContentServices
     {
         /// <summary>
         /// 修改数据内容

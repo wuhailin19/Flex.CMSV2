@@ -31,6 +31,10 @@ namespace Flex.LayuiWeb.Areas.System.Controllers.ViewController
         {
             return View();
         }
+        public IActionResult SoftDelete()
+        {
+            return View();
+        }
         public IActionResult RestoreContent()
         {
             return View();

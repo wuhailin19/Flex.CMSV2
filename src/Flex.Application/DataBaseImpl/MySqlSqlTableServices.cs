@@ -229,6 +229,7 @@ namespace Flex.Application.SqlServerSQLString
                 case "carousel": returntype = "VARCHAR(500)"; break;
                 case "colorpicker": returntype = "VARCHAR(255)"; break;
                 case "image": returntype = "VARCHAR(255)"; break;
+                case "multiimage": returntype = "TEXT"; break;
                 case "file": returntype = "VARCHAR(255)"; break;
                 case "textarea": returntype = "TEXT"; break;
                 case "editor": returntype = "TEXT"; break;
@@ -290,7 +291,8 @@ namespace Flex.Application.SqlServerSQLString
                 swhere += " " + item + "=@" + item;
             }
         }
-
+        public string CompletelyDeleteContentTableData(string TableName, string Ids) => "Delete from " + TableName + " where Id in(" + Ids + ")";
+        public string RestContentTableData(string TableName, string Ids) => "update " + TableName + " set StatusCode=1 where Id in(" + Ids + ")";
         public StringBuilder CreateSqlsugarUpdateSqlString(Hashtable table, string TableName, out SqlSugar.SugarParameter[] commandParameters)
         {
             StringBuilder builder = new StringBuilder();

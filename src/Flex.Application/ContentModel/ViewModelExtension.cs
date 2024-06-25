@@ -37,43 +37,36 @@ namespace Flex.Application.ContentModel
         {
             return HttpUtility.HtmlEncode(ToHtmlDeconde(obj));
         }
-        public static List<ImgListDto> ToImgListUrl(this string imgurl, int mode = 1)
+        public static List<JsonDocxImages> ToImgListUrl(this string imgurl, int mode = 1)
         {
             if (imgurl.IsEmpty())
-                return new List<ImgListDto>();
-            string[] list = imgurl.Split(new string[] { "_bigsplit_" }, StringSplitOptions.None);
-            if (list.Length >= 1)
+                return new List<JsonDocxImages>();
+            List<ImgListDto> ImgListDtos = JsonHelper.Json<List<ImgListDto>>(imgurl);
+            var newImgListDtos = new List<JsonDocxImages>();
+            foreach (var item in ImgListDtos)
             {
-                List<ImgListDto> ImgListDtos = new List<ImgListDto>();
-                for (int i = 0; i < list.Length; i++)
+                JsonDocxImages ImgListDto;
+                if (mode == 1)
                 {
-                    string linkurl = list[i].Split(new string[] { "_smallsplit_" }, StringSplitOptions.None)[2];
-                    if (linkurl.IsEmpty() || linkurl == "http://")
-                        linkurl = "javascript:;";
-                    ImgListDto ImgListDto = new ImgListDto();
-                    if (mode == 1)
+                    ImgListDto = new JsonDocxImages
                     {
-                        ImgListDto = new ImgListDto()
-                        {
-                            imglist_img = baseLink + list[i].Split(new string[] { "_smallsplit_" }, StringSplitOptions.None)[0],
-                            imglist_title = list[i].Split(new string[] { "_smallsplit_" }, StringSplitOptions.None)[1].ReplaceDefaultStr(),
-                            imglist_link = linkurl
-                        };
-                    }
-                    else
-                    {
-                        ImgListDto = new ImgListDto()
-                        {
-                            imglist_img = "<span class='json-url'><a href='" + baseLink + list[i].Split(new string[] { "_smallsplit_" }, StringSplitOptions.None)[0] + "' target='_blank'>" + baseLink + list[i].Split(new string[] { "_smallsplit_" }, StringSplitOptions.None)[0] + "</a></span>",
-                            imglist_title = "<span class='json-string'>" + list[i].Split(new string[] { "_smallsplit_" }, StringSplitOptions.None)[1].ReplaceDefaultStr() + "</span>",
-                            imglist_link = "<span class='json-string'><a href='" + linkurl + "' target='_blank'>" + linkurl + "</a></span>"
-                        };
-                    }
-                    ImgListDtos.Add(ImgListDto);
+                        img_src = item.imgsrc,
+                        img_title = item.title,
+                        img_content = item.content.Replace("\n", "<br>")
+                    };
                 }
-                return ImgListDtos;
+                else
+                {
+                    ImgListDto = new JsonDocxImages()
+                    {
+                        img_src = "<span class='json-url'><a href='" + item.imgsrc + "' target='_blank'>" + item.imgsrc + "</a></span>",
+                        img_content = "<span class='json-string'>" + item.content.Replace("\n","<br>") + "</span>",
+                        img_title = "<span class='json-string'>" + item.title + "</span>"
+                    };
+                }
+                newImgListDtos.Add(ImgListDto);
             }
-            return new List<ImgListDto>();
+            return newImgListDtos;
         }
         public static string ReplaceDefaultStr(this string str, string str1 = "\r\n", string str2 = "<br/>")
         {

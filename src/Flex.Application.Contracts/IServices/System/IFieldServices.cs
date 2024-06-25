@@ -16,6 +16,7 @@ namespace Flex.Application.Contracts.IServices
         Task<UpdateFieldDto> GetFiledInfoById(string Id);
         Task<IEnumerable<FieldColumnDto>> ListAsync(int Id);
         Task<ProblemDetails<string>> QuickEditField(FiledQuickEditDto fieldQuickEditDto);
+        Task<ProblemDetails<string>> SimpleUpdateDto(SimpleUpdateDto updateFieldDto);
         Task<ProblemDetails<string>> Update(UpdateFieldDto updateFieldDto);
     }
 }

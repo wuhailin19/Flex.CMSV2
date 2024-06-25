@@ -288,8 +288,8 @@ namespace Flex.Application.ContentModel
                     case "DateType": dict.Add(column, item[column.ToString()].ToString()); break;
                     case "editor": dict.Add(column, item[column.ToString()].ToHtmlDeconde()); break;
                     case "PicType": dict.Add(column, item[column.ToString()].ToImgUrl()); break;
-                    case "MultipleTextType": dict.Add(column, item[column.ToString()].ToString().ReplaceDefaultStr()); break;
-                    case "MutiImgSelect": dict.Add(column, item[column.ToString()].ToString().ToImgListUrl(mode)); break;
+                    case "MultipleTextType": dict.Add(column, item[column.ToString()].ToString().Replace("\n", "<br>")); break;
+                    case "multiimage": dict.Add(column, item[column.ToString()].ToString().ToImgListUrl(mode)); break;
                     case "MutiImgExt": break;
                     default: dict.Add(column, item[column.ToString()]); break;
                 }
@@ -302,7 +302,7 @@ namespace Flex.Application.ContentModel
                     case "editor": dict.Add(tablename + column, "<span class='json-string'>" + item[column.ToString()].ToHtmlEnconde().subString(100) + "...后续省略</span>"); break;
                     case "PicType": dict.Add(tablename + column, "<span class='json-url'>" + item[column.ToString()].ToImgUrl() + "</span>"); break;
                     case "MultipleTextType": dict.Add(tablename + column, "<span class='json-string'>" + item[column.ToString()].ToString().ReplaceDefaultStrEncode() + "</span>"); break;
-                    case "MutiImgSelect": dict.Add(tablename + column, item[column.ToString()].ToString().ToImgListUrl(mode)); break;
+                    case "multiimage": dict.Add(tablename + column, item[column.ToString()].ToString().ToImgListUrl(mode)); break;
                     case "MutiImgExt": break;
                     default: dict.Add(tablename + column, "<span class='json-string'>" + item[column.ToString()] + "</span>"); break;
                 }
@@ -395,17 +395,17 @@ namespace Flex.Application.ContentModel
             fileds.TableName = ContentModel[0]["TableName"].ToString();
             fileds.ModelName = ContentModel[0]["Name"].ToString();
 
-            var filedlist = ContentModelHelper.filedlist.Select("ModelId=" + modelid);
-            if (filedlist.Length > 0)
-            {
-                List<FiledModel> hashtable = new List<FiledModel>
+            var filedlist = ContentModelHelper.filedlist.Select("ModelId=" + modelid+ " and IsApiField=1");
+            List<FiledModel> hashtable = new List<FiledModel>
             {
                 new FiledModel("Id","编号","TextType"),
                 new FiledModel("ParentId","栏目","TextType"),
                 new FiledModel("Title","标题","TextType",true),
                 new FiledModel("AddTime","添加时间", "DateType")
             };
-                string column_str = "Id,ParentId,Title,AddTime";
+            string column_str = "Id,ParentId,Title,AddTime";
+            if (filedlist.Length > 0)
+            {
                 foreach (DataRow dr in filedlist)
                 {
                     FiledModel filedModel = new FiledModel();
@@ -413,23 +413,16 @@ namespace Flex.Application.ContentModel
                     filedModel.FiledMode = dr["FieldType"].ToString();
                     filedModel.FiledName = dr["FieldName"].ToString();
                     filedModel.RealFiledName = dr["FieldName"].ToString();
-                    column_str += "," + dr["FieldName"];
 
                     if (!dr["ApiName"].ToString().IsEmpty())
                     {
                         filedModel.FiledName = dr["ApiName"].ToString();
                         column_str += "," + dr["FieldName"] + " as [" + dr["ApiName"] + "]";
                     }
+                    else {
+                        column_str += "," + dr["FieldName"];
+                    }
                     filedModel.IsSearch = dr["IsSearch"].ToInt() == 0 ? false : true;
-                    //switch (filedModel.FiledMode)
-                    //{
-                    //    case "MultipleTextType":
-                    //        filedModel.IsSearch = true;
-                    //        break;
-                    //    case "Editor":
-                    //        filedModel.IsSearch = true;
-                    //        break;
-                    //}
                     hashtable.Add(filedModel);
                 }
                 if (hashtable.Any(m => m.FiledMode == "MutiImgSelect"))
@@ -438,9 +431,9 @@ namespace Flex.Application.ContentModel
                     hashtable.Add(new FiledModel("imglist_img", "图集图片", "MutiImgExt"));
                     hashtable.Add(new FiledModel("imglist_link", "图集链接", "MutiImgExt"));
                 }
-                fileds.TableColumnStr = column_str;
-                fileds.TableColumnList = hashtable;
             }
+            fileds.TableColumnStr = column_str;
+            fileds.TableColumnList = hashtable;
             return fileds;
         }
         #endregion

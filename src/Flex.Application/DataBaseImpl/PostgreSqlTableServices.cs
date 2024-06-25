@@ -269,6 +269,7 @@ namespace Flex.Application.SqlServerSQLString
                 case "spacing": returntype = "VARCHAR(255)"; break;
                 case "textField": returntype = "VARCHAR(255)"; break;
                 case "grid": returntype = "VARCHAR(255)"; break;
+                case "multiimage": returntype = "TEXT"; break;
             }
             return returntype;
         }
@@ -310,7 +311,8 @@ namespace Flex.Application.SqlServerSQLString
         {
             throw new NotImplementedException();
         }
-
+        public string CompletelyDeleteContentTableData(string TableName, string Ids) => "Delete from " + TableName + " where Id in(" + Ids + ")";
+        public string RestContentTableData(string TableName, string Ids) => "update " + TableName + " set StatusCode=1 where Id in(" + Ids + ")";
         public void InitDapperColumnContentSwheresql(ref string swhere, ref DynamicParameters parameters, Dictionary<string, object> dataparams)
         {
             foreach (var item in dataparams.Keys)

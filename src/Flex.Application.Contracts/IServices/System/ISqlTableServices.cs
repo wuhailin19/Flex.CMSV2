@@ -36,5 +36,7 @@ namespace Flex.Application.Contracts.IServices
         void CreateSqlSugarColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out SqlSugar.SugarParameter[] parameters);
         void InitDapperColumnContentSwheresql(ref string swhere, ref DynamicParameters parameters, Dictionary<string, object> dataparams);
         StringBuilder CreateSqlsugarUpdateSqlString(Hashtable table, string TableName, out SqlSugar.SugarParameter[] commandParameters);
+        string CompletelyDeleteContentTableData(string TableName, string Ids);
+        string RestContentTableData(string TableName, string Ids);
     }
 }

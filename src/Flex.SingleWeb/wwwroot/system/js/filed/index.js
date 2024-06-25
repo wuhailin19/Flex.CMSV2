@@ -61,6 +61,37 @@ layui.use(['table','form'], function () {
             delete delete_index[index]
         }
     });
+
+    // 单元格编辑事件
+    table.on('edit(test)', function (obj) {
+        var field = obj.field; // 得到字段
+        var value = obj.value; // 得到修改后的值
+        var data = obj.data; // 得到所在行所有键值
+        UpdateStatus(data.Id, value);
+    });
+
+    function UpdateStatus(id, result) {
+        if (id == "") {
+            layer.msg("选择一条数据", { icon: 5, time: 1000 })
+            return;
+        }
+        var model = { Id: id, };
+        model['ApiName'] = result;
+        ajaxHttp({
+            url: routeLink + 'UpdateApiName',
+            type: 'Post',
+            data: JSON.stringify(model),
+            async: false,
+            dataType: 'json',
+            success: function (result) {
+                if (result.code == 200) {
+                    tips.showSuccess(result.msg);
+                }
+            },
+            complete: function () { }
+        })
+    }
+
     form.on('switch(apistatusPxy)', function (data) {
         // 得到开关的value值，实际是需要修改的ID值。
         var status = this.checked ? 'true' : 'false';

@@ -64,6 +64,8 @@ namespace Flex.Application.SqlServerSQLString
             return sql;
         }
         public string DeleteContentTableData(string TableName, string Ids) => "update " + TableName + " set StatusCode=0 where Id in(" + Ids + ")";
+        public string RestContentTableData(string TableName, string Ids) => "update " + TableName + " set StatusCode=1 where Id in(" + Ids + ")";
+        public string CompletelyDeleteContentTableData(string TableName, string Ids) => "Delete from " + TableName + " where Id in(" + Ids + ")";
         public StringBuilder CreateInsertCopyContentSqlString(List<string> table, string TableName)
         {
             StringBuilder builder = new StringBuilder();
@@ -116,6 +118,7 @@ namespace Flex.Application.SqlServerSQLString
                 swhere += " and ContentGroupId=@ContentGroupId";
             }
         }
+
         public string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist)
         {
             StringBuilder sb = new StringBuilder();

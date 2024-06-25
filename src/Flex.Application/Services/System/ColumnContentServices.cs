@@ -225,5 +225,53 @@ namespace Flex.Application.Services
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }
         }
+        public async Task<ProblemDetails<string>> RestContent(int ParentId, string Id)
+        {
+            if (!await CheckPermission(ParentId, nameof(DataPermissionDto.ed)))
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            if (contentmodel == null)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+            string Ids = Id.Replace("-", ",");
+            try
+            {
+                _unitOfWork.ExecuteSqlCommand(_sqlTableServices.RestContentTableData(contentmodel.TableName, Ids));
+                await _unitOfWork.SaveChangesAsync();
+                await _logServices.AddContentLog(SystemLogLevel.Warning, $"恢复栏目【{column.Name}】{Ids.Split(',').Count()}条数据，Id为【{Ids}】", $"回收站恢复");
+                return Problem<string>(HttpStatusCode.OK, $"共恢复{Ids.Split(',').Count()}条数据");
+            }
+            catch (Exception ex)
+            {
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
+            }
+        }
+        /// <summary>
+        /// 完全删除
+        /// </summary>
+        /// <param name="ParentId"></param>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public async Task<ProblemDetails<string>> CompletelyDelete(int ParentId, string Id)
+        {
+            if (!await CheckPermission(ParentId, nameof(DataPermissionDto.dp)))
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            if (contentmodel == null)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+            string Ids = Id.Replace("-", ",");
+            try
+            {
+                _unitOfWork.ExecuteSqlCommand(_sqlTableServices.CompletelyDeleteContentTableData(contentmodel.TableName, Ids));
+                await _unitOfWork.SaveChangesAsync();
+                await _logServices.AddContentLog(SystemLogLevel.Warning, $"完全删除栏目【{column.Name}】{Ids.Split(',').Count()}条数据，Id为【{Ids}】", $"删除");
+                return Problem<string>(HttpStatusCode.OK, $"共完全删除{Ids.Split(',').Count()}条数据");
+            }
+            catch (Exception ex)
+            {
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
+            }
+        }
     }
 }

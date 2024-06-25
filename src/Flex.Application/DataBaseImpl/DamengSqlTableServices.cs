@@ -99,7 +99,7 @@ namespace Flex.Application.SqlServerSQLString
         }
 
         public string DeleteContentTableData(string TableName, string Ids) => $"UPDATE {TableName} SET StatusCode=0 WHERE Id IN ({Ids})";
-
+        public string RestContentTableData(string TableName, string Ids) => "update " + TableName + " set StatusCode=1 where Id in(" + Ids + ")";
         public StringBuilder CreateInsertCopyContentSqlString(List<string> table, string TableName)
         {
             StringBuilder builder = new StringBuilder();
@@ -315,6 +315,7 @@ namespace Flex.Application.SqlServerSQLString
                 case "file": returntype = "VARCHAR(255)"; break;
                 case "textarea": returntype = "NVARCHAR2(8000)"; break;
                 case "editor": returntype = "CLOB"; break;
+                case "multiimage": returntype = "CLOB"; break;
                 case "blockquote": returntype = "VARCHAR(255)"; break;
                 case "line": returntype = "VARCHAR(255)"; break;
                 case "spacing": returntype = "VARCHAR(255)"; break;
@@ -323,7 +324,7 @@ namespace Flex.Application.SqlServerSQLString
             }
             return returntype;
         }
-
+        public string CompletelyDeleteContentTableData(string TableName, string Ids) => "Delete from " + TableName + " where Id in(" + Ids + ")";
         public StringBuilder CreateSqlsugarUpdateSqlString(Hashtable table, string TableName, out SqlSugar.SugarParameter[] commandParameters)
         {
             StringBuilder builder = new StringBuilder();

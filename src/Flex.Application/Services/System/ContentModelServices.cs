@@ -1,4 +1,5 @@
-﻿using Flex.Application.Contracts.Exceptions;
+﻿using Flex.Application.ContentModel;
+using Flex.Application.Contracts.Exceptions;
 using Flex.Core.Config;
 using Flex.Domain.Dtos.ContentModel;
 using Flex.Domain.Dtos.Field;
@@ -177,6 +178,7 @@ namespace Flex.Application.Services
                 #endregion
 
                 responsity.Update(contentmodel);
+                ContentModelHelper.clearData();
                 _unitOfWork.SaveChangesTran();
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
