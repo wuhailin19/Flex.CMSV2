@@ -396,3 +396,4 @@ FodyWeavers.xsd
 /src/Flex.SingleWeb/wwwroot/html
 /src/Flex.SingleWeb/wwwroot/site7/upload/images/2024-05-31
 /src/Flex.SingleWeb/wwwroot/site8/upload/images
+/src/Flex.SingleWeb/Areas/System/Views/ColumnContent/index.cshtml
