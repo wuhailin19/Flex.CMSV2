@@ -34,7 +34,7 @@ namespace Flex.WebApi.SystemControllers
         [Descriper(IsFilter = true)]
         public string Column()
         {
-            return Success(ModelTools<MenuColumnDto>.getColumnDescList());
+            return SuccessIgnoreNull(ModelTools<MenuColumnDto>.getColumnDescList());
         }
         [HttpGet("ListAsync")]
         [Descriper(Name = "菜单管理页面数据")]

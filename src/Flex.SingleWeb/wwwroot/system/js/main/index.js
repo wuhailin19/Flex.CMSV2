@@ -78,6 +78,22 @@ function GetMsgCount() {
         }
     })
 }
+ajaxHttp({
+    url: api + "Common/getDataStr",
+    type: 'Get',
+    dataType: 'json',
+    success: function (res) {
+        if (res.code == 200) {
+            if (res.content != 0) {
+                $('#datetime').html(res.msg);
+            } else {
+                $('#datetime').html('');
+            }
+        }
+    }, complete: function () {
+        //setTimeout(function () { GetMsgCount() }, 5000)
+    }
+})
 GetMsgCount();
 function InitAdmin() {
     ajaxHttp({

@@ -23,6 +23,7 @@ namespace Flex.Application.SqlServerSQLString
     Title VARCHAR2(255) NOT NULL,
     SimpleTitle VARCHAR2(255),
     Hits INT NOT NULL DEFAULT 1,
+    PId INT NULL DEFAULT 1,
     SeoTitle VARCHAR2(255),
     KeyWord VARCHAR2(500),
     Description VARCHAR2(1000),

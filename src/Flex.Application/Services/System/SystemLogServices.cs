@@ -1,6 +1,7 @@
 ﻿using Flex.Application.Contracts.Exceptions;
 using Flex.Application.Contracts.IServices.System;
 using Flex.Core.Attributes;
+using Flex.Core.Config;
 using Flex.Domain.Dtos.System.SystemLog;
 using Flex.Domain.Enums.LogLevel;
 using Microsoft.AspNetCore.Http;
@@ -86,6 +87,7 @@ namespace Flex.Application.Services.System
             insertmodel.Url = request;
             insertmodel.LogSort = LogSort.DataOperation;
             insertmodel.OperationContent = operationContent;
+            insertmodel.SiteId = CurrentSiteInfo.SiteId;
             try
             {
                 var result = await _unitOfWork.GetRepository<sysSystemLog>().InsertAsync(insertmodel);

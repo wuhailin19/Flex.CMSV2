@@ -2,7 +2,7 @@
 var parent_json = parent.req_Data;
 var IsAdd = true;
 ajaxHttp({
-    url: api + 'ColumnContent/GetContentById/' + parent.currentparentId + "/0",
+    url: api + 'ColumnContent/GetContentById/' + parent.currentmodelId +'/' + parent.currentparentId + "/0",
     type: 'Get',
     async: false,
     dataType: 'json',
@@ -53,7 +53,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
             shade: 0.3,
             maxmin: true, //开启最大化最小化按钮
             area: ['80%', '80%'],
-            content: SystempageRoute + 'Message/SendMsg?stepToId=' + that.attr('data-toid') + '&stepFromId=' + that.attr('data-fromid') + '&parentId=' + parent.currentparentId + '&contentId=0',
+            content: SystempageRoute + 'Message/SendMsg?stepToId=' + that.attr('data-toid') + '&stepFromId=' + that.attr('data-fromid') + '&parentId=' + parent.currentparentId + '&contentId=0&modelId=' + parent.currentmodelId,
             end: function () {
                 setTimeout(function () {
                     var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
@@ -64,7 +64,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
     })
 
     ajaxHttp({
-        url: api + 'ColumnContent/GetFormHtml/' + parent.currentparentId,
+        url: api + 'ColumnContent/GetFormHtml/' + parent.currentmodelId,
         type: 'Get',
         async: false,
         dataType: 'json',
@@ -202,7 +202,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
         for (let key in iceEditorObjects) {
             data[key] = iceEditorObjects[key].getContent();
         }
-        data.ParentId = parent.currentparentId;
+        
         if (multiimages.length > 0) {
             for (var i = 0; i < multiimages.length; i++) {
                 let currentimglist = [];
@@ -223,6 +223,9 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
                 data[multiimages[i].id] = currentimglist;
             }
         }
+        data.ModelId = parent.currentmodelId;
+        data.ParentId = parent.currentparentId;
+        data.PId = parent.pId;
     }
     //监听提交
     form.on('submit(formDemo)', function (data) {
@@ -239,7 +242,6 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
         return false;
     })
     function AddContent(data) {
-
         ajaxHttp({
             url: api + 'ColumnContent/CreateColumnContent',
             type: 'Post',

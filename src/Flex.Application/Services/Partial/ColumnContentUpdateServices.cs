@@ -32,6 +32,7 @@ namespace Flex.Application.Services
         {
             if (table.Count == 0)
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            int ModelId = table["ModelId"].ToInt();
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
@@ -39,11 +40,11 @@ namespace Flex.Application.Services
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
 
-            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == ModelId);
             if (contentmodel == null)
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
 
-            var filedmodel = await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId);
+            var filedmodel = await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == ModelId);
             ClearNotUseFields(table, white_fileds, filedmodel);
 
             InitUpdateTable(table);
@@ -87,6 +88,7 @@ namespace Flex.Application.Services
             var whitefields = ColumnContentUpdateFiledConfig.reviewContentFields;
             if (table.Count == 0)
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            int ModelId = table["ModelId"].ToInt();
             if (!await CheckPermission(table["ParentId"].ToInt(), nameof(DataPermissionDto.ed)))
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == table["ParentId"].ToInt());
@@ -94,7 +96,7 @@ namespace Flex.Application.Services
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
-            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == ModelId);
             if (contentmodel == null)
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             if (IsCancelReview)
@@ -145,6 +147,7 @@ namespace Flex.Application.Services
             whitefields = whitefields ?? ColumnContentUpdateFiledConfig.simpleUpdateFields;
             if (table.Count == 0)
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            int ModelId = table["ModelId"].ToInt();
             if (table.GetValue("Ids").ToString().IsNullOrEmpty())
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             if (table.ContainsKey("OrderId"))
@@ -158,7 +161,7 @@ namespace Flex.Application.Services
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataNeedReview.GetEnumDescription());
-            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == ModelId);
             if (contentmodel == null)
                 return Problem<int>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
             var keysToRemove = new List<object>();
@@ -182,17 +185,17 @@ namespace Flex.Application.Services
             if (fileds != null)
             {
                 //创建历史副本
-                parameters = new SqlSugar.SugarParameter[] {
+                parameters = [
                     new SqlSugar.SugarParameter("@LastEditUser",table["LastEditUser"]),
                     new SqlSugar.SugarParameter("@LastEditUserName",table["LastEditUserName"]),
                     new SqlSugar.SugarParameter("@LastEditDate",table["LastEditDate"]),
                     new SqlSugar.SugarParameter("@Id",table["Id"].ToInt()),
-                };
+                ];
                 var createcopysql = _sqlTableServices.CreateInsertCopyContentSqlString(fileds, contentmodel.TableName);
                 _sqlsugar.Db.Ado.ExecuteCommand(createcopysql.ToString(), parameters);
             }
 
-            parameters = new SqlSugar.SugarParameter[] { };
+            parameters = [];
             builder = _sqlTableServices.CreateSqlsugarUpdateSqlString(table, contentmodel.TableName, out parameters);
             try
             {

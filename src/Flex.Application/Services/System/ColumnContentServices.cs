@@ -86,21 +86,41 @@ namespace Flex.Application.Services
                     break;
             }
         }
+        private void InitDeleteTable(Hashtable table)
+        {
+            table["LastEditUser"] = _claims.UserId;
+            table["LastEditUserName"] = _claims.UserName;
+            //pgSQL情况
+            switch (DataBaseConfig.dataBase)
+            {
+                case DataBaseType.PgSql:
+                    TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("UTC");
+                    DateTime utcTime = DateTime.SpecifyKind(Clock.Now, DateTimeKind.Utc);
+                    DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZone);
+                    table["LastEditDate"] = localTime;
+                    break;
+                default:
+                    table["LastEditDate"] = Clock.Now;
+                    break;
+            }
+        }
         public async Task<ProblemDetails<int>> Add(Hashtable table, bool IsReview = false)
         {
             int parentId = table["ParentId"].ToInt();
+            int ModelId = table["ModelId"].ToInt();
             if (!await CheckPermission(parentId, nameof(DataPermissionDto.ad)))
                 return Problem(HttpStatusCode.BadRequest, 0, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == parentId);
             //栏目需审核则不允许正常修改
             if (column.ReviewMode.ToInt() != 0 && !IsReview)
                 return Problem<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataNeedReview.GetEnumDescription());
-            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == ModelId);
             if (contentmodel == null)
                 return Problem(HttpStatusCode.BadRequest, 0, ErrorCodes.DataUpdateError.GetEnumDescription());
             table.SetValue("ParentId", parentId);
+            table.SetValue("SiteId", CurrentSiteInfo.SiteId);
 
-            var filedmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
+            var filedmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == ModelId)).ToList();
             var keysToRemove = new List<object>();
             var timelist = new List<object>();
             var white_fileds = ColumnContentUpdateFiledConfig.defaultFields.ToList();
@@ -204,19 +224,24 @@ namespace Flex.Application.Services
                 return false;
             return datapermissionList[_claims.UserRole][permissioncate].Contains(ParentId.ToString());
         }
-        public async Task<ProblemDetails<string>> Delete(int ParentId, string Id)
+        public async Task<ProblemDetails<string>> Delete(int ParentId,int modelId, string Id)
         {
             if (!await CheckPermission(ParentId, nameof(DataPermissionDto.dp)))
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
-            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == modelId);
             if (contentmodel == null)
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             string Ids = Id.Replace("-", ",");
             try
             {
-                _unitOfWork.ExecuteSqlCommand(_sqlTableServices.DeleteContentTableData(contentmodel.TableName, Ids));
-                await _unitOfWork.SaveChangesAsync();
+                SqlSugar.SugarParameter[] parameters;
+                Hashtable hashtable = new Hashtable();
+                InitDeleteTable(hashtable);
+                hashtable.SetValue("Ids",Ids);
+                hashtable.SetValue("StatusCode", "0");
+                var deletestr = _sqlTableServices.CreateSqlsugarUpdateSqlString(hashtable, contentmodel.TableName, out parameters).ToString();
+                _sqlsugar.Db.Ado.ExecuteCommand(deletestr, parameters);
                 await _logServices.AddContentLog(SystemLogLevel.Warning, $"删除栏目【{column.Name}】{Ids.Split(',').Count()}条数据，Id为【{Ids}】", $"删除");
                 return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Split(',').Count()}条数据");
             }
@@ -225,14 +250,14 @@ namespace Flex.Application.Services
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }
         }
-        public async Task<ProblemDetails<string>> RestContent(int ParentId, string Id)
+        public async Task<ProblemDetails<string>> RestContent(int ParentId,int modelId, string Id)
         {
             if (!await CheckPermission(ParentId, nameof(DataPermissionDto.ed)))
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
-            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == modelId);
             if (contentmodel == null)
-                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataRestError.GetEnumDescription());
             string Ids = Id.Replace("-", ",");
             try
             {
@@ -243,7 +268,7 @@ namespace Flex.Application.Services
             }
             catch (Exception ex)
             {
-                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataRestError.GetEnumDescription(), ex);
             }
         }
         /// <summary>
@@ -252,12 +277,12 @@ namespace Flex.Application.Services
         /// <param name="ParentId"></param>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public async Task<ProblemDetails<string>> CompletelyDelete(int ParentId, string Id)
+        public async Task<ProblemDetails<string>> CompletelyDelete(int ParentId,int modelId, string Id)
         {
             if (!await CheckPermission(ParentId, nameof(DataPermissionDto.dp)))
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
-            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == modelId);
             if (contentmodel == null)
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataDeleteError.GetEnumDescription());
             string Ids = Id.Replace("-", ",");

@@ -44,7 +44,7 @@ namespace Flex.WebApi.Handlers
                     CurrentSiteInfo.SiteId = httpContext.Request.Headers["siteId"].ToString().ToInt();
 
                     //Console.WriteLine("过期时间：" + DateTime.Parse(context.User.Claims.First(m => m.Type == ClaimTypes.Expiration).Value));
-                    var expirationtime = DateTime.Parse(context.User.Claims.First(m => m.Type == ClaimTypes.Expiration)?.Value);
+                    var expirationtime = DateTime.Parse(context.User.Claims.First(m => m.Type == ClaimTypes.Expiration)?.Value ?? Clock.Now.ToString());
                     if (expirationtime < Clock.Now)
                     {
                         var logstr = string.Format("该用户{0}（{2}），登录已超时，链接{1}", _claims.UserName, nowurl, _claims.UserId);

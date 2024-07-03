@@ -19,6 +19,14 @@ namespace Flex.LayuiWeb.Areas.System.Controllers.ViewController
         {
             return View();
         }
+        public IActionResult Append()
+        {
+            return View();
+        }
+        public IActionResult QuickSort()
+        {
+            return View();
+        }
         public IActionResult Edit()
         {
             return View();

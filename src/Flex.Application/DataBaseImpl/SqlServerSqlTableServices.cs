@@ -25,6 +25,7 @@ namespace Flex.Application.SqlServerSQLString
                                       "[Title] [nvarchar](255) NOT NULL," +
                                       "[SimpleTitle] [nvarchar](255)  NULL," +
                                       "[Hits] [int] NOT NULL default 1," +
+                                      "[PId] [int]  NULL default 0," +
                                       "[SeoTitle] [nvarchar](255)  NULL," +
                                       "[KeyWord] [nvarchar](500)  NULL," +
                                       "[Description] [nvarchar](1000)  NULL," +

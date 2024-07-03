@@ -12,30 +12,12 @@ namespace Flex.Application.Contracts.Exceptions
 {
     /// <summary>
     /// 10001-20000 系统错误码
-    /// 20000-99999 业务异常
+    /// 211-300 业务异常
     /// </summary>
     public enum ErrorCodes
     {
         /// <summary> 默认错误码 </summary>
         DefaultCode = -1,
-
-        /// <summary> 系统错误 </summary>
-        [Description("服务器心情不好，请稍后重试~")]
-         SystemError = 211,
-
-        /// <summary> 参数错误 </summary>
-        [Description("参数错误")]
-         ParamaterError = 212,
-
-        /// <summary> 调用受限 </summary>
-        [Description("该请求调用受限")]
-        Unauthorized = 213,
-
-        /// <summary> 调用受限 </summary>
-        [Description("该请求已超时")]
-         ClientTimeoutError = 214,
-
-        
 
         /// <summary> 当前数据已被修改 </summary>
         [Description("当前数据已被修改")]
@@ -118,23 +100,34 @@ namespace Flex.Application.Contracts.Exceptions
         /// <summary> 消息发送成功 </summary>
         [Description("消息发送成功")]
         MsgSendSuccess = 10025,
+        /// <summary> 数据恢复出错 </summary>
+        [Description("数据恢复出错")]
+        DataRestError = 10026,
 
+        /// <summary> 系统错误 </summary>
+        [Description("服务器心情不好，请稍后重试~")]
+        SystemError = 211,
+        /// <summary> 参数错误 </summary>
+        [Description("参数错误")]
+        ParamaterError = 212,
+        /// <summary> 调用受限 </summary>
+        [Description("该请求调用受限")]
+        Unauthorized = 213,
+        /// <summary> 调用受限 </summary>
+        [Description("该请求已超时")]
+        ClientTimeoutError = 214,
         /// <summary> 登录已超时 </summary>
         [Description("登录已超时")]
         LoginTimeoutError = 215,
-
         /// <summary> 未登录 </summary>
         [Description("未登录")]
         NotLogin = 216,
-
         /// <summary> 没有操作权限 </summary>
         [Description("没有操作权限")]
         NoOperationPermission = 217,
-
         /// <summary> 数据已存在 </summary>
         [Description("数据已存在")]
         DataExist = 218,
-
         /// <summary> 账号已锁定 </summary>
         [Description("账号已锁定")]
         AccountLocked = 219,
@@ -153,5 +146,11 @@ namespace Flex.Application.Contracts.Exceptions
         /// <summary> 密码已过期 </summary>
         [Description("密码已过期")]
         PwdExpried = 224,
+        /// <summary> 字段名重复 </summary>
+        [Description("字段名重复")]
+        ApiFieldExist = 225,
+        /// <summary> 栏目数据为空 </summary>
+        [Description("栏目数据为空")]
+        ColumnListEmpty = 226,
     }
 }

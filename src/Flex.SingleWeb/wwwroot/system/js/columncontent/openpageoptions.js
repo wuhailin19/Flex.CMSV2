@@ -1,4 +1,6 @@
 ﻿var HasOpenHistroryBox = false;
+var deleteindex;
+var historyindex;
 var defaultOptions = {
     addwidths: 400,
     addheights: 400,
@@ -37,8 +39,10 @@ var defaultOptions = {
         tableIns.reload({
             where: {
                 ParentId: currentparentId,
+                PId: pId,
                 ContentGroupId: (parentjson != undefined ? parentjson.ContentGroupId : ''),
                 k: keyword.val(),
+                ModelId: currentmodelId,
                 timefrom: dateRanage[0],
                 timeto: dateRanage[1]
             } // 设定异步数据接口的额外参数，任意设
@@ -60,7 +64,7 @@ var defaultOptions = {
             offset: HasOpenHistroryBox ? 'lt' : 'auto',
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: routePageLink + 'Edit?ParentId=' + req_Data.ParentId + "&Id=" + req_Data.Id,
+            content: routePageLink + 'Edit?modelId=' + currentmodelId + '&parentId=' + req_Data.ParentId + "&Id=" + req_Data.Id,
             end: function () {
                 if (isreload) {
                     defaultOptions.callBack(insTb);
@@ -112,8 +116,9 @@ var defaultOptions = {
         let widthstr = '30%';
         let heightstr = '100%';
         HasOpenHistroryBox = true;
+        layer.close(historyindex);
         //iframe窗
-        layer.open({
+        historyindex = layer.open({
             type: 2,
             skin: 'layui-layer-lan',
             title: '历史修改',
@@ -133,8 +138,9 @@ var defaultOptions = {
         let widthstr = '30%';
         let heightstr = '100%';
         HasOpenHistroryBox = true;
+        layer.close(deleteindex);
         //iframe窗
-        layer.open({
+        deleteindex = layer.open({
             type: 2,
             skin: 'layui-layer-lan',
             title: '回收站',

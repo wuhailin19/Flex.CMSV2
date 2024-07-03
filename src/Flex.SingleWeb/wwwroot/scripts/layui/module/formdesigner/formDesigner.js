@@ -1987,14 +1987,21 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     _html += '<div class="layui-input-block">';
                     _html += '<input type="text" name="' + input_id + '" placeholder="" autocomplete="off" class="layui-input">';
                     _html += '</div>';
+
                     _html += '<div class="layui-input-block" style="margin-top:10px;">';
-                    _html += '<button type="button" class="layui-btn " id="uploader-show_' + input_id + '">';
-                    _html += '<i class="layui-icon  layui-icon-upload"></i>上传';
-                    _html += '</button>';
-                    _html += '<button type="button" class="layui-btn" id="cropper-btn_' + input_id + '">';
-                    _html += '<i class="layui-icon  layui-icon-set"></i> 裁剪';
+                    if (!that.config.Preview) {
+                        _html += '<button type="button" class="layui-btn " id="uploader-show_' + input_id + '">';
+                        _html += '<i class="layui-icon  layui-icon-upload"></i>上传';
+                        _html += '</button>';
+                        _html += '<button type="button" class="layui-btn" id="cropper-btn_' + input_id + '">';
+                        _html += '<i class="layui-icon  layui-icon-set"></i> 裁剪';
+                        _html += '</button>';
+                    }
+                    _html += '<button type="button" class="layui-btn singlepreviewimg" data-src="' + input_id + '" id="cropper-btn_' + input_id + '">';
+                    _html += '<i class="layui-icon  layui-icon-eyes"></i> 预览';
                     _html += '</button>';
                     _html += '</div>';
+
 
                     _html += '</div>';
                     elem.append(_html);
@@ -2096,9 +2103,9 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     var _html = '<div class="layui-form-item {2}"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index);
                     _html += '<label class="layui-form-label {0}">{1}:</label>'.format(json.required ? 'layui-form-required' : '', json.label);
                     _html += '<div class="layui-input-block">';
-
-                    _html += '<button type="button" class="layui-btn" id="{0}">多图片上传</button>'.format(json.id);
-
+                    if (!that.config.Preview) {
+                        _html += '<button type="button" class="layui-btn" id="{0}">多图片上传</button>'.format(json.id);
+                    }
                     _html += '<div class="layui-upload-list uploader-list" style="" id="uploader-list-{0}">'.format(json.id);
                     if (json.defaultValue !== null && json.defaultValue !== ""
                         && json.defaultValue !== undefined) {
@@ -2109,12 +2116,12 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                                 '<img src="' + imagelist[i].imgsrc + '" class="uploadimg_item"/>' +
                                 '</div>' +
                                 '<div class="layui-input-inline"><input type="text" class="layui-input" value="' + imagelist[i].title + '"/>' +
-                                '<textarea name="" placeholder="" class="layui-textarea">' + imagelist[i].content+'</textarea>' +
+                                '<textarea name="" placeholder="" class="layui-textarea">' + imagelist[i].content + '</textarea>' +
                                 '</div>' +
                                 '<div class="layui-input-inline otherbtn">' +
                                 '<span class="layui-btn layui-btn-sm layui-btn-danger">删除</span><br><br>' +
                                 '<span class="layui-btn layui-btn-sm layui-btn-login previewimg" data-src="' + imagelist[i].imgsrc + '">预览</span></div></div>';
-                        } 
+                        }
                     }
                     _html += '</div>';
                     _html += '</div>';
@@ -2234,11 +2241,13 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     _html += '<div class="layui-input-block">';
                     _html += '<input type="text" name="' + input_id + '" placeholder="" autocomplete="off" class="layui-input">';
                     _html += '</div>';
+                    if (!that.config.Preview) {
                     _html += '<div class="layui-input-block" style="margin-top:10px;">';
-                    _html += '<button type="button" class="layui-btn " id="uploader-show_' + input_id + '">';
-                    _html += '<i class="layui-icon  layui-icon-upload"></i>上传';
-                    _html += '</button>';
-                    _html += '</div>';
+                        _html += '<button type="button" class="layui-btn " id="uploader-show_' + input_id + '">';
+                        _html += '<i class="layui-icon  layui-icon-upload"></i>上传';
+                        _html += '</button>';
+                        _html += '</div>';
+                    }
                     _html += '</div>';
 
                     elem.append(_html);
@@ -4714,6 +4723,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
             , formData: {}
             , globalDisable: false
             , viewOrDesign: false
+            , Preview: false
             , formDefaultButton: true
             , formProperty: {}
             , selectItem: undefined

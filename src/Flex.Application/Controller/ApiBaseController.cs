@@ -61,6 +61,17 @@ public abstract class ApiBaseController : ControllerBase
     {
         return Message<T>.Msg(code, data);
     }
+    
+    /// <summary>
+    /// 返回成功过滤Null
+    /// </summary>
+    /// <param name="data">泛型</param>
+    /// <param name="code"></param>
+    /// <returns></returns>
+    public static string SuccessIgnoreNull<T>(T data = default, int code = ErrorCode.Success)
+    {
+        return Message<T>.MsgIgnoreNull(code, data);
+    }
 
     /// <summary>
     /// 返回失败

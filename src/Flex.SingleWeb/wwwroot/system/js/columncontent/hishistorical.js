@@ -45,6 +45,8 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
         },
         where: {
             ParentId: currentparentId,
+            PId: parent.pId,
+            ModelId: parent.currentmodelId,
             ContentGroupId: parentjson.ContentGroupId
         },
         parseData: function (res) {
@@ -89,7 +91,7 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
                 var nodeIds = defaultOptions.getCheckedId(data);
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
                     ajaxHttp({
-                        url: routeLink + currentparentId + "/" + nodeIds,
+                        url: routeLink + parent.currentmodelId + "/" + currentparentId + "/" + nodeIds,
                         type: 'Post',
                         async: false,
                         success: function (json) {

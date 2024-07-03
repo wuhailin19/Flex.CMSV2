@@ -30,12 +30,28 @@ namespace Flex.WebApi.SystemControllers
         }
         [HttpGet("getDataStr")]
         [AllowAnonymous]
-        public DateTime getDataStr()
+        public string getDataStr()
         {
-            TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("UTC");
-            DateTime utcTime = DateTime.SpecifyKind(Clock.Now, DateTimeKind.Utc);
-            DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZone);
-            return localTime;
+            //TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("UTC");
+            //DateTime utcTime = DateTime.SpecifyKind(Clock.Now, DateTimeKind.Utc);
+            //DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZone);
+            var date = Clock.Now.ToString("yyyy年MM月dd日")+" "+ ChineseByEnWeek(Clock.Now);
+            return Success(date);
+        }
+
+        private string ChineseByEnWeek(DateTime dt)
+        {
+            switch (dt.DayOfWeek.ToString())
+            {
+                case "Monday": return "星期一";
+                case "Tuesday": return "星期二";
+                case "Wednesday": return "星期三";
+                case "Thursday": return "星期四";
+                case "Friday": return "星期五";
+                case "Saturday": return "星期六";
+                case "Sunday": return "星期日";
+                default: return "";
+            }
         }
     }
 }

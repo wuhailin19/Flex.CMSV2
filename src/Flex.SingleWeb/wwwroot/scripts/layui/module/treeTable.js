@@ -859,6 +859,7 @@ layui.define(['laytpl', 'form', 'util'], function (exports) {
             $tr.data('indent', indent);
             $tr.removeClass('ew-tree-table-loading');
         }
+
         var html = '<tr';
         var classNames = '';
         if (haveChild && d[options.tree.openName]) classNames += 'ew-tree-table-open';
@@ -867,12 +868,14 @@ layui.define(['laytpl', 'form', 'util'], function (exports) {
         if (haveChild) html += (' data-have-child="' + haveChild + '"');
         html += (' data-index="' + d.LAY_INDEX + '"');
         html += (' data-indent="' + indent + '">');
+       
         var index = 0;
         this.eachCols(function (i, col) {
             if (col.colGroup) return;
             html += that.renderBodyTd(d, indent, index, $tr ? $tr.children('td').eq(index) : undefined, col);
             index++;
         });
+        
         html += '</tr>';
         return html;
     };
@@ -1659,7 +1662,7 @@ layui.define(['laytpl', 'form', 'util'], function (exports) {
         var $headBox = $view.children('.ew-tree-table-head');
         var $tbBox = $view.children('.ew-tree-table-box');
         var sWidth = $headBox.width() - $tbBox.prop('clientWidth');
-   
+
         $headBox.css('border-right', (sWidth > 0 ? sWidth : 0) + 'px solid #f2f2f2');
     }
 

@@ -43,27 +43,30 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
             // console.log(res,curr,count)
             var sortableList = document.getElementById('picmanager');
             var sortable = new Sortable(sortableList, {
+                chosenClass: "targetactive",  // 被选中项的css 类名
+                dragClass: "sortable-drag",  // 正在被拖拽中的css类名
+                animation: 150,
                 onStart: function (evt) {
                     currentitem = undefined;
                     realteditem = undefined;
                 },
-                onMove: function (evt) {
+                onMove: function (evt, originalEvent) {
                     // Check if the mouse is over the target element
+
                     if ($(evt.dragged).data('index') == "-1")
                         return false;
                     if ($(evt.related).data('type') != 'DIR') {
                         currentitem = undefined;
                         realteditem = undefined;
-
                         return false;
                     }
                     $(evt.related).addClass('targetactive').siblings().removeClass('targetactive');
                     currentitem = $(evt.dragged);
                     realteditem = $(evt.related);
-
-
+                    
                     return false;
                 },
+                
                 onEnd: function (evt) {
                     let items = sortableList.querySelectorAll('li');
                     items.forEach(function (item) {
@@ -72,7 +75,6 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
                     if (realteditem == undefined) {
                         return false;
                     }
-
 
                     let data = fileManager.cache["fmTest"];
 
@@ -97,6 +99,9 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
 
                         });
                     } else { excutechangedir(requestdata); }
+                },
+                onCancel: function (evt) {
+
                 }
             });
         }

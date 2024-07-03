@@ -23,6 +23,7 @@ namespace Flex.Domain.Entities
         public string? TableName { set; get; }
         public int ContentId { set; get; }
         public int ParentId { set; get; }
+        public int ModelId { set; get; }
         public int FlowId { set; get; }
         public bool IsStart { set; get; } = false;
         public bool IsEnd { set; get; } = false;

@@ -11,11 +11,12 @@ namespace Flex.Application.Services
 {
     public partial class ColumnContentServices
     {
-        public async Task<ColumnPermissionAndTableHeadDto<ColumnContentDto>> GetTableThs(int ParentId)
+        public async Task<ColumnPermissionAndTableHeadDto<ColumnContentDto>> GetTableThs(int parentId, int modelId)
         {
             var tableths = ModelTools<ColumnContentDto>.getColumnDescList();
-            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
-            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId && m.ShowInTable == true)).ToList();
+
+            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == modelId && m.ShowInTable == true)).ToList();
+
             foreach (var item in fieldmodel)
             {
                 tableths.Add(new ModelTools<ColumnContentDto>()
@@ -27,37 +28,48 @@ namespace Flex.Application.Services
                     field = item.FieldName
                 });
             }
+            var relationtable = await _unitOfWork.GetRepository<sysTableRelation>().GetAllAsync(m => m.ParentModelId == modelId);
+            if (relationtable.Count > 0)
+            {
+                tableths.Add(new ModelTools<ColumnContentDto>()
+                {
+                    title = "相关信息",
+                    sort = false,
+                    align = "center",
+                    toolbar = "#relationInfo",
+                    minWidth = "200",
+                    field = "relationInfo"
+                });
+            }
             ColumnPermissionAndTableHeadDto<ColumnContentDto> columnPermission = new ColumnPermissionAndTableHeadDto<ColumnContentDto>();
             columnPermission.TableHeads = tableths;
-            columnPermission.IsDelete = await CheckPermission(ParentId, nameof(DataPermissionDto.dp));
-            columnPermission.IsUpdate = await CheckPermission(ParentId, nameof(DataPermissionDto.ed));
-            columnPermission.IsAdd = await CheckPermission(ParentId, nameof(DataPermissionDto.ad));
-            columnPermission.IsSelect = await CheckPermission(ParentId, nameof(DataPermissionDto.sp));
+            columnPermission.IsDelete = await CheckPermission(parentId, nameof(DataPermissionDto.dp));
+            columnPermission.IsUpdate = await CheckPermission(parentId, nameof(DataPermissionDto.ed));
+            columnPermission.IsAdd = await CheckPermission(parentId, nameof(DataPermissionDto.ad));
+            columnPermission.IsSelect = await CheckPermission(parentId, nameof(DataPermissionDto.sp));
             return columnPermission;
         }
-        public async Task<ColumnPermissionAndTableHeadDto<HistoryColumnDto>> GetHistoryTableThs(int ParentId)
+        public async Task<ColumnPermissionAndTableHeadDto<HistoryColumnDto>> GetHistoryTableThs(int parentId)
         {
             var tableths = ModelTools<HistoryColumnDto>.getColumnDescList();
-            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
             ColumnPermissionAndTableHeadDto<HistoryColumnDto> columnPermission = new ColumnPermissionAndTableHeadDto<HistoryColumnDto>();
             columnPermission.TableHeads = tableths;
-            columnPermission.IsDelete = await CheckPermission(ParentId, nameof(DataPermissionDto.dp));
-            columnPermission.IsUpdate = await CheckPermission(ParentId, nameof(DataPermissionDto.ed));
-            columnPermission.IsAdd = await CheckPermission(ParentId, nameof(DataPermissionDto.ad));
-            columnPermission.IsSelect = await CheckPermission(ParentId, nameof(DataPermissionDto.sp));
+            columnPermission.IsDelete = await CheckPermission(parentId, nameof(DataPermissionDto.dp));
+            columnPermission.IsUpdate = await CheckPermission(parentId, nameof(DataPermissionDto.ed));
+            columnPermission.IsAdd = await CheckPermission(parentId, nameof(DataPermissionDto.ad));
+            columnPermission.IsSelect = await CheckPermission(parentId, nameof(DataPermissionDto.sp));
             return columnPermission;
         }
 
-        public async Task<ColumnPermissionAndTableHeadDto<SoftDeleteColumnDto>> GetSoftTableThs(int ParentId)
+        public async Task<ColumnPermissionAndTableHeadDto<SoftDeleteColumnDto>> GetSoftTableThs(int parentId)
         {
             var tableths = ModelTools<SoftDeleteColumnDto>.getColumnDescList();
-            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
             ColumnPermissionAndTableHeadDto<SoftDeleteColumnDto> columnPermission = new ColumnPermissionAndTableHeadDto<SoftDeleteColumnDto>();
             columnPermission.TableHeads = tableths;
-            columnPermission.IsDelete = await CheckPermission(ParentId, nameof(DataPermissionDto.dp));
-            columnPermission.IsUpdate = await CheckPermission(ParentId, nameof(DataPermissionDto.ed));
-            columnPermission.IsAdd = await CheckPermission(ParentId, nameof(DataPermissionDto.ad));
-            columnPermission.IsSelect = await CheckPermission(ParentId, nameof(DataPermissionDto.sp));
+            columnPermission.IsDelete = await CheckPermission(parentId, nameof(DataPermissionDto.dp));
+            columnPermission.IsUpdate = await CheckPermission(parentId, nameof(DataPermissionDto.ed));
+            columnPermission.IsAdd = await CheckPermission(parentId, nameof(DataPermissionDto.ad));
+            columnPermission.IsSelect = await CheckPermission(parentId, nameof(DataPermissionDto.sp));
             return columnPermission;
         }
     }

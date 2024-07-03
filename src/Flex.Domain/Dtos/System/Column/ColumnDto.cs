@@ -24,7 +24,7 @@ namespace Flex.Domain.Dtos.Column
         public string ApiDocx { set; get; }
         [ToolAttr(NameAttr = "链接", Width = "20%")]
         public string ColumnUrl { set; get; }
-        [ToolAttr(NameAttr = "显示状态", Toolbar = "#statusPxy", AlignAttr = AlignEnum.Center, Width = "10%")]
+        [ToolAttr(NameAttr = "显示状态", Toolbar = "#statusPxy", AlignAttr = AlignEnum.Center, Width = "15%")]
         public string IsShow { set; get; }
         [ToolAttr(NameAttr = "操作", Toolbar = "#barDemo", AlignAttr = AlignEnum.Center, Fixed = AlignEnum.Right, Width = "200")]
         public controlType Operation { get; set; }

@@ -67,7 +67,7 @@ namespace Flex.Application.Services
         {
             var field = new List<sysField>();
             field = (await responsity.GetAllAsync(m => m.ModelId == contentModel.Id)).ToList();
-        
+
             string htmlstring = string.Empty;
             BaseFieldType baseFieldType;
             foreach (var item in field)
@@ -110,9 +110,9 @@ namespace Flex.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(),ex);
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
         }
         public async Task<ProblemDetails<string>> Update(UpdateFieldDto updateFieldDto)
@@ -154,12 +154,18 @@ namespace Flex.Application.Services
             {
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
             }
-        } 
-        
+        }
+
         public async Task<ProblemDetails<string>> SimpleUpdateDto(SimpleUpdateDto updateFieldDto)
         {
             var model = await responsity.GetFirstOrDefaultAsync(m => m.Id == updateFieldDto.Id);
+            if (model == null)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataUpdateError.GetEnumDescription());
+            var existbool = await responsity.GetAllAsync(m => m.ModelId == model.ModelId && m.ApiName == updateFieldDto.ApiName);
+            if (existbool.Any())
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.ApiFieldExist.GetEnumDescription());
             model.ApiName = updateFieldDto.ApiName;
+            ContentModelHelper.clearData();
             UpdateStringEntityBasicInfo(model);
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == model.ModelId);
             try
@@ -216,7 +222,7 @@ namespace Flex.Application.Services
 
                 return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await _unitOfWork.RollbackAsync();
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);

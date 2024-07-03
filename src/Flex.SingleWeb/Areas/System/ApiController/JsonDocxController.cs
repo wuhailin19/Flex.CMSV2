@@ -33,6 +33,8 @@ namespace Flex.SingleWeb.Areas.System.ApiController
             string swhere = "IsHide=0 and ParentId in(" + columnId + ")";
             var contentDto = ContentModelHelper.GetProductTableColumnHashTable(columnId);
             int recount = 0;
+            if (contentDto==null)
+                return Fail("数据为空");
 
             if (contentDto.Count == 0)
                 return Fail("数据为空");
@@ -124,6 +126,9 @@ namespace Flex.SingleWeb.Areas.System.ApiController
             if (!inputJsondocxDto.k.IsEmpty())
                 urlext += "&k=" + inputJsondocxDto.k;
 
+            if(inputJsondocxDto.PId!=0)
+                urlext += "&PId=" + inputJsondocxDto.PId;
+
             Dictionary<object, List<FiledModel>> full_fileds = new Dictionary<object, List<FiledModel>>();
             ColumnJsonDocxDto columnJsonDocxDto = new ColumnJsonDocxDto();
             #region 拼接条件
@@ -143,34 +148,44 @@ namespace Flex.SingleWeb.Areas.System.ApiController
             {
                 contentDto = ContentModelHelper.GetProductTableColumnHashTable(inputJsondocxDto.columnId);
             }
-
+            if (contentDto == null)
+            {
+                jsonstr += "没有内容";
+                columnJsonDocxDto.full_fileds = full_fileds;
+                columnJsonDocxDto.JsonStr = jsonstr;
+                columnJsonDocxDto.urlext = urlext;
+                return Success(columnJsonDocxDto);
+            }
             #endregion
             if (contentDto.Count == 0)
             {
                 jsonstr += "没有内容";
+                columnJsonDocxDto.full_fileds = full_fileds;
+                columnJsonDocxDto.JsonStr = jsonstr;
+                columnJsonDocxDto.urlext = urlext;
+                return Success(columnJsonDocxDto);
             }
-            else
+
+            if (contentDto.Count == 1)
             {
-                if (contentDto.Count == 1)
+                #region 单个ID
+                var fileds = contentDto[0].TableColumnList;
+                if (!inputJsondocxDto.k.IsNullOrEmpty())
                 {
-                    #region 单个ID
-                    var fileds = contentDto[0].TableColumnList;
-                    if (!inputJsondocxDto.k.IsNullOrEmpty())
-                    {
-                        var searchlist = fileds.Where(m => m.IsSearch).ToList();
-                        swhere += ContentModelHelper.GetExpressionByFiledNameList(searchlist, inputJsondocxDto.k);
-                    }
-                    var model = ContentModelHelper.GetJsonDataByContentDtoPageDocx(contentDto[0], inputJsondocxDto.page, inputJsondocxDto.pagesize, swhere, ref recount);
-                    ContentModelPage contentModelPage = new ContentModelPage()
-                    {
-                        page = inputJsondocxDto.page,
-                        dataCount = recount,
-                        pagesize = inputJsondocxDto.pagesize,
-                        data = model
-                    };
-                    string tbname = ContentModelHelper.GetvirtualTableName(contentDto[0].TableName);
-                    full_fileds.Add(tbname + "：【" + contentDto[0].ModelName + "】", fileds);
-                    Dictionary<string, string> filedlist = new Dictionary<string, string>
+                    var searchlist = fileds.Where(m => m.IsSearch).ToList();
+                    swhere += ContentModelHelper.GetExpressionByFiledNameList(searchlist, inputJsondocxDto.k);
+                }
+                var model = ContentModelHelper.GetJsonDataByContentDtoPageDocx(contentDto[0], inputJsondocxDto.page, inputJsondocxDto.pagesize, swhere, ref recount);
+                ContentModelPage contentModelPage = new ContentModelPage()
+                {
+                    page = inputJsondocxDto.page,
+                    dataCount = recount,
+                    pagesize = inputJsondocxDto.pagesize,
+                    data = model
+                };
+                string tbname = ContentModelHelper.GetvirtualTableName(contentDto[0].TableName);
+                full_fileds.Add(tbname + "：【" + contentDto[0].ModelName + "】", fileds);
+                Dictionary<string, string> filedlist = new Dictionary<string, string>
                     {
                         { "code","code"},
                         {"data","data" },
@@ -184,25 +199,25 @@ namespace Flex.SingleWeb.Areas.System.ApiController
                         {"msg","msg" },
                         { tbname ,tbname}
                     };
-                    foreach (var item in fileds)
-                    {
-                        if (filedlist.ContainsKey(tbname + item.FiledName))
-                            continue;
-                        filedlist.Add(tbname + item.FiledName, item.FiledName);
-                    }
-                    jsonstr = JsonHelper.ToJson(contentModelPage);
-                    //var regexmodel= Regex.Matches(jsonstr, "([^>]\"[a-zA-Z]+\":)");
-                    foreach (var item in filedlist.Keys)
-                    {
-                        jsonstr = jsonstr.Replace("\"" + item + "\"", "<span class='json-property' href='#" + item + "'>\"" + filedlist[item] + "\"</span>");
-                    }
-                    #endregion
-                }
-                else
+                foreach (var item in fileds)
                 {
-                    #region 多个ID
-                    Dictionary<string, object> contents = new Dictionary<string, object>();
-                    Dictionary<string, string> filedlist = new Dictionary<string, string>
+                    if (filedlist.ContainsKey(tbname + item.FiledName))
+                        continue;
+                    filedlist.Add(tbname + item.FiledName, item.FiledName);
+                }
+                jsonstr = JsonHelper.ToJson(contentModelPage);
+                //var regexmodel= Regex.Matches(jsonstr, "([^>]\"[a-zA-Z]+\":)");
+                foreach (var item in filedlist.Keys)
+                {
+                    jsonstr = jsonstr.Replace("\"" + item + "\"", "<span class='json-property' href='#" + item + "'>\"" + filedlist[item] + "\"</span>");
+                }
+                #endregion
+            }
+            else
+            {
+                #region 多个ID
+                Dictionary<string, object> contents = new Dictionary<string, object>();
+                Dictionary<string, string> filedlist = new Dictionary<string, string>
                     {
                         {"code","code"},
                         { "data", "data" },
@@ -212,42 +227,41 @@ namespace Flex.SingleWeb.Areas.System.ApiController
                         {"img_content","img_content" },
                         { "PageModel", "PageModel" }
                     };
-                    string oldswhere = swhere;
-                    foreach (var firstDto in contentDto)
+                string oldswhere = swhere;
+                foreach (var firstDto in contentDto)
+                {
+                    swhere = oldswhere;
+                    if (!inputJsondocxDto.k.IsNullOrEmpty())
                     {
-                        swhere = oldswhere;
-                        if (!inputJsondocxDto.k.IsNullOrEmpty())
-                        {
-                            var searchlist = firstDto.TableColumnList.Where(m => m.IsSearch).ToList();
-                            swhere += ContentModelHelper.GetExpressionByFiledNameList(searchlist, inputJsondocxDto.k);
-                        }
-                        var model = ContentModelHelper.GetJsonDataByContentDtoPageDocx(firstDto, swhere);
-                        string tbname = ContentModelHelper.GetvirtualTableName(firstDto.TableName);
-                        if (contents.ContainsKey(tbname))
-                            continue;
-                        contents.Add(tbname, model);
-
-                        var nowfileds = firstDto.TableColumnList;
-                        full_fileds.Add(tbname + "：【" + firstDto.ModelName + "】", nowfileds);
-                        foreach (var item in nowfileds)
-                        {
-                            if (filedlist.ContainsKey(tbname + item.FiledName))
-                                continue;
-                            filedlist.Add(tbname + item.FiledName, item.FiledName);
-                        }
-                        if (filedlist.ContainsKey(tbname))
-                            continue;
-                        else
-                            filedlist.Add(tbname, tbname);
+                        var searchlist = firstDto.TableColumnList.Where(m => m.IsSearch).ToList();
+                        swhere += ContentModelHelper.GetExpressionByFiledNameList(searchlist, inputJsondocxDto.k);
                     }
+                    var model = ContentModelHelper.GetJsonDataByContentDtoPageDocx(firstDto, swhere);
+                    string tbname = ContentModelHelper.GetvirtualTableName(firstDto.TableName);
+                    if (contents.ContainsKey(tbname))
+                        continue;
+                    contents.Add(tbname, model);
 
-                    jsonstr = JsonHelper.ToJson(contents);
-                    foreach (var item in filedlist.Keys)
+                    var nowfileds = firstDto.TableColumnList;
+                    full_fileds.Add(tbname + "：【" + firstDto.ModelName + "】", nowfileds);
+                    foreach (var item in nowfileds)
                     {
-                        jsonstr = jsonstr.Replace("\"" + item + "\"", "<span class='json-property' href='#" + item + "'>\"" + filedlist[item] + " \"</span>");
+                        if (filedlist.ContainsKey(tbname + item.FiledName))
+                            continue;
+                        filedlist.Add(tbname + item.FiledName, item.FiledName);
                     }
-                    #endregion
+                    if (filedlist.ContainsKey(tbname))
+                        continue;
+                    else
+                        filedlist.Add(tbname, tbname);
                 }
+
+                jsonstr = JsonHelper.ToJson(contents);
+                foreach (var item in filedlist.Keys)
+                {
+                    jsonstr = jsonstr.Replace("\"" + item + "\"", "<span class='json-property' href='#" + item + "'>\"" + filedlist[item] + " \"</span>");
+                }
+                #endregion
             }
             columnJsonDocxDto.full_fileds = full_fileds;
             columnJsonDocxDto.JsonStr = jsonstr;

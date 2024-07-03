@@ -3,13 +3,14 @@
 var model = {};
 var IsAdd = false;
 function InitParams() {
-    parent_json.ParentId = $.getUrlParam("ParentId");
+    parent_json.ParentId = $.getUrlParam("parentId");
     parent_json.Id = $.getUrlParam("Id");
+    parent_json.currentmodelId = $.getUrlParam("modelId");
 }
 InitParams();
 var NeedReview = false;
 ajaxHttp({
-    url: api + 'ColumnContent/GetContentById/' + parent_json.ParentId + "/" + parent_json.Id,
+    url: api + 'ColumnContent/GetContentById/' + parent_json.currentmodelId +'/' + parent_json.ParentId + "/" + parent_json.Id,
     type: 'Get',
     async: false,
     dataType: 'json',
@@ -68,7 +69,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
             shade: 0.3,
             maxmin: true, //开启最大化最小化按钮
             area: ['80%', '80%'],
-            content: SystempageRoute + 'Message/SendMsg?stepToId=' + that.attr('data-toid') + '&stepFromId=' + that.attr('data-fromid') + '&parentId=' + parent_json.ParentId + '&contentId=' + parent_json.Id,
+            content: SystempageRoute + 'Message/SendMsg?stepToId=' + that.attr('data-toid') + '&stepFromId=' + that.attr('data-fromid') + '&parentId=' + parent_json.ParentId + '&contentId=' + parent_json.Id + "&modelId=" + parent_json.currentmodelId,
             end: function () {
                 //window.location.reload();
             }
@@ -100,7 +101,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
     })
 
     ajaxHttp({
-        url: api + 'ColumnContent/GetFormHtml/' + parent_json.ParentId,
+        url: api + 'ColumnContent/GetFormHtml/' + parent_json.currentmodelId,
         type: 'Get',
         async: false,
         dataType: 'json',
@@ -168,6 +169,14 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
                 multiimagedata[i]["defaultValue"] = model[multiimagedata[i].id];
         }
     }
+    var imagesdata = demojs.filter(item => item.tag == "image");
+    if (imagesdata.length > 0) {
+        for (var i = 0; i < imagesdata.length; i++) {
+            if (model.hasOwnProperty(imagesdata[i].id))
+                imagesdata[i]["defaultValue"] = model[imagesdata[i].id];
+        }
+    }
+
     render = formDesigner.render({
         elem: '#view',
         data: demojs,
@@ -188,8 +197,11 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
 
         ___initUpload("#" + id, options);
     }
-    $(document).on('click', '.uploadimg_box .previewimg', function () {
+    $(document).on('click', '.previewimg', function () {
         previewimg($(this).attr('data-src'));
+    })
+    $(document).on('click', '.singlepreviewimg', function () {
+        previewimg($('input[name=' + $(this).attr('data-src')+']').val());
     })
     function previewimg(imgsrc) {
         layer.photos({
@@ -242,18 +254,6 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
         var options = { single: true, autoupload: true, valueElement: imageinput };
 
         ___initUpload("#uploader-show_" + id, options);
-
-        //创建一个裁剪组件
-        croppers.render({
-            elem: '#cropper-btn_' + id
-            , mark: NaN    //选取比例
-            , area: '90%'  //弹窗宽度
-            , readyimgelement: imageinput
-            , url: images[i].uploadUrl  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
-            , done: function (data) { //上传完毕回调
-                $(imageinput).val(data);
-            }
-        });
     }
     var iceEditorObjects = render.geticeEditorObjects();
     var promises = [];
@@ -324,6 +324,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
         }
         data.ParentId = parent_json.ParentId;
         data.Id = parent_json.Id;
+        data.ModelId = parent_json.currentmodelId;
         if (multiimages.length > 0) {
             for (var i = 0; i < multiimages.length; i++) {
                 let currentimglist = [];

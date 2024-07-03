@@ -18,12 +18,13 @@
 
   <ItemGroup>
     <Content Remove="appsettings_初始.json" />
+    <Content Remove="wwwroot\system\js\tablerelation\index.js" />
+    <Content Remove="wwwroot\system\js\tablerelation\openPageOptions.js" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Areas\Normal\ViewController\" />
     <Folder Include="Areas\Normal\Views\" />
-    <Folder Include="wwwroot\111\222\" />
     <Folder Include="wwwroot\222333\" />
     <Folder Include="wwwroot\222\" />
   </ItemGroup>
@@ -39,9 +40,14 @@
   </ItemGroup>
   
   <ItemGroup>
+    <None Include="Areas\System\Views\TableRelation\AddPage.cshtml" />
+    <None Include="Areas\System\Views\TableRelation\Edit.cshtml" />
+    <None Include="Areas\System\Views\TableRelation\Index.cshtml" />
     <None Include="wwwroot\scripts\layui\module\notice\.DS_Store" />
     <None Include="wwwroot\system\js\systemlog\index.js" />
     <None Include="wwwroot\system\js\systemlog\openPageOptions.js" />
+    <None Include="wwwroot\system\js\tablerelation\index.js" />
+    <None Include="wwwroot\system\js\tablerelation\openPageOptions.js" />
   </ItemGroup>
   
   <ItemGroup>

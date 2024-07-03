@@ -1757,7 +1757,7 @@
             //在table元素里的元素列表
             $tableContent: _({ caption: 1, col: 1, colgroup: 1, tbody: 1, td: 1, tfoot: 1, th: 1, thead: 1, tr: 1, table: 1 }),
             //不转换的标签
-            $notTransContent: _({ pre: 1, script: 1, style: 1, textarea: 1 }),
+            $notTransContent: _({ pre: 1, script: 1, style: 1, textarea: 1, div: 1 }),
             html: U,
             head: T,
             style: N,
@@ -10101,7 +10101,7 @@
     UE.plugins['defaultfilter'] = function () {
         var me = this;
         me.setOpt({
-            'allowDivTransToP': true,
+            'allowDivTransToP': false,
             'disabledTableInTable': true
         });
         //默认的过滤处理
@@ -23350,6 +23350,9 @@
                 tagNames = parents;
                 for (var i = 0, ci; ci = parents[i]; i++) {
                     if (ci.nodeType == 3) {
+                        continue;
+                    }
+                    if (!ci.tagName) {
                         continue;
                     }
                     var name = ci.tagName.toLowerCase();

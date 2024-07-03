@@ -27,7 +27,33 @@ namespace Flex.Core.Extensions
         {
             return string.IsNullOrEmpty(str);
         }
+        /// <summary>
+        /// 获取包含参数的个数
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="startChar"></param>
+        /// <returns></returns>
+        public static int GetStartCount(this string content, char startChar)
+        {
+            if (content == null)
+            {
+                return 0;
+            }
+            var count = 0;
 
+            foreach (var theChar in content)
+            {
+                if (theChar == startChar)
+                {
+                    count++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return count;
+        }
         public static string GetCurrentBaseField(this string filed) {
             if (DataBaseConfig.dataBase != DataBaseType.PgSql)
                 return filed;

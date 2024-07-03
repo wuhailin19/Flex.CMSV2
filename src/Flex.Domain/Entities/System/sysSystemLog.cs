@@ -21,6 +21,10 @@ namespace Flex.Domain.Entities.System
         /// </summary>
         public string Ip { get; set; }
         /// <summary>
+        /// 站点Id
+        /// </summary>
+        public int SiteId { set; get; }
+        /// <summary>
         /// Url地址
         /// </summary>
         public string Url { get; set; }

@@ -7,6 +7,7 @@ using Flex.Dapper;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Role;
+using Flex.Domain.Dtos.System.TableRelation;
 using Flex.Domain.Dtos.WorkFlow;
 using Flex.Domain.WhiteFileds;
 using Flex.SqlSugarFactory.Seed;
@@ -48,7 +49,7 @@ namespace Flex.Application.Services
         /// <returns></returns>
         public async Task<Page> HistoryListAsync(ContentPageListParamDto contentPageListParam)
         {
-            return await AbstractList(contentPageListParam, "StatusCode=6", " order by LastEditDate desc");
+            return await AbstractList(contentPageListParam, 3, " order by LastEditDate desc");
         }
         /// <summary>
         /// 回收站
@@ -57,17 +58,34 @@ namespace Flex.Application.Services
         /// <returns></returns>
         public async Task<Page> SoftDeleteListAsync(ContentPageListParamDto contentPageListParam)
         {
-            return await AbstractList(contentPageListParam, "StatusCode=0", " order by LastEditDate desc");
+            return await AbstractList(contentPageListParam, 2, " order by LastEditDate desc");
         }
 
-        private async Task<Page> AbstractList(ContentPageListParamDto contentPageListParam, string StatusCodeExpression, string orderby)
+        /// <summary>
+        /// 抽象出来的列表函数
+        /// </summary>
+        /// <param name="contentPageListParam">参数实体</param>
+        /// <param name="modetype">区分普通列表/历史列表/软删除列表</param>
+        /// <param name="orderby">排序</param>
+        /// <returns></returns>
+        private async Task<Page> AbstractList(ContentPageListParamDto contentPageListParam, int modetype, string orderby)
         {
-
-            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == contentPageListParam.ParentId);
-            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            string StatusCodeExpression = string.Empty;
+            switch (modetype)
+            {
+                case 1: StatusCodeExpression = "StatusCode not in (0,6)"; break;
+                case 2: StatusCodeExpression = "StatusCode=0"; break;
+                case 3: StatusCodeExpression = "StatusCode=6"; break;
+            }
+           
+            if (contentPageListParam.PId != 0)
+            {
+                StatusCodeExpression += $" and PId={contentPageListParam.PId}";
+            }
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == contentPageListParam.ModelId);
             if (contentmodel == null)
                 return new Page();
-            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
+            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == contentPageListParam.ModelId)).ToList();
             string filed = ColumnContentUpdateFiledConfig.defaultFields;
             foreach (var item in fieldmodel)
             {
@@ -77,46 +95,55 @@ namespace Flex.Application.Services
             DynamicParameters parameters = new DynamicParameters();
             string swhere = string.Empty;
             _sqlTableServices.CreateDapperColumnContentSelectSql(contentPageListParam, out swhere, out parameters);
-            var result = await _dapperDBContext.PageAsync(contentPageListParam.page, contentPageListParam.limit, "select " + filed.GetCurrentBaseField() + " from " + contentmodel.TableName + " where " + StatusCodeExpression + swhere + orderby, parameters);
-
-            result.Items.Each(item =>
+           
+            var result = await _dapperDBContext.PageAsync(
+                contentPageListParam.page, 
+                contentPageListParam.limit, 
+                "select " + filed.GetCurrentBaseField() 
+                + " from " + contentmodel.TableName 
+                + " where " + StatusCodeExpression + swhere + orderby
+                , parameters);
+            if (modetype == 1)
             {
-                item.StatusColor = ((StatusCode)item.StatusCode).GetEnumColorDescription();
-                item.StatusCodeText = ((StatusCode)item.StatusCode).GetEnumDescription();
-            });
+                var relationtable = await _unitOfWork.GetRepository<sysTableRelation>().GetAllAsync(m => m.ParentModelId == contentPageListParam.ModelId);
+                var relationlist = new List<TableRelationListDto>();
+                if (relationtable.Count > 0)
+                {
+                    relationlist = _mapper.Map<List<TableRelationListDto>>(relationtable);
+                    //relationjson = relationlist.ToJson();
+                }
+                result.Items.Each(item =>
+                {
+                    item.StatusColor = ((StatusCode)item.StatusCode).GetEnumColorDescription();
+                    item.StatusCodeText = ((StatusCode)item.StatusCode).GetEnumDescription();
+                    item.relationInfo = relationlist;
+                });
+            }
+            else
+            {
+                result.Items.Each(item =>
+                {
+                    item.StatusColor = ((StatusCode)item.StatusCode).GetEnumColorDescription();
+                    item.StatusCodeText = ((StatusCode)item.StatusCode).GetEnumDescription();
+                });
+            }
+
             return result;
         }
         public async Task<Page> ListAsync(ContentPageListParamDto contentPageListParam)
         {
-            return await AbstractList(contentPageListParam, "StatusCode not in (0,6)"," order by OrderId desc");
+            return await AbstractList(contentPageListParam, 1, " order by OrderId desc");
         }
-        public async Task<OutputContentAndWorkFlowDto> GetButtonListByParentId(int ParentId)
-        {
-            if (!await CheckPermission(ParentId.ToInt(), nameof(DataPermissionDto.ad)))
-                return default;
-            var stepActionButtonDto = new List<StepActionButtonDto> { };
-            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
-            if (column.ReviewMode.ToInt() != 0)
-            {
-                stepActionButtonDto = (await _workFlowServices.GetStepActionButtonList(new InputWorkFlowStepDto { flowId = column.ReviewMode.ToInt(), stepPathId = string.Empty })).ToList();
-            }
-            var model = new OutputContentAndWorkFlowDto
-            {
-                Content = null,
-                stepActionButtonDto = stepActionButtonDto,
-                NeedReview = column.ReviewMode.ToInt() != 0
-            };
-            return model;
-        }
-        public async Task<Dictionary<object, object>> GetContentForReviewById(int ParentId, int Id)
+        
+        public async Task<Dictionary<object, object>> GetContentForReviewById(int ParentId, int Id,int ModelId)
         {
             if (!await CheckPermission(ParentId.ToInt(), nameof(DataPermissionDto.sp)))
                 return default;
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
-            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == ModelId);
             if (contentmodel == null)
                 return default;
-            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
+            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == ModelId)).ToList();
             string filed = "ReviewAddUser,MsgGroupId";
 
             DynamicParameters parameters = new DynamicParameters();
@@ -138,15 +165,33 @@ namespace Flex.Application.Services
             }
             return normalItems;
         }
-        public async Task<ProblemDetails<OutputContentAndWorkFlowDto>> GetContentById(int ParentId, int Id)
+        public async Task<OutputContentAndWorkFlowDto> GetButtonListByParentId(int ParentId)
+        {
+            if (!await CheckPermission(ParentId.ToInt(), nameof(DataPermissionDto.ad)))
+                return default;
+            var stepActionButtonDto = new List<StepActionButtonDto> { };
+            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
+            if (column.ReviewMode.ToInt() != 0)
+            {
+                stepActionButtonDto = (await _workFlowServices.GetStepActionButtonList(new InputWorkFlowStepDto { flowId = column.ReviewMode.ToInt(), stepPathId = string.Empty })).ToList();
+            }
+            var model = new OutputContentAndWorkFlowDto
+            {
+                Content = null,
+                stepActionButtonDto = stepActionButtonDto,
+                NeedReview = column.ReviewMode.ToInt() != 0
+            };
+            return model;
+        }
+        public async Task<ProblemDetails<OutputContentAndWorkFlowDto>> GetContentById(int modelId,int ParentId, int Id)
         {
             if (!await CheckPermission(ParentId.ToInt(), nameof(DataPermissionDto.sp)))
                 return new ProblemDetails<OutputContentAndWorkFlowDto>(HttpStatusCode.NotFound, ErrorCodes.DataNotFound.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
-            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == modelId);
             if (contentmodel == null)
                 return new ProblemDetails<OutputContentAndWorkFlowDto>(HttpStatusCode.NotFound, ErrorCodes.DataNotFound.GetEnumDescription());
-            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == column.ModelId)).ToList();
+            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == modelId)).ToList();
             string filed = ColumnContentUpdateFiledConfig.defaultFields;
             foreach (var item in fieldmodel)
             {
@@ -204,10 +249,9 @@ namespace Flex.Application.Services
 
             return model;
         }
-        public async Task<ProblemDetails<string>> GetFormHtml(int ParentId)
+        public async Task<ProblemDetails<string>> GetFormHtml(int currentmodelId)
         {
-            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
-            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == column.ModelId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == currentmodelId);
             if (contentmodel == null)
                 return Problem<string>(HttpStatusCode.BadRequest, "没有选择有效模型");
             return Problem<string>(HttpStatusCode.OK, contentmodel.FormHtmlString);

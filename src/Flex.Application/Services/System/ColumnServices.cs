@@ -1,12 +1,17 @@
-﻿using Flex.Application.Contracts.Exceptions;
+﻿using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using Flex.Application.Contracts.Exceptions;
 using Flex.Application.Contracts.IServices.System;
 using Flex.Core.Config;
 using Flex.Core.Extensions;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.Role;
+using Flex.Domain.Dtos.System.Column;
+using Flex.Domain.Dtos.System.ContentModel;
+using Flex.Domain.Dtos.System.Menu;
 using Flex.Domain.Enums.LogLevel;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Crypto;
+using System.Collections;
 using System.Linq.Expressions;
 
 namespace Flex.Application.Services
@@ -136,13 +141,35 @@ namespace Flex.Application.Services
             }
             return new List<TreeColumnListDto>();
         }
+
+
+        public async Task<IEnumerable<ColumnSortListDto>> GetColumnSortListByParentIdAsync(int parentId = 0)
+        {
+            var coreRespository = _unitOfWork.GetRepository<SysColumn>();
+            expression = expression.And(m => m.ParentId == parentId);
+            var list = (await coreRespository.GetAllAsync(expression)).OrderBy(m => m.OrderId).ToList();
+
+            List<ColumnSortListDto> treeColumns = [.. _mapper.Map<List<ColumnSortListDto>>(list)];
+            if (_claims.IsSystem)
+            {
+                return treeColumns;
+            }
+            else
+            {
+                var currentrole = await _roleServices.GetCurrentRoldDtoAsync();
+                var jObj = GetSitePermissionDto(currentrole.DataPermission);
+                var editstr = jObj.ed.ToList("-");
+                treeColumns = treeColumns.Where(m => editstr.Contains(m.Id.ToString())).ToList();
+            }
+            return treeColumns;
+        }
+
         public async Task<IEnumerable<ColumnListDto>> ListAsync()
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
             var list = (await coreRespository.GetAllAsync(expression)).OrderBy(m => m.OrderId).ToList();
 
-            List<ColumnListDto> treeColumns = new List<ColumnListDto>();
-            treeColumns.AddRange(_mapper.Map<List<ColumnListDto>>(list));
+            List<ColumnListDto> treeColumns = [.. _mapper.Map<List<ColumnListDto>>(list)];
             if (_claims.IsSystem)
             {
                 treeColumns.Each(m =>
@@ -176,8 +203,7 @@ namespace Flex.Application.Services
 
             var list = (await coreRespository.GetAllAsync(m => m.SiteId == siteId)).OrderBy(m => m.OrderId).ToList();
 
-            List<RoleDataColumnListDto> treeColumns = new List<RoleDataColumnListDto>();
-            treeColumns.AddRange(_mapper.Map<List<RoleDataColumnListDto>>(list));
+            List<RoleDataColumnListDto> treeColumns = [.. _mapper.Map<List<RoleDataColumnListDto>>(list)];
             if (_claims.IsSystem)
             {
                 treeColumns.Each(m =>
@@ -227,6 +253,73 @@ namespace Flex.Application.Services
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataInsertError.GetEnumDescription(), ex);
             }
         }
+
+        public async Task<ProblemDetails<string>> AppendColumn(AppendColumnDto appendColumnDto)
+        {
+            if (CurrentSiteInfo.SiteId == 0)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NotInsertAnySite.GetEnumDescription());
+            if (!_unitOfWork.GetRepository<sysSiteManage>().Exists())
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NotInsertAnySite.GetEnumDescription());
+
+            var coreRespository = _unitOfWork.GetRepository<SysColumn>();
+
+            var columnlist = appendColumnDto.ColumnList.ToList("\n");
+            if (columnlist.Count == 0)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.ColumnListEmpty.GetEnumDescription());
+
+            var columnhash = new Hashtable { [0] = appendColumnDto.ParentId };
+
+            int orderId = 0;
+            var orderItem = await coreRespository.GetFirstOrDefaultAsync(null, m => m.OrderByDescending(q => q.OrderId));
+            if (orderItem != null)
+                orderId= orderItem.OrderId;
+            foreach (var item in columnlist)
+            {
+                if (item.IsNullOrEmpty()) continue;
+
+                var count = item.GetStartCount('-');
+                var currentName = item.Substring(count, item.Length - count);
+                if (!columnhash.ContainsKey(count))
+                {
+                    continue;
+                }
+                var model = new SysColumn
+                {
+                    Name = currentName,
+                    ParentId = appendColumnDto.ParentId == -1 ? 0 : columnhash[count].ToInt(),
+                    SiteId = CurrentSiteInfo.SiteId,
+                    SeoTitle = currentName,
+                    SeoKeyWord = currentName,
+                    SeoDescription = currentName,
+                    ModelId = appendColumnDto.ModelId,
+                    ReviewMode = appendColumnDto.ReviewMode,
+                    ColumnImage = appendColumnDto.ColumnImage,
+                    OrderId = orderId,
+                };
+                AddIntEntityBasicInfo(model);
+
+                var result = await coreRespository.InsertAsync(model);
+                await _unitOfWork.SaveChangesAsync();
+                List<SysColumn> columns = new List<SysColumn>();
+                if (result.Entity.Id > 0)
+                {
+                    await _logServices.AddContentLog(SystemLogLevel.Normal, $"新增栏目【{model.Name}】", "批量新增");
+                    if (appendColumnDto.ColumnUrl.IsNotNullOrEmpty() && appendColumnDto.ColumnUrl.Contains("{columnId}"))
+                    {
+                        model.ColumnUrl = appendColumnDto.ColumnUrl.Replace("{columnId}", result.Entity.Id.ToString());
+                        columns.Add(model);
+                    }
+                    columnhash[count + 1] = result.Entity.Id;
+                    orderId++;
+                }
+                if (columns.Count > 0)
+                {
+                    coreRespository.Update(columns);
+                    await _unitOfWork.SaveChangesAsync();
+                }
+            }
+            return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());
+        }
         public async Task<ProblemDetails<string>> Delete(string Id)
         {
             var adminRepository = _unitOfWork.GetRepository<SysColumn>();
@@ -255,6 +348,54 @@ namespace Flex.Application.Services
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }
         }
+
+        public async Task<ProblemDetails<string>> QuickSortColumn(ColumnQuickSortDto columnQuickSortDto)
+        {
+            var coreRespository = _unitOfWork.GetRepository<SysColumn>();
+            if (columnQuickSortDto.IdString.IsNullOrEmpty())
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            var columnIdlist = columnQuickSortDto.IdString.ToList();
+            if (columnIdlist.Count == 0)
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            try
+            {
+                var list = (await coreRespository.GetAllAsync(m => columnIdlist.Contains(m.Id.ToString()))).ToList();
+                for (int i = 0; i < columnIdlist.Count; i++)
+                {
+                    var item = list.Where(m => m.Id == columnIdlist[i].ToInt()).FirstOrDefault();
+                    if (item == null)
+                        continue;
+                    item.OrderId = i;
+                }
+                coreRespository.Update(list);
+                await _unitOfWork.SaveChangesAsync();
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
+            }
+        }
+
+        public async Task<ProblemDetails<string>> QuickEditColumn(ColumnQuickEditDto columnQuickEditDto)
+        {
+            var coreRespository = _unitOfWork.GetRepository<SysColumn>();
+            var model = await coreRespository.GetFirstOrDefaultAsync(m => m.Id == columnQuickEditDto.Id);
+            if (columnQuickEditDto.IsShow.IsNotNullOrEmpty())
+                model.IsShow = columnQuickEditDto.IsShow.ToBool();
+            try
+            {
+                UpdateIntEntityBasicInfo(model);
+                coreRespository.Update(model);
+                await _unitOfWork.SaveChangesAsync();
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
+            }
+        }
+
         public async Task<ProblemDetails<string>> UpdateColumn(UpdateColumnDto updateColumnDto)
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();

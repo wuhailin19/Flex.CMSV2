@@ -20,6 +20,7 @@ layui.config({
         data.field['FromPathId'] = $.getUrlParam("stepFromId");
         data.field['ParentId'] = $.getUrlParam("parentId");
         data.field['ContentId'] = $.getUrlParam("contentId");
+        data.field['ModelId'] = $.getUrlParam("modelId");
         data.field['MsgContent'] = newcontent;
         data.field['BaseFormContent'] = parent.parentformData;
         var json_data = JSON.stringify(data.field);

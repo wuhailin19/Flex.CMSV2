@@ -25,8 +25,9 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
     var toolbarhtml = '<div class="layui-btn-container">';
     if (btnpermission.IsDelete)
         toolbarhtml += '<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteAll">完全删除</button>';
-    if (btnpermission.IsUpdate) {
+    if (btnpermission.IsSelect)
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Edit">查看</button>';
+    if (btnpermission.IsUpdate) {
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Reset">恢复</button>';
     }
     toolbarhtml += '</div>';
@@ -45,7 +46,9 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
             statusCode: 200
         },
         where: {
-            ParentId: currentparentId
+            ParentId: currentparentId,
+            PId: parent.pId,
+            ModelId: parent.currentmodelId,
         },
         parseData: function (res) {
             return {
@@ -75,25 +78,22 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
                 if (data.length == 0)
                     return;
                 //获取所有选中节点id数组
-                var nodeIds = defaultOptions.getCheckedId(data);
+                var nodeIds = getCheckedId(data);
                 ajaxHttp({
-                        url: routeLink + "RestContent/"+currentparentId + "/" + nodeIds,
-                        type: 'Post',
-                        async: false,
-                        success: function (json) {
-                            if (json.code == 200) {
-                                tips.showSuccess(json.msg);
-                                // 删除
-                                delete_index = [];
-                                defaultOptions.callBack(insTb);
-                            } else {
-                                tips.showFail(json.msg);
-                                delete_index = [];
-                            }
-                        },
-                        complete: function () { }
-                   });
-                   layer.close(index);
+                    url: routeLink + "RestContent/" + parent.currentmodelId + "/" + currentparentId + "/" + nodeIds,
+                    type: 'Post',
+                    async: false,
+                    success: function (json) {
+                        if (json.code == 200) {
+                            tips.showSuccess(json.msg);
+                            refreshTable(insTb);
+                        } else {
+                            tips.showFail(json.msg);
+                        }
+                    },
+                    complete: function () { }
+                });
+                
                 break;
             case 'Edit':
                 if (data.length != 1) {
@@ -107,21 +107,19 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
                 if (data.length == 0)
                     return;
                 //获取所有选中节点id数组
-                var nodeIds = defaultOptions.getCheckedId(data);
+                var nodeIds = getCheckedId(data);
                 layer.confirm('确定删除选中数据吗？此操作不可恢复', { btn: ['确定删除', '取消'] }, function (index) {
                     ajaxHttp({
-                        url: routeLink + "CompletelyDelete/"+currentparentId + "/" + nodeIds,
+                        url: routeLink + "CompletelyDelete/" + parent.currentmodelId + "/" + currentparentId + "/" + nodeIds,
                         type: 'Post',
                         async: false,
                         success: function (json) {
                             if (json.code == 200) {
                                 tips.showSuccess(json.msg);
                                 // 删除
-                                delete_index = [];
-                                defaultOptions.callBack(insTb);
+                                refreshTable(insTb);
                             } else {
                                 tips.showFail(json.msg);
-                                delete_index = [];
                             }
                         },
                         complete: function () { }
@@ -133,3 +131,33 @@ layui.use(['form', 'laydate', 'util', "table"], function () {
         };
     });
 })
+function refreshTable(tableIns) {
+    //第二次调用
+    tableIns.reload({
+        where: {
+            ParentId: currentparentId,
+            PId: parent.pId,
+            ModelId: parent.currentmodelId,
+        } // 设定异步数据接口的额外参数，任意设
+    });
+}
+function getCheckedId(data) {
+    var delete_index = [];
+    var id = "";
+    $.each(data, function (index, item) {
+        if (item.ID != "") {
+            delete_index.push(item["Id"])
+        }
+    });
+    if (delete_index.length > 0) {
+        for (var i = 0; i < delete_index.length; i++) {
+            if (id != "") {
+                id += '-' + delete_index[i];
+            }
+            else {
+                id = delete_index[i];
+            }
+        }
+    }
+    return id;
+}

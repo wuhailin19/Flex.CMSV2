@@ -18,7 +18,8 @@
                 $('.content_desc').html(UnitHtml.html(json.MsgContent));
                 parentformData = {
                     Id: json.ContentId,
-                    ParentId: json.ParentId
+                    ParentId: json.ParentId,
+                    ModelId: json.ModelId
                 }
                 if (json.ContentId != 0) {
                     $('#bottomBtnbox').show();
@@ -100,7 +101,7 @@ layui.use(function () {
             shade: false,
             maxmin: true, //开启最大化最小化按钮
             area: ['90%', '90%'],
-            content: SystempageRoute + 'ColumnContent/Edit?ParentId=' + parentformData.ParentId + "&Id=" + parentformData.Id,
+            content: SystempageRoute + 'ColumnContent/Edit?modelId=' + parentformData.ModelId +'&parentId=' + parentformData.ParentId + "&Id=" + parentformData.Id,
             end: function () {
                 //window.location.reload();
             }

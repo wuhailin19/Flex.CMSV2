@@ -246,8 +246,9 @@ body .cool-black .layui-layer-btn a { background: #333; }
     .layui-rate .layui-inline { margin-bottom: 0px; }
     .widget-rate { margin-bottom: 0px !important; }
     .daterangebox { padding: 3px; }
-    .daterangebox .layui-input-inline { margin-left: 0px; }
+    .daterangebox .layui-input-inline { margin-left: 0px;margin-bottom: 0px; }
     .daterangebox .layui-form-mid { margin-left: 2px !important; }
+    .layui-form-item .layui-inline{margin-bottom: 0px !important;}
     .layui-laydate-main { width: 180px; }
     .layui-laydate-range { width: 360px; }
 }

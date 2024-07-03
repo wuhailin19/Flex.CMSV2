@@ -13,6 +13,8 @@ public class ModelTools<T>
     public string field { get; set; }
     public string title { get; set; }
     public string align { get; set; }
+    public string expandedMode { get; set; }
+    public string expandedWidth { get; set; }
     public bool sort { get; set; }
     public string type { get; set; }
     public string toolbar { get; set; }
@@ -54,6 +56,8 @@ public class ModelTools<T>
             modelTool.align = ToolAttrs.AlignAttr;
             modelTool.title = ToolAttrs.NameAttr;
             modelTool.templet = ToolAttrs.Toolbar;
+            modelTool.expandedWidth = ToolAttrs.expandedWidth;
+            modelTool.expandedMode = ToolAttrs.expandedMode;
             modelTool.type = ToolAttrs.Types;
             modelTool.@fixed = ToolAttrs.Fixed;
             modelTool.width = ToolAttrs.Width;

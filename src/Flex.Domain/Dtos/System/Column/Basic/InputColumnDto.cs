@@ -15,7 +15,7 @@ namespace Flex.Domain.Dtos.Column.Basic
         public int? ExtensionModelId { get; set; }
         public int? ReviewMode { get; set; }
         public int ParentId { set; get; }
-        public bool IsShow { set; get; }
+        public bool IsShow { set; get; } = true;
         public string? ColumnUrl { set; get; }
         public string? SeoTitle { set; get; }
         public string? SeoKeyWord { set; get; }

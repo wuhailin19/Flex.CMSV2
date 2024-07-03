@@ -156,7 +156,7 @@ namespace Flex.Application.Services
 
             Func<IQueryable<sysMessage>, IOrderedQueryable<sysMessage>> orderBy = m => m.OrderByDescending(m => m.AddTime);
 
-            var content = await contentServices.GetContentForReviewById(model.ParentId, model.ContentId);
+            var content = await contentServices.GetContentForReviewById(model.ParentId, model.ContentId, model.ModelId);
             if (content == null)
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
 

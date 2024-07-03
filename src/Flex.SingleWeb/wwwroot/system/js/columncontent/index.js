@@ -3,7 +3,7 @@ var routePageLink = SystempageRoute + 'ColumnContent/';
 var columnlist;
 var req_Data;
 var parentjson;
-var currentparentId = getParameterFromUrl();
+
 var btnpermission;
 var dateRanage = ['', ''];
 var keyword = $('#keyword');
@@ -12,7 +12,6 @@ var tableid = 'testReloadf';
 function getParameterFromUrl() {
     var url = window.location.href.toLowerCase();
     var match = url.match(/\/system\/columncontent\/index\/(\d+)/);
-
     if (match && match[1]) {
         var parameterValue = match[1];
         return parameterValue;
@@ -22,7 +21,7 @@ function getParameterFromUrl() {
 }
 
 ajaxHttp({
-    url: routeLink + 'Column/' + currentparentId,
+    url: routeLink + 'Column/' + currentmodelId + '/' + currentparentId,
     type: 'Get',
     async: false,
     dataType: 'json',
@@ -54,6 +53,8 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                 , where: {
                     ParentId: currentparentId,
                     k: keyword.val(),
+                    ModelId: currentmodelId,
+                    PId: pId,
                     timefrom: dateRanage[0],
                     timeto: dateRanage[1]
                 }
@@ -67,9 +68,9 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
         toolbarhtml += '<button class="layui-btn layui-btn-sm" id="setProperty">设置属性<i class="layui-icon layui-icon-down layui-font-12"></i></button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" id="cacelProperty">取消属性<i class="layui-icon layui-icon-down layui-font-12"></i></button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Copy">复制</button>';
+        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Move">移动</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Import">导入</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Export">导出</button>';
-        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Move">移动</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="History">修改历史</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Delete">回收站</button>';
     }
@@ -95,6 +96,8 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
         },
         where: {
             ParentId: currentparentId,
+            PId: pId,
+            ModelId: currentmodelId,
             k: ' '
         },
         parseData: function (res) {
@@ -114,7 +117,25 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                     },
                 });
             }
+            $('.realtionbtn').click(function () {
+                let widthstr = '95%';
+                let heightstr = '95%';
+                let link = $(this).attr('data-href');
+                let title = $(this).text();
+                //iframe窗
+                layer.open({
+                    type: 2,
+                    title: title,
+                    shadeClose: true,
+                    shade: 0.5,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: [widthstr, heightstr],
+                    content: link,
+                    end: function () {
 
+                    }
+                });
+            })
             var id = this.id;
             // 设置属性
             dropdown.render({
@@ -192,7 +213,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
             layer.msg("选择一条数据", { icon: 5, time: 1000 })
             return;
         }
-        var model = { ParentId: currentparentId, Ids: ids, };
+        var model = { ParentId: currentparentId, Ids: ids, ModelId: currentmodelId };
         model[event] = result;
         ajaxHttp({
             url: routeLink + 'UpdateStatus',
@@ -211,6 +232,8 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                             , where: {
                                 ParentId: currentparentId,
                                 k: keyword.val(),
+                                PId: pId,
+                                ModelId: currentmodelId,
                                 timefrom: dateRanage[0],
                                 timeto: dateRanage[1]
                             }
@@ -231,6 +254,8 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                 }
                 , where: {
                     ParentId: currentparentId,
+                    PId: pId,
+                    ModelId: currentmodelId,
                     k: keyword.val(),
                     timefrom: dateRanage[0],
                     timeto: dateRanage[1]
@@ -242,6 +267,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
         var type = $(this).data('type');
         active[type] ? active[type].call(this) : '';
     });
+
     //监听事件
     table.on('toolbar(test)', function (obj) {
         var data = table.checkStatus(obj.config.id).data;
@@ -276,7 +302,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                 var nodeIds = defaultOptions.getCheckedId(data);
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
                     ajaxHttp({
-                        url: routeLink + currentparentId + "/" + nodeIds,
+                        url: routeLink + currentmodelId +"/"+ currentparentId + "/" + nodeIds,
                         type: 'Post',
                         async: false,
                         success: function (json) {

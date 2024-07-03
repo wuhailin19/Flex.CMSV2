@@ -17,9 +17,10 @@ function openapi($element) {
 }
 layui.config({
     base: '/scripts/layui/module/'
-}).use(['layer', 'table', 'treeTable'], function () {
+}).use(['layer', 'table', 'treeTable','form'], function () {
     var table = layui.table;
     var layer = layui.layer;
+    var form = layui.form;
     var $ = layui.jquery;
     var columnlist;
     ajaxHttp({
@@ -62,15 +63,13 @@ layui.config({
             idName: 'Id',
             pidName: 'ParentId'
         },
-        defaultToolbar: ['filter', 'print', 'exports', {
-            title: '提示',
-            layEvent: 'LAYTABLE_TIPS',
-            icon: 'layui-icon-tips'
-        }],
         cols: [
             columnlist
         ],
-        style: 'margin-top:0;'
+        style: 'margin-top:0;',
+        done: function () {
+            
+        }
     });
     var delete_index = [];
     
@@ -95,6 +94,26 @@ layui.config({
             delete delete_index[index]
         }
     });
+    form.on('switch(statusPxy)', function (data) {
+        // 得到开关的value值，实际是需要修改的ID值。
+        var status = this.checked ? 'true' : 'false';
+        const model = { Id: data.value, IsShow: status };
+        ajaxHttp({
+            url: api + 'ColumnCategory/QuickEdit',
+            data: JSON.stringify(model),
+            type: 'Post',
+            async: false,
+            success: function (json) {
+                if (json.code == 200) {
+                    parent.Init();
+                    tips.showSuccess(json.msg);
+                } else {
+                    tips.showFail(json.msg);
+                }
+            },
+            complete: function () { }
+        })
+    })
     //监听事件
     treeTable.on('toolbar(demo_tree)', function (obj) {
         var data = insTb.checkStatus(false);
@@ -109,9 +128,7 @@ layui.config({
                 layer.msg(checkStatus.isAll ? '全选' : '未全选')
                 break;
             case 'addRole':
-                req_Data = null
-                let widthstr = '80%';
-                let heightstr = '90%';
+                req_Data = null;
                 //iframe窗
                 layer.open({
                     type: 2,
@@ -119,8 +136,40 @@ layui.config({
                     shadeClose: true,
                     shade: false,
                     maxmin: true, //开启最大化最小化按钮
-                    area: [widthstr, heightstr],
+                    area: ['80%', '90%'],
                     content: routePageLink + 'AddPage',
+                    end: function () {
+                        insTb.refresh();
+                    }
+                });
+                break;
+            case 'Append':
+                req_Data = null;
+                //iframe窗
+                layer.open({
+                    type: 2,
+                    title: "批量添加",
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['80%', '90%'],
+                    content: routePageLink + 'Append',
+                    end: function () {
+                        insTb.refresh();
+                    }
+                });
+                break;
+            case 'quicksortable':
+                req_Data = null;
+                //iframe窗
+                layer.open({
+                    type: 2,
+                    title: "快速排序",
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['50%', '90%'],
+                    content: routePageLink + 'QuickSort',
                     end: function () {
                         insTb.refresh();
                     }
@@ -144,8 +193,6 @@ layui.config({
                                 // 删除
                                 insTb.refresh();
                                 delete_index = [];
-                                //insTb.reload();
-                                //parent.Init();
                             } else {
                                 tips.showFail(json.msg);
                                 delete_index = [];

@@ -290,13 +290,13 @@
 
         //autoHeightEnabled
         // 是否自动长高,默认true
-        , autoHeightEnabled: true
+        , autoHeightEnabled: false
 
         //scaleEnabled
         //是否可以拉伸长高,默认true(当开启时，自动长高失效)
         //,scaleEnabled:false
         //,minFrameWidth:800    //编辑器拖动时最小宽度,默认800
-        //,minFrameHeight:220  //编辑器拖动时最小高度,默认220
+       //,minFrameHeight:620  //编辑器拖动时最小高度,默认220
 
         //autoFloatEnabled
         //是否保持toolbar的位置不动,默认true
@@ -369,11 +369,11 @@
         //,rgb2Hex:true               //默认产出的数据中的color自动从rgb格式变成16进制格式
 
         // xss 过滤是否开启,inserthtml等操作
-        , xssFilterRules: true
+        , xssFilterRules: false
         //input xss过滤
-        , inputXssFilter: true
+        , inputXssFilter: false
         //output xss过滤
-        , outputXssFilter: true
+        , outputXssFilter: false
         // xss过滤白名单 名单来源: https://raw.githubusercontent.com/leizongmin/js-xss/master/lib/default.js
         , whitList: {
             a: ['target', 'href', 'title', 'class', 'style', 'id'],
@@ -438,6 +438,9 @@
             tr: ['rowspan', 'align', 'valign', 'class', 'style'],
             tt: [],
             u: [],
+            svg: ['xmlns', 'id', 'width', 'height','viewbox'],
+            path: ['id', 'data-name', 'transform', 'fill-rule', 'fill'],
+            g: ['transform'],
             ul: ['class', 'style'],
             video: ['autoplay', 'controls', 'loop', 'preload', 'poster', 'src', 'height', 'width', 'class', 'style', 'id'],
 
