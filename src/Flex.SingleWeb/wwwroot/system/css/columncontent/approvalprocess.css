@@ -1,0 +1,10 @@
+﻿.container { padding: 8px; }
+.listbox { display: flex; flex-wrap: wrap; }
+.listbox .item { padding: 8px; border: 1px solid #ccc; border-radius: 5%; margin: 0 10px; position: relative; color: #fff; }
+.listbox .line { align-items: center; display: flex; justify-content: center; }
+.listbox .item.start { background-color: rgb(0, 150, 136); }
+.listbox .item.end { background-color: #ff5722; }
+.listbox .item.normal { background-color: rgb(102, 177, 255); }
+.listbox .item.reject { background-color: #FFB800; }
+.listtitle { margin: 10px; font-size: 14px; }
+.boxcenter { display: flex; align-items: center; justify-content: center; }

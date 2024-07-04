@@ -5,11 +5,13 @@ using Flex.Core.Extensions.CommonExtensions;
 using Flex.Dapper;
 using Flex.Dapper.Context;
 using Flex.Domain.Dtos.Message;
+using Flex.Domain.Dtos.System.Message;
 using Flex.Domain.Enums.Message;
 using Flex.SqlSugarFactory;
 using Flex.SqlSugarFactory.Seed;
 using Flex.SqlSugarFactory.UnitOfWorks;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Mysqlx.Expr;
 using System.Collections;
 using System.Linq.Expressions;
 
@@ -116,6 +118,48 @@ namespace Flex.Application.Services
             await _unitOfWork.SaveChangesAsync();
             return new ProblemDetails<MessageOutputDto>(HttpStatusCode.OK, result, string.Empty);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modelId">模型Id</param>
+        /// <param name="id">内容Id</param>
+        /// <returns></returns>
+        public async Task<ProblemDetails<List<ApprovalProcessDto>>> GetApprovalProcessById(int modelId, int id)
+        {
+            Expression<Func<sysMessage, bool>> exp = m => m.ModelId == modelId && m.ContentId == id;
+
+            var contentrelationlist = (await _unitOfWork.GetRepository<sysMessage>().GetAllAsync(exp, m => m.OrderByDescending(d => d.AddTime))).ToList();
+            if ((contentrelationlist?.Count ?? 0) == 0)
+                return new ProblemDetails<List<ApprovalProcessDto>>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+
+            var firstmodels = contentrelationlist.Where(m => m.IsStart).ToList();
+            if ((firstmodels?.Count ?? 0) == 0)
+                return new ProblemDetails<List<ApprovalProcessDto>>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            List<ApprovalProcessDto> results = new List<ApprovalProcessDto>();
+            foreach (var firstmodel in firstmodels)
+            {
+                var resultmodel = _mapper.Map<ApprovalProcessDto>(firstmodel);
+                contentrelationlist.Remove(firstmodel);
+                MapToResult(resultmodel, contentrelationlist);
+                results.Add(resultmodel);
+            }
+
+            return new ProblemDetails<List<ApprovalProcessDto>>(HttpStatusCode.OK, results);
+        }
+
+        private void MapToResult(ApprovalProcessDto currentmodel, List<sysMessage> contentrelationlist)
+        {
+            var nextmodel = contentrelationlist.FirstOrDefault(m => m.RecieveId == currentmodel.Id && m.MsgGroupId == currentmodel.MsgGroupId);
+            if (nextmodel != null)
+            {
+                var appmodel = _mapper.Map<ApprovalProcessDto>(nextmodel);
+                currentmodel.next = appmodel;
+                contentrelationlist.Remove(nextmodel);
+                MapToResult(currentmodel.next, contentrelationlist);
+            }
+        }
+
         private void InitReviewer(Hashtable table)
         {
             table.SetValue("ReviewAddUser", _claims.UserId);
@@ -191,6 +235,12 @@ namespace Flex.Application.Services
                 {
                     return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
                 }
+                //区分回复的消息
+                var parentmsg = await msgRepository.GetFirstOrDefaultAsync(m => m.MsgGroupId == MsgGroupId && m.ToPathId == model.FromPathId, orderBy);
+                if (parentmsg != null)
+                {
+                    messagemodel.RecieveId = parentmsg.Id;
+                }
             }
 
             bool IsStart = false;
@@ -199,6 +249,7 @@ namespace Flex.Application.Services
             {
                 IsStart = true;
                 messagemodel.MsgGroupId = _idWorker.NextId();
+                messagemodel.MessageCate = MessageCate.Begin;
                 messagemodel.IsStart = true;
             }
             else
@@ -217,7 +268,7 @@ namespace Flex.Application.Services
                 model.BaseFormContent.SetValue("ReviewAddUser", 0);
                 InitContentReviewInfo(model.BaseFormContent, 0, StatusCode.Enable, string.Empty);
             }
-            //审批驳回 设置内容为草稿
+            //退稿 设置内容为草稿
             else if (step.stepCate == "end-error")
             {
                 messagemodel.IsEnd = true;
@@ -226,19 +277,20 @@ namespace Flex.Application.Services
                 model.BaseFormContent.SetValue("ReviewAddUser", 0);
                 InitContentReviewInfo(model.BaseFormContent, 0, StatusCode.Draft, string.Empty);
             }
-            //退稿 设置内容为待审核，并重置流程
+            //否决 设置内容为待审核，并重置流程
             else if (step.stepCate == "end-cancel")
             {
                 messagemodel.IsEnd = true;
                 messagemodel.ToUserId = AddUser;
-                messagemodel.MessageCate = MessageCate.Rejected;
+                messagemodel.MessageCate = MessageCate.Veto;
                 model.BaseFormContent.SetValue("ReviewAddUser", 0);
                 InitContentReviewInfo(model.BaseFormContent, 0, StatusCode.PendingApproval, string.Empty);
             }
             else
             {
                 InitContentReviewInfo(model.BaseFormContent, messagemodel.MsgGroupId, StatusCode.PendingApproval, model.ToPathId);
-                messagemodel.MessageCate = MessageCate.NormalTask;
+                if (fromstep.isStart != StepProperty.Start)
+                    messagemodel.MessageCate = MessageCate.NormalTask;
             }
 
             AddIntEntityBasicInfo(messagemodel);

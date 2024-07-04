@@ -1,6 +1,7 @@
 ﻿var HasOpenHistroryBox = false;
 var deleteindex;
 var historyindex;
+var approvalindex;
 var defaultOptions = {
     addwidths: 400,
     addheights: 400,
@@ -128,6 +129,25 @@ var defaultOptions = {
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
             content: routePageLink + 'Hishistorical?ParentId=' + currentparentId,
+            end: function () {
+                HasOpenHistroryBox = false;
+            }
+        });
+    }, openApprovalProcessIframe: function (layer, insTb) {
+        var self = this;
+        let widthstr = '80%';
+        let heightstr = '80%';
+        layer.close(approvalindex);
+        //iframe窗
+        approvalindex = layer.open({
+            type: 2,
+            skin: 'layui-layer-lan',
+            title: '审批流程',
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: [widthstr, heightstr],
+            content: routePageLink + 'ApprovalProcess?ParentId=' + currentparentId,
             end: function () {
                 HasOpenHistroryBox = false;
             }

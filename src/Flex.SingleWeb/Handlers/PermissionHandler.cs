@@ -48,7 +48,7 @@ namespace Flex.WebApi.Handlers
                     if (expirationtime < Clock.Now)
                     {
                         var logstr = string.Format("该用户{0}（{2}），登录已超时，链接{1}", _claims.UserName, nowurl, _claims.UserId);
-                        AddLog(logstr);
+                        AddLog(logstr, nowurl);
                         Fail(context, httpContext, StatusCodes.Status419AuthenticationTimeout);
                         return;
                     }
@@ -61,7 +61,7 @@ namespace Flex.WebApi.Handlers
                     if (userrole == 0)
                     {
                         var logstr = string.Format("该用户{0}（{2}），没有角色信息，链接{1}", _claims.UserName, nowurl, _claims.UserId);
-                        AddLog(logstr);
+                        AddLog(logstr, nowurl);
                         Fail(context, httpContext);
                         return;
                     }
@@ -86,7 +86,7 @@ namespace Flex.WebApi.Handlers
                     else
                     {
                         var logstr = string.Format("该用户{0}（{1}），没有权限访问，链接{2}", _claims.UserName, _claims.UserId, nowurl);
-                        AddLog(logstr);
+                        AddLog(logstr, nowurl);
                         Fail(context, httpContext);
                         return;
                     }
@@ -94,17 +94,15 @@ namespace Flex.WebApi.Handlers
             }
         }
 
-        private async void AddLog(string logstr)
+        private async void AddLog(string logstr, string nowurl)
         {
             _logger.LogWarning(logstr);
-            await _logServices.AddLoginLog(new LoginSystemLogDto()
+            await _logServices.AddLog(new InputSystemLogDto()
             {
-                systemLogLevel = SystemLogLevel.Warning,
-                operationContent = logstr,
-                inoperator = _claims.UserName,
-                IsAuthenticated = true,
-                UserId = _claims.UserId,
-                UserName = _claims.UserName
+                LogLevel = SystemLogLevel.Warning,
+                OperationContent = logstr,
+                Url = nowurl,
+                LogSort = LogSort.Api
             });
         }
         /// <summary>

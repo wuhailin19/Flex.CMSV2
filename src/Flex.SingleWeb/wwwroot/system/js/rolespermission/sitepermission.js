@@ -122,7 +122,7 @@ layui.config({
             url: api + 'RolePermission/UpdateSitePermission',
             type: 'Post',
             datatype: 'json',
-            data: JSON.stringify({ Id: parent_json.Id, chooseId: ids }),
+            data: JSON.stringify({ Id: parseInt(parent_json.Id), chooseId: ids.toString() }),
             async: false,
             success: function (json) {
                 if (json.code == 200) {

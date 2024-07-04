@@ -49,5 +49,15 @@ namespace Flex.WebApi.SystemControllers
                 return Success(result.Detail);
             return Fail(result.Detail);
         }
+
+        [HttpGet("GetApprovalProcess/{modelId}/{id}")]
+        [Descriper(Name = "获取审核流程图示")]
+        public async Task<string> GetApprovalProcessById(int modelId, int id)
+        {
+            var result = await _messageServices.GetApprovalProcessById(modelId, id);
+            if (result.IsSuccess)
+                return Success(result.Content);
+            return Fail(result.Detail, 226);
+        }
     }
 }

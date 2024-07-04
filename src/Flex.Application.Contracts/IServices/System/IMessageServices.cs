@@ -1,5 +1,6 @@
 ﻿using Flex.Application.Contracts.Basics.ResultModels;
 using Flex.Domain.Dtos.Message;
+using Flex.Domain.Dtos.System.Message;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Flex.Application.Contracts.IServices
 {
     public interface IMessageServices
     {
+        Task<ProblemDetails<List<ApprovalProcessDto>>> GetApprovalProcessById(int modelId, int id);
         Task<ProblemDetails<MessageOutputDto>> GetMessageById(int id);
         Task<PagedList<MessageTitleListDto>> GetMessageTitleListDtoAsync(int page, int pagesize);
         int GetNotReadMessageCount();

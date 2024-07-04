@@ -82,6 +82,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
             ParentId: parent_json.ParentId,
             Id: parent_json.Id,
             StatusCode: 5,
+            ModelId: parent_json.currentmodelId,
             ReviewStepId: ''
         };
         var nowurl = location.href;

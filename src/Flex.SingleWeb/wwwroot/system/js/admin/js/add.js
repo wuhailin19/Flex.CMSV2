@@ -39,7 +39,7 @@ layui.config({
         , saveW: 150     //保存宽度
         , saveH: 150
         , mark: 1 / 1    //选取比例
-        , area: ['80%', '80%']  //弹窗宽度
+        , area: ['80%', '90%']  //弹窗宽度
         , url: api + "Admin/OnloadUserAvatar"  //图片上传接口返回和（layui 的upload 模块）返回的JOSN一样
         , done: function (data) { //上传完毕回调
             $("#inputimgurl").val(data);
