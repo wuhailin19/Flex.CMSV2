@@ -7,6 +7,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <RazorCompileOnBuild>false</RazorCompileOnBuild>
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
+    <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,19 +31,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.25" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.4" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.2" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.2.0" />
-    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Text.Json" Version="8.0.3" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.11" />
+    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
+    
   </ItemGroup>
   
   <ItemGroup>
     <None Include="Areas\System\Views\TableRelation\AddPage.cshtml" />
     <None Include="Areas\System\Views\TableRelation\Edit.cshtml" />
     <None Include="Areas\System\Views\TableRelation\Index.cshtml" />
+    <None Include="Components\App.razor" />
+    <None Include="Components\Layout\MainLayout.razor" />
+    <None Include="Components\Layout\NavMenu.razor" />
+    <None Include="Components\Pages\Counter.razor" />
+    <None Include="Components\Pages\Error.razor" />
+    <None Include="Components\Pages\Home.razor" />
+    <None Include="Components\Pages\Weather.razor" />
+    <None Include="Components\Routes.razor" />
+    <None Include="Components\_Imports.razor" />
     <None Include="wwwroot\scripts\layui\module\notice\.DS_Store" />
     <None Include="wwwroot\system\js\systemlog\index.js" />
     <None Include="wwwroot\system\js\systemlog\openPageOptions.js" />

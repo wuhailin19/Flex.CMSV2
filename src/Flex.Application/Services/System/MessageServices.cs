@@ -180,7 +180,7 @@ namespace Flex.Application.Services
 
             if (model.ToPathId.IsNullOrEmpty())
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.ReviewCreateError.GetEnumDescription());
-            if (model.BaseFormContent.IsNullOrEmpty())
+            if (model.BaseFormContent.Count == 0)
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
 
             string updatesql = string.Empty;

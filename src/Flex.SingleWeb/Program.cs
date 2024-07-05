@@ -11,6 +11,7 @@ using Flex.Application.Extensions.Swagger;
 using Flex.Application.Middlewares;
 using Flex.Application.SetupExtensions.OrmInitExtension;
 using Flex.Core.Helper;
+using Flex.SingleWeb.Components;
 using Flex.SqlSugarFactory;
 using Flex.SqlSugarFactory.UnitOfWorks;
 using Flex.WebApi.Jwt;
@@ -41,6 +42,10 @@ builder.Services
     // 设置默认的响应字符编码为 UTF-8
     options.OutputFormatters.OfType<StringOutputFormatter>().FirstOrDefault().SupportedEncodings.Add(Encoding.UTF8);
 });
+// Add services to the container.
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer()
 //注册swagger
@@ -184,10 +189,13 @@ app.Use(async (context, next) =>
     }
     await next();
 });
+app.UseAntiforgery();
 app.MapAreaControllerRoute(
         name: "AreaRoute",
         areaName: "System",
         pattern: "{area:exists}/{controller=Login}/{action=Index}/{id?}");
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
 
 app.Run();
 

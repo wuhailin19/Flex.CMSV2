@@ -105,7 +105,6 @@ layui.config({
             async: false,
             success: function (json) {
                 if (json.code == 200) {
-                    parent.Init();
                     tips.showSuccess(json.msg);
                 } else {
                     tips.showFail(json.msg);

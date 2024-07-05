@@ -32,13 +32,18 @@
 .LinkA.active::after { content: '\e650'; border-radius: 10px; width: 20px; height: 20px; background: rgb(102, 177, 255); position: absolute; right: -5px; bottom: -5px; text-align: center; line-height: 20px; color: #fff; font-size: 10px; }
 .boxchart.file_box { width: 25%; height: 140px; }
 .layui-card-box.typess { min-height: 240px; }
-.File { min-height: 280px; }
+.File { min-height: 340px; }
 .File .boxchart { height: 140px; }
 .File .leftconfig { line-height: 80px; }
 .typess .boxchart { width: 10%; height: 140px; }
 .typess .leftconfig { line-height: 80px; }
 .typess .boxchart::-webkit-scrollbar { width: 0 !important }
 .typess { min-height: 240px; }
+.card_css .iconbox .number { font-size: 40px; line-height: 110px; color: green; }
+.card_css .iconbox .number.approval { color: #FFB800; }
+.card_css .iconbox .number.message { color: #FFB800; }
+.card_css .iconbox .number.back { color: rgb(102, 177, 255); }
+
 @media screen and (max-width:768px) {
     .leftbox { width: 100% !important; }
     .rightbox { width: 100% !important; }
