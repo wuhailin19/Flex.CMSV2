@@ -19,10 +19,10 @@ namespace Flex.Domain.Config
                 new SysIndexSet
                 {
                     Id = 1,
-                    SystemMenu = "5,158,167,172",
-                    SiteMenu = "171",
-                    FileManage = "5,6",
-                    Shortcut = string.Empty,
+                    SystemMenu = "4,5,149,171,179,6",
+                    SiteMenu = "136,167,168,174",
+                    FileManage = "175",
+                    Shortcut = "7",
                     AddUser= 1560206066204151804,
                     AddUserName="webmaster",
                     StatusCode=StatusCode.Enable,
