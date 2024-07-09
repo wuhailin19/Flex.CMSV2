@@ -42,9 +42,11 @@ namespace Flex.Application.Services
         private void AddChildrenToColumn(List<SysColumn> fulllist, List<TreeColumnListDto> treeColumns)
         {
             List<SysColumn> sysColumns = new List<SysColumn>();
+
             foreach (var item in treeColumns)
             {
                 sysColumns = fulllist.Where(m => m.ParentId == item.id).ToList();
+
                 if (sysColumns.Count > 0)
                 {
                     item.children = _mapper.Map<List<TreeColumnListDto>>(sysColumns);
@@ -71,6 +73,31 @@ namespace Flex.Application.Services
                 new TreeColumnListDto() { id = 0, ParentId = -2, title = "根节点", children = treeColumns }
             };
             return finaltrees;
+        }
+
+        public async Task<IEnumerable<TreeColumnListDto>> GetTreeListBySiteIdAsync(int SiteId, int modelId)
+        {
+            var coreRespository = _unitOfWork.GetRepository<SysColumn>();
+            if (SiteId != 0)
+                expression = m => m.SiteId == SiteId;
+            var list = (await coreRespository.GetAllAsync(expression)).OrderBy(m => m.OrderId).ToList();
+            if (!_claims.IsSystem)
+            {
+            }
+            List<TreeColumnListDto> treeColumns = new List<TreeColumnListDto>();
+            list.Where(m => m.ModelId == modelId).Each(item =>
+            {
+                item.CanCopy = true;
+                item.disabled = false;
+            });
+            list.Where(m => m.ParentId == 0).Each(item =>
+            {
+                treeColumns.Add(_mapper.Map<TreeColumnListDto>(item));
+            });
+            var cancopylist = list.Where(m => m.ModelId == modelId).ToList();
+            AddChildrenToColumn(list, treeColumns);
+
+            return treeColumns;
         }
 
         public async Task<IEnumerable<TreeColumnListDto>> GetManageTreeListAsync()
@@ -196,6 +223,7 @@ namespace Flex.Application.Services
             }
             return treeColumns;
         }
+        
         public async Task<IEnumerable<RoleDataColumnListDto>> DataPermissionListAsync(int siteId)
         {
             var coreRespository = _unitOfWork.GetRepository<SysColumn>();
@@ -272,7 +300,7 @@ namespace Flex.Application.Services
             int orderId = 0;
             var orderItem = await coreRespository.GetFirstOrDefaultAsync(null, m => m.OrderByDescending(q => q.OrderId));
             if (orderItem != null)
-                orderId= orderItem.OrderId;
+                orderId = orderItem.OrderId;
             foreach (var item in columnlist)
             {
                 if (item.IsNullOrEmpty()) continue;

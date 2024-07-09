@@ -36,6 +36,7 @@ namespace Flex.Application.SqlServerSQLString
     OrderId INT NOT NULL DEFAULT 0,
     StatusCode INT NOT NULL DEFAULT 1,
     ReviewStepId VARCHAR2(255),
+    RefLinkClassId VARCHAR2(500),
     ContentGroupId BIGINT,
     MsgGroupId BIGINT,
     ReviewAddUser BIGINT,
@@ -116,6 +117,35 @@ namespace Flex.Application.SqlServerSQLString
             }
             builder.Append($"{key.Substring(0, key.Length - 1)},StatusCode,OrderId,ReviewStepId,MsgGroupId,LastEditUser,LastEditUserName,LastEditDate) " +
                 $"SELECT {keyvar.Substring(0, keyvar.Length - 1)},6,OrderId,'',0,?,?,? FROM {TableName} WHERE Id=?");
+            return builder;
+        }
+
+        public StringBuilder CreateCopyContentSqlString(List<string> table, string TableName, List<int> IdList, List<SysColumn> sysColumns)
+        {
+            StringBuilder builder = new StringBuilder();
+            foreach (var column in sysColumns)
+            {
+                int StatusCode = 1;
+                if (column.ReviewMode != 0)
+                    StatusCode = 5;
+
+                string key = "";
+                string keyvar = "";
+                foreach (var item in table)
+                {
+                    if (item.ToString().ToLower() == "id")
+                        continue;
+                    key += $"{item},";
+                    keyvar += $"{item},";
+                }
+                foreach (var item in IdList)
+                {
+                    builder.Append("insert into " + TableName + " (");
+                    builder.Append(key.Substring(0, key.Length - 1) + @$",SiteId,StatusCode,ParentId,OrderId,ReviewStepId,MsgGroupId) 
+                    select {keyvar.Substring(0, keyvar.Length - 1)},{column.SiteId},{StatusCode},{column.Id},OrderId,'',0 from {TableName} where Id={item};");
+                }
+            }
+
             return builder;
         }
 

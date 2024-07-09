@@ -38,6 +38,7 @@ namespace Flex.Application.SqlServerSQLString
                                       "[OrderId] [int] NOT NULL default 0," +
                                       "[StatusCode] [int] NOT NULL default 1," +
                                       "[ReviewStepId] [nvarchar](255) NULL," +
+                                      "[RefLinkClassId] [nvarchar](500) NULL," +
                                       "[ContentGroupId] [bigint] NULL," +
                                       "[MsgGroupId] [bigint] NULL," +
                                       "[ReviewAddUser] [bigint] NULL," +
@@ -82,6 +83,34 @@ namespace Flex.Application.SqlServerSQLString
             }
             builder.Append(key.Substring(0, key.Length - 1) + ",StatusCode,OrderId,ReviewStepId,MsgGroupId,LastEditUser,LastEditUserName,LastEditDate) " +
                 "select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId,'',0,@LastEditUser,@LastEditUserName,@LastEditDate from " + TableName + " where Id=@Id");
+            return builder;
+        }
+
+        public StringBuilder CreateCopyContentSqlString(List<string> table, string TableName, List<int> IdList, List<SysColumn> sysColumns)
+        {
+            StringBuilder builder = new StringBuilder();
+            foreach (var column in sysColumns)
+            {
+                int StatusCode = 1;
+                if (column.ReviewMode != 0)
+                    StatusCode = 5;
+                string key = "";
+                string keyvar = "";
+                foreach (var item in table)
+                {
+                    if (item.ToString().ToLower() == "id")
+                        continue;
+                    key += "[" + item + "],";
+                    keyvar += "" + item + ",";
+                }
+                foreach (var item in IdList)
+                {
+                    builder.Append("insert into " + TableName + " (");
+                    builder.Append(key.Substring(0, key.Length - 1) + @$",SiteId,StatusCode,ParentId,OrderId,ReviewStepId,MsgGroupId) 
+                select {keyvar.Substring(0, keyvar.Length - 1)},{column.SiteId},{StatusCode},{column.Id},OrderId,'',0 from {TableName} where Id={item};");
+                }
+            }
+
             return builder;
         }
 

@@ -2,6 +2,7 @@
 using Flex.Application.Contracts.Exceptions;
 using Flex.Core.Extensions.CommonExtensions;
 using Flex.Domain.Dtos.Role;
+using Flex.Domain.Dtos.System.ColumnContent;
 using Flex.Domain.Enums.LogLevel;
 using Flex.Domain.WhiteFileds;
 using Microsoft.Data.SqlClient;
@@ -16,6 +17,68 @@ namespace Flex.Application.Services
 {
     public partial class ColumnContentServices
     {
+        public async Task<ProblemDetails<string>> ContentOperation(ContentToolsDto contentToolsDto)
+        {
+            string sql = string.Empty;
+            string errormsg = string.Empty;
+            string successmsg = string.Empty;
+            switch (contentToolsDto.operation)
+            {
+                case DataOpreate.Copy:
+                    errormsg = ErrorCodes.DataCopyError.GetEnumDescription();
+                    successmsg = ErrorCodes.DataCopySuccess.GetEnumDescription();
+                    break;
+                case DataOpreate.Move:
+                    errormsg = ErrorCodes.DataMoveError.GetEnumDescription();
+                    successmsg = ErrorCodes.DataMoveSuccess.GetEnumDescription();
+                    break;
+                case DataOpreate.Link:
+                    errormsg = ErrorCodes.DataLinkError.GetEnumDescription();
+                    successmsg = ErrorCodes.DataLinkSuccess.GetEnumDescription();
+                    break;
+            }
+            var parentIdlist = contentToolsDto.checkcolumnId.ToList("-");
+            var column = (await _unitOfWork.GetRepository<SysColumn>().GetAllAsync(m => parentIdlist.Contains(m.Id.ToString()))).ToList();
+            if (column.Count == 0) return Problem<string>(HttpStatusCode.BadRequest, errormsg);
+
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == contentToolsDto.modelId);
+            if (contentmodel == null)
+                return Problem<string>(HttpStatusCode.BadRequest, errormsg);
+
+            var contentlist = contentToolsDto.checkcontentId.ToList<int>();
+            if (contentlist.Count == 0) return Problem<string>(HttpStatusCode.BadRequest, errormsg);
+
+            switch (contentToolsDto.operation)
+            {
+                case DataOpreate.Copy:
+                    var filedmodel = await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == contentToolsDto.modelId);
+                    //当前表中字段用于生成修改副本
+                    var fileds = ColumnContentUpdateFiledConfig.copyFields.ToList();
+                    foreach (var item in filedmodel)
+                    {
+                        fileds.Add(item.FieldName);
+                    }
+                    sql = _sqlTableServices.CreateCopyContentSqlString(
+                        fileds,
+                        contentmodel.TableName,
+                        contentlist,
+                        column).ToString();
+
+                    break;
+                case DataOpreate.Move:
+
+                    break;
+                case DataOpreate.Link:
+
+                    break;
+            }
+            var result = _sqlsugar.Db.Ado.ExecuteCommand(sql);
+            if (result > 0)
+            {
+                return Problem<string>(HttpStatusCode.OK, successmsg);
+            }
+            return Problem<string>(HttpStatusCode.BadRequest, errormsg);
+        }
         /// <summary>
         /// 修改数据内容
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using Flex.Application.Contracts.Exceptions;
 using Flex.Application.Contracts.IServices.System;
+using Flex.Core.Config;
 using Flex.Domain.Dtos;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.Normal.ProductManage;
@@ -8,6 +9,7 @@ using Flex.Domain.Entities.Normal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,6 +39,10 @@ namespace Flex.Application.Services.System
             AddIntEntityBasicInfo(model);
             try
             {
+                if (CurrentSiteInfo.SiteId == 0)
+                    return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.DataExist.GetEnumDescription());
+                model.SiteId = CurrentSiteInfo.SiteId;
+                model.SelfUse = true;
                 coreRespository.Insert(model);
                 await _unitOfWork.SaveChangesAsync();
                 return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataInsertSuccess.GetEnumDescription());

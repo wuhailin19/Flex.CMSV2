@@ -1,9 +1,12 @@
-﻿using Flex.Domain.Dtos.Column;
+﻿using Flex.Core.Config;
+using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Role;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +14,8 @@ namespace Flex.Application.Services
 {
     public partial class ColumnContentServices
     {
+        //获取本站或者公有的模型
+        protected Expression<Func<sysTableRelation, bool>> expression = m => m.SiteId == CurrentSiteInfo.SiteId || !m.SelfUse;
         public async Task<ColumnPermissionAndTableHeadDto<ColumnContentDto>> GetTableThs(int parentId, int modelId)
         {
             var tableths = ModelTools<ColumnContentDto>.getColumnDescList();
@@ -28,7 +33,8 @@ namespace Flex.Application.Services
                     field = item.FieldName
                 });
             }
-            var relationtable = await _unitOfWork.GetRepository<sysTableRelation>().GetAllAsync(m => m.ParentModelId == modelId);
+            expression = expression.And(m => m.ParentModelId == modelId);
+            var relationtable = await _unitOfWork.GetRepository<sysTableRelation>().GetAllAsync(expression);
             if (relationtable.Count > 0)
             {
                 tableths.Add(new ModelTools<ColumnContentDto>()

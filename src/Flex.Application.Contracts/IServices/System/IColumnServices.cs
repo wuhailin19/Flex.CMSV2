@@ -20,6 +20,7 @@ namespace Flex.Application.Contracts.IServices
         Task<IEnumerable<ColumnSortListDto>> GetColumnSortListByParentIdAsync(int parentId = 0);
         Task<IEnumerable<TreeColumnListDto>> GetManageTreeListAsync();
         Task<IEnumerable<TreeColumnListDto>> GetTreeColumnListDtos();
+        Task<IEnumerable<TreeColumnListDto>> GetTreeListBySiteIdAsync(int SiteId,int modelId);
         Task<IEnumerable<TreeColumnListDto>> GetTreeSelectListDtos();
         Task<IEnumerable<ColumnListDto>> ListAsync();
         Task<ProblemDetails<string>> QuickEditColumn(ColumnQuickEditDto columnQuickEditDto);

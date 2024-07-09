@@ -42,6 +42,7 @@ layui.config({
         method: 'Get',
         toolbar: '#toolbarDemo',
         height: 'full-10',
+        checkChild: false,
         headers: httpTokenHeaders,
         response: {
             statusCode: 200
@@ -61,6 +62,7 @@ layui.config({
             isPidData: true,
             openName: 'Name',
             idName: 'Id',
+            checkChild: false,
             pidName: 'ParentId'
         },
         cols: [
@@ -76,7 +78,6 @@ layui.config({
     //监听表格复选框选择
     treeTable.on('checkbox(demo_tree)', function (obj) { // layui 内置方法
         var data = insTb.checkStatus();
-        console.log(data)
         // 自己做处理， 如果是选中
         if (obj.checked == true) {
             if (obj.type == 'all') {
@@ -93,6 +94,7 @@ layui.config({
             var index = delete_index.indexOf(obj.data.ID);
             delete delete_index[index]
         }
+
     });
     form.on('switch(statusPxy)', function (data) {
         // 得到开关的value值，实际是需要修改的ID值。

@@ -67,8 +67,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Edit">编辑</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" id="setProperty">设置属性<i class="layui-icon layui-icon-down layui-font-12"></i></button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" id="cacelProperty">取消属性<i class="layui-icon layui-icon-down layui-font-12"></i></button>';
-        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Copy">复制</button>';
-        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Move">移动</button>';
+        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="DataTools">数据操作</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Import">导入</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Export">导出</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="History">修改历史</button>';
@@ -292,6 +291,14 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                 req_Data = data[0];
                 defaultOptions.openApprovalProcessIframe(layer, insTb);
                 break;
+            case 'DataTools':
+                if (data.length == 0) {
+                    layer.msg("先选择数据", { icon: 5, time: 1000 })
+                    return;
+                }
+                let ids = getIdsFromList(data);
+                defaultOptions.openCopyContentIframe(layer, insTb, ids);
+                break;
             case 'Delete':
                 req_Data = data[0];
                 defaultOptions.openSoftDeleteIframe(layer, insTb);
@@ -311,7 +318,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                 var nodeIds = defaultOptions.getCheckedId(data);
                 layer.confirm('确定删除选中数据吗？', { btn: ['确定删除', '取消'] }, function (index) {
                     ajaxHttp({
-                        url: routeLink + currentmodelId +"/"+ currentparentId + "/" + nodeIds,
+                        url: routeLink + currentmodelId + "/" + currentparentId + "/" + nodeIds,
                         type: 'Post',
                         async: false,
                         success: function (json) {

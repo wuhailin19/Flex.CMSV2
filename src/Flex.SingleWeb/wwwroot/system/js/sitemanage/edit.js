@@ -59,10 +59,10 @@ layui.config({
             success: function (json) {
                 if (json.code == 200) {
                     tips.showSuccess(json.msg);
-                    if (formjson.Id == localStorage.getItem('siteId')) {
-                        localStorage.setItem('siteName', formjson.SiteName);
-                        localStorage.setItem('siteId', formjson.Id);
-                        localStorage.setItem('sitelink', formjson.RoutePrefix);
+                    if (formjson.Id == sessionStorage.getItem('siteId')) {
+                        sessionStorage.setItem('siteName', formjson.SiteName);
+                        sessionStorage.setItem('siteId', formjson.Id);
+                        sessionStorage.setItem('sitelink', formjson.RoutePrefix);
                     }
                     top.initSiteList();
                     setTimeout(function () {

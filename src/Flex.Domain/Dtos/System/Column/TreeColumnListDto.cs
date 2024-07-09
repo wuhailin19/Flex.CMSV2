@@ -15,6 +15,8 @@ namespace Flex.Domain.Dtos.Column
         public string ColumnUrl { set; get; }
         public string href { set; get; }
         public int OrderId { set; get; }
+        public bool CanCopy { set; get; }
+        public bool disabled { set; get; }
         public bool IsSelect { set; get; }
         public bool IsAdd { set; get; }
         public bool IsEdit { set; get; }

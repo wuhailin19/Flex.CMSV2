@@ -89,6 +89,18 @@ namespace Flex.Core.Extensions
             string[] ids = strs.Split(new string[] { splitstr }, StringSplitOptions.RemoveEmptyEntries);
             return ids.ToList();
         }
+        public static List<T> ToList<T>(this string strs, string splitstr = ",")
+        {
+            if (string.IsNullOrEmpty(strs))
+                return new List<T>();
+            string[] ids = strs.Split(new string[] { splitstr }, StringSplitOptions.RemoveEmptyEntries);
+            List<T> list =  new List<T>();
+            foreach (var item in ids)
+            {
+                list.Add(item.CastTo<T>());
+            }
+            return list;
+        }
         public static string ListToString(this List<object> strs, string splitstr = ",")
         {
             string result = string.Empty;

@@ -2,6 +2,7 @@
 using Flex.Dapper;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
+using Flex.Domain.Dtos.System.ColumnContent;
 using Flex.Domain.Entities;
 using System.Collections;
 
@@ -28,5 +29,6 @@ namespace Flex.Application.Contracts.IServices
         Task<ColumnPermissionAndTableHeadDto<SoftDeleteColumnDto>> GetSoftTableThs(int parentId);
         Task<ProblemDetails<string>> CompletelyDelete(int ParentId, int modelId, string Id);
         Task<ProblemDetails<string>> RestContent(int ParentId, int modelId, string Id);
+        Task<ProblemDetails<string>> ContentOperation(ContentToolsDto contentToolsDto);
     }
 }

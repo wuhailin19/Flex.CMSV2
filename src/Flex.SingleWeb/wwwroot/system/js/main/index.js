@@ -27,15 +27,15 @@ function initSiteList() {
                     for (var i = 0; i < currentinfo.length; i++) {
                         sitestr += '<dd data-siteid="' + currentinfo[i].Id + '" data-sitelink="' + currentinfo[i].RoutePrefix +'">' + currentinfo[i].SiteName + '</dd>';
                     }
-                    if (!localStorage.getItem('siteId'))
-                        localStorage.setItem('siteId', currentinfo[0].Id);
-                    if (!localStorage.getItem('siteName'))
-                        localStorage.setItem('siteName', currentinfo[0].SiteName);
-                    if (!localStorage.getItem('sitelink'))
-                        localStorage.setItem('sitelink', currentinfo[0].RoutePrefix);
+                    if (!sessionStorage.getItem('siteId'))
+                        sessionStorage.setItem('siteId', currentinfo[0].Id);
+                    if (!sessionStorage.getItem('siteName'))
+                        sessionStorage.setItem('siteName', currentinfo[0].SiteName);
+                    if (!sessionStorage.getItem('sitelink'))
+                        sessionStorage.setItem('sitelink', currentinfo[0].RoutePrefix);
                 }
                 else {
-                    localStorage.setItem('siteName', "选择站点");
+                    sessionStorage.setItem('siteName', "选择站点");
                 }
             } else {
                 tips.showFail(json.msg);
@@ -43,10 +43,10 @@ function initSiteList() {
             $('.layui-nav-child.changesitebox').html(sitestr);
         }
     })
-    let currentsitename = localStorage.getItem('siteName');
+    let currentsitename = sessionStorage.getItem('siteName');
     $('.choosesite').text(currentsitename);
 
-    let currentsitelink = localStorage.getItem('sitelink');
+    let currentsitelink = sessionStorage.getItem('sitelink');
     $('.sitelink').attr('href',currentsitelink);
     $('.changesitebox dd').click(function () {
         var siteid = $(this).attr('data-siteid');
@@ -54,9 +54,9 @@ function initSiteList() {
         var sitename = $(this).text();
 
 
-        localStorage.setItem('sitelink', sitelink);
-        localStorage.setItem('siteId', siteid);
-        localStorage.setItem('siteName', sitename);
+        sessionStorage.setItem('sitelink', sitelink);
+        sessionStorage.setItem('siteId', siteid);
+        sessionStorage.setItem('siteName', sitename);
         window.location.reload();
     })
 }

@@ -2,7 +2,7 @@
 var routeLink = api + 'Menu/';
 layui.config({
     base: '/scripts/layui/module/'
-}).use(['layer', 'treeTable','form'], function () {
+}).use(['layer', 'treeTable', 'form'], function () {
     var form = layui.form;
     var layer = layui.layer;
     var $ = layui.jquery;

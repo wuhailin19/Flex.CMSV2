@@ -38,5 +38,6 @@ namespace Flex.Application.Contracts.IServices
         StringBuilder CreateSqlsugarUpdateSqlString(Hashtable table, string TableName, out SqlSugar.SugarParameter[] commandParameters);
         string CompletelyDeleteContentTableData(string TableName, string Ids);
         string RestContentTableData(string TableName, string Ids);
+        StringBuilder CreateCopyContentSqlString(List<string> table, string TableName, List<int> IdList, List<SysColumn> sysColumns);
     }
 }

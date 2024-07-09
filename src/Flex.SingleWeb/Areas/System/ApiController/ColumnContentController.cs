@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Flex.Dapper;
 using System.Collections;
 using Flex.Domain.Dtos.ColumnContent;
+using Flex.Domain.Dtos.System.ColumnContent;
 
 namespace Flex.WebApi.SystemControllers
 {
@@ -18,6 +19,8 @@ namespace Flex.WebApi.SystemControllers
         {
             _columnServices = columnServices;
         }
+
+        #region 表头信息
         [HttpGet("Column/{modelId}/{ParentId}")]
         [Descriper(IsFilter = true)]
         public async Task<string> Column(int modelId, int ParentId)
@@ -38,6 +41,9 @@ namespace Flex.WebApi.SystemControllers
         {
             return Success(await _columnServices.GetSoftTableThs(ParentId));
         }
+        #endregion
+
+        #region 查询
 
         /// <summary>
         /// 多选checkbox数据用此接口
@@ -99,7 +105,9 @@ namespace Flex.WebApi.SystemControllers
                 return Fail(result.Detail);
             return Success(result.Content);
         }
+        #endregion
 
+        #region 新增
         [HttpPost("CreateColumnContent")]
         [Descriper(Name = "新增栏目内容")]
         public async Task<string> Add()
@@ -110,7 +118,9 @@ namespace Flex.WebApi.SystemControllers
                 return Fail(result.Detail);
             return Success(result.Detail);
         }
+        #endregion
 
+        #region 修改
         [HttpPost]
         [Descriper(Name = "修改栏目内容")]
         public async Task<string> Update()
@@ -145,7 +155,9 @@ namespace Flex.WebApi.SystemControllers
                 return Fail("审批取消失败");
             return Success(result.Detail);
         }
+        #endregion
 
+        #region 删除相关
         [HttpPost("CompletelyDelete/{modelId}/{parentId}/{Id}")]
         [Descriper(Name = "完全删除栏目内容，不可恢复")]
         public async Task<string> CompletelyDelete(int modelId, int parentId, string Id)
@@ -175,5 +187,21 @@ namespace Flex.WebApi.SystemControllers
                 return Success(result.Detail);
             return Fail(result.Detail);
         }
+        #endregion
+
+        #region 数据操作
+        [HttpPost("ContentTools")]
+        [Descriper(Name = "数据复制移动和引用")]
+        public async Task<string> ContentTools()
+        {
+            var validatemodel = await ValidateModel<ContentToolsDto>();
+            if(!validatemodel.IsSuccess)
+                return Fail(validatemodel.Detail);
+            var result = await _columnServices.ContentOperation(validatemodel.Content);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
+        }
+        #endregion
     }
 }

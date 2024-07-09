@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,5 +30,12 @@ namespace Flex.Domain.Entities
         public string? SeoKeyWord { set; get; }
         public string? SeoDescription { set; get; }
         public int OrderId { set; get; }
+        [NotMapped]
+        [SugarColumn(IsIgnore = true)]
+        public bool CanCopy { set; get; } = false;
+        
+        [NotMapped]
+        [SugarColumn(IsIgnore = true)]
+        public bool disabled { set; get; } = true;
     }
 }

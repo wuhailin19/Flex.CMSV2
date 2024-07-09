@@ -74,9 +74,9 @@ $(function () {
                         sessionStorage.setItem('access_token', json.content.AccessToken);
                         sessionStorage.setItem('refresh_token', json.content.RefreshToken);
 
-                        localStorage.removeItem('sitelink');
-                        localStorage.removeItem('siteId');
-                        localStorage.removeItem('siteName');
+                        sessionStorage.removeItem('sitelink');
+                        sessionStorage.removeItem('siteId');
+                        sessionStorage.removeItem('siteName');
                         tips.showSuccess("登录成功")
                         setTimeout(function () { window.location = SystempageRoute + 'Main'; }, 1300);
                     } else {

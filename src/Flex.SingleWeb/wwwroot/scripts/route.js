@@ -84,14 +84,14 @@ var ajaxHttp = function (options) {
     // 每次请求携带token
     options.token = sessionStorage.getItem('access_token');
     options.refreshtoken = sessionStorage.getItem('refresh_token');
-    options.siteId = localStorage.getItem('siteId');
+    options.siteId = sessionStorage.getItem('siteId');
     HttpRequest(options);
 }
 
 var httpTokenHeaders = {
     'Authorization': "Bearer " + sessionStorage.getItem('access_token'),
     'Refresh_token': "Bearer " + sessionStorage.getItem('refresh_token'),
-    'siteId': localStorage.getItem('siteId'),
+    'siteId': sessionStorage.getItem('siteId'),
 }
 
 var global_notice;

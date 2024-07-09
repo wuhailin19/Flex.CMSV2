@@ -18,7 +18,11 @@ namespace Flex.Domain.WhiteFileds
 
         //修改历史版本字段
         public const string updatehistoryFields = "IsTop,IsRecommend,IsHot,IsHide,IsSilde,SeoTitle,KeyWord,Description" +
-            ",Title,Id,AddTime,AddUser,AddUserName,ParentId,ContentGroupId,PId,";
+            ",Title,Id,AddTime,AddUser,AddUserName,ParentId,ContentGroupId,PId,SiteId,";
+
+        //复制数据字段
+        public const string copyFields = "IsTop,IsRecommend,IsHot,IsHide,IsSilde,SeoTitle,KeyWord,Description" +
+            ",Title,Id,AddTime,AddUser,AddUserName,ContentGroupId,PId,LastEditUser,LastEditUserName,LastEditDate,";
 
         //修改审核相关字段
         public static List<string> reviewContentFields = new List<string> { "ParentId", "Id", "StatusCode", "ReviewStepId", "ReviewAddUser", "MsgGroupId" };

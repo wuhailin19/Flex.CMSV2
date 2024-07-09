@@ -152,6 +152,25 @@ var defaultOptions = {
                 HasOpenHistroryBox = false;
             }
         });
+    }, openCopyContentIframe: function (layer, insTb, Ids) {
+        var self = this;
+        let widthstr = '500px';
+        let heightstr = '80%';
+        layer.close(approvalindex);
+        //iframe窗
+        approvalindex = layer.open({
+            type: 2,
+            skin: 'layui-layer-lan',
+            title: '数据操作',
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: [widthstr, heightstr],
+            content: routePageLink + 'ContentTools?modelId=' + currentmodelId + '&parentId=' + currentparentId + '&Ids=' + Ids,
+            end: function () {
+                defaultOptions.callBack(insTb);
+            }
+        });
     },
     openSoftDeleteIframe: function (layer, insTb) {
         var self = this;

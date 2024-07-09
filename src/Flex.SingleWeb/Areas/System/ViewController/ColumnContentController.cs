@@ -43,5 +43,9 @@ namespace Flex.LayuiWeb.Areas.System.Controllers.ViewController
         {
             return View();
         }
+        public IActionResult ContentTools()
+        {
+            return View();
+        }
     }
 }

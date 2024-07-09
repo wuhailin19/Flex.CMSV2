@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Content Remove="appsettings_初始.json" />
+    <Content Remove="Areas\System\Views\ColumnContent\ContentTools.cshtml" />
     <Content Remove="wwwroot\system\js\tablerelation\index.js" />
     <Content Remove="wwwroot\system\js\tablerelation\openPageOptions.js" />
   </ItemGroup>
@@ -43,6 +44,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <None Include="Areas\System\Views\ColumnContent\ContentTools.cshtml" />
     <None Include="Areas\System\Views\TableRelation\AddPage.cshtml" />
     <None Include="Areas\System\Views\TableRelation\Edit.cshtml" />
     <None Include="Areas\System\Views\TableRelation\Index.cshtml" />
