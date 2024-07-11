@@ -49,29 +49,35 @@
     <script type="text/html" id="Property">
         <div class="Propertybox">
         {{#if(d.IsTop){}}
-        <span class="Property top iconfont">&#xe60e;</span>
+        <span class="Property top iconfont" title="置顶">&#xe60e;</span>
         {{#}else{}}
 
         {{#}}}
         {{#if(d.IsRecommend){}}
-        <span class="Property recommend iconfont">&#xe63b;</span>
+        <span class="Property recommend iconfont" title="推荐">&#xe63b;</span>
         {{#}else{}}
 
         {{#}}}
         {{#if(d.IsHot){}}
-        <span class="Property hot iconfont">&#xe8c9;</span>
+        <span class="Property hot iconfont" title="热门">&#xe8c9;</span>
         {{#}else{}}
 
         {{#}}}
         {{#if(d.IsSilde){}}
-        <span class="Property focus iconfont">&#xe686;</span>
+        <span class="Property focus iconfont" title="焦点">&#xe686;</span>
         {{#}else{}}
 
         {{#}}}
         {{#if(d.IsHide){}}
-        <span class="Property hide iconfont">&#xe6d1;</span>
+        <span class="Property hide iconfont" title="隐藏">&#xe6d1;</span>
         {{#}else{}}
 
+        {{#}}}
+        {{#if(currentparentId!=d.ParentId){}}
+            {{#if(d.RefLinkClassId!=''&&d.RefLinkClassId!=null){}}
+                <span class="Property hot layui-icon layui-icon-link" title="引用内容"></span>
+            {{#}else{}}
+            {{#}}}
         {{#}}}
         </div>
     </script>

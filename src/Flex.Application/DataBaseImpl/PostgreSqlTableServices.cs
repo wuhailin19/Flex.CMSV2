@@ -168,10 +168,15 @@ namespace Flex.Application.SqlServerSQLString
         {
             parameters = new DynamicParameters();
             swhere = string.Empty;
-            if (modetype != 2)
+            if (modetype == 3)
             {
                 parameters.Add("@parentId", contentPageListParam.ParentId);
                 swhere = " and ParentId=@parentId";
+            }
+            if (modetype == 1)
+            {
+                parameters.Add("@parentId", contentPageListParam.ParentId);
+                swhere = $" and (ParentId=@parentId or RefLinkClassId like '%,{contentPageListParam.ParentId},%')";
             }
             if (contentPageListParam.k.IsNotNullOrEmpty())
             {

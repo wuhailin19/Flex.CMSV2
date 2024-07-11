@@ -15,7 +15,6 @@
         }
     }
 })
-var delete_index = [];
 
 layui.config({
     base: '/scripts/layui/lay/modules/'
@@ -23,6 +22,8 @@ layui.config({
     var form = layui.form, layer = layui.layer;
     var columnlist;
     var tree = layui.newtree;
+    var chooseIdArray = [];
+
     tree.render({
         elem: '#parentIdhide'
         , data: columnlist
@@ -32,16 +33,16 @@ layui.config({
         , onlyIconControl: true
         , oncheck: function (obj) {
             if (obj.checked == true) {
-                delete_index.push(obj.data.id);
+                chooseIdArray.push(obj.data.id);
             }
             else {
-                var index = delete_index.indexOf(obj.data.id);
-                delete delete_index[index]
+                var index = chooseIdArray.indexOf(obj.data.id);
+                delete chooseIdArray[index]
             }
         }
     });
     form.on('radio(operation)', function (data) {
-        delete_index = [];
+        chooseIdArray = [];
         // 得到开关的value值，实际是需要修改的ID值。
         if (data.value == "2") {
             // 重载
@@ -49,7 +50,7 @@ layui.config({
                 data: columnlist
                 , showCheckbox: false
                 , click: function (obj) {
-                    delete_index = [];
+                    chooseIdArray = [];
                     var objelem = $(obj.elem);
                     var that = objelem.find('.layui-tree-entry');
                     if (obj.data.children) {
@@ -59,17 +60,17 @@ layui.config({
                     if (!that.hasClass('active')) {
                         $('.layui-tree-entry').removeClass('active');
                         that.addClass("active");
-                        delete_index.push(obj.data.id);
+                        chooseIdArray.push(obj.data.id);
                     }
                     else {
-                        var index = delete_index.indexOf(obj.data.id);
-                        delete delete_index[index]
+                        var index = chooseIdArray.indexOf(obj.data.id);
+                        delete chooseIdArray[index]
                         that.removeClass("active");
                     }
-                    console.log(delete_index)
                 }
             });
-        } else {
+        } 
+        else {
             // 重载
             tree.reload('columntree', { // options
                 data: columnlist,
@@ -82,17 +83,17 @@ layui.config({
     //获取所有选中的节点id
     function getCheckedId() {
         var id = "";
-        if (!delete_index)
+        if (!chooseIdArray)
             return id;
-        if (delete_index.length > 0) {
-            for (var i = 0; i < delete_index.length; i++) {
-                if (!delete_index[i])
+        if (chooseIdArray.length > 0) {
+            for (var i = 0; i < chooseIdArray.length; i++) {
+                if (!chooseIdArray[i])
                     continue;
                 if (id != "") {
-                    id += '-' + delete_index[i];
+                    id += '-' + chooseIdArray[i];
                 }
                 else {
-                    id = delete_index[i];
+                    id = chooseIdArray[i];
                 }
             }
         }
@@ -133,8 +134,7 @@ layui.config({
         return false;
     });
     function InitColumnList(siteId) {
-        $('#parentId').html('');
-        delete_index = []
+        chooseIdArray = []
         ajaxHttp({
             url: api + 'ColumnCategory/GetTreeListBySiteIdAsync',
             type: 'Get',

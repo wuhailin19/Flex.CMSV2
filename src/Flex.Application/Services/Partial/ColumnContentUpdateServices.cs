@@ -97,10 +97,12 @@ namespace Flex.Application.Services
                         column[0]).ToString();
                     break;
                 case DataOpreate.Link:
+                    var checkcolumnid = contentToolsDto.checkcolumnId.Replace("-", ",");
+                    checkcolumnid = "," + checkcolumnid.Trim(',') + ",";
                     sql = _sqlTableServices.CreateLinkContentSqlString(
                         contentmodel.TableName,
                         contentToolsDto.checkcontentId,
-                        contentToolsDto.checkcolumnId.Replace("-",",")).ToString();
+                        checkcolumnid).ToString();
                     break;
             }
             var result = _sqlsugar.Db.Ado.ExecuteCommand(sql);
