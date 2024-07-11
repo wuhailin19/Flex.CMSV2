@@ -85,7 +85,19 @@ namespace Flex.Application.SqlServerSQLString
                 "select " + keyvar.Substring(0, keyvar.Length - 1) + ",6,OrderId,'',0,@LastEditUser,@LastEditUserName,@LastEditDate from " + TableName + " where Id=@Id");
             return builder;
         }
-
+        public string CreateMoveContentSqlString(string TableName, string Ids, SysColumn targetcolumn)
+        {
+            int StatusCode = 1;
+            if (targetcolumn.ReviewMode != 0)
+                StatusCode = 5;
+            return $"update {TableName} set " +
+                $"ParentId={targetcolumn.Id}," +
+                $"ReviewStepId=''," +
+                $"StatusCode={StatusCode}," +
+                $"SiteId={targetcolumn.SiteId}," +
+                $"MsgGroupId=0 " +
+                $"where Id in ({Ids})";
+        }
         public StringBuilder CreateCopyContentSqlString(List<string> table, string TableName, List<int> IdList, List<SysColumn> sysColumns)
         {
             StringBuilder builder = new StringBuilder();
@@ -118,12 +130,22 @@ namespace Flex.Application.SqlServerSQLString
         {
             return $"SELECT ISNULL(MAX(OrderId) + 1, 0) FROM {tableName}";
         }
-
-        public void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out DynamicParameters parameters)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="contentPageListParam"></param>
+        /// <param name="modetype">区分普通列表1/历史列表2/软删除列表3</param>
+        /// <param name="swhere"></param>
+        /// <param name="parameters"></param>
+        public void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam, int modetype, out string swhere, out DynamicParameters parameters)
         {
             parameters = new DynamicParameters();
-            parameters.Add("@parentId", contentPageListParam.ParentId);
-            swhere = " and ParentId=@parentId";
+            swhere = string.Empty;
+            if (modetype != 2)
+            {
+                parameters.Add("@parentId", contentPageListParam.ParentId);
+                swhere = " and ParentId=@parentId";
+            }
             if (contentPageListParam.k.IsNotNullOrEmpty())
             {
                 parameters.Add("@k", contentPageListParam.k);

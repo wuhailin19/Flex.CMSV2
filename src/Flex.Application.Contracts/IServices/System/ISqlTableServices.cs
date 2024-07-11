@@ -28,7 +28,7 @@ namespace Flex.Application.Contracts.IServices
         string ReNameTableName(string TableName, string NewTableName);
         string UpdateContentReviewStatus(string TableName, int ContentId, StatusCode statusCode, string ReviewStepId);
         string UpdateContentStatus(string TableName, int ContentId, StatusCode statusCode);
-        void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out DynamicParameters parameters);
+        void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam, int modetype, out string swhere, out DynamicParameters parameters);
         string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist);
         string AlertTableFieldType(string TableName, string filedName, string filedtype);
         string AlertTableField(string TableName, string oldfiledName, string filedName);
@@ -39,5 +39,6 @@ namespace Flex.Application.Contracts.IServices
         string CompletelyDeleteContentTableData(string TableName, string Ids);
         string RestContentTableData(string TableName, string Ids);
         StringBuilder CreateCopyContentSqlString(List<string> table, string TableName, List<int> IdList, List<SysColumn> sysColumns);
+        string CreateMoveContentSqlString(string TableName, string Ids, SysColumn targetcolumn);
     }
 }

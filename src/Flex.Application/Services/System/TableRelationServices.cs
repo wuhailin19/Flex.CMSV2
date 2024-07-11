@@ -4,11 +4,13 @@ using Flex.Core.Config;
 using Flex.Domain.Dtos;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.Normal.ProductManage;
+using Flex.Domain.Dtos.System.ContentModel;
 using Flex.Domain.Dtos.System.TableRelation;
 using Flex.Domain.Entities.Normal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +19,8 @@ namespace Flex.Application.Services.System
 {
     public class TableRelationServices : BaseService, ITableRelationServices
     {
+        //获取本站或者公有的模型
+        protected Expression<Func<sysTableRelation, bool>> expression = m => m.SiteId == CurrentSiteInfo.SiteId || !m.SelfUse;
         public TableRelationServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims)
             : base(unitOfWork, mapper, idWorker, claims)
         {
@@ -28,8 +32,26 @@ namespace Flex.Application.Services.System
                 = new Func<IQueryable<sysTableRelation>, IOrderedQueryable<sysTableRelation>>(m => m.OrderByDescending(m => m.AddTime));
             var list = await _unitOfWork
                 .GetRepository<sysTableRelation>()
-                .GetPagedListAsync(null, orderby, null, page, pagesize);
+                .GetPagedListAsync(expression, orderby, null, page, pagesize);
             return _mapper.Map<PagedList<TableRelationColumnDto>>(list);
+        }
+
+        public async Task<ProblemDetails<string>> QuickEdit(QuickEditTableRelationDto model)
+        {
+            var responsity = _unitOfWork.GetRepository<sysTableRelation>();
+            var contentmodel = await responsity.GetFirstOrDefaultAsync(m => m.Id == model.Id);
+            contentmodel.SelfUse = model.SelfUse;
+            UpdateIntEntityBasicInfo(contentmodel);
+            try
+            {
+                responsity.Update(contentmodel);
+                await _unitOfWork.SaveChangesAsync();
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataUpdateError.GetEnumDescription(), ex);
+            }
         }
 
         public async Task<ProblemDetails<string>> AddTableRelation(AddTableRelationDto addDto)

@@ -21,6 +21,8 @@ namespace Flex.Domain.Dtos.System.TableRelation
         public int ChildModelId { get; set; }
         [ToolAttr(NameAttr = "链接名字")]
         public string LinkName { get; set; }
+        [ToolAttr(NameAttr = "是否私有", Toolbar = "#SelfUse")]
+        public bool SelfUse { get; set; }
         [ToolAttr(NameAttr = "操作", Toolbar = "#barDemo", AlignAttr = AlignEnum.Center, Fixed = AlignEnum.Right, minWidth = "200")]
         public controlType Operation { get; set; }
     }

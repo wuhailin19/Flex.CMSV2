@@ -94,7 +94,7 @@ namespace Flex.Application.Services
             filed = filed.TrimEnd(',');
             DynamicParameters parameters = new DynamicParameters();
             string swhere = string.Empty;
-            _sqlTableServices.CreateDapperColumnContentSelectSql(contentPageListParam, out swhere, out parameters);
+            _sqlTableServices.CreateDapperColumnContentSelectSql(contentPageListParam, modetype, out swhere, out parameters);
            
             var result = await _dapperDBContext.PageAsync(
                 contentPageListParam.page, 

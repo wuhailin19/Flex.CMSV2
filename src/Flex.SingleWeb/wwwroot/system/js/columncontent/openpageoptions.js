@@ -163,7 +163,7 @@ var defaultOptions = {
             skin: 'layui-layer-lan',
             title: '数据操作',
             shadeClose: true,
-            shade: false,
+            shade: 0.2,
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
             content: routePageLink + 'ContentTools?modelId=' + currentmodelId + '&parentId=' + currentparentId + '&Ids=' + Ids,

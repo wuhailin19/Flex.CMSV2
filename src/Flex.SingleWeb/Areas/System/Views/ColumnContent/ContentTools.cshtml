@@ -13,15 +13,19 @@
     </script>
     <style>
         .columnlist { height: 70%; overflow-y: scroll; }
+        .layui-tree-set { width: 80%; position: relative; }
+        .layui-tree-set .layui-tree-entry { border: 1px solid #fff; box-sizing: border-box; }
+        .layui-tree-set .layui-tree-entry.active { border: 1px solid rgb(102, 177, 255); }
+        .layui-tree-main{width:100%;}
     </style>
 </head>
 <body>
     <form action="" onclick="return false;" style="padding: 2%;" class="layui-form">
         <div class="layui-form-item">
             <label class="layui-form-label">操作</label>
-            <input type="radio" name="operation" value="1" title="复制" checked>
-            <input type="radio" name="operation" value="2" title="移动">
-            <input type="radio" name="operation" value="3" title="引用">
+            <input type="radio" name="operation" lay-filter="operation" value="1" title="复制" checked>
+            <input type="radio" name="operation" lay-filter="operation" value="2" title="移动">
+            <input type="radio" name="operation" lay-filter="operation" value="3" title="引用">
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">站点</label>
@@ -51,6 +55,6 @@
             </div>
         </div>
     </form>
-    <script src="~/system/js/columncontent/copycontent.js"></script>
+    <script src="~/system/js/columncontent/contenttool.js"></script>
 </body>
 </html>

@@ -7,7 +7,7 @@
         if (json.code == 200) {
             if (json.content.length > 0) {
                 $.each(json.content, function (index, item) {
-                    $('#siteId').append('<option value="' + item.Id + '" ' + (item.Id == sessionStorage.getItem('siteId')?"selected":"")+'>' + item.SiteName + '</option>');
+                    $('#siteId').append('<option value="' + item.Id + '" ' + (item.Id == sessionStorage.getItem('siteId') ? "selected" : "") + '>' + item.SiteName + '</option>');
                 })
             }
         } else {
@@ -15,13 +15,14 @@
         }
     }
 })
+var delete_index = [];
+
 layui.config({
     base: '/scripts/layui/lay/modules/'
 }).use(['form', 'newtree'], function () {
     var form = layui.form, layer = layui.layer;
     var columnlist;
     var tree = layui.newtree;
-    var delete_index = [];
     tree.render({
         elem: '#parentIdhide'
         , data: columnlist
@@ -29,11 +30,7 @@ layui.config({
         , checkChild: false
         , showCheckbox: true
         , onlyIconControl: true
-        , click: function (obj) {
-            $("#parentId").val(obj.data.id);
-            form.render();
-        },
-        oncheck: function (obj) {
+        , oncheck: function (obj) {
             if (obj.checked == true) {
                 delete_index.push(obj.data.id);
             }
@@ -43,6 +40,45 @@ layui.config({
             }
         }
     });
+    form.on('radio(operation)', function (data) {
+        delete_index = [];
+        // 得到开关的value值，实际是需要修改的ID值。
+        if (data.value == "2") {
+            // 重载
+            tree.reload('columntree', { // options
+                data: columnlist
+                , showCheckbox: false
+                , click: function (obj) {
+                    delete_index = [];
+                    var objelem = $(obj.elem);
+                    var that = objelem.find('.layui-tree-entry');
+                    if (obj.data.children) {
+                        that = $(objelem.children('.layui-tree-entry').get(0));
+                    }
+
+                    if (!that.hasClass('active')) {
+                        $('.layui-tree-entry').removeClass('active');
+                        that.addClass("active");
+                        delete_index.push(obj.data.id);
+                    }
+                    else {
+                        var index = delete_index.indexOf(obj.data.id);
+                        delete delete_index[index]
+                        that.removeClass("active");
+                    }
+                    console.log(delete_index)
+                }
+            });
+        } else {
+            // 重载
+            tree.reload('columntree', { // options
+                data: columnlist,
+                showCheckbox: true
+                , click: function (obj) {
+                }
+            });
+        }
+    })
     //获取所有选中的节点id
     function getCheckedId() {
         var id = "";

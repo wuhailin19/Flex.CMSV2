@@ -164,12 +164,15 @@ namespace Flex.Application.SqlServerSQLString
 
             return sb.ToString();
         }
-        public void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out DynamicParameters parameters)
+        public void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam, int modetype, out string swhere, out DynamicParameters parameters)
         {
             parameters = new DynamicParameters();
-            parameters.Add("@parentId", contentPageListParam.ParentId);
-            swhere = " and ParentId=@parentId";
-
+            swhere = string.Empty;
+            if (modetype != 2)
+            {
+                parameters.Add("@parentId", contentPageListParam.ParentId);
+                swhere = " and ParentId=@parentId";
+            }
             if (contentPageListParam.k.IsNotNullOrEmpty())
             {
                 parameters.Add("@k", contentPageListParam.k);
@@ -352,6 +355,20 @@ namespace Flex.Application.SqlServerSQLString
                     swhere += " and";
                 swhere += " " + item + "=@" + item;
             }
+        }
+
+        public string CreateMoveContentSqlString(string TableName, string Ids, SysColumn targetcolumn)
+        {
+            int StatusCode = 1;
+            if (targetcolumn.ReviewMode != 0)
+                StatusCode = 5;
+            return $"update {TableName} set " +
+                $"ParentId={targetcolumn.Id}," +
+                $"ReviewStepId=''," +
+                $"StatusCode={StatusCode}," +
+                $"SiteId={targetcolumn.SiteId}," +
+                $"MsgGroupId=0 " +
+                $"where Id in ({Ids})";
         }
     }
 }

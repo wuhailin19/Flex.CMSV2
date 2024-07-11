@@ -10,8 +10,9 @@ ajaxHttp({
     },
     complete: function () { }
 });
-layui.use('table', function () {
+layui.use(['table','form'], function () {
     var table = layui.table;
+    var form = layui.form;
     //JS 调用：
     var insTb = table.render({
         elem: '#demo_tree'
@@ -76,10 +77,28 @@ layui.use('table', function () {
             delete delete_index[index];
         }
     });
+    form.on('switch(usestatus)', function (data) {
+        // 得到开关的value值，实际是需要修改的ID值。
+        var status = this.checked ? 'true' : 'false';
+        const model = { Id: data.value, SelfUse: status };
+        ajaxHttp({
+            url: routeLink + "QuickEdit",
+            data: JSON.stringify(model),
+            type: 'Post',
+            async: false,
+            success: function (json) {
+                if (json.code == 200) {
+                    tips.showSuccess(json.msg);
+                } else {
+                    tips.showFail(json.msg);
+                }
+            },
+            complete: function () { }
+        })
+    })
     //监听事件
     table.on('toolbar(test)', function (obj) {
         var data = table.checkStatus(obj.config.id).data;
-        console.log(obj.event);
         switch (obj.event) {
             case 'add':
                 defaultOptions.setAddIframe(layer, insTb);

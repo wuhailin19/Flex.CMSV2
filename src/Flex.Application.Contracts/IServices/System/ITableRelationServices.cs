@@ -13,6 +13,7 @@ namespace Flex.Application.Contracts.IServices.System
         Task<ProblemDetails<string>> AddTableRelation(AddTableRelationDto addDto);
         Task<ProblemDetails<string>> DeleteTableRelation(string Id);
         Task<PagedList<TableRelationColumnDto>> ListAsync(int page, int pagesize);
+        Task<ProblemDetails<string>> QuickEdit(QuickEditTableRelationDto model);
         Task<ProblemDetails<string>> UpdateTableRelation(UpdateTableRelationDto updateDto);
     }
 }

@@ -87,7 +87,7 @@ namespace Flex.WebApi.SystemControllers
         [Descriper(Name = "快速修改模型状态")]
         public async Task<string> QuickEdit()
         {
-            var validate = await ValidateModel<QuickEditContentModelDto>();
+            var validate = await ValidateModel<QuickEditTableRelationDto>();
             if (!validate.IsSuccess)
                 return Fail(validate.Detail);
             var result = await _services.QuickEdit(validate.Content);

@@ -2,6 +2,7 @@
 using Flex.Core.Attributes;
 using Flex.Domain.Dtos.Admin;
 using Flex.Domain.Dtos.Normal.ProductManage;
+using Flex.Domain.Dtos.System.ContentModel;
 using Flex.Domain.Dtos.System.TableRelation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +43,18 @@ namespace Flex.SingleWeb.Areas.System.ApiController
                 return Fail(result.Detail);
             return Success(result.Detail);
         }
-
+        [HttpPost("QuickEdit")]
+        [Descriper(Name = "快速修改模型关系状态")]
+        public async Task<string> QuickEdit()
+        {
+            var validate = await ValidateModel<QuickEditTableRelationDto>();
+            if (!validate.IsSuccess)
+                return Fail(validate.Detail);
+            var result = await _services.QuickEdit(validate.Content);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
+        }
         [HttpPost("Update")]
         public async Task<string> UpdateTableRelation()
         {

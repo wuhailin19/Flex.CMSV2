@@ -20,8 +20,17 @@ namespace Flex.Domain.Dtos.System.ColumnContent
 
     public enum DataOpreate
     {
+        /// <summary>
+        /// 复制
+        /// </summary>
         Copy = 1,
+        /// <summary>
+        /// 移动
+        /// </summary>
         Move = 2,
+        /// <summary>
+        /// 引用
+        /// </summary>
         Link = 3
     }
 }

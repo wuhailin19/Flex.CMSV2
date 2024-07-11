@@ -17,6 +17,11 @@ namespace Flex.Application.Services
 {
     public partial class ColumnContentServices
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="contentToolsDto"></param>
+        /// <returns></returns>
         public async Task<ProblemDetails<string>> ContentOperation(ContentToolsDto contentToolsDto)
         {
             string sql = string.Empty;
@@ -63,10 +68,17 @@ namespace Flex.Application.Services
                         contentmodel.TableName,
                         contentlist,
                         column).ToString();
-
                     break;
                 case DataOpreate.Move:
-
+                    if (contentToolsDto.checkcolumnId.Contains("-"))
+                    {
+                        return Problem<string>(HttpStatusCode.BadRequest, "只能移动到单个栏目");
+                    }
+                    
+                    sql = _sqlTableServices.CreateMoveContentSqlString(
+                        contentmodel.TableName,
+                        contentToolsDto.checkcontentId,
+                        column[0]).ToString();
                     break;
                 case DataOpreate.Link:
 
@@ -79,6 +91,8 @@ namespace Flex.Application.Services
             }
             return Problem<string>(HttpStatusCode.BadRequest, errormsg);
         }
+
+
         /// <summary>
         /// 修改数据内容
         /// </summary>
