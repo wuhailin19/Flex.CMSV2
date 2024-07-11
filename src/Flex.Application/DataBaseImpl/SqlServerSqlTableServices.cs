@@ -372,5 +372,12 @@ namespace Flex.Application.SqlServerSQLString
             }
             return builder;
         }
+
+        public string CreateLinkContentSqlString(string TableName, string Ids, string targetcolumn)
+        {
+            return $"update {TableName} set " +
+                $"RefLinkClassId='{targetcolumn}'" +
+                $" where Id in ({Ids})";
+        }
     }
 }

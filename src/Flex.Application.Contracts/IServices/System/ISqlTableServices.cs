@@ -40,5 +40,6 @@ namespace Flex.Application.Contracts.IServices
         string RestContentTableData(string TableName, string Ids);
         StringBuilder CreateCopyContentSqlString(List<string> table, string TableName, List<int> IdList, List<SysColumn> sysColumns);
         string CreateMoveContentSqlString(string TableName, string Ids, SysColumn targetcolumn);
+        string CreateLinkContentSqlString(string TableName, string Ids, string targetcolumn);
     }
 }

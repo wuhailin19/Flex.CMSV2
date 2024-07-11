@@ -3,6 +3,8 @@ using Flex.Application.Contracts.Exceptions;
 using Flex.Core.Extensions.CommonExtensions;
 using Flex.Domain.Dtos.Role;
 using Flex.Domain.Dtos.System.ColumnContent;
+using Flex.Domain.Dtos.System.Message;
+using Flex.Domain.Dtos.System.TableRelation;
 using Flex.Domain.Enums.LogLevel;
 using Flex.Domain.WhiteFileds;
 using Microsoft.Data.SqlClient;
@@ -18,7 +20,7 @@ namespace Flex.Application.Services
     public partial class ColumnContentServices
     {
         /// <summary>
-        /// 
+        /// 包含复制移动和引用功能集合体
         /// </summary>
         /// <param name="contentToolsDto"></param>
         /// <returns></returns>
@@ -74,14 +76,31 @@ namespace Flex.Application.Services
                     {
                         return Problem<string>(HttpStatusCode.BadRequest, "只能移动到单个栏目");
                     }
-                    
+
+                    #region 这里可以递归获取所有子列表，暂时停用
+                    //var tablerelationlist = (await _unitOfWork.GetRepository<sysTableRelation>().GetAllAsync(expression)).ToList();
+                    //var contentmodellist = (await _unitOfWork.GetRepository<SysContentModel>().GetAllAsync()).ToList();
+
+                    //var firsttablemodel = new TableRelationRecursionDto()
+                    //{
+                    //    ParentModelId = contentmodel.Id,
+                    //    ChildModelId = contentmodel.Id,
+                    //    ParentTableName = contentmodel.TableName,
+                    //    ChildTableName = contentmodel.TableName
+                    //};
+                    //MapToResult(firsttablemodel, tablerelationlist, contentmodellist);
+                    #endregion
+
                     sql = _sqlTableServices.CreateMoveContentSqlString(
                         contentmodel.TableName,
                         contentToolsDto.checkcontentId,
                         column[0]).ToString();
                     break;
                 case DataOpreate.Link:
-
+                    sql = _sqlTableServices.CreateLinkContentSqlString(
+                        contentmodel.TableName,
+                        contentToolsDto.checkcontentId,
+                        contentToolsDto.checkcolumnId.Replace("-",",")).ToString();
                     break;
             }
             var result = _sqlsugar.Db.Ado.ExecuteCommand(sql);
@@ -92,6 +111,31 @@ namespace Flex.Application.Services
             return Problem<string>(HttpStatusCode.BadRequest, errormsg);
         }
 
+        private void MapToResult(TableRelationRecursionDto currentmodels
+            , List<sysTableRelation> tablerelationlist
+            , List<SysContentModel> models)
+        {
+
+            var nextmodel = tablerelationlist.Where(m => m.ParentModelId == currentmodels.ChildModelId).ToList();
+            if (nextmodel != null)
+            {
+                var appmodel = _mapper.Map<List<TableRelationRecursionDto>>(nextmodel);
+                foreach (var relationitem in appmodel)
+                {
+                    relationitem.ParentTableName = models.Where(m => m.Id == relationitem.ParentModelId).FirstOrDefault()?.TableName ?? string.Empty;
+                    relationitem.ChildTableName = models.Where(m => m.Id == relationitem.ChildModelId).FirstOrDefault()?.TableName ?? string.Empty;
+                }
+                currentmodels.children = appmodel;
+                foreach (var next in nextmodel)
+                {
+                    tablerelationlist.Remove(next);
+                }
+                foreach (var item in currentmodels.children)
+                {
+                    MapToResult(item, tablerelationlist, models);
+                }
+            }
+        }
 
         /// <summary>
         /// 修改数据内容

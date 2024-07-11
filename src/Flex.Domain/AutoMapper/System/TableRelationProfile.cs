@@ -15,6 +15,7 @@ namespace Flex.Domain.AutoMapper
         public TableRelationProfile() {
             CreateMap<sysTableRelation, TableRelationColumnDto>();
             CreateMap<sysTableRelation, TableRelationListDto>();
+            CreateMap<sysTableRelation, TableRelationRecursionDto>();
             CreateMap<AddTableRelationDto, sysTableRelation>();
             CreateMap<UpdateTableRelationDto, sysTableRelation>();
 

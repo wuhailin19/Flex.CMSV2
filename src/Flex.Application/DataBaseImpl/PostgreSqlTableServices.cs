@@ -370,5 +370,12 @@ namespace Flex.Application.SqlServerSQLString
                 $"MsgGroupId=0 " +
                 $"where Id in ({Ids})";
         }
+
+        public string CreateLinkContentSqlString(string TableName, string Ids, string targetcolumn)
+        {
+            return $"update {TableName} set " +
+                $"RefLinkClassId='{targetcolumn}'" +
+                $" where Id in ({Ids})";
+        }
     }
 }
