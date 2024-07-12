@@ -112,12 +112,21 @@ namespace Flex.Application.Services
                     relationlist = _mapper.Map<List<TableRelationListDto>>(relationtable);
                     //relationjson = relationlist.ToJson();
                 }
-                result.Items.Each(item =>
+                var list= result.Items.ToList();
+                list.Each(item =>
                 {
+                    if ((StatusCode)item.StatusCode == StatusCode.Enable)
+                    {
+                        if (Convert.ToDateTime(item.PublishTime) > Clock.Now)
+                        {
+                            item.StatusCode = (object)(int)StatusCode.PendingRelease;
+                        }
+                    }
                     item.StatusColor = ((StatusCode)item.StatusCode).GetEnumColorDescription();
                     item.StatusCodeText = ((StatusCode)item.StatusCode).GetEnumDescription();
                     item.relationInfo = relationlist;
                 });
+                result.Items= list;
             }
             else
             {

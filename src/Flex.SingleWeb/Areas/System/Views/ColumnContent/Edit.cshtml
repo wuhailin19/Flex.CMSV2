@@ -21,40 +21,60 @@
     </script>
 </head>
 <body>
-    <form class="layui-form layui-form-pane" action="" style="padding: 2%;padding-bottom: 150px;" lay-filter="formTest">
-        <div class="layui-form-item">
-            <label class="layui-form-label" style="width:110px">标题</label>
-            <div class="layui-input-block" style="width:calc(100% - 110px)">
-                <input type="text" name="Title" placeholder="请输入标题" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div id="view"></div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">状态</label>
-            <div class="layui-input-block">
-                <input type="checkbox" data-group="datastatus" name="IsTop" title="置顶">
-                <input type="checkbox" data-group="datastatus" name="IsRecommend" title="推荐">
-                <input type="checkbox" data-group="datastatus" name="IsHot" title="热门">
-                <input type="checkbox" data-group="datastatus" name="IsSilde" title="焦点">
-                <input type="checkbox" data-group="datastatus" name="IsShow" title="隐藏">
-            </div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">Seo标题</label>
-            <div class="layui-input-block">
-                <input type="text" name="SeoTitle" placeholder="请输入Seo标题" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">Seo关键字</label>
-            <div class="layui-input-block">
-                <textarea placeholder="请输入关键字" name="KeyWord" class="layui-textarea"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">Seo描述</label>
-            <div class="layui-input-block">
-                <textarea placeholder="请输入描述" name="Description" class="layui-textarea"></textarea>
+    <form class="layui-form layui-form-pane edit-form" action="" lay-filter="formTest">
+        <div class="editbox">
+            <div class="layui-row layui-col-space12 ">
+                <div class="layui-col-md9 leftbox">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width:110px">标题</label>
+                        <div class="layui-input-block" style="width:calc(100% - 110px)">
+                            <input type="text" name="Title" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div id="view"></div>
+                </div>
+                <div class="layui-col-md3 rightbox">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">添加时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="AddTime" id="AddTime" lay-verify="datetime" placeholder="不选默认当前时间" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">发布时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="PublishTime" id="PublishTime" lay-verify="datetime" placeholder="可设置预发布时间" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" data-group="datastatus" name="IsTop" title="置顶">
+                            <input type="checkbox" data-group="datastatus" name="IsRecommend" title="推荐">
+                            <input type="checkbox" data-group="datastatus" name="IsHot" title="热门">
+                            <input type="checkbox" data-group="datastatus" name="IsSilde" title="焦点">
+                            <input type="checkbox" data-group="datastatus" name="IsHide" title="隐藏">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">Seo标题</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="SeoTitle" placeholder="请输入Seo标题" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">Seo关键字</label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="请输入关键字" name="KeyWord" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">Seo描述</label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="请输入描述" name="Description" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="layui-form-item bottomBtnbox">
@@ -62,7 +82,7 @@
             </div>
         </div>
     </form>
-    
+
     <script type="text/javascript" src="~/scripts/layui/module/formdesigner/sortable.js"> </script>
     <script src="~/system/htmleditor/_ueditor/ueditor.config.js"></script>
     <script src="~/system/htmleditor/_ueditor/ueditor.all.js"></script>

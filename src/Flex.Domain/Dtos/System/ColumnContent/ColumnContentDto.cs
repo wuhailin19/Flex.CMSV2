@@ -17,6 +17,8 @@ namespace Flex.Domain.Dtos.Column
         [ToolAttr(NameAttr = "属性", Toolbar = "#Property", AlignAttr = "center")]
         public string Property { set; get; }
         [ToolAttr(NameAttr = "发布时间", AlignAttr = "center", SortAttr = true, minWidth = "150")]
+        public string PublishTime { set; get; }
+        [ToolAttr(NameAttr = "添加时间", AlignAttr = "center", SortAttr = true, minWidth = "150")]
         public string AddTime { set; get; }
 
         [ToolAttr(NameAttr = "排序号", SortAttr = true, AlignAttr = "center", maxWidth = "100", IsEdit = true)]

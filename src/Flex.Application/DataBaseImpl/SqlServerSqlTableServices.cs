@@ -30,6 +30,7 @@ namespace Flex.Application.SqlServerSQLString
                                       "[KeyWord] [nvarchar](500)  NULL," +
                                       "[Description] [nvarchar](1000)  NULL," +
                                       "[AddTime] [datetime] NOT NULL default getdate()," +
+                                      "[PublishTime] [datetime] NOT NULL default getdate()," +
                                       "[IsTop] [bit] NOT NULL default 0," +
                                       "[IsRecommend] [bit] NOT NULL default 0," +
                                       "[IsHot] [bit] NOT NULL default 0," +

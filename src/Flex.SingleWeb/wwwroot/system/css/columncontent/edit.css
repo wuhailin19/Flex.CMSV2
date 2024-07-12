@@ -3,18 +3,21 @@
 .layui-input-block > .edui-default { width: 100% !important; }
 .layui-select-title .layui-anim.layui-anim-upbit { display: none; }
 .iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
-.bottomBtnbox { position: fixed; bottom: 0; background: #eee; width: 100%; z-index: 10000; margin-bottom: 0; padding-top: 7px; margin-left: -2%; }
-
+.bottomBtnbox { position: fixed; bottom: 0; background: #eee; width: 100%; z-index: 10000; margin-bottom: 0; padding-top: 7px; }
+.edit-form { padding-bottom: 36px; border: 3px solid #eee; }
+.leftbox { border-right: 3px solid #eee; }
 
 .uploadimg_box { width: 90%; border: 1px solid #ccc; height: 150px; display: flex; align-items: center; box-sizing: border-box; }
 .uploadimg_box.layui-form-item { margin-bottom: 1px; }
 .uploadimg_box .layui-input-inline { width: 70%; margin: 0; }
-.uploadimg_box .layui-input-inline.uploadimg_inlinebox { width: 20%; margin: 0; text-align: center; background: #ccc; height: 100%; display: flex; align-items: center; justify-content: center; }
+.uploadimg_box .layui-input-inline.uploadimg_inlinebox { max-width: 20%; margin: 0; text-align: center; background: #eee; height: 100%; display: flex; align-items: center; justify-content: center; }
 .uploadimg_box .layui-input-inline.otherbtn { width: 10%; margin: 0; text-align: center; }
 .uploadimg_item { width: 90%; height: auto; max-height: 100px; }
+.layui-form-item .layui-input-inline { margin-right: 0px; }
 
 @media screen and (max-width:800px) {
     .bottomBtnbox { padding-left: 10px; }
     .uploadimg_box { width: 100%; }
+    .uploadimg_box .layui-input-inline.uploadimg_inlinebox { max-width: 50%; }
     .uploadimg_box .layui-input-inline.otherbtn { margin: 5px; }
 }

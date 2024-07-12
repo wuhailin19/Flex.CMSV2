@@ -26,6 +26,7 @@ namespace Flex.Application.SqlServerSQLString
                     "KeyWord VARCHAR(500) NULL," +
                     "Description VARCHAR(1000) NULL," +
                     "AddTime timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                    "PublishTime timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                     "IsTop BOOLEAN NOT NULL DEFAULT FALSE," +
                     "IsRecommend BOOLEAN NOT NULL DEFAULT FALSE," +
                     "IsHot BOOLEAN NOT NULL DEFAULT FALSE," +

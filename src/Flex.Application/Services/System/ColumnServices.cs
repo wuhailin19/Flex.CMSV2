@@ -85,10 +85,10 @@ namespace Flex.Application.Services
             {
             }
             List<TreeColumnListDto> treeColumns = new List<TreeColumnListDto>();
-            list.Where(m => m.ModelId == modelId).Each(item =>
+            list.Where(m => m.ModelId != modelId).Each(item =>
             {
-                item.CanCopy = true;
-                item.disabled = false;
+                item.CanCopy = false;
+                item.disabled = true;
             });
             list.Where(m => m.ParentId == 0).Each(item =>
             {

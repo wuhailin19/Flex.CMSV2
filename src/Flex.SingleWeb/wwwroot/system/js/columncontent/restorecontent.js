@@ -53,7 +53,18 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
     var element = layui.element;
     var croppers = layui.croppers;
     var render;
+    var laydate = layui.laydate;
 
+    // 日期
+    laydate.render({
+        elem: '#AddTime',
+        type: 'datetime'
+    });
+    // 日期
+    laydate.render({
+        elem: '#PublishTime',
+        type: 'datetime',
+    });
 
     ajaxHttp({
         url: api + 'ColumnContent/GetFormHtml/' + parent_json.modelId,

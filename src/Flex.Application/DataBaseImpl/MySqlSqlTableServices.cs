@@ -27,6 +27,7 @@ namespace Flex.Application.SqlServerSQLString
                                       "`KeyWord` VARCHAR(500) NULL," +
                                       "`Description` VARCHAR(1000) NULL," +
                                       "`AddTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                                      "`PublishTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                                       "`IsTop` BOOLEAN NOT NULL DEFAULT 0," +
                                       "`IsRecommend` BOOLEAN NOT NULL DEFAULT 0," +
                                       "`IsHot` BOOLEAN NOT NULL DEFAULT 0," +

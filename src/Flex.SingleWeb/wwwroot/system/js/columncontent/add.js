@@ -28,7 +28,7 @@ layui.extend({
     'croppers': '../../../layui/module/cropper/croppers',
     'formDesigner': '/scripts/layui/module/formdesigner/formDesigner'
 });
-layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
+layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers', 'laydate'], function () {
     var layer = layui.layer;
     var $ = layui.jquery;
     var upload = layui.upload;
@@ -37,7 +37,19 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
     var form = layui.form;
     var element = layui.element;
     var croppers = layui.croppers;
+    var laydate = layui.laydate;
     var render;
+
+    // 日期
+    laydate.render({
+        elem: '#AddTime',
+        type: 'datetime',
+    });
+    // 日期
+    laydate.render({
+        elem: '#PublishTime',
+        type: 'datetime',
+    });
 
     $(document).on('click', '.reviewbutton', function () {
         //console.log($(this).attr('data-id'))

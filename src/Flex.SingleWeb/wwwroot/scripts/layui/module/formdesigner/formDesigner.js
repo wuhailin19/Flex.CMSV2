@@ -1990,14 +1990,14 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
 
                     _html += '<div class="layui-input-block" style="margin-top:10px;">';
                     if (!that.config.Preview) {
-                        _html += '<button type="button" class="layui-btn " id="uploader-show_' + input_id + '">';
+                        _html += '<button type="button" class="layui-btn layui-btn-sm" id="uploader-show_' + input_id + '">';
                         _html += '<i class="layui-icon  layui-icon-upload"></i>上传';
                         _html += '</button>';
-                        _html += '<button type="button" class="layui-btn" id="cropper-btn_' + input_id + '">';
+                        _html += '<button type="button" class="layui-btn layui-btn-sm" id="cropper-btn_' + input_id + '">';
                         _html += '<i class="layui-icon  layui-icon-set"></i> 裁剪';
                         _html += '</button>';
                     }
-                    _html += '<button type="button" class="layui-btn singlepreviewimg" data-src="' + input_id + '" id="cropper-btn_' + input_id + '">';
+                    _html += '<button type="button" class="layui-btn layui-btn-sm singlepreviewimg" data-src="' + input_id + '" id="cropper-btn_' + input_id + '">';
                     _html += '<i class="layui-icon  layui-icon-eyes"></i> 预览';
                     _html += '</button>';
                     _html += '</div>';
@@ -2019,7 +2019,13 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                  * */
                 update: function (json, that) {
                     json.IsEdit = true;
-
+                    var $label = $('#' + json.id + ' .layui-form-label');
+                    $label.empty();
+                    $label.css("width", json.labelWidth);
+                    if (json.required) {
+                        $label.append('<span style="color:red;">*</span>');
+                    }
+                    $label.append(json.label + ":");
                 },
                 /**
                  * 根据components组件对象获取组件属性
@@ -2064,10 +2070,10 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     _html += '<input type="text" name="' + input_id + '" placeholder="" autocomplete="off" class="layui-input">';
                     _html += '</div>';
                     _html += '<div class="layui-input-block" style="margin-top:10px;">';
-                    _html += '<button type="button" class="layui-btn " id="uploader-show_' + input_id + '">';
+                    _html += '<button type="button" class="layui-btn layui-btn-sm" id="uploader-show_' + input_id + '">';
                     _html += '<i class="layui-icon  layui-icon-upload"></i>上传';
                     _html += '</button>';
-                    _html += '<button type="button" class="layui-btn" id="cropper-btn_' + input_id + '">';
+                    _html += '<button type="button" class="layui-btn layui-btn-sm" id="cropper-btn_' + input_id + '">';
                     _html += '<i class="layui-icon  layui-icon-set"></i> 裁剪';
                     _html += '</button>';
                     _html += '</div>';
@@ -2100,11 +2106,11 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     if (selected === undefined) {
                         selected = false;
                     }
-                    var _html = '<div class="layui-form-item {2}"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index);
+                    var _html = '<div class="layui-form-item {2}"  id="{0}_boxcontainer"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index);
                     _html += '<label class="layui-form-label {0}">{1}:</label>'.format(json.required ? 'layui-form-required' : '', json.label);
                     _html += '<div class="layui-input-block">';
                     if (!that.config.Preview) {
-                        _html += '<button type="button" class="layui-btn" id="{0}">多图片上传</button>'.format(json.id);
+                        _html += '<button type="button" class="layui-btn " id="{0}">多图片上传</button>'.format(json.id);
                     }
                     _html += '<div class="layui-upload-list uploader-list" style="" id="uploader-list-{0}">'.format(json.id);
                     if (json.defaultValue !== null && json.defaultValue !== ""
@@ -2141,7 +2147,13 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                  * */
                 update: function (json, that) {
                     json.IsEdit = true;
-
+                    var $label = $('#' + json.id + '_boxcontainer .layui-form-label');
+                    $label.empty();
+                    $label.css("width", json.labelWidth);
+                    if (json.required) {
+                        $label.append('<span style="color:red;">*</span>');
+                    }
+                    $label.append(json.label + ":");
                 },
                 /**
                  * 根据components组件对象获取组件属性
@@ -2183,7 +2195,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     _html += '<label class="layui-form-label {0}">{1}:</label>'.format(json.required ? 'layui-form-required' : '', json.label);
                     _html += '<div class="layui-input-block">';
                     _html += '<div class="layui-upload">';
-                    _html += '<button type="button" class="layui-btn" id="{0}">多图片上传</button>'.format(json.tag + json.id);
+                    _html += '<button type="button" class="layui-btn layui-btn-sm" id="{0}">多图片上传</button>'.format(json.tag + json.id);
                     _html += '<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;width: 88%">预览图：';
                     _html += '<div class="layui-upload-list uploader-list" style="overflow: auto;" id="uploader-list-{0}">'.format(json.id);
                     _html += '</div>';
@@ -2243,7 +2255,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     _html += '</div>';
                     if (!that.config.Preview) {
                     _html += '<div class="layui-input-block" style="margin-top:10px;">';
-                        _html += '<button type="button" class="layui-btn " id="uploader-show_' + input_id + '">';
+                        _html += '<button type="button" class="layui-btn layui-btn-sm" id="uploader-show_' + input_id + '">';
                         _html += '<i class="layui-icon  layui-icon-upload"></i>上传';
                         _html += '</button>';
                         _html += '</div>';
@@ -2265,7 +2277,13 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                  * */
                 update: function (json, that) {
                     json.IsEdit = true;
-
+                    var $label = $('#' + json.id + ' .layui-form-label');
+                    $label.empty();
+                    $label.css("width", json.labelWidth);
+                    if (json.required) {
+                        $label.append('<span style="color:red;">*</span>');
+                    }
+                    $label.append(json.label + ":");
                 },
                 /**
                  * 根据components组件对象获取组件属性
@@ -2306,7 +2324,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     _html += '<input type="text" name="' + input_id + '" placeholder="" autocomplete="off" class="layui-input">';
                     _html += '</div>';
                     _html += '<div class="layui-input-block" style="margin-top:10px;">';
-                    _html += '<button type="button" class="layui-btn " id="uploader-show_' + input_id + '">';
+                    _html += '<button type="button" class="layui-btn layui-btn-sm" id="uploader-show_' + input_id + '">';
                     _html += '<i class="layui-icon  layui-icon-upload"></i>上传';
                     _html += '</button>';
                     _html += '</div>';

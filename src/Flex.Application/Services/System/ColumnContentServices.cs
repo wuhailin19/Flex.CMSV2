@@ -13,6 +13,7 @@ using NLog;
 using SqlSugar;
 using System.Collections;
 using System.Text;
+using static SKIT.FlurlHttpClient.Wechat.Api.Models.XPayQueryPublishGoodsResponse.Types;
 
 namespace Flex.Application.Services
 {
@@ -45,6 +46,8 @@ namespace Flex.Application.Services
             table["AddUserName"] = _claims.UserName;
             table["LastEditUser"] = _claims.UserId;
             table["LastEditUserName"] = _claims.UserName;
+            var addtime = table.GetValue("AddTime")?.ToString() ?? string.Empty;
+            var publishtime = table.GetValue("PublishTime")?.ToString() ?? string.Empty;
             //pgSQL情况
             switch (DataBaseConfig.dataBase)
             {
@@ -53,10 +56,21 @@ namespace Flex.Application.Services
                     DateTime utcTime = DateTime.SpecifyKind(Clock.Now, DateTimeKind.Utc);
                     DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZone);
                     table["LastEditDate"] = localTime;
-                    table["AddTime"] = localTime;
+                    if (addtime.IsNullOrEmpty())
+                        table["AddTime"] = localTime;
+                    else
+                        table["AddTime"] = addtime.ToUtcTime();
+                    if (publishtime.IsNullOrEmpty())
+                        table["PublishTime"] = localTime;
+                    else
+                        table["PublishTime"] = publishtime.ToUtcTime();
                     break;
                 default:
                     table["LastEditDate"] = Clock.Now;
+                    if (addtime.IsNullOrEmpty())
+                        table["AddTime"] = Clock.Now;
+                    if (publishtime.IsNullOrEmpty())
+                        table["PublishTime"] = Clock.Now;
                     break;
             }
             table["OrderId"] = 0;

@@ -32,10 +32,10 @@ namespace Flex.Domain.Entities
         public int OrderId { set; get; }
         [NotMapped]
         [SugarColumn(IsIgnore = true)]
-        public bool CanCopy { set; get; } = false;
+        public bool CanCopy { set; get; } = true;
         
         [NotMapped]
         [SugarColumn(IsIgnore = true)]
-        public bool disabled { set; get; } = true;
+        public bool disabled { set; get; } = false;
     }
 }

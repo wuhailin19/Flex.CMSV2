@@ -251,10 +251,9 @@ namespace Flex.Application.Services
                     item.StatusCode = StatusCode.Deleted;
                     UpdateIntEntityBasicInfo(item);
                     softdels.Add(item);
-                    renametablesql += _sqlServerServices.ReNameTableName(item.TableName, item.TableName + _idWorker.NextId());
-                }
-                if (renametablesql.IsNotNullOrEmpty())
+                    renametablesql = _sqlServerServices.ReNameTableName(item.TableName, item.TableName + _idWorker.NextId());
                     _unitOfWork.ExecuteSqlCommand(renametablesql);
+                }
                 responsity.Update(softdels);
                 await _unitOfWork.SaveChangesAsync();
                 return Problem<string>(HttpStatusCode.OK, $"共删除{Ids.Count}条数据");
