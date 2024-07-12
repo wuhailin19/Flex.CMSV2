@@ -2,10 +2,15 @@
 using Flex.Domain.Dtos.System.Column;
 using Flex.Domain.Dtos.System.ContentModel;
 using Flex.SqlSugarFactory.Seed;
+using Microsoft.AspNetCore.Http;
 using ShardingCore.Extensions;
 using SqlSugar;
 using System.Data;
 using System.Linq.Expressions;
+using System.Text;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using static SKIT.FlurlHttpClient.Wechat.Api.Models.WxaGetWxaGameFrameResponse.Types.Data.Types.Frame.Types;
 
 namespace Flex.Application.ContentModel
 {
@@ -240,7 +245,7 @@ namespace Flex.Application.ContentModel
             DataTable childdataTable = null;
             foreach (var childmodel in contentDto.childModelDtos)
             {
-                childmodel.TableColumnList.Add(new FiledModel("PId", "关联Id", "TextType"));
+                childmodel.TableColumnList.Add(new FiledModel("PId", "关联Id", "input"));
                 childdataTable = GetDataList(childmodel.TableName, childmodel.TableColumnStr + ",PId", swhere, "OrderId desc");
                 var childlist = new List<Dictionary<object, object>>();
                 foreach (DataRow item in childdataTable.Rows)
@@ -300,7 +305,7 @@ namespace Flex.Application.ContentModel
             {
                 switch (columndesc)
                 {
-                    case "DateType": dict.Add(tablename+column, "<span class='json-string'>" + item[column.ToString()].ToString() + "</span>"); break;
+                    case "DateType": dict.Add(tablename + column, "<span class='json-string'>" + item[column.ToString()].ToString() + "</span>"); break;
                     case "editor": dict.Add(tablename + column, "<span class='json-string'>" + item[column.ToString()].ToHtmlEnconde().subString(100) + "...后续省略</span>"); break;
                     case "PicType": dict.Add(tablename + column, "<span class='json-url'>" + item[column.ToString()].ToImgUrl() + "</span>"); break;
                     case "MultipleTextType": dict.Add(tablename + column, "<span class='json-string'>" + item[column.ToString()].ToString().ReplaceDefaultStrEncode() + "</span>"); break;
@@ -397,13 +402,13 @@ namespace Flex.Application.ContentModel
             fileds.TableName = ContentModel[0]["TableName"].ToString();
             fileds.ModelName = ContentModel[0]["Name"].ToString();
 
-            var filedlist = ContentModelHelper.filedlist.Select("ModelId=" + modelid+ " and IsApiField=1");
+            var filedlist = ContentModelHelper.filedlist.Select("ModelId=" + modelid + " and IsApiField=1");
             List<FiledModel> hashtable = new List<FiledModel>
             {
-                new FiledModel("Id","编号","TextType"),
-                new FiledModel("ParentId","栏目","TextType"),
-                new FiledModel("Title","标题","TextType",true),
-                new FiledModel("AddTime","添加时间", "DateType")
+                new FiledModel("Id","编号","input"),
+                new FiledModel("ParentId","栏目","input"),
+                new FiledModel("Title","标题","input",true),
+                new FiledModel("AddTime","添加时间", "date")
             };
             string column_str = "Id,ParentId,Title,AddTime";
             if (filedlist.Length > 0)
@@ -421,7 +426,8 @@ namespace Flex.Application.ContentModel
                         filedModel.FiledName = dr["ApiName"].ToString();
                         column_str += "," + dr["FieldName"] + " as [" + dr["ApiName"] + "]";
                     }
-                    else {
+                    else
+                    {
                         column_str += "," + dr["FieldName"];
                     }
                     filedModel.IsSearch = dr["IsSearch"].ToInt() == 0 ? false : true;
@@ -439,6 +445,57 @@ namespace Flex.Application.ContentModel
             return fileds;
         }
         #endregion
+
+        /// <summary>
+        /// 将DataTable导出为Excel
+        /// </summary>
+        /// <param name="table">DataTable数据源</param>
+        /// <param name="name">文件名</param>
+        /// <param name="fileModes">字段列表</param>
+        public static MemoryStream SimpleExportToSpreadsheet(string name, List<FiledModel> fileModes)
+        {
+            DataTable table = instance._sqlsugar.Db.Ado.GetDataTable("select * from tbl_normal_product");
+            // 创建Excel包
+            using (var package = new ExcelPackage())
+            {
+                // 添加一个工作表
+                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+                string thsbr = string.Empty;
+                for (int i = 0; i < fileModes.Count; i++)
+                {
+                    // 添加表头
+                    worksheet.Cells[1, i + 1].Value = fileModes[i].FiledDesc+"["+ fileModes[i].FiledName + "]";
+                    worksheet.Cells[1, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[1, i + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    worksheet.Cells[1, i + 1].Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
+                }
+
+                for (int i = 0; i < table.Rows.Count; i++)
+                {
+                    for (int j= 0; j < fileModes.Count; j++)
+                    {
+                        worksheet.Cells[i + 2, j + 1].Value = table.Rows[i][fileModes[j].FiledName];
+                        worksheet.Cells[i + 2, j + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[i + 2, j + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                        worksheet.Cells[i + 2, j + 1].Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
+
+                        // 如果是日期时间列，设置单元格格式
+                        if (fileModes[j].FiledMode == "date")
+                        {
+                            worksheet.Cells[i + 2, j + 1].Style.Numberformat.Format = "yyyy-mm-dd hh:mm:ss";
+                        }
+                    }
+                }
+
+                // 返回文件流
+                var stream = new MemoryStream();
+                package.SaveAs(stream);
+                stream.Position = 0;
+
+
+                return stream;
+            }
+        }
 
         public static ColumnJsonDocxDto GetContentJsonByExpression(InputJsondocxDto inputJsondocxDto)
         {
@@ -470,7 +527,7 @@ namespace Flex.Application.ContentModel
             #region 拼接条件
             //columnId = "61,62,63";
             int recount = 0;
-            string swhere = "IsHide=0";
+            string swhere = $"IsHide=0  and StatusCode=1 and PublishTime<='{Clock.Now}'";
             if (inputJsondocxDto.columnId.IsNotNullOrEmpty())
                 swhere += " and ParentId in(" + inputJsondocxDto.columnId + ")";
             if (inputJsondocxDto.PId != 0 && inputJsondocxDto.modelId != 0)

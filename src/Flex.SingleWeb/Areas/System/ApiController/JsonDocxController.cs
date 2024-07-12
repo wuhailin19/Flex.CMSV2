@@ -3,6 +3,7 @@ using Flex.Application.ContentModel;
 using Flex.Core.Attributes;
 using Flex.Core.Config;
 using Flex.Core.Helper;
+using Flex.Core.Timing;
 using Flex.Domain.Dtos.System.Column;
 using Flex.Domain.Dtos.System.ContentModel;
 using Microsoft.AspNetCore.Authorization;
@@ -30,7 +31,7 @@ namespace Flex.SingleWeb.Areas.System.ApiController
         [AllowAnonymous]
         public string GetPageContentByColumnId(string columnId, int page, int pagesize, string k)
         {
-            string swhere = "IsHide=0 and ParentId in(" + columnId + ")";
+            string swhere = $"IsHide=0 and StatusCode=1 and PublishTime<='{Clock.Now}' and ParentId in({columnId})";
             var contentDto = ContentModelHelper.GetProductTableColumnHashTable(columnId);
             int recount = 0;
             if (contentDto == null)
@@ -111,6 +112,15 @@ namespace Flex.SingleWeb.Areas.System.ApiController
             return Success(columnJsonDocxDto);
         }
 
-        
+        [HttpGet("ExportExcel")]
+        [AllowAnonymous]
+        public IActionResult ExportExcel()
+        {
+            var model = ContentModelHelper.GetModelContentByModelId(4);
+            var stream = ContentModelHelper.SimpleExportToSpreadsheet("测试", model.TableColumnList);
+            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var fileName = "测试.xlsx";
+            return File(stream, contentType, fileName);
+        }
     }
 }

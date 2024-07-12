@@ -40,12 +40,7 @@ namespace Flex.Application.Services
             _sqlsugar = sqlsugar;
             _logServices = logServices;
         }
-        private void InitCreateTable(Hashtable table)
-        {
-            table["AddUser"] = _claims.UserId;
-            table["AddUserName"] = _claims.UserName;
-            table["LastEditUser"] = _claims.UserId;
-            table["LastEditUserName"] = _claims.UserName;
+        private void InitAddTimeAndPublishTime(Hashtable table) {
             var addtime = table.GetValue("AddTime")?.ToString() ?? string.Empty;
             var publishtime = table.GetValue("PublishTime")?.ToString() ?? string.Empty;
             //pgSQL情况
@@ -55,7 +50,6 @@ namespace Flex.Application.Services
                     TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("UTC");
                     DateTime utcTime = DateTime.SpecifyKind(Clock.Now, DateTimeKind.Utc);
                     DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZone);
-                    table["LastEditDate"] = localTime;
                     if (addtime.IsNullOrEmpty())
                         table["AddTime"] = localTime;
                     else
@@ -66,13 +60,33 @@ namespace Flex.Application.Services
                         table["PublishTime"] = publishtime.ToUtcTime();
                     break;
                 default:
-                    table["LastEditDate"] = Clock.Now;
                     if (addtime.IsNullOrEmpty())
                         table["AddTime"] = Clock.Now;
                     if (publishtime.IsNullOrEmpty())
                         table["PublishTime"] = Clock.Now;
                     break;
             }
+        }
+        private void InitCreateTable(Hashtable table)
+        {
+            table["AddUser"] = _claims.UserId;
+            table["AddUserName"] = _claims.UserName;
+            table["LastEditUser"] = _claims.UserId;
+            table["LastEditUserName"] = _claims.UserName;
+            //pgSQL情况
+            switch (DataBaseConfig.dataBase)
+            {
+                case DataBaseType.PgSql:
+                    TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("UTC");
+                    DateTime utcTime = DateTime.SpecifyKind(Clock.Now, DateTimeKind.Utc);
+                    DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, timeZone);
+                    table["LastEditDate"] = localTime;
+                    break;
+                default:
+                    table["LastEditDate"] = Clock.Now;
+                    break;
+            }
+            InitAddTimeAndPublishTime(table);
             table["OrderId"] = 0;
         }
         private void InitUpdateTable(Hashtable table)
@@ -99,6 +113,7 @@ namespace Flex.Application.Services
                     table["LastEditDate"] = Clock.Now;
                     break;
             }
+            InitAddTimeAndPublishTime(table);
         }
         private void InitDeleteTable(Hashtable table)
         {

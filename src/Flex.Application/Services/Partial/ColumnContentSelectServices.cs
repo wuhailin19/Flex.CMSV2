@@ -105,7 +105,8 @@ namespace Flex.Application.Services
                 , parameters);
             if (modetype == 1)
             {
-                var relationtable = await _unitOfWork.GetRepository<sysTableRelation>().GetAllAsync(m => m.ParentModelId == contentPageListParam.ModelId);
+                expression = expression.And(m => m.ParentModelId == contentPageListParam.ModelId);
+                var relationtable = await _unitOfWork.GetRepository<sysTableRelation>().GetAllAsync(expression);
                 var relationlist = new List<TableRelationListDto>();
                 if (relationtable.Count > 0)
                 {
