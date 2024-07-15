@@ -177,6 +177,7 @@ namespace Flex.Application.SqlServerSQLString
             }
         }
 
+
         public string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist)
         {
             StringBuilder sb = new StringBuilder();

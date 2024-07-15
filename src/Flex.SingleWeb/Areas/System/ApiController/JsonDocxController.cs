@@ -112,15 +112,6 @@ namespace Flex.SingleWeb.Areas.System.ApiController
             return Success(columnJsonDocxDto);
         }
 
-        [HttpGet("ExportExcel")]
-        [AllowAnonymous]
-        public IActionResult ExportExcel()
-        {
-            var model = ContentModelHelper.GetModelContentByModelId(4);
-            var stream = ContentModelHelper.SimpleExportToSpreadsheet("测试", model.TableColumnList);
-            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            var fileName = "测试.xlsx";
-            return File(stream, contentType, fileName);
-        }
+        
     }
 }

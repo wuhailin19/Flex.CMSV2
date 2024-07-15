@@ -5,6 +5,7 @@ using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.System.ColumnContent;
 using Flex.Domain.Entities;
 using System.Collections;
+using System.Data;
 
 namespace Flex.Application.Contracts.IServices
 {
@@ -30,5 +31,6 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<string>> CompletelyDelete(int ParentId, int modelId, string Id);
         Task<ProblemDetails<string>> RestContent(int ParentId, int modelId, string Id);
         Task<ProblemDetails<string>> ContentOperation(ContentToolsDto contentToolsDto);
+        Task<ProblemDetails<ContentExportExcelDto>> GetExportExcelDataTableAsync(ContentPageListParamDto contentPageListParam);
     }
 }

@@ -206,6 +206,7 @@ namespace Flex.Application.SqlServerSQLString
             }
         }
 
+
         public StringBuilder CreateSqlsugarUpdateSqlString(Hashtable table, string TableName, out SqlSugar.SugarParameter[] commandParameters)
         {
             StringBuilder builder = new StringBuilder();

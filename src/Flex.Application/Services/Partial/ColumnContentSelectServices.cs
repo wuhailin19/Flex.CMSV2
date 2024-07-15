@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Dm;
+using Flex.Application.ContentModel;
 using Flex.Application.Contracts.Exceptions;
 using Flex.Core.Config;
 using Flex.Core.Framework.Enum;
@@ -11,6 +12,11 @@ using Flex.Domain.Dtos.System.TableRelation;
 using Flex.Domain.Dtos.WorkFlow;
 using Flex.Domain.WhiteFileds;
 using Flex.SqlSugarFactory.Seed;
+using Microsoft.OpenApi.Expressions;
+using System.Data;
+using Flex.Domain.Dtos.System.ContentModel;
+using Flex.Domain.Dtos.System.ColumnContent;
+using OfficeOpenXml.DataValidation;
 
 namespace Flex.Application.Services
 {
@@ -60,7 +66,44 @@ namespace Flex.Application.Services
         {
             return await AbstractList(contentPageListParam, 2, " order by LastEditDate desc");
         }
+        public async Task<ProblemDetails<ContentExportExcelDto>> GetExportExcelDataTableAsync(ContentPageListParamDto contentPageListParam)
+        {
+            string StatusCodeExpression = "StatusCode not in (0,6)";
+            var resultmodel = new ContentExportExcelDto();
+            if (contentPageListParam.PId != 0)
+            {
+                StatusCodeExpression += $" and PId={contentPageListParam.PId}";
+            }
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == contentPageListParam.ModelId);
+            if (contentmodel == null)
+                return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+            resultmodel.ExcelName = contentmodel.Name;
+            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == contentPageListParam.ModelId)).ToList();
+            string filed = ColumnContentUpdateFiledConfig.defaultFields;
+            resultmodel.filedModels = ContentModelHelper.defaultfileds.ToList();
+            foreach (var item in fieldmodel)
+            {
+                filed += item.FieldName + ",";
+                resultmodel.filedModels.Add(new FiledModel
+                {
+                    FiledDesc = item.Name,
+                    FiledMode = item.FieldType,
+                    FiledName = item.FieldName,
+                    RealFiledName = item.FieldName
+                });
+            }
+            filed = filed.TrimEnd(',');
+            SqlSugar.SugarParameter[] parameters = [];
+            string swhere = string.Empty;
+            _sqlTableServices.CreateSqlSugarColumnContentSelectSql(contentPageListParam, out swhere, out parameters);
 
+            var result = await _sqlsugar.Db.Ado.GetDataTableAsync(
+                "select " + filed.GetCurrentBaseField()
+                + " from " + contentmodel.TableName
+                + " where " + StatusCodeExpression + swhere + " order by OrderId desc", parameters);
+            resultmodel.result = result;
+            return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.OK, resultmodel);
+        }
         /// <summary>
         /// 抽象出来的列表函数
         /// </summary>
@@ -77,7 +120,7 @@ namespace Flex.Application.Services
                 case 2: StatusCodeExpression = "StatusCode=0"; break;
                 case 3: StatusCodeExpression = "StatusCode=6"; break;
             }
-           
+
             if (contentPageListParam.PId != 0)
             {
                 StatusCodeExpression += $" and PId={contentPageListParam.PId}";
@@ -95,12 +138,12 @@ namespace Flex.Application.Services
             DynamicParameters parameters = new DynamicParameters();
             string swhere = string.Empty;
             _sqlTableServices.CreateDapperColumnContentSelectSql(contentPageListParam, modetype, out swhere, out parameters);
-           
+
             var result = await _dapperDBContext.PageAsync(
-                contentPageListParam.page, 
-                contentPageListParam.limit, 
-                "select " + filed.GetCurrentBaseField() 
-                + " from " + contentmodel.TableName 
+                contentPageListParam.page,
+                contentPageListParam.limit,
+                "select " + filed.GetCurrentBaseField()
+                + " from " + contentmodel.TableName
                 + " where " + StatusCodeExpression + swhere + orderby
                 , parameters);
             if (modetype == 1)
@@ -113,7 +156,7 @@ namespace Flex.Application.Services
                     relationlist = _mapper.Map<List<TableRelationListDto>>(relationtable);
                     //relationjson = relationlist.ToJson();
                 }
-                var list= result.Items.ToList();
+                var list = result.Items.ToList();
                 list.Each(item =>
                 {
                     if ((StatusCode)item.StatusCode == StatusCode.Enable)
@@ -127,7 +170,7 @@ namespace Flex.Application.Services
                     item.StatusCodeText = ((StatusCode)item.StatusCode).GetEnumDescription();
                     item.relationInfo = relationlist;
                 });
-                result.Items= list;
+                result.Items = list;
             }
             else
             {
@@ -144,8 +187,8 @@ namespace Flex.Application.Services
         {
             return await AbstractList(contentPageListParam, 1, " order by OrderId desc");
         }
-        
-        public async Task<Dictionary<object, object>> GetContentForReviewById(int ParentId, int Id,int ModelId)
+
+        public async Task<Dictionary<object, object>> GetContentForReviewById(int ParentId, int Id, int ModelId)
         {
             if (!await CheckPermission(ParentId.ToInt(), nameof(DataPermissionDto.sp)))
                 return default;
@@ -193,7 +236,7 @@ namespace Flex.Application.Services
             };
             return model;
         }
-        public async Task<ProblemDetails<OutputContentAndWorkFlowDto>> GetContentById(int modelId,int ParentId, int Id)
+        public async Task<ProblemDetails<OutputContentAndWorkFlowDto>> GetContentById(int modelId, int ParentId, int Id)
         {
             if (!await CheckPermission(ParentId.ToInt(), nameof(DataPermissionDto.sp)))
                 return new ProblemDetails<OutputContentAndWorkFlowDto>(HttpStatusCode.NotFound, ErrorCodes.DataNotFound.GetEnumDescription());

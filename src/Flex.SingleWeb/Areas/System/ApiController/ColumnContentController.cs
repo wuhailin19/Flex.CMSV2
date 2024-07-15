@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Flex.Dapper;
 using System.Collections;
+using Flex.Application.ContentModel;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.System.ColumnContent;
+using System.Web;
 
 namespace Flex.WebApi.SystemControllers
 {
@@ -195,12 +197,30 @@ namespace Flex.WebApi.SystemControllers
         public async Task<string> ContentTools()
         {
             var validatemodel = await ValidateModel<ContentToolsDto>();
-            if(!validatemodel.IsSuccess)
+            if (!validatemodel.IsSuccess)
                 return Fail(validatemodel.Detail);
             var result = await _columnServices.ContentOperation(validatemodel.Content);
             if (!result.IsSuccess)
                 return Fail(result.Detail);
             return Success(result.Detail);
+        }
+        #endregion
+
+        #region 导入导出
+        [HttpGet("ExportExcel")]
+        public async Task<IActionResult> ExportExcel([FromQuery] ContentPageListParamDto requestmodel)
+        {
+            var resultmodel = await _columnServices.GetExportExcelDataTableAsync(requestmodel);
+            if (!resultmodel.IsSuccess)
+            {
+                return new JsonResult(new Message<string> { code = 400, msg = resultmodel.Detail });
+            }
+            var stream = ContentModelHelper.SimpleExportToSpreadsheet(resultmodel.Content.result, resultmodel.Content.filedModels);
+            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var fileName = resultmodel.Content.ExcelName + ".xlsx";
+
+            // 返回文件流作为文件下载
+            return File(stream, contentType, fileName);
         }
         #endregion
     }

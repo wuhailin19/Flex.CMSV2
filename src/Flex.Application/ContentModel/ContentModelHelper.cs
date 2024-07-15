@@ -11,6 +11,8 @@ using System.Text;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using static SKIT.FlurlHttpClient.Wechat.Api.Models.WxaGetWxaGameFrameResponse.Types.Data.Types.Frame.Types;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace Flex.Application.ContentModel
 {
@@ -388,6 +390,13 @@ namespace Flex.Application.ContentModel
             }
         }
         public static string splitstr = "[|]";
+        public static List<FiledModel> defaultfileds = new List<FiledModel>
+            {
+                new FiledModel("Id","编号","input"),
+                new FiledModel("ParentId","栏目","input"),
+                new FiledModel("Title","标题","input",true),
+                new FiledModel("AddTime","添加时间", "date")
+            };
         /// <summary>
         /// 获取模型字段列表
         /// </summary>
@@ -403,13 +412,7 @@ namespace Flex.Application.ContentModel
             fileds.ModelName = ContentModel[0]["Name"].ToString();
 
             var filedlist = ContentModelHelper.filedlist.Select("ModelId=" + modelid + " and IsApiField=1");
-            List<FiledModel> hashtable = new List<FiledModel>
-            {
-                new FiledModel("Id","编号","input"),
-                new FiledModel("ParentId","栏目","input"),
-                new FiledModel("Title","标题","input",true),
-                new FiledModel("AddTime","添加时间", "date")
-            };
+            List<FiledModel> filedlists = defaultfileds.ToList();
             string column_str = "Id,ParentId,Title,AddTime";
             if (filedlist.Length > 0)
             {
@@ -431,17 +434,17 @@ namespace Flex.Application.ContentModel
                         column_str += "," + dr["FieldName"];
                     }
                     filedModel.IsSearch = dr["IsSearch"].ToInt() == 0 ? false : true;
-                    hashtable.Add(filedModel);
+                    filedlists.Add(filedModel);
                 }
-                if (hashtable.Any(m => m.FiledMode == "MutiImgSelect"))
+                if (filedlists.Any(m => m.FiledMode == "MutiImgSelect"))
                 {
-                    hashtable.Add(new FiledModel("imglist_title", "图集标题", "MutiImgExt"));
-                    hashtable.Add(new FiledModel("imglist_img", "图集图片", "MutiImgExt"));
-                    hashtable.Add(new FiledModel("imglist_link", "图集链接", "MutiImgExt"));
+                    filedlists.Add(new FiledModel("imglist_title", "图集标题", "MutiImgExt"));
+                    filedlists.Add(new FiledModel("imglist_img", "图集图片", "MutiImgExt"));
+                    filedlists.Add(new FiledModel("imglist_link", "图集链接", "MutiImgExt"));
                 }
             }
             fileds.TableColumnStr = column_str;
-            fileds.TableColumnList = hashtable;
+            fileds.TableColumnList = filedlists;
             return fileds;
         }
         #endregion
@@ -452,9 +455,8 @@ namespace Flex.Application.ContentModel
         /// <param name="table">DataTable数据源</param>
         /// <param name="name">文件名</param>
         /// <param name="fileModes">字段列表</param>
-        public static MemoryStream SimpleExportToSpreadsheet(string name, List<FiledModel> fileModes)
+        public static MemoryStream SimpleExportToSpreadsheet(DataTable table, List<FiledModel> fileModes)
         {
-            DataTable table = instance._sqlsugar.Db.Ado.GetDataTable("select * from tbl_normal_product");
             // 创建Excel包
             using (var package = new ExcelPackage())
             {
@@ -464,7 +466,7 @@ namespace Flex.Application.ContentModel
                 for (int i = 0; i < fileModes.Count; i++)
                 {
                     // 添加表头
-                    worksheet.Cells[1, i + 1].Value = fileModes[i].FiledDesc+"["+ fileModes[i].FiledName + "]";
+                    worksheet.Cells[1, i + 1].Value = fileModes[i].FiledDesc + "[" + fileModes[i].FiledName + "]";
                     worksheet.Cells[1, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                     worksheet.Cells[1, i + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                     worksheet.Cells[1, i + 1].Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
@@ -472,7 +474,7 @@ namespace Flex.Application.ContentModel
 
                 for (int i = 0; i < table.Rows.Count; i++)
                 {
-                    for (int j= 0; j < fileModes.Count; j++)
+                    for (int j = 0; j < fileModes.Count; j++)
                     {
                         worksheet.Cells[i + 2, j + 1].Value = table.Rows[i][fileModes[j].FiledName];
                         worksheet.Cells[i + 2, j + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -491,7 +493,7 @@ namespace Flex.Application.ContentModel
                 var stream = new MemoryStream();
                 package.SaveAs(stream);
                 stream.Position = 0;
-
+                package.Dispose();
 
                 return stream;
             }

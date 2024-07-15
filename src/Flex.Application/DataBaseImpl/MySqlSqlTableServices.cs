@@ -204,7 +204,6 @@ namespace Flex.Application.SqlServerSQLString
             }
         }
 
-
         public StringBuilder CreateDapperUpdateSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters)
         {
             StringBuilder builder = new StringBuilder();
