@@ -1,4 +1,5 @@
 ﻿using Flex.Application.Contracts.Basics.ResultModels;
+using Flex.Core.Attributes;
 using Flex.Dapper;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
@@ -31,6 +32,7 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<string>> CompletelyDelete(int ParentId, int modelId, string Id);
         Task<ProblemDetails<string>> RestContent(int ParentId, int modelId, string Id);
         Task<ProblemDetails<string>> ContentOperation(ContentToolsDto contentToolsDto);
+        [NoLogReturnValue]
         Task<ProblemDetails<ContentExportExcelDto>> GetExportExcelDataTableAsync(ContentPageListParamDto contentPageListParam);
     }
 }

@@ -13,7 +13,6 @@ namespace Flex.Application.Contracts.ISignalRBus
         public DataTable table { set; get; }
         public List<FiledModel> fileModes { set; get; }
         public string FileName { set; get; }
-        public string ConnectionId { set; get; }
         public long UserId { set; get; }
     }
 }

@@ -8,12 +8,15 @@
 .leftbox { border-right: 3px solid #eee; }
 
 .uploadimg_box { width: 90%; border: 1px solid #ccc; height: 150px; display: flex; align-items: center; box-sizing: border-box; }
+.uploadimg_box.sortable-chosen {  border: 1px solid rgb(102, 177, 255);  }
+
 .uploadimg_box.layui-form-item { margin-bottom: 1px; }
 .uploadimg_box .layui-input-inline { width: 65%; margin-left: 2%; }
 .uploadimg_box .layui-input-inline.uploadimg_inlinebox { max-width: 20%; margin: 0; text-align: center; background: #eee; height: 100%; display: flex; align-items: center; justify-content: center; }
 .uploadimg_box .layui-input-inline.otherbtn { width: 13%; margin: 0; text-align: center; }
 .uploadimg_item { width: 90%; height: auto; max-height: 100px; }
 .layui-form-item .layui-input-inline { margin-right: 0px; }
+.sortbtn { cursor: move; background: unset; color: #000 !important; border: 1px solid #ccc; }
 
 @media screen and (max-width:800px) {
     .bottomBtnbox { padding-left: 10px; }

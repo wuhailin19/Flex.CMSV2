@@ -25,7 +25,8 @@ namespace Flex.Application.Aop
         /// <param name="invocation"></param>
         public void InterceptSynchronous(IInvocation invocation)
         {
-            if (invocation.Method.DeclaringType?.IsDefined(typeof(NoLogAttribute), true) ?? false)
+            if ((invocation.Method?.IsDefined(typeof(NoLogAttribute), true) ?? false) ||
+                 (invocation.Method.DeclaringType?.IsDefined(typeof(NoLogAttribute), true) ?? false))
             {
                 invocation.Proceed();
                 return;
@@ -34,7 +35,15 @@ namespace Flex.Application.Aop
             {
                 //调用业务方法
                 invocation.Proceed();
-                LogExecuteInfo(invocation, JsonHelper.ToJson(invocation.ReturnValue, NamingType.CamelCase, false));//记录日志
+                if ((invocation.Method?.IsDefined(typeof(NoLogReturnValueAttribute), true) ?? false) ||
+               (invocation.Method.DeclaringType?.IsDefined(typeof(NoLogReturnValueAttribute), true) ?? false))
+                {
+                    LogExecuteInfo(invocation, "返回值过长，不予记录");
+                }
+                else
+                {
+                    LogExecuteInfo(invocation, JsonHelper.ToJson(invocation.ReturnValue, NamingType.CamelCase, false));//记录日志
+                }
             }
             catch (AopHandledException ex)
             {
@@ -59,7 +68,8 @@ namespace Flex.Application.Aop
         /// <param name="invocation"></param>
         public void InterceptAsynchronous(IInvocation invocation)
         {
-            if (invocation.Method.DeclaringType?.IsDefined(typeof(NoLogAttribute), true) ?? false)
+            if ((invocation.Method?.IsDefined(typeof(NoLogAttribute), true) ?? false) ||
+                 (invocation.Method.DeclaringType?.IsDefined(typeof(NoLogAttribute), true) ?? false))
             {
                 invocation.Proceed();
                 return;
@@ -68,7 +78,15 @@ namespace Flex.Application.Aop
             {
                 //调用业务方法
                 invocation.Proceed();
-                LogExecuteInfo(invocation, JsonHelper.ToJson(invocation.ReturnValue, NamingType.CamelCase, false));//记录日志
+                if ((invocation.Method?.IsDefined(typeof(NoLogReturnValueAttribute), true) ?? false) ||
+               (invocation.Method.DeclaringType?.IsDefined(typeof(NoLogReturnValueAttribute), true) ?? false))
+                {
+                    LogExecuteInfo(invocation, "返回值过长，不予记录");
+                }
+                else
+                {
+                    LogExecuteInfo(invocation, JsonHelper.ToJson(invocation.ReturnValue, NamingType.CamelCase, false));//记录日志
+                }
             }
             catch (AopHandledException ex)
             {
@@ -99,7 +117,8 @@ namespace Flex.Application.Aop
         }
         private async Task<TResult> InternalInterceptAsynchronous<TResult>(IInvocation invocation)
         {
-            if (invocation.Method.DeclaringType?.IsDefined(typeof(NoLogAttribute), true) ?? false)
+            if ((invocation.Method?.IsDefined(typeof(NoLogAttribute), true) ?? false) ||
+                (invocation.Method.DeclaringType?.IsDefined(typeof(NoLogAttribute), true) ?? false))
             {
                 //调用业务方法
                 invocation.Proceed();
@@ -113,8 +132,15 @@ namespace Flex.Application.Aop
                 invocation.Proceed();
                 Task<TResult> task = (Task<TResult>)invocation.ReturnValue;
                 TResult result = await task;//获得返回结果
-                LogExecuteInfo(invocation, JsonHelper.ToJson(result, NamingType.CamelCase, false));
-
+                if ((invocation.Method?.IsDefined(typeof(NoLogReturnValueAttribute), true) ?? false) ||
+                (invocation.Method.DeclaringType?.IsDefined(typeof(NoLogReturnValueAttribute), true) ?? false))
+                {
+                    LogExecuteInfo(invocation, "返回值过长，不予记录");
+                }
+                else
+                { 
+                    LogExecuteInfo(invocation, JsonHelper.ToJson(result, NamingType.CamelCase, false));
+                }
                 return result;
             }
             catch (AopHandledException ex)

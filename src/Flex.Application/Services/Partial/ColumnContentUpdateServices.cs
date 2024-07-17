@@ -295,7 +295,7 @@ namespace Flex.Application.Services
             }
             foreach (var key in keysToRemove)
                 table.Remove(key);
-
+            table.Remove("ParentId");
             return await UpdateContentCore(table, contentmodel, null, column);
         }
 
@@ -304,7 +304,8 @@ namespace Flex.Application.Services
             StringBuilder builder = new StringBuilder();
             SqlSugar.SugarParameter[] parameters;
             table["Id"] = table["Id"].ToInt();
-            table["ParentId"] = table["ParentId"].ToInt();
+            if (table.ContainsKey("ParentId"))
+                table["ParentId"] = table["ParentId"].ToInt();
             if (fileds != null)
             {
                 //创建历史副本

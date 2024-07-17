@@ -131,27 +131,17 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers', 'laydate'], fu
 
         ___initUpload("#" + id, options);
 
-    }
-    $(document).on('click', '.uploadimg_box .previewimg', function () {
-        previewimg($(this).attr('data-src'));
-    })
-    function previewimg(imgsrc) {
-        layer.photos({
-            photos: {
-                "title": "", // 相册标题
-                "start": 0, // 初始显示的图片序号，默认 0
-                "data": [   // 相册包含的图片，数组格式
-                    {
-                        "alt": imgsrc,
-                        "src": imgsrc, // 原图地址
-                        "thumb": imgsrc // 缩略图地址
-                    }
-                ],
-                error: function () {
+        var sortableList = document.getElementById("uploader-list-" + id);
 
-                }
+        var sortable = new Sortable(sortableList, {
+            draggable: '.uploadimg_box',
+            easing: "cubic-bezier(1, 0, 0, 1)",
+            handle: ".sortbtn",
+            chosenClass: "sortable-chosen",
+            onEnd: function (evt) {
+
             }
-        });
+        })
     }
 
     var images = render.getImages();

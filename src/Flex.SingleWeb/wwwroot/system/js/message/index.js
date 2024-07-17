@@ -8,7 +8,7 @@
         async: false,
         success: function (res) {
             if (res.code == 200) {
-                parent.GetMsgCount();
+                top.GetMsgCount();
                 that.removeClass('new');
                 var json = res.content;
                 $('.right_box_title').addClass('active');

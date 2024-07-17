@@ -2125,13 +2125,17 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                                 '<textarea name="" placeholder="" class="layui-textarea">' + imagelist[i].content + '</textarea>' +
                                 '</div>' +
                                 '<div class="layui-input-inline otherbtn">' +
-                                '<span class="layui-btn layui-btn-sm layui-btn-danger">删除</span><br><br>' +
+                                '<span class="layui-btn layui-btn-sm layui-btn-danger deleteme">删除</span><br><br>' +
+                                '<span class="layui-btn layui-btn-sm iconfont sortbtn">&#xea8d;</span><br><br>' +
                                 '<span class="layui-btn layui-btn-sm layui-btn-login previewimg" data-src="' + imagelist[i].imgsrc + '">预览</span></div></div>';
                         }
                     }
                     _html += '</div>';
                     _html += '</div>';
                     _html += '</div>';
+
+                   
+
                     elem.append(_html);
                     if (that.config.viewOrDesign) {
                         var data = { "select": json.id, "uploadUrl": "/api/upload/OnLoad", id: json.id };

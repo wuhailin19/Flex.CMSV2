@@ -48,20 +48,23 @@ namespace Flex.Application.SignalRBus.Services
             //这里可以使用队列或其他方式来管理导出请求
             while (!stoppingToken.IsCancellationRequested)
             {
-                var exportRequest = await _exportQueue.DequeueAsync(stoppingToken);
-                if (exportRequest != null)
+                _logger.LogInformation("正在处理任务...");
+                try
                 {
-                    try
+                    var exportRequest = await _exportQueue.DequeueAsync(stoppingToken);
+                    if (exportRequest != null)
                     {
                         //_logger.LogInformation("开始导出");
                         await ExportDataTableInChunks(exportRequest, _hubContext);
                     }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex.Format());
-                    }
+                    await Task.Delay(1000, stoppingToken); // 等待一段时间再检查队列
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Format());
                 }
             }
+            _logger.LogInformation("任务已取消");
         }
         public async Task ExportDataTableInChunks(ExportRequest exportRequest, IHubContext<ExportHub> hubContext)
         {
@@ -101,7 +104,7 @@ namespace Flex.Application.SignalRBus.Services
             }
             //发送消息给自己
             await _messageServices.SendNormalMsg("导出文件", msgcontent, exportRequest.UserId);
-            await hubContext.Clients.Client(exportRequest.ConnectionId).SendAsync("ExportCompleted", "导出任务完成");
+            await hubContext.Clients.Client(ExportHub.GetConnectionId(exportRequest.UserId)).SendAsync("ExportCompleted", "导出任务完成");
         }
 
 
@@ -109,7 +112,6 @@ namespace Flex.Application.SignalRBus.Services
         /// 将DataTable导出为Excel
         /// </summary>
         /// <param name="table">DataTable数据源</param>
-        /// <param name="name">文件名</param>
         /// <param name="fileModes">字段列表</param>
         public static MemoryStream SimpleExportToSpreadsheet(DataTable table, List<FiledModel> fileModes)
         {

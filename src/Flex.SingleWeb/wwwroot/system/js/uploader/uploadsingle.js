@@ -538,6 +538,7 @@
     updateTotalProgress();
 
     
+
     uploader.on('uploadSuccess', function (file, data) {
         if (options.single) { fileCount = 0; fileSize = 0; uploader.removeFile(file); }
 
@@ -553,7 +554,8 @@
                     '<div class="layui-input-inline"><input type="text" class="layui-input"/><textarea name="" placeholder="" class="layui-textarea"></textarea>' +
                     '</div>' +
                     '<div class="layui-input-inline otherbtn">' +
-                    '<span class="layui-btn layui-btn-sm layui-btn-danger">删除</span><br><br>' +
+                    '<span class="layui-btn layui-btn-sm layui-btn-danger deleteme">删除</span><br><br>' +
+                    '<span class="layui-btn layui-btn-sm iconfont sortbtn">&#xea8d;</span><br><br>' +
                     '<span class="layui-btn layui-btn-sm layui-btn-login previewimg" data-src="' + data.msg+'">预览</span></div></div>';
                 idsobj.append(imghtml);
             }
@@ -574,4 +576,31 @@
     //})
 };
 
+$(document).on('click', '.previewimg', function () {
+    previewimg($(this).attr('data-src'));
+})
+$(document).on('click', '.deleteme', function () {
+    $(this).parents('.uploadimg_box').fadeOut();
+})
+$(document).on('click', '.singlepreviewimg', function () {
+    previewimg($('input[name=' + $(this).attr('data-src') + ']').val());
+})
 
+function previewimg(imgsrc) {
+    layer.photos({
+        photos: {
+            "title": "", // 相册标题
+            "start": 0, // 初始显示的图片序号，默认 0
+            "data": [   // 相册包含的图片，数组格式
+                {
+                    "alt": imgsrc,
+                    "src": imgsrc, // 原图地址
+                    "thumb": imgsrc // 缩略图地址
+                }
+            ],
+            error: function () {
+
+            }
+        }
+    });
+}

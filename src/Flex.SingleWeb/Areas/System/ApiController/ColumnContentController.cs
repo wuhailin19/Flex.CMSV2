@@ -224,14 +224,12 @@ namespace Flex.WebApi.SystemControllers
             {
                 return Fail(resultmodel.Detail);
             }
-            if(requestmodel.ConnectionId.IsNullOrEmpty())
-                return Fail("请刷新页面重试");
+
             var exportRequest = new ExportRequest
             {
                 table = resultmodel.Content.result,
                 fileModes = resultmodel.Content.filedModels,
                 FileName = resultmodel.Content.ExcelName,
-                ConnectionId= requestmodel.ConnectionId,
                 UserId=resultmodel.Content.UserId
             };
 
@@ -239,11 +237,13 @@ namespace Flex.WebApi.SystemControllers
 
             return Success("导出任务已启动");
 
+            #region 起初用文件流直接返回的，数据量大的时候太慢了，改造成Signalr异步通知结果了
             //var stream = ContentModelHelper.SimpleExportToSpreadsheet(resultmodel.Content.result, resultmodel.Content.filedModels);
             //var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             //var fileName = resultmodel.Content.ExcelName + ".xlsx";
             //// 返回文件流作为文件下载
             //return File(stream, contentType, fileName);
+            #endregion
         }
         #endregion
     }

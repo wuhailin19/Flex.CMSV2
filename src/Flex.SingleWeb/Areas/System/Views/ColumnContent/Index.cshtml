@@ -43,6 +43,15 @@
     <div class="layui-tab-content">
         <table id="demo_tree" lay-filter="test"></table>
     </div>
+    <script type="text/html" id="TitleTemplete">
+        {{#if(currentparentId!=d.ParentId){}}
+            {{#if(d.RefLinkClassId!=''&&d.RefLinkClassId!=null){}}
+                <span class="Property hot layui-icon layui-icon-link" title="引用内容"></span>
+            {{#}else{}}
+            {{#}}}
+        {{#}}}
+        <span title="{{d.Title}}">{{d.Title}}</span>
+    </script>
     <script type="text/html" id="statusPxy">
         <span name="StatusCode" style="color:{{d.StatusColor}}">{{d.StatusCodeText}}</span>
     </script>
@@ -73,12 +82,7 @@
         {{#}else{}}
 
         {{#}}}
-        {{#if(currentparentId!=d.ParentId){}}
-            {{#if(d.RefLinkClassId!=''&&d.RefLinkClassId!=null){}}
-                <span class="Property hot layui-icon layui-icon-link" title="引用内容"></span>
-            {{#}else{}}
-            {{#}}}
-        {{#}}}
+        
         </div>
     </script>
     <script type="text/html" id="relationInfo">

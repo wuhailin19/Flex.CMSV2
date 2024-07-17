@@ -210,30 +210,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers','laydate'], fun
 
         ___initUpload("#" + id, options);
     }
-    $(document).on('click', '.previewimg', function () {
-        previewimg($(this).attr('data-src'));
-    })
-    $(document).on('click', '.singlepreviewimg', function () {
-        previewimg($('input[name=' + $(this).attr('data-src')+']').val());
-    })
-    function previewimg(imgsrc) {
-        layer.photos({
-            photos: {
-                "title": "", // 相册标题
-                "start": 0, // 初始显示的图片序号，默认 0
-                "data": [   // 相册包含的图片，数组格式
-                    {
-                        "alt": imgsrc,
-                        "src": imgsrc, // 原图地址
-                        "thumb": imgsrc // 缩略图地址
-                    }
-                ],
-                error: function () {
-
-                }
-            }
-        });
-    }
+    
     for (var i = 0; i < checkboxs.length; i++) {
         setCheckboxValue(checkboxs[i].id, model[checkboxs[i].id]);
     }
@@ -267,6 +244,18 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers','laydate'], fun
         var options = { single: true, autoupload: true, valueElement: imageinput };
 
         ___initUpload("#uploader-show_" + id, options);
+
+        var sortableList = document.getElementById("uploader-list-" + id);
+
+        var sortable = new Sortable(sortableList, {
+            draggable: '.uploadimg_box',
+            easing: "cubic-bezier(1, 0, 0, 1)",
+            handle: ".sortbtn",
+            chosenClass: "sortable-chosen",
+            onEnd: function (evt) {
+
+            }
+        })
     }
     var iceEditorObjects = render.geticeEditorObjects();
     var promises = [];
@@ -301,6 +290,8 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers','laydate'], fun
 
         ___initUpload("#uploader-show_" + id, options);
     }
+    
+
     function formRender() {
         for (var i = 0; i < checkboxs.length; i++) {
             delete model[checkboxs[i].id];

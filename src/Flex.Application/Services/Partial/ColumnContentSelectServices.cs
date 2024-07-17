@@ -70,15 +70,18 @@ namespace Flex.Application.Services
         {
             string StatusCodeExpression = "StatusCode not in (0,6)";
             var resultmodel = new ContentExportExcelDto();
-            if (contentPageListParam.PId != 0)
-            {
-                StatusCodeExpression += $" and PId={contentPageListParam.PId}";
-            }
+
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == contentPageListParam.ModelId);
             if (contentmodel == null)
                 return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == contentPageListParam.ParentId);
-            resultmodel.ExcelName = column.Name?? contentmodel.Name;
+            resultmodel.ExcelName = column.Name ?? contentmodel.Name;
+            if (contentPageListParam.PId != 0)
+            {
+                StatusCodeExpression += $" and PId={contentPageListParam.PId}";
+                resultmodel.ExcelName = column.Name + "_" + contentmodel.Name;
+            }
+
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == contentPageListParam.ModelId)).ToList();
             string filed = ColumnContentUpdateFiledConfig.defaultFields;
             resultmodel.filedModels = ContentModelHelper.defaultfileds.ToList();
@@ -103,6 +106,9 @@ namespace Flex.Application.Services
                 "select " + filed.GetCurrentBaseField()
                 + " from " + contentmodel.TableName
                 + " where " + StatusCodeExpression + swhere + " order by OrderId desc", parameters);
+
+            if(result.Rows.Count==0)
+                return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
             resultmodel.result = result;
             return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.OK, resultmodel);
         }

@@ -271,7 +271,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
 
     async function startExport() {
         var url = routeLink + "ExportExcel?ParentId=" + currentparentId + "&ModelId=" + currentmodelId
-            + "&PId=" + pId + "&k=" + keyword.val() + "&timefrom=" + dateRanage[0] + "&timeto=" + dateRanage[1] + "&connectionId=" + top.conn_signalr_id;
+            + "&PId=" + pId + "&k=" + keyword.val() + "&timefrom=" + dateRanage[0] + "&timeto=" + dateRanage[1];
         ;
         const response = await fetch(url, {
             method: 'GET',

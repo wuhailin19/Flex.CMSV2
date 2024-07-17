@@ -12,7 +12,7 @@ namespace Flex.Domain.Dtos.Column
         public controlType checkbox { get; set; }
         [ToolAttr(NameAttr = "编号", AlignAttr = AlignEnum.Center, maxWidth = "80")]
         public int Id { set; get; }
-        [ToolAttr(NameAttr = "标题", SortAttr = true, minWidth = "200")]
+        [ToolAttr(NameAttr = "标题", SortAttr = true, minWidth = "200",Toolbar = "#TitleTemplete")]
         public string Title { set; get; }
         [ToolAttr(NameAttr = "属性", Toolbar = "#Property", AlignAttr = "center")]
         public string Property { set; get; }
