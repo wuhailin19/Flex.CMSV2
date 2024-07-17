@@ -77,10 +77,12 @@ namespace Flex.Application.Services
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == contentPageListParam.ModelId);
             if (contentmodel == null)
                 return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
-            resultmodel.ExcelName = contentmodel.Name;
+            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == contentPageListParam.ParentId);
+            resultmodel.ExcelName = column.Name?? contentmodel.Name;
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == contentPageListParam.ModelId)).ToList();
             string filed = ColumnContentUpdateFiledConfig.defaultFields;
             resultmodel.filedModels = ContentModelHelper.defaultfileds.ToList();
+            resultmodel.UserId = _claims.UserId;
             foreach (var item in fieldmodel)
             {
                 filed += item.FieldName + ",";

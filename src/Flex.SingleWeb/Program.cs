@@ -3,6 +3,8 @@ using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
 using Flex.Application.Aop;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Application.Contracts.ISignalRBus;
+using Flex.Application.Contracts.ISignalRBus.Queue;
 using Flex.Application.Exceptions;
 using Flex.Application.Extensions.Register.AutoMapper;
 using Flex.Application.Extensions.Register.MemoryCacheExtension;
@@ -10,6 +12,9 @@ using Flex.Application.Extensions.Register.WebCoreExtensions;
 using Flex.Application.Extensions.Swagger;
 using Flex.Application.Middlewares;
 using Flex.Application.SetupExtensions.OrmInitExtension;
+using Flex.Application.SignalRBus.Hubs;
+using Flex.Application.SignalRBus.Queue;
+using Flex.Application.SignalRBus.Services;
 using Flex.Core.Helper;
 using Flex.SingleWeb.Components;
 using Flex.SqlSugarFactory;
@@ -25,6 +30,7 @@ using NLog.Config;
 using NLog.Web;
 using System.Reflection;
 using System.Text;
+using Microsoft.Extensions.Hosting;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
@@ -64,6 +70,9 @@ builder.Services.AddEndpointsApiExplorer()
 //注册缓存
 .AddMemoryCacheSetup();
 
+builder.Services.AddSignalR();
+builder.Services.AddScoped<ExportBackgroundService>();
+
 string webpath = builder.Environment.WebRootPath;
 //builder.Services.HtmlTemplateDictInit();
 //注册autofac
@@ -78,11 +87,13 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
         builder.RegisterGeneric(typeof(BaseRepository<>)).As(typeof(IBaseRepository<>)).InstancePerDependency(); //注册Sqlsugar仓储
         //注册业务层，同时对业务层的方法进行拦截
         builder.RegisterAssemblyTypes(Assembly.Load("Flex.Application"))
-             .Where(t => !t.Name.EndsWith("SqlTableServices")) // 排除以 "SqlTableServices" 结尾的类型
+             .Where(t => !t.Name.EndsWith("SqlTableServices")&& !t.Name.EndsWith("Queue")) // 排除以 "SqlTableServices和Queue" 结尾的类型
             .AsImplementedInterfaces()
             .InstancePerLifetimeScope()
             .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy;// 注册被拦截的类并启用类拦截
             .InterceptedBy(typeof(LogInterceptor));//这里只有同步的，因为异步方法拦截器还是先走同步拦截器 
+
+        builder.RegisterType<ConcurrentQueue<ExportRequest>>().As<IConcurrentQueue<ExportRequest>>().SingleInstance();
 
         builder.RegisterType<UnitOfWorkManage>().As<IUnitOfWorkManage>()
                 .AsImplementedInterfaces()
@@ -191,12 +202,16 @@ app.Use(async (context, next) =>
     await next();
 });
 app.UseAntiforgery();
+
 app.MapAreaControllerRoute(
         name: "AreaRoute",
         areaName: "System",
         pattern: "{area:exists}/{controller=Login}/{action=Index}/{id?}");
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+// 注册 SignalR Hub
+app.MapHub<ExportHub>("/exportHub");
 
 app.Run();
 

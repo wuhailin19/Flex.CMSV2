@@ -87,7 +87,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
         , id: tableid
         , headers: httpTokenHeaders
         , toolbar: toolbarhtml
-        , limits: [1, 5, 10, 15, 50,500]
+        , limits: [1, 5, 10, 15, 50, 500]
         , limit: 15
         , cellExpandedMode: 'tips'
         , page: true //开启分页
@@ -268,6 +268,29 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
         active[type] ? active[type].call(this) : '';
     });
 
+
+    async function startExport() {
+        var url = routeLink + "ExportExcel?ParentId=" + currentparentId + "&ModelId=" + currentmodelId
+            + "&PId=" + pId + "&k=" + keyword.val() + "&timefrom=" + dateRanage[0] + "&timeto=" + dateRanage[1] + "&connectionId=" + top.conn_signalr_id;
+        ;
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('access_token'),
+                'Refresh_token': 'Bearer ' + sessionStorage.getItem('refresh_token'),
+            }
+        });
+        if (response.ok) {
+            const json = await response.json();
+            if (json.code == 200) {
+                tips.showSuccess(json.msg);
+            } else {
+                tips.showFail(json.msg);
+            }
+        } else {
+            console.error('导出请求失败');
+        }
+    }
     //监听事件
     table.on('toolbar(test)', function (obj) {
         var data = table.checkStatus(obj.config.id).data;
@@ -284,48 +307,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                 defaultOptions.openDataPermissionIframe(layer, insTb);
                 break;
             case "Export":
-                var xhr = new XMLHttpRequest();
-                var url = routeLink + "ExportExcel?ParentId=" + currentparentId + "&ModelId=" + currentmodelId
-                    + "&PId=" + pId + "&k=" + keyword.val() + "&timefrom=" + dateRanage[0] + "&timeto=" + dateRanage[1];
-                xhr.open('GET', url, true);    // 也可以使用POST方式，根据接口
-                xhr.responseType = "blob";  // 返回类型blob
-                xhr.setRequestHeader("Authorization", "Bearer " + sessionStorage.getItem('access_token'));
-                xhr.setRequestHeader("Refresh_token", "Bearer " + sessionStorage.getItem('refresh_token'));
-                xhr.setRequestHeader("siteId", sessionStorage.getItem('siteId'));
-                xhr.onload = function () {
-                    // 请求完成
-                    if (this.status === 200) {
-                        // console.log(this.response)
-                        let res_type = this.response.type
-                        if (res_type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-                            var blob = this.response;
-                            var reader = new FileReader();
-                            reader.readAsDataURL(blob);  // 转换为base64
-                            reader.onload = function (e) {
-                                // 转换完成，创建一个a标签用于下载
-                                var a = document.createElement('a');
-                                //let file_name = "file_name.bin"
-                                a.href = e.target.result;
-                                $("body").append(a);  // 修复firefox中无法触发click
-                                a.click();
-                                $(a).remove();
-                            }
-                        } else if (res_type == "application/json") {
-                            // blob转json，获取异常信息
-                            var enc = new TextDecoder('utf-8');
-                            this.response.arrayBuffer().then(buffer => {
-                                let data = JSON.parse(enc.decode(new Uint8Array(buffer))) || {};
-                                tips.showFail(data.msg);
-                            }
-                            )
-                        }
-                    } else {
-                        layer.msg("请求异常！")
-                    }
-                };
-                // 发送ajax请求
-                xhr.send();
-
+                startExport();
                 break;
             case 'ApprovalProcess':
                 if (data.length != 1) {

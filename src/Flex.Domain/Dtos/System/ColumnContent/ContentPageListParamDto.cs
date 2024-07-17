@@ -15,6 +15,7 @@ namespace Flex.Domain.Dtos.ColumnContent
         public int PId { set; get; }=0;
         public string? ContentGroupId { set; get; }
         public string? k { set; get; } = null;
+        public string? ConnectionId { set; get; } = null;
         public DateTime? timefrom { set; get; }
         public DateTime? timeto { set; get; }
     }

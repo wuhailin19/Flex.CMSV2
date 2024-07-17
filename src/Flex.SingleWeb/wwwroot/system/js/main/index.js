@@ -25,7 +25,7 @@ function initSiteList() {
                 currentinfo = json.content;
                 if (currentinfo.length > 0) {
                     for (var i = 0; i < currentinfo.length; i++) {
-                        sitestr += '<dd data-siteid="' + currentinfo[i].Id + '" data-sitelink="' + currentinfo[i].RoutePrefix +'">' + currentinfo[i].SiteName + '</dd>';
+                        sitestr += '<dd data-siteid="' + currentinfo[i].Id + '" data-sitelink="' + currentinfo[i].RoutePrefix + '">' + currentinfo[i].SiteName + '</dd>';
                     }
                     if (!sessionStorage.getItem('siteId'))
                         sessionStorage.setItem('siteId', currentinfo[0].Id);
@@ -47,7 +47,7 @@ function initSiteList() {
     $('.choosesite').text(currentsitename);
 
     let currentsitelink = sessionStorage.getItem('sitelink');
-    $('.sitelink').attr('href',currentsitelink);
+    $('.sitelink').attr('href', currentsitelink);
     $('.changesitebox dd').click(function () {
         var siteid = $(this).attr('data-siteid');
         var sitelink = $(this).attr('data-sitelink');
@@ -108,6 +108,7 @@ function InitAdmin() {
             })
             $('#sitename').text(admin.UserSign);
             $('.admin_username').text(admin.UserName)
+            sessionStorage.setItem("UserId", admin.Id)
         }
     })
 }

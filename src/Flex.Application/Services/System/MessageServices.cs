@@ -75,12 +75,16 @@ namespace Flex.Application.Services
             var count = _unitOfWork.GetRepository<sysMessage>().Count(exp);
             return count;
         }
-        public async Task<ProblemDetails<string>> SendNormalMsg(string title, string content, long ToUserId, long ToRoleId = 0)
+        public async Task<ProblemDetails<string>> SendNormalMsg(string title, string content, long ToUserId=0, long ToRoleId = 0)
         {
             var msg = new sysMessage();
             msg.Title = title;
             msg.AddTime = Clock.Now;
-            msg.ToUserId = ToUserId.ToString();
+            if (ToUserId != 0)
+                msg.ToUserId = ToUserId.ToString();
+            else
+                msg.ToUserId = _claims.UserId.ToString();
+
             if (ToRoleId != 0)
             {
                 msg.ToRoleId = ToRoleId.ToString();

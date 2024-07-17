@@ -50,6 +50,19 @@ namespace Flex.WebApi.Jwt
                             //无授权返回自定义信息
                             context.Response.WriteAsync(JsonHelper.ToJson(new Message<string> { code = ErrorCodes.NoOperationPermission.ToInt(), msg = ErrorCodes.NoOperationPermission.GetEnumDescription() }));
                             return Task.CompletedTask;
+                        },
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            // 如果请求是对 SignalR hub 的，尝试获取 access_token
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) &&
+                                (path.StartsWithSegments("/exportHub")))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
                         }
                     };
                     o.TokenValidationParameters = new TokenValidationParameters

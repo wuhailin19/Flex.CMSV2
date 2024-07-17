@@ -449,55 +449,6 @@ namespace Flex.Application.ContentModel
         }
         #endregion
 
-        /// <summary>
-        /// 将DataTable导出为Excel
-        /// </summary>
-        /// <param name="table">DataTable数据源</param>
-        /// <param name="name">文件名</param>
-        /// <param name="fileModes">字段列表</param>
-        public static MemoryStream SimpleExportToSpreadsheet(DataTable table, List<FiledModel> fileModes)
-        {
-            // 创建Excel包
-            using (var package = new ExcelPackage())
-            {
-                // 添加一个工作表
-                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
-                string thsbr = string.Empty;
-                for (int i = 0; i < fileModes.Count; i++)
-                {
-                    // 添加表头
-                    worksheet.Cells[1, i + 1].Value = fileModes[i].FiledDesc + "[" + fileModes[i].FiledName + "]";
-                    worksheet.Cells[1, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    worksheet.Cells[1, i + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                    worksheet.Cells[1, i + 1].Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
-                }
-
-                for (int i = 0; i < table.Rows.Count; i++)
-                {
-                    for (int j = 0; j < fileModes.Count; j++)
-                    {
-                        worksheet.Cells[i + 2, j + 1].Value = table.Rows[i][fileModes[j].FiledName];
-                        worksheet.Cells[i + 2, j + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[i + 2, j + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                        worksheet.Cells[i + 2, j + 1].Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
-
-                        // 如果是日期时间列，设置单元格格式
-                        if (fileModes[j].FiledMode == "date")
-                        {
-                            worksheet.Cells[i + 2, j + 1].Style.Numberformat.Format = "yyyy-mm-dd hh:mm:ss";
-                        }
-                    }
-                }
-
-                // 返回文件流
-                var stream = new MemoryStream();
-                package.SaveAs(stream);
-                stream.Position = 0;
-                package.Dispose();
-
-                return stream;
-            }
-        }
 
         public static ColumnJsonDocxDto GetContentJsonByExpression(InputJsondocxDto inputJsondocxDto)
         {

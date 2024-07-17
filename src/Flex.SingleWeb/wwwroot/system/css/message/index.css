@@ -20,7 +20,9 @@ html, body, .main { width: 100%; height: 100%; margin: 0px; padding: 0px; overfl
 span.timespan { /* position: absolute; */ /* right: 10px; */ font-size: 10px; bottom: 0; line-height: 20px; width: 80%; display: inline-block; }
 .email_box { height: 100%; }
 .page_box { background-color: #fff; border-top: 1px solid #ccc; position: absolute; bottom: 0; width: 100%; display: flex; align-items: center; justify-content: center; }
-
+.exceldownload{display:flex;align-items:center;}
+.excelicon{margin-right:2px;}
+.excelicon img{width:20px;}
 
 @media screen and (max-width:768px) {
     .right_box_title{height:100px;}

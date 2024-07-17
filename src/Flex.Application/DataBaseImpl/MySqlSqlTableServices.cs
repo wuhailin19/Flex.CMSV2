@@ -316,8 +316,65 @@ namespace Flex.Application.SqlServerSQLString
 
         public void CreateSqlSugarColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out SqlSugar.SugarParameter[] parameters)
         {
-            throw new NotImplementedException();
+            Dictionary<string, object> paramdict = new Dictionary<string, object>();
+            if (contentPageListParam.k.IsNotNullOrEmpty())
+            {
+                paramdict.Add("@k", contentPageListParam.k);
+            }
+            if (contentPageListParam.timefrom != null)
+            {
+                paramdict.Add("@timefrom", contentPageListParam.timefrom);
+            }
+            if (contentPageListParam.timeto != null)
+            {
+                paramdict.Add("@timeto", contentPageListParam.timeto);
+            }
+            if (contentPageListParam.ContentGroupId.IsNotNullOrEmpty())
+            {
+                paramdict.Add("@ContentGroupId", contentPageListParam.ContentGroupId);
+            }
+
+            int count = paramdict.Count() + 1;
+            parameters = new SqlSugar.SugarParameter[count];
+            parameters[0] = new SqlSugar.SugarParameter("@parentId", contentPageListParam.ParentId);
+            swhere = " AND ParentId=@parentId";
+
+            int index = 1;
+            if (contentPageListParam.k.IsNotNullOrEmpty())
+            {
+                if (contentPageListParam.k.ToInt() != 0)
+                {
+                    swhere += " AND (Title LIKE CONCAT('%', @k, '%') OR Id=@k)";
+                    parameters[index] = new SqlSugar.SugarParameter("@k", contentPageListParam.k);
+                    index++;
+                }
+                else
+                {
+                    parameters[index] = new SqlSugar.SugarParameter("@k", contentPageListParam.k);
+                    swhere += " AND Title LIKE CONCAT('%', @k, '%')";
+                    index++;
+                }
+            }
+            if (contentPageListParam.timefrom != null)
+            {
+                parameters[index] = new SqlSugar.SugarParameter("@timefrom", contentPageListParam.timefrom);
+                index++;
+                swhere += " AND AddTime >= @timefrom";
+            }
+            if (contentPageListParam.timeto != null)
+            {
+                parameters[index] = new SqlSugar.SugarParameter("@timeto", contentPageListParam.timeto);
+                index++;
+                swhere += " AND AddTime < DATE_ADD(@timeto, INTERVAL 1 DAY)";
+            }
+            if (contentPageListParam.ContentGroupId.IsNotNullOrEmpty())
+            {
+                parameters[index] = new SqlSugar.SugarParameter("@ContentGroupId", contentPageListParam.ContentGroupId);
+                index++;
+                swhere += " AND ContentGroupId=@ContentGroupId";
+            }
         }
+
 
         public void InitDapperColumnContentSwheresql(ref string swhere, ref DynamicParameters parameters, Dictionary<string, object> dataparams)
         {

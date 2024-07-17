@@ -168,6 +168,7 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
                 content: data.path
             });
         }
+        window.open(data.path)
         return false;
     });
     function OpenImage(data) {

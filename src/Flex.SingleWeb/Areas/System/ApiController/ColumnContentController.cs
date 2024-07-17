@@ -8,6 +8,10 @@ using Flex.Application.ContentModel;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.System.ColumnContent;
 using System.Web;
+using Flex.Application.Contracts.ISignalRBus.Queue;
+using Flex.Application.Contracts.ISignalRBus;
+using Flex.Application.SignalRBus.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Flex.WebApi.SystemControllers
 {
@@ -17,9 +21,14 @@ namespace Flex.WebApi.SystemControllers
     public class ColumnContentController : ApiBaseController
     {
         private IColumnContentServices _columnServices;
-        public ColumnContentController(IColumnContentServices columnServices)
+        private readonly IConcurrentQueue<ExportRequest> _exportQueue;
+        public ColumnContentController(
+            IColumnContentServices columnServices
+            , IConcurrentQueue<ExportRequest> exportQueue
+            )
         {
             _columnServices = columnServices;
+            _exportQueue = exportQueue;
         }
 
         #region 表头信息
@@ -208,19 +217,33 @@ namespace Flex.WebApi.SystemControllers
 
         #region 导入导出
         [HttpGet("ExportExcel")]
-        public async Task<IActionResult> ExportExcel([FromQuery] ContentPageListParamDto requestmodel)
+        public async Task<string> ExportExcel([FromQuery] ContentPageListParamDto requestmodel)
         {
             var resultmodel = await _columnServices.GetExportExcelDataTableAsync(requestmodel);
             if (!resultmodel.IsSuccess)
             {
-                return new JsonResult(new Message<string> { code = 400, msg = resultmodel.Detail });
+                return Fail(resultmodel.Detail);
             }
-            var stream = ContentModelHelper.SimpleExportToSpreadsheet(resultmodel.Content.result, resultmodel.Content.filedModels);
-            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            var fileName = resultmodel.Content.ExcelName + ".xlsx";
+            if(requestmodel.ConnectionId.IsNullOrEmpty())
+                return Fail("请刷新页面重试");
+            var exportRequest = new ExportRequest
+            {
+                table = resultmodel.Content.result,
+                fileModes = resultmodel.Content.filedModels,
+                FileName = resultmodel.Content.ExcelName,
+                ConnectionId= requestmodel.ConnectionId,
+                UserId=resultmodel.Content.UserId
+            };
 
-            // 返回文件流作为文件下载
-            return File(stream, contentType, fileName);
+            await _exportQueue.EnqueueAsync(exportRequest); // 将请求加入队列
+
+            return Success("导出任务已启动");
+
+            //var stream = ContentModelHelper.SimpleExportToSpreadsheet(resultmodel.Content.result, resultmodel.Content.filedModels);
+            //var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            //var fileName = resultmodel.Content.ExcelName + ".xlsx";
+            //// 返回文件流作为文件下载
+            //return File(stream, contentType, fileName);
         }
         #endregion
     }
