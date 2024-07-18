@@ -27,6 +27,7 @@ namespace Flex.Core.Helper
          */
         static string[] fileType = { "255216", "6677", "7173", "208207", "8297", "8075", "98109", "3780", "13780", "00", "60115" };
         static string[] managefileType = { "255216", "6677", "7173", "208207", "8297", "8075", "98109", "3780", "13780", "00", "60115", "1310", "98111", "5050", "4949" };
+        static string[] exceltype = { "208207","8075" };
         static string[] deniedThumbImageExt = { ".bmp", ".gif", ".svg" };
         public static bool IsThumbImage(string ext)
         {
@@ -35,33 +36,25 @@ namespace Flex.Core.Helper
             return false;
         }
         /// <summary>
+        /// 用于表格导入
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public static bool IsAllowedExcelExtension(IFormFile file)
+        {
+            return AbstactFileAllowedCheck(file, exceltype);
+        }
+
+        /// <summary>
         /// 用于文件管理处
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
         public static bool IsAllowedFileManageExtension(IFormFile file)
         {
-            long fileLen = file.Length;
-            byte[] imgArray = new byte[fileLen];
-            using var filesteam = file.OpenReadStream();
-            BinaryReader r = new BinaryReader(filesteam);
-            string fileclass = "";
-            byte buffer;
-            try
-            {
-                buffer = r.ReadByte();
-                fileclass = buffer.ToString();
-                buffer = r.ReadByte();
-                fileclass += buffer.ToString();
-            }
-            catch
-            {
-                return false;
-            }
-            r.Close();
-
-            return managefileType.Contains(fileclass);
+            return AbstactFileAllowedCheck(file, managefileType);
         }
+
         /// <summary>
         /// 默认使用
         /// </summary>
@@ -69,6 +62,11 @@ namespace Flex.Core.Helper
         /// <returns></returns>
         public static bool IsAllowedExtension(IFormFile file)
         {
+            return AbstactFileAllowedCheck(file, fileType);
+        }
+
+        public static bool AbstactFileAllowedCheck(IFormFile file, string[] filetypes)
+        {
             long fileLen = file.Length;
             byte[] imgArray = new byte[fileLen];
             using var filesteam = file.OpenReadStream();
@@ -88,7 +86,7 @@ namespace Flex.Core.Helper
             }
             r.Close();
 
-            return fileType.Contains(fileclass);
+            return filetypes.Contains(fileclass);
         }
 
         public static bool IsImage(string fileName)

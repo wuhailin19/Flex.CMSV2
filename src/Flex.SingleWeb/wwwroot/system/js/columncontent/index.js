@@ -31,11 +31,13 @@ ajaxHttp({
     complete: function () { }
 })
 columnlist = btnpermission.TableHeads;
-layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
+layui.use(['form', 'laydate', 'util', "table", 'dropdown','upload'], function () {
     var form = layui.form;
     var laydate = layui.laydate;
     var table = layui.table;
     var dropdown = layui.dropdown;
+    var upload = layui.upload
+    var upIns = undefined;
 
     var toolbarhtml = '<div class="layui-btn-container">';
     // 日期范围 - 左右面板独立选择模式
@@ -68,8 +70,8 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
         toolbarhtml += '<button class="layui-btn layui-btn-sm" id="setProperty">设置属性<i class="layui-icon layui-icon-down layui-font-12"></i></button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" id="cacelProperty">取消属性<i class="layui-icon layui-icon-down layui-font-12"></i></button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="DataTools">数据操作</button>';
-        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Import">导入</button>';
-        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Export">导出</button>';
+        toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Import" id="Importdata">导入</button>';
+        toolbarhtml += '<button class="layui-btn layui-btn-sm Export" lay-event="Export">导出</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="History">修改历史</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="Delete">回收站</button>';
         toolbarhtml += '<button class="layui-btn layui-btn-sm" lay-event="ApprovalProcess">审批流程</button>';
@@ -78,7 +80,8 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
         toolbarhtml += '<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteAll">删除</button>';
     toolbarhtml += '</div>';
 
-
+    
+    
     //JS 调用：
     var insTb = table.render({
         elem: '#demo_tree'
@@ -117,6 +120,14 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                     },
                 });
             }
+            upIns = upload.render({
+                elem: '#Importdata' //绑定元素
+                , url: routeLink + 'ImportExcel' //上传接口
+                , headers: httpTokenHeaders
+                , accept: 'file'
+                , exts: 'xls|xlsx'
+                , field: 'file'
+            })
             $('.realtionbtn').click(function () {
                 let widthstr = '95%';
                 let heightstr = '95%';
@@ -308,6 +319,16 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown'], function () {
                 break;
             case "Export":
                 startExport();
+                break;
+            case "Import":
+                upIns.config.data = { 'ParentId': currentparentId, 'ModelId': currentmodelId, 'PId': pId };
+                upIns.config.done = function (res) {
+                    if (res.code == 200) {
+                        
+                    }
+                    else
+                        tips.showFail(res.msg);
+                }
                 break;
             case 'ApprovalProcess':
                 if (data.length != 1) {

@@ -1,4 +1,14 @@
-﻿var HasOpenHistroryBox = false;
+﻿var currentparentId = $.getUrlParam('parentId');
+var currentmodelId = $.getUrlParam('modelId');
+var topmodelId = undefined;
+if ($.getUrlParam('topmodelId') != undefined) {
+    topmodelId = $.getUrlParam('topmodelId');
+    sessionStorage.setItem(currentparentId + "_topmodelId", topmodelId);
+}
+var pId = $.getUrlParam('pId');
+
+
+var HasOpenHistroryBox = false;
 var deleteindex;
 var historyindex;
 var approvalindex;
@@ -154,8 +164,8 @@ var defaultOptions = {
         });
     }, openCopyContentIframe: function (layer, insTb, Ids) {
         var self = this;
-        let widthstr = '500px';
-        let heightstr = '80%';
+        let widthstr = pId == 0 ? '500px' : '97.5%';
+        let heightstr ='95%';
         layer.close(approvalindex);
         //iframe窗
         approvalindex = layer.open({
@@ -164,9 +174,10 @@ var defaultOptions = {
             title: '数据操作',
             shadeClose: true,
             shade: 0.2,
+            offset: pId == 0 ? 'auto':['2.5%'],
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
-            content: routePageLink + 'ContentTools?modelId=' + currentmodelId + '&parentId=' + currentparentId + '&Ids=' + Ids,
+            content: routePageLink + 'ContentTools?modelId=' + currentmodelId + '&parentId=' + currentparentId + '&Ids=' + Ids + "&pId=" + pId,
             end: function () {
                 defaultOptions.callBack(insTb);
             }

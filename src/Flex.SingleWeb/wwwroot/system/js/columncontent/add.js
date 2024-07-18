@@ -81,6 +81,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers', 'laydate'], fu
         async: false,
         dataType: 'json',
         success: function (result) {
+
             demojs = JSON.parse(result.msg);
         },
         complete: function () { }

@@ -1,13 +1,13 @@
 ﻿$('.slide-box').click(function () {
     $(this).toggleClass('layui-icon-left layui-icon-right', 500);
 });
-
+const regexparentId = /[?&]parentId=([^&]*)/;
 function getTailParameterFromUrl(urllink) {
-    if (urllink.indexOf('/') > -1) {
-        let links = urllink.split('/');
-        let lastSegment = links[links.length - 1];
-
-        return lastSegment;
+    
+    if (urllink.indexOf('parentId') > -1) {
+        const match = urllink.match(regexparentId);
+        const parentId = match[1];
+        return parentId;
     }
     return null; // 如果没有尾部参数，则返回 null 或其他适当的值
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,5 @@ namespace Flex.Domain.Dtos.System.ColumnContent
         public List<FiledModel> filedModels { set; get; }
         public DataTable result { set; get; }
         public string ExcelName { set; get; }
-        public long UserId { set; get; }
     }
 }

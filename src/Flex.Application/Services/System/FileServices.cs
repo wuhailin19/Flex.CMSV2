@@ -24,10 +24,17 @@ namespace Flex.Application.Services
             _env = env;
             basePath = _env.WebRootPath;
         }
+        /// <summary>
+        /// 文件管理处上传到指定位置
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public ProblemDetails<string> UploadFilesToPathService(IFormFileCollection input, string path)
         {
             if (input == null) return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadFail.GetEnumDescription()); ;
             var file = input[0];
+           
             if (!FileCheckHelper.IsAllowedFileManageExtension(file))
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadTypeDenied.GetEnumDescription());
             if (!Directory.Exists(Path.Combine(basePath + path)))
@@ -45,6 +52,11 @@ namespace Flex.Application.Services
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.UploadFail.GetEnumDescription(), ex);
             }
         }
+        /// <summary>
+        /// 普通上传
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public ProblemDetails<string> UploadFilesService(IFormFileCollection input)
         {
             if (input == null) return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadFail.GetEnumDescription()); ;

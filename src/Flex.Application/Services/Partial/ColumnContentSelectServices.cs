@@ -70,10 +70,11 @@ namespace Flex.Application.Services
         {
             string StatusCodeExpression = "StatusCode not in (0,6)";
             var resultmodel = new ContentExportExcelDto();
+            //resultmodel.UserId = _claims.UserId;
 
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == contentPageListParam.ModelId);
             if (contentmodel == null)
-                return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+                return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.BadRequest, resultmodel, ErrorCodes.DataNotFound.GetEnumDescription());
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == contentPageListParam.ParentId);
             resultmodel.ExcelName = column.Name ?? contentmodel.Name;
             if (contentPageListParam.PId != 0)
@@ -85,7 +86,6 @@ namespace Flex.Application.Services
             var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == contentPageListParam.ModelId)).ToList();
             string filed = ColumnContentUpdateFiledConfig.defaultFields;
             resultmodel.filedModels = ContentModelHelper.defaultfileds.ToList();
-            resultmodel.UserId = _claims.UserId;
             foreach (var item in fieldmodel)
             {
                 filed += item.FieldName + ",";
@@ -101,15 +101,18 @@ namespace Flex.Application.Services
             SqlSugar.SugarParameter[] parameters = [];
             string swhere = string.Empty;
             _sqlTableServices.CreateSqlSugarColumnContentSelectSql(contentPageListParam, out swhere, out parameters);
-
-            var result = await _sqlsugar.Db.Ado.GetDataTableAsync(
+            int recount = 0;
+            var result =  _sqlsugar.GetPageDataList(
+                contentPageListParam.page,
+                contentPageListParam.limit,
                 "select " + filed.GetCurrentBaseField()
                 + " from " + contentmodel.TableName
-                + " where " + StatusCodeExpression + swhere + " order by OrderId desc", parameters);
+                + " where " + StatusCodeExpression + swhere + " order by OrderId desc",ref recount, parameters);
 
             if(result.Rows.Count==0)
-                return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+                return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.BadRequest, resultmodel, ErrorCodes.DataNotFound.GetEnumDescription());
             resultmodel.result = result;
+
             return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.OK, resultmodel);
         }
         /// <summary>
@@ -315,6 +318,8 @@ namespace Flex.Application.Services
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == currentmodelId);
             if (contentmodel == null)
                 return Problem<string>(HttpStatusCode.BadRequest, "没有选择有效模型");
+            if (contentmodel.FormHtmlString.IsNullOrEmpty())
+                contentmodel.FormHtmlString = "[]";
             return Problem<string>(HttpStatusCode.OK, contentmodel.FormHtmlString);
         }
     }

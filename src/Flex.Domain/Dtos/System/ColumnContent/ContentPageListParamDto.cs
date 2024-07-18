@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flex.Domain.Enums.Excel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace Flex.Domain.Dtos.ColumnContent
         public int limit { set; get; }
         public int ParentId { set; get; }
         public int ModelId { set; get; }
+        public long UserId{ set; get; }
         public int PId { set; get; }=0;
         public string? ContentGroupId { set; get; }
         public string? k { set; get; } = null;

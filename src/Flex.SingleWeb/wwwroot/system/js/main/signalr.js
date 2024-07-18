@@ -15,6 +15,10 @@ connection.on("ExportCompleted", (message) => {
     GetMsgCount();
     // 处理导出完成的逻辑
 });
+connection.on("ExportError", (message) => {
+    tips.showFail(message);
+    // 处理导出完成的逻辑
+});
 connection.onreconnecting((error) => {
     console.warn("正在重新连接: ", error);
 });

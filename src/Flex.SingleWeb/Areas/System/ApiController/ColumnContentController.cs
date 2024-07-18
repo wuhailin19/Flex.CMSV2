@@ -12,6 +12,11 @@ using Flex.Application.Contracts.ISignalRBus.Queue;
 using Flex.Application.Contracts.ISignalRBus;
 using Flex.Application.SignalRBus.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Flex.Application.Authorize;
+using Flex.Domain.Dtos.System.Upload;
+using Flex.Domain.Enums.Excel;
+using Flex.Application.Excel;
+using Flex.Core.Helper;
 
 namespace Flex.WebApi.SystemControllers
 {
@@ -21,14 +26,17 @@ namespace Flex.WebApi.SystemControllers
     public class ColumnContentController : ApiBaseController
     {
         private IColumnContentServices _columnServices;
-        private readonly IConcurrentQueue<ExportRequest> _exportQueue;
+        IClaimsAccessor _claims;
+        private readonly IConcurrentQueue<ContentPageListParamDto> _exportQueue;
         public ColumnContentController(
             IColumnContentServices columnServices
-            , IConcurrentQueue<ExportRequest> exportQueue
+            , IConcurrentQueue<ContentPageListParamDto> exportQueue
+            ,IClaimsAccessor claims
             )
         {
             _columnServices = columnServices;
             _exportQueue = exportQueue;
+            _claims = claims;
         }
 
         #region 表头信息
@@ -217,23 +225,11 @@ namespace Flex.WebApi.SystemControllers
 
         #region 导入导出
         [HttpGet("ExportExcel")]
+        [Descriper(Name = "导出Excel")]
         public async Task<string> ExportExcel([FromQuery] ContentPageListParamDto requestmodel)
         {
-            var resultmodel = await _columnServices.GetExportExcelDataTableAsync(requestmodel);
-            if (!resultmodel.IsSuccess)
-            {
-                return Fail(resultmodel.Detail);
-            }
-
-            var exportRequest = new ExportRequest
-            {
-                table = resultmodel.Content.result,
-                fileModes = resultmodel.Content.filedModels,
-                FileName = resultmodel.Content.ExcelName,
-                UserId=resultmodel.Content.UserId
-            };
-
-            await _exportQueue.EnqueueAsync(exportRequest); // 将请求加入队列
+            requestmodel.UserId = _claims.UserId;
+            await _exportQueue.EnqueueAsync(requestmodel); // 将请求加入队列
 
             return Success("导出任务已启动");
 
@@ -244,6 +240,25 @@ namespace Flex.WebApi.SystemControllers
             //// 返回文件流作为文件下载
             //return File(stream, contentType, fileName);
             #endregion
+        }
+
+        [HttpPost("ImportExcel")]
+        [Descriper(Name = "导入Excel")]
+        public async Task<string> ImportExcel(UploadExcelFileDto uploadExcelFileDto)
+        {
+            if (uploadExcelFileDto.file == null)
+                return Fail("未上传文件");
+            var file = uploadExcelFileDto.file[0];
+            if (!FileCheckHelper.IsAllowedExcelExtension(file))
+                return Fail("只能上传excel");
+            uploadExcelFileDto.UserId = _claims.UserId;
+            using var stream = file.OpenReadStream();
+            var dt = ExcelOperate.ImportExcelToDataTableFromStream(stream);
+            if (dt.Rows.Count == 0)
+            {
+                return Fail("数据为空");
+            }
+            return Success(dt.Columns);
         }
         #endregion
     }

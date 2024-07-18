@@ -14,10 +14,12 @@
 .Property.hide { color: #000; }
 .flexbox { display: flex; flex-wrap: wrap; height: 30px; overflow-y: scroll; box-sizing: border-box; }
 .realtionbtn { padding: 0 1%; cursor: pointer; background: rgb(102, 177, 255); color: #fff; font-size: 11px; margin-right: 2%; line-height: 28px; border-radius: 10%; height: 28px; width: 30%; margin-bottom: 5px; }
+.Export{margin-left:10px;}
 
 @media screen and (max-width:800px) {
     .layui-form-label { width: 80px; }
     .search-box { overflow-y: scroll; }
+    .Export{margin-left:0px;}
     .layui-form-item .layui-form-label { width: 50px !important; padding: 9px 5px; }
     .layui-form-item .layui-input-inline { margin: 0 0 10px 80px; }
     .layui-form-item .layui-inline { clear: none; }

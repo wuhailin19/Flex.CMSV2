@@ -31,6 +31,8 @@ using NLog.Web;
 using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.Hosting;
+using Flex.Domain.Dtos.ColumnContent;
+using Flex.Domain.Dtos.System.Upload;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
@@ -93,7 +95,8 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
             .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy;// 注册被拦截的类并启用类拦截
             .InterceptedBy(typeof(LogInterceptor));//这里只有同步的，因为异步方法拦截器还是先走同步拦截器 
 
-        builder.RegisterType<ConcurrentQueue<ExportRequest>>().As<IConcurrentQueue<ExportRequest>>().SingleInstance();
+        builder.RegisterType<ConcurrentQueue<ContentPageListParamDto>>().As<IConcurrentQueue<ContentPageListParamDto>>().SingleInstance();
+        builder.RegisterType<ConcurrentQueue<UploadExcelFileDto>>().As<IConcurrentQueue<UploadExcelFileDto>>().SingleInstance();
 
         builder.RegisterType<UnitOfWorkManage>().As<IUnitOfWorkManage>()
                 .AsImplementedInterfaces()

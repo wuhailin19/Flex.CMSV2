@@ -5,25 +5,31 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Flex.Application.Contracts.ISignalRBus.Model;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Flex.Application.SignalRBus.Hubs
 {
+    
     public class ExportHub : Hub
     {
-        private readonly IClaimsAccessor _claims;
-        private static readonly ConcurrentDictionary<long, string> UserConnections = new ConcurrentDictionary<long, string>();
+        IClaimsAccessor _claims;
+        private static readonly ConcurrentDictionary<long, ConnectionModel> UserConnections = new ConcurrentDictionary<long, ConnectionModel>();
         public ExportHub(IClaimsAccessor claims)
         {
             _claims = claims;
         }
+
         public override async Task OnConnectedAsync()
         {
             if (Context.User.Identity?.IsAuthenticated ?? false)
             {
                 var connectionId = Context.ConnectionId;
                 var Claims = _claims.UserRole;
-                UserConnections[_claims.UserId] = connectionId;
+                UserConnections[_claims.UserId] = new ConnectionModel { 
+                    UserId = _claims.UserId, 
+                    UserName = _claims.UserName, 
+                    ConnectionId = connectionId };
 
                 // 将用户加入相应的角色组
                 await Groups.AddToGroupAsync(connectionId, _claims.UserRole.ToString());
@@ -37,7 +43,7 @@ namespace Flex.Application.SignalRBus.Hubs
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            var item = UserConnections.FirstOrDefault(k => k.Value == Context.ConnectionId);
+            var item = UserConnections.FirstOrDefault(k => k.Value.ConnectionId == Context.ConnectionId);
             if (item.Key != null)
             {
                 UserConnections.TryRemove(item.Key, out _);
@@ -48,40 +54,13 @@ namespace Flex.Application.SignalRBus.Hubs
 
         public static string GetConnectionId(long userId)
         {
-            return UserConnections.TryGetValue(userId, out var connectionId) ? connectionId : null;
-        }
-        /// <summary>
-        /// 按用户发信
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        public async Task SendNotificationToUser(long userId, string message)
-        {
-            if (UserConnections.TryGetValue(userId, out var connectionId))
-            {
-                await Clients.Client(connectionId).SendAsync("ReceiveNotification", message);
-            }
-        }
-        /// <summary>
-        /// 按角色发信
-        /// </summary>
-        /// <param name="role"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        public async Task SendNotificationToRole(string role, string message)
-        {
-            await Clients.Group(role).SendAsync("ReceiveNotification", message);
-        }
-        
-        public async Task SendProgress(string connectionId, string progress)
-        {
-            await Clients.Client(connectionId).SendAsync("ReceiveMessage", progress);
+            var model = GetConnectionModel(userId);
+            return model != null ? model.ConnectionId : null;
         }
 
-        public async Task NotifyCompletion(string connectionId, string message)
+        public static ConnectionModel GetConnectionModel(long userId)
         {
-            await Clients.Client(connectionId).SendAsync("ExportCompleted", message);
+            return UserConnections.TryGetValue(userId, out var value) ? value : null;
         }
     }
 }

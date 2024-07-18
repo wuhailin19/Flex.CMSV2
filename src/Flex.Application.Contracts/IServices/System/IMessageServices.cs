@@ -1,4 +1,6 @@
-﻿using Flex.Application.Contracts.Basics.ResultModels;
+﻿using Flex.Application.Authorize;
+using Flex.Application.Contracts.Basics.ResultModels;
+using Flex.Application.Contracts.ISignalRBus.Model;
 using Flex.Domain.Dtos.Message;
 using Flex.Domain.Dtos.System.Message;
 using System;
@@ -15,6 +17,7 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<MessageOutputDto>> GetMessageById(int id);
         Task<PagedList<MessageTitleListDto>> GetMessageTitleListDtoAsync(int page, int pagesize);
         int GetNotReadMessageCount();
+        Task<ProblemDetails<string>> SendExportMsg(string title, string content, ConnectionModel claims);
         Task<ProblemDetails<string>> SendNormalMsg(string title, string content, long ToUserId = 0, long ToRoleId = 0);
         Task<ProblemDetails<string>> SendReviewMessage(SendReviewMessageDto model);
     }

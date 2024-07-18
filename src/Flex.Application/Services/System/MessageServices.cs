@@ -1,5 +1,6 @@
 ﻿using Castle.Core.Internal;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Application.Contracts.ISignalRBus.Model;
 using Flex.Core;
 using Flex.Core.Extensions.CommonExtensions;
 using Flex.Dapper;
@@ -75,16 +76,54 @@ namespace Flex.Application.Services
             var count = _unitOfWork.GetRepository<sysMessage>().Count(exp);
             return count;
         }
-        public async Task<ProblemDetails<string>> SendNormalMsg(string title, string content, long ToUserId=0, long ToRoleId = 0)
+        public async Task<ProblemDetails<string>> SendExportMsg(string title, string content, ConnectionModel claims)
+        {
+            var msg = new sysMessage();
+            msg.Title = title;
+            msg.AddTime = Clock.Now;
+            if (claims != null)
+            {
+                msg.ToUserId = claims.UserId.ToString();
+                msg.AddUser = claims.UserId;
+                msg.AddUserName = claims.UserName;
+                msg.LastEditUser = claims.UserId;
+                msg.LastEditUserName = claims.UserName;
+                msg.MsgContent = content;
+            }
+            try
+            {
+                var resultmodel = await _unitOfWork.GetRepository<sysMessage>().InsertAsync(msg);
+                await _unitOfWork.SaveChangesAsync();
+                if (resultmodel.Entity.Id <= 0)
+                {
+                    return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.MsgSendError.GetEnumDescription());
+                }
+                return Problem<string>(HttpStatusCode.OK, ErrorCodes.MsgSendSuccess.GetEnumDescription());
+            }
+            catch (Exception ex)
+            {
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.MsgSendError.GetEnumDescription(), ex);
+            }
+        }
+        public async Task<ProblemDetails<string>> SendNormalMsg(string title, string content, long ToUserId = 0, long ToRoleId = 0)
         {
             var msg = new sysMessage();
             msg.Title = title;
             msg.AddTime = Clock.Now;
             if (ToUserId != 0)
+            {
                 msg.ToUserId = ToUserId.ToString();
+                msg.AddUser = ToUserId;
+                msg.LastEditUser = ToUserId;
+            }
             else
+            {
                 msg.ToUserId = _claims.UserId.ToString();
-
+                msg.AddUser = _claims.UserId;
+                msg.AddUserName = _claims.UserName;
+                msg.LastEditUser = _claims.UserId;
+                msg.LastEditUserName = _claims.UserName;
+            }
             if (ToRoleId != 0)
             {
                 msg.ToRoleId = ToRoleId.ToString();

@@ -91,9 +91,9 @@ namespace Flex.WebApi.SystemControllers
         {
             return Success(await _columnServices.GetTreeColumnListDtos());
         }
-        
+
         /// <summary>
-        /// 栏目管理下拉框数据【显示的树形结构】
+        /// 根据站点Id和模型Id筛选可复制的栏目
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetTreeListBySiteIdAsync")]
