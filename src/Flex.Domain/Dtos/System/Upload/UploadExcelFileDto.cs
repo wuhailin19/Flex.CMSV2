@@ -24,6 +24,8 @@ namespace Flex.Domain.Dtos.System.Upload
         public int ModelId { set; get; }
         public long UserId { set; get; }
         public int PId { set; get; } = 0;
+
+        public byte[]? FileContent { get; set; }
     }
     public class FieldDataCIoumnRelate
     {

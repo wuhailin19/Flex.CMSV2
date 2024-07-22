@@ -175,8 +175,11 @@ namespace Flex.Application.SqlServerSQLString
             builder.Append(";SELECT SCOPE_IDENTITY();");
             return builder;
         }
-        
-        public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
+
+        public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table
+            , string tableName, int nextOrderId
+            , out SqlSugar.SugarParameter[] commandParameters
+            , int recordIndex = 0)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($"INSERT INTO {tableName} (");
@@ -187,20 +190,23 @@ namespace Flex.Application.SqlServerSQLString
             foreach (DictionaryEntry myDE in table)
             {
                 key += $"{myDE.Key},";
-                keyvar += $"?,";
+                keyvar += $":{myDE.Key}_{recordIndex},";
                 count++;
             }
             commandParameters = new SqlSugar.SugarParameter[table.Count];
             int num = 0;
             foreach (DictionaryEntry myDE in table)
             {
-                commandParameters[num] = new SqlSugar.SugarParameter("@" + myDE.Key.ToString(), myDE.Value);
+                commandParameters[num] = new SqlSugar.SugarParameter($":{myDE.Key}_{recordIndex}", myDE.Value);
                 num++;
             }
-            builder.Append($"{key}OrderId) VALUES ({keyvar}{nextOrderId})");
-            builder.Append(";SELECT SCOPE_IDENTITY();");
+            builder.Append($"{key}OrderId) VALUES ({keyvar}{nextOrderId});");
+            if (recordIndex == 0)
+                builder.Append("SELECT SCOPE_IDENTITY();");
             return builder;
         }
+
+
         public void CreateSqlSugarColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out SqlSugar.SugarParameter[] parameters)
         {
             Dictionary<string, object> paramdict = new Dictionary<string, object>();
@@ -258,7 +264,7 @@ namespace Flex.Application.SqlServerSQLString
                 swhere += " " + item + "=?";
             }
         }
-        public void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam,int modetype, out string swhere, out DynamicParameters parameters)
+        public void CreateDapperColumnContentSelectSql(ContentPageListParamDto contentPageListParam, int modetype, out string swhere, out DynamicParameters parameters)
         {
             parameters = new DynamicParameters();
             swhere = string.Empty;
@@ -267,7 +273,8 @@ namespace Flex.Application.SqlServerSQLString
                 parameters.Add("@parentId", contentPageListParam.ParentId);
                 swhere = " and ParentId=?";
             }
-            if (modetype == 1) {
+            if (modetype == 1)
+            {
                 parameters.Add("@parentId", contentPageListParam.ParentId);
                 swhere = $" and (ParentId=? or RefLinkClassId like '%,{contentPageListParam.ParentId},%')";
             }
@@ -296,7 +303,7 @@ namespace Flex.Application.SqlServerSQLString
             }
         }
 
-       
+
         public StringBuilder CreateDapperUpdateSqlString(Hashtable table, string TableName, out DynamicParameters commandParameters)
         {
             StringBuilder builder = new StringBuilder();
@@ -387,7 +394,7 @@ namespace Flex.Application.SqlServerSQLString
             int num = 0;
             foreach (DictionaryEntry myDE in table)
             {
-                commandParameters[num]=new SqlSugar.SugarParameter("@" + myDE.Key.ToString(), myDE.Value);
+                commandParameters[num] = new SqlSugar.SugarParameter("@" + myDE.Key.ToString(), myDE.Value);
                 num++;
             }
             table.Add("Id", Id);
@@ -414,7 +421,7 @@ namespace Flex.Application.SqlServerSQLString
                 $"MsgGroupId=0 " +
                 $"where Id in ({Ids})";
         }
-        
+
         public string CreateLinkContentSqlString(string TableName, string Ids, string targetcolumn)
         {
             return $"update {TableName} set " +

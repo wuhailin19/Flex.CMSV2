@@ -74,6 +74,7 @@ builder.Services.AddEndpointsApiExplorer()
 
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<ExportBackgroundService>();
+builder.Services.AddHostedService<ImportBackgroundService>();
 
 string webpath = builder.Environment.WebRootPath;
 //builder.Services.HtmlTemplateDictInit();

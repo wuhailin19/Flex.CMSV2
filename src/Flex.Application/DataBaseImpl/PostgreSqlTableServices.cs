@@ -378,7 +378,7 @@ namespace Flex.Application.SqlServerSQLString
         public string AlertTableFieldType(string TableName, string fieldName, string fieldType) =>
             $"ALTER TABLE {TableName} ALTER COLUMN {fieldName} TYPE {ConvertDataType(fieldType)};";
 
-        public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
+        public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters, int recordIndex = 0)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($"INSERT INTO {tableName} (");
@@ -389,18 +389,21 @@ namespace Flex.Application.SqlServerSQLString
             foreach (DictionaryEntry myDE in table)
             {
                 key += $"{myDE.Key},";
-                keyvar += $"@{myDE.Key},";
+                keyvar += $"@{myDE.Key}_{recordIndex},";
                 count++;
             }
             commandParameters = new SqlSugar.SugarParameter[table.Count];
             int num = 0;
             foreach (DictionaryEntry myDE in table)
             {
-                commandParameters[num] = new SqlSugar.SugarParameter($"@{myDE.Key}", myDE.Value);
+                commandParameters[num] = new SqlSugar.SugarParameter($"@{myDE.Key}_{recordIndex}", myDE.Value);
                 num++;
             }
             builder.Append($"{key}OrderId) VALUES ({keyvar}{nextOrderId})");
-            builder.Append(" RETURNING Id;");
+            if (recordIndex == 0)
+                builder.Append(" RETURNING Id;");
+            else
+                builder.Append(";");
             return builder;
         }
 

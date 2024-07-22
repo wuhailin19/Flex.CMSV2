@@ -22,6 +22,18 @@ namespace Flex.Application.Services
 {
     public partial class ColumnContentServices
     {
+        public async Task<FieldContentAndColumnDto> GetFieldContentAndColumnByColumnId(int ParentId,int modelId)
+        {
+            var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);
+            var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == modelId);
+            var field = await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == modelId);
+
+            return new FieldContentAndColumnDto { 
+                ContentModel = contentmodel,
+                Column = column,
+                Field= field.ToList()
+            };
+        }
         public async Task<SysContentModel> GetSysContentModelByColumnId(int ParentId)
         {
             var column = await _unitOfWork.GetRepository<SysColumn>().GetFirstOrDefaultAsync(m => m.Id == ParentId);

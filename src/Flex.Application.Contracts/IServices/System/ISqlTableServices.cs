@@ -33,7 +33,7 @@ namespace Flex.Application.Contracts.IServices
         string GenerateAddColumnStatement(string tableName, List<FiledHtmlStringDto> insertfiledlist);
         string AlertTableFieldType(string TableName, string filedName, string filedtype);
         string AlertTableField(string TableName, string oldfiledName, string filedName);
-        StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters);
+        StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters, int recordIndex = 0);
         void CreateSqlSugarColumnContentSelectSql(ContentPageListParamDto contentPageListParam, out string swhere, out SqlSugar.SugarParameter[] parameters);
         void InitDapperColumnContentSwheresql(ref string swhere, ref DynamicParameters parameters, Dictionary<string, object> dataparams);
         StringBuilder CreateSqlsugarUpdateSqlString(Hashtable table, string TableName, out SqlSugar.SugarParameter[] commandParameters);

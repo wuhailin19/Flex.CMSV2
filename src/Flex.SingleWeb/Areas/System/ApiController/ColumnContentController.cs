@@ -19,6 +19,7 @@ using Flex.Application.Excel;
 using Flex.Core.Helper;
 using System.Data;
 using Flex.Domain.Dtos.System.Column;
+using Flex.Application.Contracts.Exceptions;
 
 namespace Flex.WebApi.SystemControllers
 {
@@ -30,15 +31,18 @@ namespace Flex.WebApi.SystemControllers
         private IColumnContentServices _columnServices;
         IClaimsAccessor _claims;
         private readonly IConcurrentQueue<ContentPageListParamDto> _exportQueue;
+        private readonly IConcurrentQueue<UploadExcelFileDto> _importQueue;
         public ColumnContentController(
             IColumnContentServices columnServices
             , IConcurrentQueue<ContentPageListParamDto> exportQueue
             , IClaimsAccessor claims
+            , IConcurrentQueue<UploadExcelFileDto> concurrentQueue
             )
         {
             _columnServices = columnServices;
             _exportQueue = exportQueue;
             _claims = claims;
+            _importQueue = concurrentQueue;
         }
 
         #region 表头信息
@@ -248,10 +252,28 @@ namespace Flex.WebApi.SystemControllers
         [Descriper(Name = "导入Excel")]
         public async Task<string> ImportExcel([FromForm] UploadExcelFileDto uploadExcelFileDto)
         {
-            var result = await _columnServices.ImportExcelToModel(uploadExcelFileDto);
-            if (result.IsSuccess)
-                return Success(result.Detail);
-            return Fail(result.Detail);
+            if (uploadExcelFileDto.file == null)
+                return Fail(ErrorCodes.UploadTypeDenied.GetEnumDescription());
+            var file = uploadExcelFileDto.file[0];
+            if (!FileCheckHelper.IsAllowedExcelExtension(file))
+                return Fail(ErrorCodes.UploadTypeDenied.GetEnumDescription());
+            uploadExcelFileDto.UserId = _claims.UserId;
+
+            using (var originalStream = uploadExcelFileDto.file[0].OpenReadStream())
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    originalStream.CopyTo(memoryStream);
+                    memoryStream.Position = 0;
+
+                    // 将内存流保存到 uploadExcelFileDto，以便在队列中使用
+                    uploadExcelFileDto.FileContent = memoryStream.ToArray();
+                }
+            }
+
+            await _importQueue.EnqueueAsync(uploadExcelFileDto);
+
+            return Success("导入任务已启动");
         }
         #endregion
     }

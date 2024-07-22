@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Flex.Application.Excel
 {
@@ -28,7 +29,7 @@ namespace Flex.Application.Excel
                 for (int i = 0; i < fileModes.Count; i++)
                 {
                     // 添加表头
-                    worksheet.Cells[1, i + 1].Value = fileModes[i].FiledDesc;
+                    worksheet.Cells[1, i + 1].Value = fileModes[i].FiledDesc +$"-{fileModes[i].FiledName}";
                     worksheet.Cells[1, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                     worksheet.Cells[1, i + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                     worksheet.Cells[1, i + 1].Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);

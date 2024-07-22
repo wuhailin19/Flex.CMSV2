@@ -301,7 +301,7 @@ namespace Flex.Application.SqlServerSQLString
             $"ALTER TABLE {TableName} ALTER COLUMN {fieldName} {ConvertDataType(fieldType)};";
 
 
-        public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
+        public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters, int recordIndex = 0)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($"INSERT INTO {tableName} (");
@@ -312,20 +312,22 @@ namespace Flex.Application.SqlServerSQLString
             foreach (DictionaryEntry myDE in table)
             {
                 key += $"{myDE.Key},";
-                keyvar += $"@{myDE.Key},";
+                keyvar += $"@{myDE.Key}_{recordIndex},";
                 count++;
             }
             commandParameters = new SqlSugar.SugarParameter[table.Count + 1]; // +1 for nextOrderId parameter
             int num = 0;
             foreach (DictionaryEntry myDE in table)
             {
-                commandParameters[num] = new SqlSugar.SugarParameter($"@{myDE.Key}", myDE.Value);
+                commandParameters[num] = new SqlSugar.SugarParameter($"@{myDE.Key}_{recordIndex}", myDE.Value);
                 num++;
             }
             // Add nextOrderId parameter
             commandParameters[num] = new SqlSugar.SugarParameter("@nextOrderId", nextOrderId);
 
-            builder.Append($"{key}OrderId) VALUES ({keyvar}@nextOrderId); SELECT SCOPE_IDENTITY();");
+            builder.Append($"{key}OrderId) VALUES ({keyvar}@nextOrderId);");
+            if (recordIndex == 0)
+                builder.Append("SELECT SCOPE_IDENTITY();");
             return builder;
         }
 

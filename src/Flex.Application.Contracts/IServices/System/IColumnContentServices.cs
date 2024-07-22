@@ -1,4 +1,5 @@
 ﻿using Flex.Application.Contracts.Basics.ResultModels;
+using Flex.Application.Contracts.ISignalRBus.Model;
 using Flex.Core.Attributes;
 using Flex.Dapper;
 using Flex.Domain.Dtos.Column;
@@ -35,6 +36,7 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<string>> ContentOperation(ContentToolsDto contentToolsDto);
         [NoLogReturnValue]
         Task<ProblemDetails<ContentExportExcelDto>> GetExportExcelDataTableAsync(ContentPageListParamDto contentPageListParam);
-        Task<ProblemDetails<int>> ImportExcelToModel(UploadExcelFileDto uploadExcelFileDto);
+        Task<ProblemDetails<ImportResultModel>> ImportExcelToModel(UploadExcelFileDto uploadExcelFileDto);
+        Task<FieldContentAndColumnDto> GetFieldContentAndColumnByColumnId(int ParentId, int modelId);
     }
 }

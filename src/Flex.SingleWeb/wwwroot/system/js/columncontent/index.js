@@ -127,6 +127,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                 elem: '#Importdata' //绑定元素
                 , url: routeLink + 'ImportExcel' //上传接口
                 , headers: httpTokenHeaders
+                , bindAction:'#trigger-upload'
                 , accept: 'file'
                 , exts: 'xls|xlsx'
                 , field: 'file'
@@ -143,10 +144,18 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                         offset: '100px'
                     });
                 }
+                , done: function (res, index, upload) {
+
+                    if (res.code == 200) {
+                        tips.showSuccess(res.msg);
+                    }
+                    else
+                        tips.showFail(res.msg);
+                }
                 , choose: function (obj) {
                     //将每次选择的文件追加到文件队列
                     var files = obj.pushFile();
-
+                    upIns.config.elem.next()[0].value = '';
                     //预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
                     obj.preview(function (index, file, result) {
                         var reader = new FileReader();
@@ -207,7 +216,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                                             + filedhtmlstr
                                             + '<div class="layui-form-item">'
                                             + '<div class="layui-input-block">'
-                                            + '<button class="layui-btn" data-type="choose">立即提交</button>'
+                                            + '<button class="layui-btn choose" data-type="choose">立即提交</button>'
                                             + '</div>'
                                             + '</div></div>',
                                         success: function (layero) {
@@ -220,7 +229,6 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                                                 selectElem.removeClass('layui-form-selected');
                                                 layui.$('.layui-select-panel-wrap').detach();
                                             });
-
                                         },
                                         end: function () {
                                             //upIns.reload();
@@ -388,7 +396,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
             });
         },
         choose: function () {
-            
+
             var selects = document.querySelectorAll('.choosebox select');
             var results = [];
 
@@ -400,22 +408,16 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                     value: field
                 });
             });
+
             upIns.config.data = { 'ParentId': currentparentId, 'ModelId': currentmodelId, 'PId': pId, 'FieldDictStr': JSON.stringify(results) };
-            upIns.config.done = function (res, index, upload) {
-                if (res.code == 200) {
-                    tips.showSuccess(res.msg);
-                }
-                else
-                    tips.showFail(res.msg);
-            }
-            upIns.upload();
-            
+            $('#trigger-upload').click();
         }
     };
-    $(document).on('click', '.layui-btn', function () {
+    $(document).off('click', '.layui-btn').on('click', '.layui-btn', function () {
         var type = $(this).data('type');
         active[type] ? active[type].call(this) : '';
     });
+
 
 
     async function startExport() {
@@ -459,8 +461,8 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                 startExport();
                 break;
             case "Import":
-                
-                
+
+
                 break;
             case 'ApprovalProcess':
                 if (data.length != 1) {
