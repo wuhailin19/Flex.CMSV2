@@ -31,7 +31,7 @@ namespace Flex.SingleWeb.Areas.System.ApiController
         [AllowAnonymous]
         public string GetPageContentByColumnId(string columnId, int page, int pagesize, string k)
         {
-            string swhere = $"IsHide=0 and StatusCode=1 and PublishTime<='{Clock.Now}' and ParentId in({columnId})";
+            string swhere = $"IsHide=0 and StatusCode=1 and PublishTime<='{Clock.Now}' and (ParentId in({columnId}) or RefLinkClassId like '%,{columnId},%')";
             var contentDto = ContentModelHelper.GetProductTableColumnHashTable(columnId);
             int recount = 0;
             if (contentDto == null)

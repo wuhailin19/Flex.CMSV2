@@ -17,7 +17,7 @@ namespace Flex.Application.SignalRBus.Services
         private readonly ILogger<ExportBackgroundService> _logger;
         private readonly IConcurrentQueue<ContentPageListParamDto> _exportQueue;
         private IMessageServices _messageServices;
-        IColumnContentServices _contentServices;
+        private IColumnContentServices _contentServices;
         IWebHostEnvironment _env;
         string basePath = string.Empty;
 
@@ -72,7 +72,7 @@ namespace Flex.Application.SignalRBus.Services
             int pageSize = 10000; // 每次处理的行数
             int pageIndex = 1; // 分页索引
             bool moreData = true;
-            int fileIndex = 1;
+            int fileIndex = 0;
             string fileName = string.Empty;
             string msgcontent = string.Empty;
 
@@ -99,8 +99,8 @@ namespace Flex.Application.SignalRBus.Services
                 {
                     moreData = false;
                 }
-
-                string currentfileName = $"{fileName}_{fileIndex++}.xlsx"; // 动态生成文件名
+                fileIndex++;
+                string currentfileName = $"{fileName}_{fileIndex}.xlsx"; // 动态生成文件名
                 using (var stream = ExcelOperate.SimpleExportToSpreadsheet(table, fileModes))
                 {
                     var filePath = Path.Combine(basePath, currentfileName);
@@ -119,6 +119,7 @@ namespace Flex.Application.SignalRBus.Services
 
                 pageIndex++;
             }
+            msgcontent = $"<p>本次导出为{fileIndex}个文件，请自行点击下载：</p><br/>" + msgcontent;
             //发送消息给自己
             await _messageServices.SendExportMsg("导出文件", msgcontent, _hubContext.GetClaims(requestmodel.UserId));
             await _hubContext.NotifyCompletion(requestmodel.UserId, "导出任务完成");

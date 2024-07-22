@@ -441,5 +441,6 @@ namespace Flex.Application.SqlServerSQLString
                 $"RefLinkClassId='{targetcolumn}'" +
                 $" where Id in ({Ids})";
         }
+
     }
 }

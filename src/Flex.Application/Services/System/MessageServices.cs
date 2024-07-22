@@ -20,10 +20,10 @@ namespace Flex.Application.Services
 {
     public class MessageServices : BaseService, IMessageServices
     {
-        IColumnContentServices contentServices;
-        ISqlTableServices _sqlTableServices;
-        IUnitOfWorkManage _IUnitOfWorkManage;
-        IBaseRepository<sysMessage> _msgrepository;
+        private IColumnContentServices contentServices;
+        private ISqlTableServices _sqlTableServices;
+        private IUnitOfWorkManage _IUnitOfWorkManage;
+        private IBaseRepository<sysMessage> _msgrepository;
 
         public MessageServices(IUnitOfWork unitOfWork,
             IMapper mapper, IdWorker idWorker, IClaimsAccessor claims,
@@ -31,7 +31,7 @@ namespace Flex.Application.Services
             IUnitOfWorkManage IUnitOfWorkManage, IBaseRepository<sysMessage> msgrepository)
             : base(unitOfWork, mapper, idWorker, claims)
         {
-            this.contentServices = contentServices;
+            contentServices = contentServices;
             _sqlTableServices = sqlTableServices;
             _IUnitOfWorkManage = IUnitOfWorkManage;
             _msgrepository = msgrepository;

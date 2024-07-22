@@ -17,6 +17,8 @@ using Flex.Domain.Dtos.System.Upload;
 using Flex.Domain.Enums.Excel;
 using Flex.Application.Excel;
 using Flex.Core.Helper;
+using System.Data;
+using Flex.Domain.Dtos.System.Column;
 
 namespace Flex.WebApi.SystemControllers
 {
@@ -31,7 +33,7 @@ namespace Flex.WebApi.SystemControllers
         public ColumnContentController(
             IColumnContentServices columnServices
             , IConcurrentQueue<ContentPageListParamDto> exportQueue
-            ,IClaimsAccessor claims
+            , IClaimsAccessor claims
             )
         {
             _columnServices = columnServices;
@@ -244,21 +246,12 @@ namespace Flex.WebApi.SystemControllers
 
         [HttpPost("ImportExcel")]
         [Descriper(Name = "导入Excel")]
-        public async Task<string> ImportExcel(UploadExcelFileDto uploadExcelFileDto)
+        public async Task<string> ImportExcel([FromForm] UploadExcelFileDto uploadExcelFileDto)
         {
-            if (uploadExcelFileDto.file == null)
-                return Fail("未上传文件");
-            var file = uploadExcelFileDto.file[0];
-            if (!FileCheckHelper.IsAllowedExcelExtension(file))
-                return Fail("只能上传excel");
-            uploadExcelFileDto.UserId = _claims.UserId;
-            using var stream = file.OpenReadStream();
-            var dt = ExcelOperate.ImportExcelToDataTableFromStream(stream);
-            if (dt.Rows.Count == 0)
-            {
-                return Fail("数据为空");
-            }
-            return Success(dt.Columns);
+            var result = await _columnServices.ImportExcelToModel(uploadExcelFileDto);
+            if (result.IsSuccess)
+                return Success(result.Detail);
+            return Fail(result.Detail);
         }
         #endregion
     }

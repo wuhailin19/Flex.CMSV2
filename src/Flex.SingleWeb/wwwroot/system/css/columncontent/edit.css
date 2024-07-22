@@ -21,6 +21,6 @@
 @media screen and (max-width:800px) {
     .bottomBtnbox { padding-left: 10px; }
     .uploadimg_box { width: 100%; }
-    .uploadimg_box .layui-input-inline.uploadimg_inlinebox { max-width: 50%; }
+    .uploadimg_box .layui-input-inline.uploadimg_inlinebox { width: 50% !important; max-width:50%; }
     .uploadimg_box .layui-input-inline.otherbtn { margin: 5px; }
 }

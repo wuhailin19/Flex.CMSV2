@@ -9,6 +9,7 @@
     <link href="~/system/css/columncontent/content.css" rel="stylesheet" />
     <script src="~/system/js/columncontent/openpageoptions.js"></script>
     <link href="~/system/css/columncontent/font/iconfont.css" rel="stylesheet" />
+    <script src="~/scripts/common/xlsx.full.min.js"></script>
 </head>
 <body>
     <form action="" onclick="return false;" class="search-box">
@@ -35,6 +36,12 @@
             </div>
         </div>
     </form>
+    <!--弹出进度条-->
+    <div id="uploadLoadingDiv" style="display: none;">
+        <div class="layui-progress" lay-showpercent="true" lay-filter="lock_progress" style="margin: 20px 10px;">
+            <div class="layui-progress-bar layui-bg-blue" lay-percent="0%"></div>
+        </div>
+    </div>
     <div class="layui-tab-content">
         <table id="demo_tree" lay-filter="test"></table>
     </div>

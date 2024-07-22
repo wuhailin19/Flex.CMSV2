@@ -300,6 +300,7 @@ namespace Flex.Application.SqlServerSQLString
         public string AlertTableFieldType(string TableName, string fieldName, string fieldType) =>
             $"ALTER TABLE {TableName} ALTER COLUMN {fieldName} {ConvertDataType(fieldType)};";
 
+
         public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
         {
             StringBuilder builder = new StringBuilder();

@@ -9,11 +9,11 @@ using Flex.Domain.Dtos.Role;
 using Flex.Domain.Enums.LogLevel;
 using Flex.Domain.WhiteFileds;
 using Flex.SqlSugarFactory.Seed;
-using NLog;
+using Microsoft.Extensions.Logging;
 using SqlSugar;
 using System.Collections;
+using System.Data;
 using System.Text;
-using static SKIT.FlurlHttpClient.Wechat.Api.Models.XPayQueryPublishGoodsResponse.Types;
 
 namespace Flex.Application.Services
 {
@@ -25,11 +25,13 @@ namespace Flex.Application.Services
         protected IWorkFlowServices _workFlowServices;
         protected ICaching _caching;
         protected ISystemLogServices _logServices;
+        private readonly IServiceProvider _serviceProvider;
 
         ISqlTableServices _sqlTableServices;
         public ColumnContentServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims
             , MyDBContext dapperDBContext, ISqlTableServices sqlTableServices, IRoleServices roleServices, ICaching caching
-            , IWorkFlowServices workFlowServices, MyContext sqlsugar, ISystemLogServices logServices)
+            , IWorkFlowServices workFlowServices, MyContext sqlsugar, ISystemLogServices logServices
+            , IServiceProvider serviceProvider)
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _dapperDBContext = dapperDBContext;
@@ -39,8 +41,10 @@ namespace Flex.Application.Services
             _workFlowServices = workFlowServices;
             _sqlsugar = sqlsugar;
             _logServices = logServices;
+            _serviceProvider = serviceProvider;
         }
-        private void InitAddTimeAndPublishTime(Hashtable table) {
+        private void InitAddTimeAndPublishTime(Hashtable table)
+        {
             var addtime = table.GetValue("AddTime")?.ToString() ?? string.Empty;
             var publishtime = table.GetValue("PublishTime")?.ToString() ?? string.Empty;
             //pgSQL情况
@@ -133,6 +137,8 @@ namespace Flex.Application.Services
                     break;
             }
         }
+        
+
         public async Task<ProblemDetails<int>> Add(Hashtable table, bool IsReview = false)
         {
             int parentId = table["ParentId"].ToInt();
@@ -145,7 +151,7 @@ namespace Flex.Application.Services
                 return Problem<int>(HttpStatusCode.BadRequest, 0, ErrorCodes.DataNeedReview.GetEnumDescription());
             var contentmodel = await _unitOfWork.GetRepository<SysContentModel>().GetFirstOrDefaultAsync(m => m.Id == ModelId);
             if (contentmodel == null)
-                return Problem(HttpStatusCode.BadRequest, 0, ErrorCodes.DataUpdateError.GetEnumDescription());
+                return Problem(HttpStatusCode.BadRequest, 0, ErrorCodes.DataInsertError.GetEnumDescription());
             table.SetValue("ParentId", parentId);
             table.SetValue("SiteId", CurrentSiteInfo.SiteId);
 
@@ -253,7 +259,7 @@ namespace Flex.Application.Services
                 return false;
             return datapermissionList[_claims.UserRole][permissioncate].Contains(ParentId.ToString());
         }
-        public async Task<ProblemDetails<string>> Delete(int ParentId,int modelId, string Id)
+        public async Task<ProblemDetails<string>> Delete(int ParentId, int modelId, string Id)
         {
             if (!await CheckPermission(ParentId, nameof(DataPermissionDto.dp)))
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
@@ -267,7 +273,7 @@ namespace Flex.Application.Services
                 SqlSugar.SugarParameter[] parameters;
                 Hashtable hashtable = new Hashtable();
                 InitDeleteTable(hashtable);
-                hashtable.SetValue("Ids",Ids);
+                hashtable.SetValue("Ids", Ids);
                 hashtable.SetValue("StatusCode", "0");
                 var deletestr = _sqlTableServices.CreateSqlsugarUpdateSqlString(hashtable, contentmodel.TableName, out parameters).ToString();
                 _sqlsugar.Db.Ado.ExecuteCommand(deletestr, parameters);
@@ -279,7 +285,7 @@ namespace Flex.Application.Services
                 return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.DataDeleteError.GetEnumDescription(), ex);
             }
         }
-        public async Task<ProblemDetails<string>> RestContent(int ParentId,int modelId, string Id)
+        public async Task<ProblemDetails<string>> RestContent(int ParentId, int modelId, string Id)
         {
             if (!await CheckPermission(ParentId, nameof(DataPermissionDto.ed)))
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
@@ -306,7 +312,7 @@ namespace Flex.Application.Services
         /// <param name="ParentId"></param>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public async Task<ProblemDetails<string>> CompletelyDelete(int ParentId,int modelId, string Id)
+        public async Task<ProblemDetails<string>> CompletelyDelete(int ParentId, int modelId, string Id)
         {
             if (!await CheckPermission(ParentId, nameof(DataPermissionDto.dp)))
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());

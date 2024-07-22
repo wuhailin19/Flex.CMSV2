@@ -175,6 +175,7 @@ namespace Flex.Application.SqlServerSQLString
             builder.Append(";SELECT SCOPE_IDENTITY();");
             return builder;
         }
+        
         public StringBuilder CreateSqlsugarInsertSqlString(Hashtable table, string tableName, int nextOrderId, out SqlSugar.SugarParameter[] commandParameters)
         {
             StringBuilder builder = new StringBuilder();

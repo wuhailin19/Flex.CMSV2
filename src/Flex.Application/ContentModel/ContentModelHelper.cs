@@ -482,7 +482,7 @@ namespace Flex.Application.ContentModel
             int recount = 0;
             string swhere = $"IsHide=0  and StatusCode=1 and PublishTime<='{Clock.Now}'";
             if (inputJsondocxDto.columnId.IsNotNullOrEmpty())
-                swhere += " and ParentId in(" + inputJsondocxDto.columnId + ")";
+                swhere += $" and (ParentId in({inputJsondocxDto.columnId}) or RefLinkClassId like '%,{inputJsondocxDto.columnId},%')";
             if (inputJsondocxDto.PId != 0 && inputJsondocxDto.modelId != 0)
                 swhere += " and PId=" + inputJsondocxDto.PId;
             var contentDto = new List<ContentModelDto>();

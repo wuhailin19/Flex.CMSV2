@@ -3,8 +3,11 @@ using Flex.Domain.Dtos.Admin;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ContentModel;
 using Flex.Domain.Dtos.Field;
+using Flex.Domain.Dtos.System.ColumnContent;
+using Flex.Domain.Dtos.System.Upload;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace Flex.WebApi.SystemControllers
 {
@@ -30,6 +33,26 @@ namespace Flex.WebApi.SystemControllers
         public async Task<string> ListAsync(int Id)
         {
             return Success(await _services.ListAsync(Id));
+        }
+
+        [HttpGet("GetFieldDictAsync/{Id}")]
+        [Descriper(Name = "模型字段字典数据")]
+        public async Task<string> GetFieldDictAsync(int Id)
+        {
+            var data = await _services.ListAsync(Id);
+
+            ContentImpoertExcelDto contentImpoertExcelDto = new ContentImpoertExcelDto();
+            contentImpoertExcelDto.Fileds.Add("Title", "标题");
+            contentImpoertExcelDto.Fileds.Add("AddTime", "添加时间");
+            contentImpoertExcelDto.Fileds.Add("PublishTime", "发布时间");
+            if (data != null && data.Count() > 0)
+            {
+                foreach (var item in data)
+                {
+                    contentImpoertExcelDto.Fileds.Add(item.FieldName, item.Name);
+                }
+            }
+            return Success(contentImpoertExcelDto);
         }
 
         //[HttpGet("GetFormHtml")]
