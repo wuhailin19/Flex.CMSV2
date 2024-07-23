@@ -68,7 +68,7 @@ namespace Flex.Application.SignalRBus.Services
         {
             await _hubContext.SendProgress(requestmodel.UserId, $"正在整理数据");
 
-            int pageSize = 10000; // 每次处理的行数
+            int pageSize = 50000; // 每次处理的行数
             int pageIndex = 1; // 分页索引
             bool moreData = true;
             int fileIndex = 0;
