@@ -29,6 +29,7 @@
     <Folder Include="Areas\Normal\Views\" />
     <Folder Include="wwwroot\222333\" />
     <Folder Include="wwwroot\222\" />
+    <Folder Include="wwwroot\Excel\" />
   </ItemGroup>
 
   <ItemGroup>
