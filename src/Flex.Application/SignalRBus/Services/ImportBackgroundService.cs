@@ -1,6 +1,7 @@
 ﻿using Flex.Application.Contracts.Exceptions;
 using Flex.Application.Contracts.IServices;
 using Flex.Application.Contracts.ISignalRBus.IServices;
+using Flex.Application.Contracts.ISignalRBus.Model;
 using Flex.Application.Contracts.ISignalRBus.Queue;
 using Flex.Application.Excel;
 using Flex.Core;
@@ -20,6 +21,7 @@ using System.Data;
 using System.DirectoryServices.Protocols;
 using System.Security.Claims;
 using System.Text;
+using static SKIT.FlurlHttpClient.Wechat.Api.Models.CgibinExpressBusinessAccountGetAllResponse.Types;
 
 namespace Flex.Application.SignalRBus.Services
 {
@@ -70,13 +72,7 @@ namespace Flex.Application.SignalRBus.Services
                 _logger.LogInformation("正在处理导入任务...");
                 try
                 {
-                    var exportRequest = await _importQueue.DequeueAsync(stoppingToken);
-                    if (exportRequest != null)
-                    {
-                        //_logger.LogInformation("开始导入");
-                        await ImportDataTableInChunks(exportRequest);
-                    }
-                    await Task.Delay(1000, stoppingToken); // 等待一段时间再检查队列
+                    await _importQueue.ProcessQueueAsync(ImportDataTableInChunks, stoppingToken);
                 }
                 catch (Exception ex)
                 {
@@ -104,6 +100,8 @@ namespace Flex.Application.SignalRBus.Services
             var insertSqls = new List<string>();
             var allParameters = new List<SugarParameter>();
             int recordIndex = 1;
+            var allcount = dt.Rows.Count;
+            var Remaining = 0m;
 
             foreach (DataRow dr in dt.Rows)
             {
@@ -127,9 +125,9 @@ namespace Flex.Application.SignalRBus.Services
                 SugarParameter[] parameters = [];
                 hashtable.Add("StatusCode", statuscode);
                 hashtable.Add("ParentId", uploadExcelFileDto.ParentId);
+                hashtable.Add("PId", uploadExcelFileDto.PId);
                 InitCreateTable(hashtable, uploadExcelFileDto);
                 var insertsql = _sqlTableServices.CreateSqlsugarInsertSqlString(hashtable, resultmodel.Content.TableName, orderId, out parameters, recordIndex);
-               
 
                 insertSqls.Add(insertsql.ToString());
                 allParameters.AddRange(parameters);
@@ -137,49 +135,60 @@ namespace Flex.Application.SignalRBus.Services
                 orderId++;
                 recordIndex++;
 
-                
+                //一千条数据提交一次
+                if (recordIndex % 1000 == 0)
+                {
+                    await _sqlsugar.Db.Ado.ExecuteCommandAsync(string.Join("", insertSqls), allParameters.ToArray());
+                    recordIndex = 1;
+                    insertSqls = new List<string>();
+                    hashtable = new Hashtable();
+                    allParameters = new List<SugarParameter>();
+                    Remaining += 1000;
+                    await _hubContext.SendProgress(uploadExcelFileDto.UserId, $"已导入{(Remaining / allcount * 100):F2}%");
+                }
             }
             try
             {
-                var result = await _sqlsugar.Db.Ado.ExecuteCommandAsync(string.Join("", insertSqls), allParameters.ToArray());
+                await _sqlsugar.Db.Ado.ExecuteCommandAsync(string.Join("", insertSqls), allParameters.ToArray());
             }
             catch (Exception ex)
             {
                 await _hubContext.SendError(uploadExcelFileDto.UserId, ex.Format());
             }
 
-            //if (errorlist.Count > 0)
-            //{
-            //    var tablestr = new StringBuilder("<table>");
-            //    tablestr.Append("<th>");
-            //    foreach (DataColumn item in dt.Columns)
-            //    {
-            //        tablestr.Append($"<td>{item.Caption}<td>");
-            //    }
-            //    tablestr.Append("</th>");
-            //    tablestr.Append("<tbody>");
-            //    foreach (var item in errorlist)
-            //    {
-            //        tablestr.Append("<tr>");
-            //        foreach (var key in item.Keys)
-            //        {
-            //            tablestr.Append($"<td>{item[key]}<td>");
-            //        }
-            //        tablestr.Append("</tr>");
-            //    }
-            //    tablestr.Append("</tbody>");
-            //    tablestr.Append("</table>");
-            //    await _messageServices.SendExportMsg("导入失败", "以下数据导入失败：<br>" + tablestr, _hubContext.GetClaims(uploadExcelFileDto.UserId));
-
-            //    await _hubContext.SendError(uploadExcelFileDto.UserId, $"有{errorlist.Count}条导入失败的数据");
-            //    return;
-            //}
             var endtime = DateTime.Now;
 
-            await _messageServices.SendExportMsg("导入成功",$"共导入{dt.Rows.Count}条数据，耗时{(endtime-starttime).TotalSeconds}秒", _hubContext.GetClaims(uploadExcelFileDto.UserId));
-            await _hubContext.NotifyCompletion(uploadExcelFileDto.UserId, "导出任务完成");
+            await _messageServices.SendExportMsg("导入成功", $"共导入{allcount}条数据，耗时{(endtime - starttime).TotalSeconds}秒", _hubContext.GetClaims(uploadExcelFileDto.UserId));
+            await _hubContext.NotifyCompletion(uploadExcelFileDto.UserId, "导入任务完成");
         }
+        #region 弃用
+        //if (errorlist.Count > 0)
+        //{
+        //    var tablestr = new StringBuilder("<table>");
+        //    tablestr.Append("<th>");
+        //    foreach (DataColumn item in dt.Columns)
+        //    {
+        //        tablestr.Append($"<td>{item.Caption}<td>");
+        //    }
+        //    tablestr.Append("</th>");
+        //    tablestr.Append("<tbody>");
+        //    foreach (var item in errorlist)
+        //    {
+        //        tablestr.Append("<tr>");
+        //        foreach (var key in item.Keys)
+        //        {
+        //            tablestr.Append($"<td>{item[key]}<td>");
+        //        }
+        //        tablestr.Append("</tr>");
+        //    }
+        //    tablestr.Append("</tbody>");
+        //    tablestr.Append("</table>");
+        //    await _messageServices.SendExportMsg("导入失败", "以下数据导入失败：<br>" + tablestr, _hubContext.GetClaims(uploadExcelFileDto.UserId));
 
+        //    await _hubContext.SendError(uploadExcelFileDto.UserId, $"有{errorlist.Count}条导入失败的数据");
+        //    return;
+        //}
+        #endregion
         private void InitAddTimeAndPublishTime(Hashtable table)
         {
             var addtime = table.GetValue("AddTime")?.ToString() ?? string.Empty;

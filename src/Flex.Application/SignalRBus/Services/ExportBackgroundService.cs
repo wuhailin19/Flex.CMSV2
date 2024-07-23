@@ -4,10 +4,13 @@ using Flex.Application.Excel;
 using Flex.Core.Config;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.System.ContentModel;
+using Flex.Domain.Dtos.System.Upload;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Data;
+using System.DirectoryServices.Protocols;
+using static SKIT.FlurlHttpClient.Wechat.Api.Models.CgibinExpressBusinessAccountGetAllResponse.Types;
 
 namespace Flex.Application.SignalRBus.Services
 {
@@ -52,13 +55,7 @@ namespace Flex.Application.SignalRBus.Services
                 _logger.LogInformation("正在处理导出任务...");
                 try
                 {
-                    var exportRequest = await _exportQueue.DequeueAsync(stoppingToken);
-                    if (exportRequest != null)
-                    {
-                        //_logger.LogInformation("开始导出");
-                        await ExportDataTableInChunks(exportRequest);
-                    }
-                    await Task.Delay(1000, stoppingToken); // 等待一段时间再检查队列
+                    await _exportQueue.ProcessQueueAsync(ExportDataTableInChunks, stoppingToken);
                 }
                 catch (Exception ex)
                 {
@@ -69,12 +66,15 @@ namespace Flex.Application.SignalRBus.Services
         }
         public async Task ExportDataTableInChunks(ContentPageListParamDto requestmodel)
         {
+            await _hubContext.SendProgress(requestmodel.UserId, $"正在整理数据");
+
             int pageSize = 10000; // 每次处理的行数
             int pageIndex = 1; // 分页索引
             bool moreData = true;
             int fileIndex = 0;
             string fileName = string.Empty;
             string msgcontent = string.Empty;
+            var Remaining = 0m;
 
             if (!Directory.Exists(basePath))
                 Directory.CreateDirectory(basePath);
@@ -90,7 +90,6 @@ namespace Flex.Application.SignalRBus.Services
                     await Task.CompletedTask;
                     return;
                 }
-
                 DataTable table = resultmodel.Content.result;
                 List<FiledModel> fileModes = resultmodel.Content.filedModels;
                 fileName = string.IsNullOrEmpty(fileName) ? resultmodel.Content.ExcelName : fileName;
@@ -116,6 +115,8 @@ namespace Flex.Application.SignalRBus.Services
                         $"<img src=\"/scripts/layui/module/filemanage/ico/xlsx.png\"/>" +
                         $"</span>{currentfileName}</a><br/>";
                 }
+                Remaining += pageSize;
+                await _hubContext.SendProgress(requestmodel.UserId, $"已导出{(Remaining / resultmodel.Content.recount * 100):F2}%");
 
                 pageIndex++;
             }

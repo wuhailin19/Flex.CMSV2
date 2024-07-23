@@ -18,7 +18,7 @@ namespace Flex.Application.SignalRBus.Services
             return model != null ? model : null;
         }
 
-        public async Task SendProgress(long userId, string progress)
+        public async Task ReceiveMessage(long userId, string progress)
         {
             var connectionId = ExportHub.GetConnectionId(userId);
             if (!string.IsNullOrEmpty(connectionId))
@@ -42,6 +42,15 @@ namespace Flex.Application.SignalRBus.Services
             if (!string.IsNullOrEmpty(connectionId))
             {
                 await _hubContext.Clients.Client(connectionId).SendAsync("ExportCompleted", message);
+            }
+        }
+
+        public async Task SendProgress(long userId, string message)
+        {
+            var connectionId = ExportHub.GetConnectionId(userId);
+            if (!string.IsNullOrEmpty(connectionId))
+            {
+                await _hubContext.Clients.Client(connectionId).SendAsync("SendProgress", message);
             }
         }
 

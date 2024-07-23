@@ -10,11 +10,12 @@ namespace Flex.Application.Contracts.ISignalRBus.IServices
 {
     public interface IHubNotificationService
     {
-        Task SendProgress(long userId, string progress);
+        Task SendProgress(long userId, string message);
         Task SendError(long userId, string error);
         Task NotifyCompletion(long userId, string message);
         Task SendNotificationToUser(long userId, string message);
         Task SendNotificationToRole(string role, string message);
         ConnectionModel GetClaims(long userId);
+        Task ReceiveMessage(long userId, string progress);
     }
 }

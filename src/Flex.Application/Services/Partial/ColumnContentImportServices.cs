@@ -54,7 +54,7 @@ namespace Flex.Application.Services
                 return Problem<ImportResultModel>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
             var filedmodel = model.Field;
             StringBuilder insertsbr = new StringBuilder();
-            var white_fileds = ColumnContentUpdateFiledConfig.defaultFields.ToList();
+            var white_fileds = ColumnContentUpdateFiledConfig.defaultImportFields.ToList();
             var keysToRemove = new List<DataColumn>();
             foreach (DataColumn item in dt.Columns)
             {

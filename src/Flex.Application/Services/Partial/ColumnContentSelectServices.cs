@@ -124,7 +124,7 @@ namespace Flex.Application.Services
             if(result.Rows.Count==0)
                 return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.BadRequest, resultmodel, ErrorCodes.DataNotFound.GetEnumDescription());
             resultmodel.result = result;
-
+            resultmodel.recount = recount;
             return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.OK, resultmodel);
         }
         /// <summary>

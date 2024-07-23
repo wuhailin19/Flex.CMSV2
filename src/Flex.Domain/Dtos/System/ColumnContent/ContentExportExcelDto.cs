@@ -14,5 +14,6 @@ namespace Flex.Domain.Dtos.System.ColumnContent
         public List<FiledModel> filedModels { set; get; }
         public DataTable result { set; get; }
         public string ExcelName { set; get; }
+        public int recount { set; get; }
     }
 }

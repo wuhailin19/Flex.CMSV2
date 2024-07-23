@@ -40,6 +40,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
     var upIns = undefined;
     var element = layui.element;
     var progressboxindex = undefined;
+    var fieldboxindex = undefined;
 
     var toolbarhtml = '<div class="layui-btn-container">';
     // 日期范围 - 左右面板独立选择模式
@@ -127,7 +128,6 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                 elem: '#Importdata' //绑定元素
                 , url: routeLink + 'ImportExcel' //上传接口
                 , headers: httpTokenHeaders
-                , bindAction:'#trigger-upload'
                 , accept: 'file'
                 , exts: 'xls|xlsx'
                 , field: 'file'
@@ -152,9 +152,9 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                     else
                         tips.showFail(res.msg);
                 }
-                , choose: function (obj) {
+                , choose: function (obj, upload) {
                     //将每次选择的文件追加到文件队列
-                    var files = obj.pushFile();
+                    //var files = obj.pushFile();
                     upIns.config.elem.next()[0].value = '';
                     //预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
                     obj.preview(function (index, file, result) {
@@ -208,7 +208,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                                         filedhtmlstr += "</div>";
                                         filedhtmlstr += "</div>";
                                     })
-                                    layer.open({
+                                    fieldboxindex = layer.open({
                                         type: 1,
                                         title: "字段选择",
                                         area: ['50%', '80%'], // 宽高
@@ -229,6 +229,8 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                                                 selectElem.removeClass('layui-form-selected');
                                                 layui.$('.layui-select-panel-wrap').detach();
                                             });
+
+
                                         },
                                         end: function () {
                                             //upIns.reload();
@@ -247,6 +249,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                     element.progress('lock_progress', n + '%'); //进度条
                     if (n == 100) {
                         layer.close(progressboxindex);
+                        layer.close(fieldboxindex);
                     }
                 }
             })
@@ -410,7 +413,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
             });
 
             upIns.config.data = { 'ParentId': currentparentId, 'ModelId': currentmodelId, 'PId': pId, 'FieldDictStr': JSON.stringify(results) };
-            $('#trigger-upload').click();
+            upIns.upload();
         }
     };
     $(document).off('click', '.layui-btn').on('click', '.layui-btn', function () {

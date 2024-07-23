@@ -12,7 +12,10 @@ namespace Flex.Domain.WhiteFileds
         public const string defaultFields = "IsTop,IsRecommend,IsHot,IsHide,IsSilde,SeoTitle,KeyWord,Description" +
             ",Title,Id,AddTime,LastEditDate,StatusCode,ReviewAddUser,AddUserName,LastEditUserName,OrderId,ParentId" +
             ",ReviewStepId,ContentGroupId,MsgGroupId,SiteId,PId,RefLinkClassId,PublishTime,";
-
+        //默认导入字段白名单
+        public const string defaultImportFields = "IsTop,IsRecommend,IsHot,IsHide,IsSilde,SeoTitle,KeyWord,Description" +
+            ",Title,AddTime,LastEditDate,StatusCode,ReviewAddUser,AddUserName,LastEditUserName,OrderId" +
+            ",ReviewStepId,ContentGroupId,MsgGroupId,SiteId,PublishTime,";
         //pgsql时候强制字段
         public const string pgsqlfields = @"istop AS ""IsTop"",isrecommend AS ""IsRecommend"",ishot AS ""IsHot"",ishide AS ""IsHide"",issilde AS ""IsSilde"",seotitle AS ""SeoTitle"",keyword AS ""KeyWord"",description AS ""Description"",title AS ""Title"",id AS ""Id"",addtime AS ""AddTime"",lasteditdate AS ""LastEditDate"",statuscode AS ""StatusCode"",reviewadduser AS ""ReviewAddUser"",addusername AS ""AddUserName"",lasteditusername AS ""LastEditUserName"",orderid AS ""OrderId"",parentid AS ""ParentId"",reviewstepid AS ""ReviewStepId"",contentgroupid AS ""ContentGroupId"",msggroupid AS ""MsgGroupId"",";
 
