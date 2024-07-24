@@ -4,11 +4,10 @@ using Flex.Core.Attributes;
 using Flex.Dapper;
 using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
+using Flex.Domain.Dtos.SignalRBus.Model.Request;
 using Flex.Domain.Dtos.System.ColumnContent;
-using Flex.Domain.Dtos.System.Upload;
 using Flex.Domain.Entities;
 using System.Collections;
-using System.Data;
 
 namespace Flex.Application.Contracts.IServices
 {
@@ -35,8 +34,8 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<string>> RestContent(int ParentId, int modelId, string Id);
         Task<ProblemDetails<string>> ContentOperation(ContentToolsDto contentToolsDto);
         [NoLogReturnValue]
-        Task<ProblemDetails<ContentExportExcelDto>> GetExportExcelDataTableAsync(ContentPageListParamDto contentPageListParam);
-        Task<ProblemDetails<ImportResultModel>> ImportExcelToModel(UploadExcelFileDto uploadExcelFileDto);
+        Task<ProblemDetails<ContentExportExcelDto>> GetExportExcelDataTableAsync(ExportRequestModel contentPageListParam);
+        Task<ProblemDetails<ImportResultModel>> ImportExcelToModel(ImportRequestModel uploadExcelFileDto);
         Task<FieldContentAndColumnDto> GetFieldContentAndColumnByColumnId(int ParentId, int modelId);
     }
 }

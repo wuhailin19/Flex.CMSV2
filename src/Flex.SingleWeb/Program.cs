@@ -3,7 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
 using Flex.Application.Aop;
 using Flex.Application.Contracts.Exceptions;
-using Flex.Application.Contracts.ISignalRBus;
+using Flex.Application.Contracts.ISignalRBus.IServices;
 using Flex.Application.Contracts.ISignalRBus.Queue;
 using Flex.Application.Exceptions;
 using Flex.Application.Extensions.Register.AutoMapper;
@@ -12,10 +12,12 @@ using Flex.Application.Extensions.Register.WebCoreExtensions;
 using Flex.Application.Extensions.Swagger;
 using Flex.Application.Middlewares;
 using Flex.Application.SetupExtensions.OrmInitExtension;
+using Flex.Application.SignalRBus.Factory;
 using Flex.Application.SignalRBus.Hubs;
 using Flex.Application.SignalRBus.Queue;
 using Flex.Application.SignalRBus.Services;
 using Flex.Core.Helper;
+using Flex.Domain.Dtos.SignalRBus.Model.Request;
 using Flex.SingleWeb.Components;
 using Flex.SqlSugarFactory;
 using Flex.SqlSugarFactory.UnitOfWorks;
@@ -30,9 +32,6 @@ using NLog.Config;
 using NLog.Web;
 using System.Reflection;
 using System.Text;
-using Microsoft.Extensions.Hosting;
-using Flex.Domain.Dtos.ColumnContent;
-using Flex.Domain.Dtos.System.Upload;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
@@ -96,14 +95,19 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
             .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy;// 注册被拦截的类并启用类拦截
             .InterceptedBy(typeof(LogInterceptor));//这里只有同步的，因为异步方法拦截器还是先走同步拦截器 
 
-        builder.RegisterType<ConcurrentQueue<ContentPageListParamDto>>().As<IConcurrentQueue<ContentPageListParamDto>>().SingleInstance();
-        builder.RegisterType<ConcurrentQueue<UploadExcelFileDto>>().As<IConcurrentQueue<UploadExcelFileDto>>().SingleInstance();
+        builder.RegisterType<ConcurrentQueue<ExportRequestModel>>().As<IConcurrentQueue<ExportRequestModel>>().SingleInstance();
+        builder.RegisterType<ConcurrentQueue<ImportRequestModel>>().As<IConcurrentQueue<ImportRequestModel>>().SingleInstance();
+        builder.RegisterType<ConcurrentQueue<RequestModel>>().As<IConcurrentQueue<RequestModel>>().SingleInstance();
+
 
         builder.RegisterType<UnitOfWorkManage>().As<IUnitOfWorkManage>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope()
                 .PropertiesAutowired();
     });
+//初始化请求模型
+builder.Services.InitRequesModelDict();
+
 // 添加自定义的 MIME 类型
 builder.Services.Configure<StaticFileOptions>(options =>
 {

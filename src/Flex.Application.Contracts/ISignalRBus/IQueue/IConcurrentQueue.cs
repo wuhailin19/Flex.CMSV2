@@ -11,6 +11,5 @@ namespace Flex.Application.Contracts.ISignalRBus.Queue
         Task EnqueueAsync(T item);
         Task<T> DequeueAsync(CancellationToken cancellationToken);
         Task ProcessQueueAsync(Func<T, Task> processItemAsync, CancellationToken cancellationToken);
-        bool IsProcessing();
     }
 }

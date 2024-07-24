@@ -14,11 +14,14 @@ connection.on("ExportCompleted", (message) => {
     tips.showSuccess(message);
     GetMsgCount();
     tips.closeProgressbox();
+    getTaskList();
+
     // 处理导出完成的逻辑
 });
 
 connection.on("SendProgress", (message) => {
-    tips.showProgress("Remaining",message);
+    tips.showProgress("Remaining", message);
+    getTaskList();
 });
 connection.on("ExportError", (message) => {
     tips.showFail(message);
@@ -48,3 +51,14 @@ connection.start()
     })
     .catch(err => console.error("SignalR连接失败: ", err));
 var conn_signalr_id = undefined;
+
+function getTaskList() {
+    ajaxHttp({
+        url: api + 'Task/GetAllTaskList',
+        type: 'get',
+        success: function (res) {
+            console.log(res);
+        }
+    })
+}
+getTaskList();

@@ -20,6 +20,7 @@ namespace Flex.Core.Serialize
             };
             if (indented)
                 setting.Formatting = Formatting.Indented;
+            setting.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             setting.DateFormatHandling = DateFormatHandling.MicrosoftDateFormat;
             setting.DateFormatString = DateFormatString;
             //setting.NullValueHandling = NullValueHandling.Ignore;

@@ -1,16 +1,15 @@
-﻿using Flex.Application.Contracts.ISignalRBus.IServices;
+﻿using Flex.Application.Contracts.ISignalRBus.Enum;
+using Flex.Application.Contracts.ISignalRBus.IServices;
 using Flex.Application.Contracts.ISignalRBus.Queue;
 using Flex.Application.Excel;
+using Flex.Application.SignalRBus.Factory;
 using Flex.Core.Config;
-using Flex.Domain.Dtos.ColumnContent;
+using Flex.Domain.Dtos.SignalRBus.Model.Request;
 using Flex.Domain.Dtos.System.ContentModel;
-using Flex.Domain.Dtos.System.Upload;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Data;
-using System.DirectoryServices.Protocols;
-using static SKIT.FlurlHttpClient.Wechat.Api.Models.CgibinExpressBusinessAccountGetAllResponse.Types;
 
 namespace Flex.Application.SignalRBus.Services
 {
@@ -18,8 +17,9 @@ namespace Flex.Application.SignalRBus.Services
     {
         private readonly IHubNotificationService _hubContext;
         private readonly ILogger<ExportBackgroundService> _logger;
-        private readonly IConcurrentQueue<ContentPageListParamDto> _exportQueue;
+        private readonly IConcurrentQueue<ExportRequestModel> _exportQueue;
         private IMessageServices _messageServices;
+        private ITaskServices _taskServices;
         private IColumnContentServices _contentServices;
         IWebHostEnvironment _env;
         string basePath = string.Empty;
@@ -32,10 +32,11 @@ namespace Flex.Application.SignalRBus.Services
         public ExportBackgroundService(
               IHubNotificationService hubContext
             , ILogger<ExportBackgroundService> logger
-            , IConcurrentQueue<ContentPageListParamDto> exportQueue
+            , IConcurrentQueue<ExportRequestModel> exportQueue
             , IWebHostEnvironment env
             , IMessageServices messageServices
             , IColumnContentServices contentServices
+            , ITaskServices taskServices
             )
         {
             _hubContext = hubContext;
@@ -45,27 +46,26 @@ namespace Flex.Application.SignalRBus.Services
             basePath = _env.WebRootPath + exportsFolder;
             _messageServices = messageServices;
             _contentServices = contentServices;
+            _taskServices = taskServices;
         }
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            //这里可以使用队列或其他方式来管理导出请求
-            while (!stoppingToken.IsCancellationRequested)
+            _logger.LogInformation("正在处理导出任务...");
+            try
             {
-                _logger.LogInformation("正在处理导出任务...");
-                try
-                {
-                    await _exportQueue.ProcessQueueAsync(ExportDataTableInChunks, stoppingToken);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex.Format());
-                }
+                await _exportQueue.ProcessQueueAsync(ExportDataTableInChunks, stoppingToken);
             }
-            _logger.LogInformation("任务已取消");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "任务处理时发生错误");
+            }
         }
-        public async Task ExportDataTableInChunks(ContentPageListParamDto requestmodel)
+
+
+        public async Task ExportDataTableInChunks(ExportRequestModel requestmodel)
         {
+            _taskServices.UpdateTaskStatus(requestmodel, GlobalTaskStatus.Running, "正在整理数据", 0);
+
             await _hubContext.SendProgress(requestmodel.UserId, $"正在整理数据");
 
             int pageSize = 50000; // 每次处理的行数
@@ -78,7 +78,7 @@ namespace Flex.Application.SignalRBus.Services
 
             if (!Directory.Exists(basePath))
                 Directory.CreateDirectory(basePath);
-
+            
             while (moreData)
             {
                 requestmodel.limit = pageSize;
@@ -115,8 +115,12 @@ namespace Flex.Application.SignalRBus.Services
                         $"<img src=\"/scripts/layui/module/filemanage/ico/xlsx.png\"/>" +
                         $"</span>{currentfileName}</a><br/>";
                 }
-                Remaining += pageSize;
-                await _hubContext.SendProgress(requestmodel.UserId, $"已导出{(Remaining / resultmodel.Content.recount * 100):F2}%");
+                Remaining += pageSize <= resultmodel.Content.recount ? pageSize : resultmodel.Content.recount;
+                var percent = Math.Round((Remaining / resultmodel.Content.recount * 100), 2);
+
+                await _hubContext.SendProgress(requestmodel.UserId, $"已导出{percent}%");
+
+                _taskServices.UpdateTaskStatus(requestmodel, GlobalTaskStatus.Running, "已导出", percent);
 
                 pageIndex++;
             }
@@ -124,8 +128,7 @@ namespace Flex.Application.SignalRBus.Services
             //发送消息给自己
             await _messageServices.SendExportMsg("导出文件", msgcontent, _hubContext.GetClaims(requestmodel.UserId));
             await _hubContext.NotifyCompletion(requestmodel.UserId, "导出任务完成");
+            _taskServices.UpdateTaskStatus(requestmodel, GlobalTaskStatus.Running, "导出完成", 100);
         }
-
-
     }
 }

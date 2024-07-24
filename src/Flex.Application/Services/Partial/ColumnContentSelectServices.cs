@@ -1,22 +1,15 @@
 ﻿using Dapper;
-using Dm;
 using Flex.Application.ContentModel;
 using Flex.Application.Contracts.Exceptions;
-using Flex.Core.Config;
-using Flex.Core.Framework.Enum;
 using Flex.Dapper;
-using Flex.Domain.Dtos.Column;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Role;
+using Flex.Domain.Dtos.SignalRBus.Model.Request;
+using Flex.Domain.Dtos.System.ColumnContent;
+using Flex.Domain.Dtos.System.ContentModel;
 using Flex.Domain.Dtos.System.TableRelation;
 using Flex.Domain.Dtos.WorkFlow;
 using Flex.Domain.WhiteFileds;
-using Flex.SqlSugarFactory.Seed;
-using Microsoft.OpenApi.Expressions;
-using System.Data;
-using Flex.Domain.Dtos.System.ContentModel;
-using Flex.Domain.Dtos.System.ColumnContent;
-using OfficeOpenXml.DataValidation;
 
 namespace Flex.Application.Services
 {
@@ -78,7 +71,7 @@ namespace Flex.Application.Services
         {
             return await AbstractList(contentPageListParam, 2, " order by LastEditDate desc");
         }
-        public async Task<ProblemDetails<ContentExportExcelDto>> GetExportExcelDataTableAsync(ContentPageListParamDto contentPageListParam)
+        public async Task<ProblemDetails<ContentExportExcelDto>> GetExportExcelDataTableAsync(ExportRequestModel contentPageListParam)
         {
             string StatusCodeExpression = "StatusCode not in (0,6)";
             var resultmodel = new ContentExportExcelDto();
@@ -112,7 +105,7 @@ namespace Flex.Application.Services
             filed = filed.TrimEnd(',');
             SqlSugar.SugarParameter[] parameters = [];
             string swhere = string.Empty;
-            _sqlTableServices.CreateSqlSugarColumnContentSelectSql(contentPageListParam, out swhere, out parameters);
+            _sqlTableServices.CreateSqlSugarColumnContentSelectSql(_mapper.Map<ContentPageListParamDto>(contentPageListParam), out swhere, out parameters);
             int recount = 0;
             var result =  _sqlsugar.GetPageDataList(
                 contentPageListParam.page,

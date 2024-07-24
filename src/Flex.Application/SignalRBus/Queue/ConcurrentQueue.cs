@@ -1,26 +1,31 @@
-﻿using Flex.Application.Contracts.ISignalRBus.Queue;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Flex.Application.Contracts.ISignalRBus.Enum;
+using Flex.Application.Contracts.ISignalRBus.IServices;
+using Flex.Application.Contracts.ISignalRBus.Model;
+using Flex.Application.Contracts.ISignalRBus.Queue;
+using Flex.Application.SignalRBus.Services;
+using Flex.Domain.Dtos.SignalRBus.Model.Request;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Flex.Application.SignalRBus.Queue
 {
-    public class ConcurrentQueue<T> : IConcurrentQueue<T>
+    public class ConcurrentQueue<T> : IConcurrentQueue<T> where T : RequestModel
     {
         private readonly System.Collections.Concurrent.ConcurrentQueue<T> _queue = new();
         private readonly SemaphoreSlim _signal = new(0);
-        private readonly SemaphoreSlim _processingSemaphore = new(1, 1); // 控制并发
-        private bool _isProcessing = false; // 用于指示当前是否有任务在处理
-
-        public Task EnqueueAsync(T item)
+        private IServiceProvider _serviceProvider;
+        public ConcurrentQueue(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
+        public async Task EnqueueAsync(T item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
 
+
+            _serviceProvider.GetRequiredService<ITaskServices>().UpdateTaskStatus(item, GlobalTaskStatus.Running);
+            // 添加任务到队列
             _queue.Enqueue(item);
             _signal.Release(); // 释放信号，表示有新请求
-            return Task.CompletedTask;
         }
 
         public async Task<T> DequeueAsync(CancellationToken cancellationToken)
@@ -35,26 +40,28 @@ namespace Flex.Application.SignalRBus.Queue
             while (!cancellationToken.IsCancellationRequested)
             {
                 await _signal.WaitAsync(cancellationToken); // 等待信号
+
                 if (_queue.TryDequeue(out var item))
                 {
-                    await _processingSemaphore.WaitAsync(cancellationToken); // 控制并发
-                    _isProcessing = true; // 设置任务处理中标志
+                    await ExportAndImport._processingSemaphore.WaitAsync(cancellationToken); // 控制全局并发
+
                     try
                     {
                         await processItemAsync(item);
                     }
+                    catch (Exception ex)
+                    {
+                        _serviceProvider.GetRequiredService<ITaskServices>().UpdateTaskStatus(item, GlobalTaskStatus.Ending, "出错");
+                    }
                     finally
                     {
-                        _isProcessing = false; // 重置任务处理中标志
-                        _processingSemaphore.Release(); // 释放信号
+                        _serviceProvider.GetRequiredService<ITaskServices>().UpdateTaskStatus(item, GlobalTaskStatus.Ending);
+
+                        ExportAndImport._processingSemaphore.Release(); // 释放信号
                     }
                 }
             }
         }
 
-        public bool IsProcessing()
-        {
-            return _isProcessing;
-        }
     }
 }

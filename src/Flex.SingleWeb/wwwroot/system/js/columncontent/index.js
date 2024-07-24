@@ -40,7 +40,11 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
     var upIns = undefined;
     var element = layui.element;
     var progressboxindex = undefined;
+    var readfileindex = undefined;
     var fieldboxindex = undefined;
+    var util = layui.util;
+    var $ = layui.$;
+
 
     var toolbarhtml = '<div class="layui-btn-container">';
     // 日期范围 - 左右面板独立选择模式
@@ -82,8 +86,6 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
     if (btnpermission.IsDelete)
         toolbarhtml += '<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteAll">删除</button>';
     toolbarhtml += '</div>';
-
-
 
     //JS 调用：
     var insTb = table.render({
@@ -156,11 +158,28 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                     //将每次选择的文件追加到文件队列
                     //var files = obj.pushFile();
                     upIns.config.elem.next()[0].value = '';
+                    element.progress('readfile_progress', '0%');
+                    readfileindex = layer.open({
+                        type: 1,
+                        title: '读取进度',
+                        closeBtn: 0,
+                        area: ['300px', '100px'],
+                        shadeClose: false,
+                        content: $("#readLoadingDiv").html(),
+                        offset: '100px',
+                        success: function (layero) {
+                            element.render("progress","readfile_progress");
+
+                            element.progress('readfile_progress', '10%');
+                        }
+                    });
+                    
                     //预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
                     obj.preview(function (index, file, result) {
+                        element.progress('readfile_progress', '20%');
                         var reader = new FileReader();
-
                         reader.onload = function (e) {
+                            element.progress('readfile_progress', '50%');
                             var data = new Uint8Array(e.target.result);
                             var workbook = XLSX.read(data, { type: 'array' });
 
@@ -180,6 +199,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                                     headers.push(cell.v);
                                 }
                             }
+
                             ajaxHttp({
                                 url: api + 'Field/GetFieldDictAsync/' + currentmodelId,
                                 type: 'get',
@@ -196,7 +216,6 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                                         columnstr += "<option value='" + headers[j] + "'>" + headers[j] + "</option>";
                                     }
                                     var filedhtmlstr = '';
-
                                     // 遍历 Fields
                                     $.each(jsondata.Fileds, function (key, value) {
                                         filedhtmlstr += '<div class="layui-form-item layui-form-text" style="margin-bottom:0px;">';
@@ -208,6 +227,7 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                                         filedhtmlstr += "</div>";
                                         filedhtmlstr += "</div>";
                                     })
+                                    element.progress('readfile_progress', '80%');
                                     fieldboxindex = layer.open({
                                         type: 1,
                                         title: "字段选择",
@@ -220,6 +240,8 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                                             + '</div>'
                                             + '</div></div>',
                                         success: function (layero) {
+                                            element.progress('readfile_progress', '100%');
+                                            layer.close(readfileindex);
                                             // 定向渲染 select
                                             form.render(layero.find('.layui-form select'));
                                             // 鼠标滑动 layer 内部滚动条时移除下拉框，以规避错位
@@ -244,8 +266,8 @@ layui.use(['form', 'laydate', 'util', "table", 'dropdown', 'upload', 'element'],
                     });
                 }
                 , progress: function (n, elem, res, index) {
-                    var percent = n + '%' //获取进度百分比
-                    element.progress('lock_progress', percent); //可配合 layui 进度条元素使用
+                    //var percent = n + '%' //获取进度百分比
+                    //element.progress('lock_progress', percent); //可配合 layui 进度条元素使用
                     element.progress('lock_progress', n + '%'); //进度条
                     if (n == 100) {
                         layer.close(progressboxindex);

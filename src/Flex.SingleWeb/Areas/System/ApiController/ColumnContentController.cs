@@ -1,25 +1,17 @@
-﻿using Flex.Core.Attributes;
-using Flex.Domain.Dtos.Column;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Flex.Dapper;
-using System.Collections;
-using Flex.Application.ContentModel;
-using Flex.Domain.Dtos.ColumnContent;
-using Flex.Domain.Dtos.System.ColumnContent;
-using System.Web;
-using Flex.Application.Contracts.ISignalRBus.Queue;
-using Flex.Application.Contracts.ISignalRBus;
-using Flex.Application.SignalRBus.Hubs;
-using Microsoft.AspNetCore.SignalR;
+﻿using Consul;
 using Flex.Application.Authorize;
-using Flex.Domain.Dtos.System.Upload;
-using Flex.Domain.Enums.Excel;
-using Flex.Application.Excel;
-using Flex.Core.Helper;
-using System.Data;
-using Flex.Domain.Dtos.System.Column;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Application.Contracts.ISignalRBus.Enum;
+using Flex.Application.Contracts.ISignalRBus.IServices;
+using Flex.Application.Contracts.ISignalRBus.Model;
+using Flex.Core.Attributes;
+using Flex.Core.Helper;
+using Flex.Core.Timing;
+using Flex.Domain.Dtos.ColumnContent;
+using Flex.Domain.Dtos.SignalRBus.Model.Request;
+using Flex.Domain.Dtos.System.ColumnContent;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections;
 
 namespace Flex.WebApi.SystemControllers
 {
@@ -30,19 +22,19 @@ namespace Flex.WebApi.SystemControllers
     {
         private IColumnContentServices _columnServices;
         IClaimsAccessor _claims;
-        private readonly IConcurrentQueue<ContentPageListParamDto> _exportQueue;
-        private readonly IConcurrentQueue<UploadExcelFileDto> _importQueue;
+        private ITaskServices _taskServices;
+        private IdWorker _idWorker;
         public ColumnContentController(
             IColumnContentServices columnServices
-            , IConcurrentQueue<ContentPageListParamDto> exportQueue
             , IClaimsAccessor claims
-            , IConcurrentQueue<UploadExcelFileDto> concurrentQueue
+            , ITaskServices taskServices
+            , IdWorker idWorker
             )
         {
             _columnServices = columnServices;
-            _exportQueue = exportQueue;
             _claims = claims;
-            _importQueue = concurrentQueue;
+            _taskServices = taskServices;
+            _idWorker = idWorker;
         }
 
         #region 表头信息
@@ -232,12 +224,24 @@ namespace Flex.WebApi.SystemControllers
         #region 导入导出
         [HttpGet("ExportExcel")]
         [Descriper(Name = "导出Excel")]
-        public async Task<string> ExportExcel([FromQuery] ContentPageListParamDto requestmodel)
+        public async Task<string> ExportExcel([FromQuery] ExportRequestModel requestmodel)
         {
             requestmodel.UserId = _claims.UserId;
-            await _exportQueue.EnqueueAsync(requestmodel); // 将请求加入队列
+            requestmodel.CurrrentTaskId = _idWorker.NextId();
 
-            return Success("导出任务已启动");
+
+            await _taskServices.AddTaskAsync(requestmodel.UserId, new TaskModel<RequestModel>
+            {
+                TaskId = requestmodel.CurrrentTaskId,
+                Name = "导出Excel",
+                AddTime = Clock.Now,
+                Status = GlobalTaskStatus.Waiting,
+                StatusString = GlobalTaskStatus.Waiting.GetEnumDescription(),
+                TaskCate = requestmodel
+            });
+            //await _exportQueue.EnqueueAsync(requestmodel); // 将请求加入队列
+
+            return Success("导出任务已生成");
 
             #region 起初用文件流直接返回的，数据量大的时候太慢了，改造成Signalr异步通知结果了
             //var stream = ContentModelHelper.SimpleExportToSpreadsheet(resultmodel.Content.result, resultmodel.Content.filedModels);
@@ -250,8 +254,9 @@ namespace Flex.WebApi.SystemControllers
 
         [HttpPost("ImportExcel")]
         [Descriper(Name = "导入Excel")]
-        public async Task<string> ImportExcel([FromForm] UploadExcelFileDto uploadExcelFileDto)
+        public async Task<string> ImportExcel([FromForm] ImportRequestModel uploadExcelFileDto)
         {
+
             if (uploadExcelFileDto.file == null)
                 return Fail(ErrorCodes.UploadTypeDenied.GetEnumDescription());
             var file = uploadExcelFileDto.file[0];
@@ -270,10 +275,20 @@ namespace Flex.WebApi.SystemControllers
                     uploadExcelFileDto.FileContent = memoryStream.ToArray();
                 }
             }
+            uploadExcelFileDto.CurrrentTaskId = _idWorker.NextId();
+            await _taskServices.AddTaskAsync(uploadExcelFileDto.UserId, new TaskModel<RequestModel>
+            {
+                TaskId = uploadExcelFileDto.CurrrentTaskId,
+                Name = "导入Excel",
+                AddTime = Clock.Now,
+                Status = GlobalTaskStatus.Waiting,
+                StatusString = GlobalTaskStatus.Waiting.GetEnumDescription(),
+                TaskCate = uploadExcelFileDto
+            });
 
-            await _importQueue.EnqueueAsync(uploadExcelFileDto);
+            //await _importQueue.EnqueueAsync(uploadExcelFileDto);
 
-            return Success("导入任务已启动");
+            return Success("导入任务已生成");
         }
         #endregion
     }

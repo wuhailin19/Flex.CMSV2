@@ -1,16 +1,9 @@
-﻿using Flex.Application.Contracts.Exceptions;
-using Flex.Application.Contracts.IServices;
-using Flex.Application.Contracts.ISignalRBus.IServices;
-using Flex.Application.Contracts.ISignalRBus.Model;
+﻿using Flex.Application.Contracts.ISignalRBus.IServices;
 using Flex.Application.Contracts.ISignalRBus.Queue;
-using Flex.Application.Excel;
-using Flex.Core;
 using Flex.Core.Config;
 using Flex.Core.Extensions.CommonExtensions;
 using Flex.Core.Framework.Enum;
-using Flex.Domain.Dtos.ColumnContent;
-using Flex.Domain.Dtos.System.ContentModel;
-using Flex.Domain.Dtos.System.Upload;
+using Flex.Domain.Dtos.SignalRBus.Model.Request;
 using Flex.SqlSugarFactory.Seed;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -18,10 +11,6 @@ using Microsoft.Extensions.Logging;
 using SqlSugar;
 using System.Collections;
 using System.Data;
-using System.DirectoryServices.Protocols;
-using System.Security.Claims;
-using System.Text;
-using static SKIT.FlurlHttpClient.Wechat.Api.Models.CgibinExpressBusinessAccountGetAllResponse.Types;
 
 namespace Flex.Application.SignalRBus.Services
 {
@@ -29,7 +18,7 @@ namespace Flex.Application.SignalRBus.Services
     {
         private readonly IHubNotificationService _hubContext;
         private readonly ILogger<ImportBackgroundService> _logger;
-        private readonly IConcurrentQueue<UploadExcelFileDto> _importQueue;
+        private readonly IConcurrentQueue<ImportRequestModel> _importQueue;
         private IMessageServices _messageServices;
         IColumnContentServices _contentServices;
         IWebHostEnvironment _env;
@@ -45,7 +34,7 @@ namespace Flex.Application.SignalRBus.Services
         public ImportBackgroundService(
               IHubNotificationService hubContext
             , ILogger<ImportBackgroundService> logger
-            , IConcurrentQueue<UploadExcelFileDto> importQueue
+            , IConcurrentQueue<ImportRequestModel> importQueue
             , IWebHostEnvironment env
             , IMessageServices messageServices
             , IColumnContentServices contentServices
@@ -66,23 +55,21 @@ namespace Flex.Application.SignalRBus.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            //这里可以使用队列或其他方式来管理导出请求
-            while (!stoppingToken.IsCancellationRequested)
+            _logger.LogInformation("正在处理导入任务...");
+            try
             {
-                _logger.LogInformation("正在处理导入任务...");
-                try
-                {
-                    await _importQueue.ProcessQueueAsync(ImportDataTableInChunks, stoppingToken);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex.Format());
-                }
+                await _importQueue.ProcessQueueAsync(ImportDataTableInChunks, stoppingToken);
             }
-            _logger.LogInformation("任务已取消");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "任务处理时发生错误");
+            }
         }
-        public async Task ImportDataTableInChunks(UploadExcelFileDto uploadExcelFileDto)
+
+        public async Task ImportDataTableInChunks(ImportRequestModel uploadExcelFileDto)
         {
+            await _hubContext.SendProgress(uploadExcelFileDto.UserId, $"正在准备导入");
+
             var timelist = new List<string>();
             //失败的数据
             var errorlist = new List<Hashtable>();
@@ -135,15 +122,15 @@ namespace Flex.Application.SignalRBus.Services
                 orderId++;
                 recordIndex++;
 
-                //一千条数据提交一次
-                if (recordIndex % 1000 == 0)
+                //两千条数据提交一次
+                if (recordIndex % 2000 == 0)
                 {
                     await _sqlsugar.Db.Ado.ExecuteCommandAsync(string.Join("", insertSqls), allParameters.ToArray());
                     recordIndex = 1;
                     insertSqls = new List<string>();
                     hashtable = new Hashtable();
                     allParameters = new List<SugarParameter>();
-                    Remaining += 1000;
+                    Remaining += 2000;
                     await _hubContext.SendProgress(uploadExcelFileDto.UserId, $"已导入{(Remaining / allcount * 100):F2}%");
                 }
             }
@@ -217,7 +204,7 @@ namespace Flex.Application.SignalRBus.Services
                     break;
             }
         }
-        private void InitCreateTable(Hashtable table, UploadExcelFileDto uploadExcelFileDto)
+        private void InitCreateTable(Hashtable table, ImportRequestModel uploadExcelFileDto)
         {
             var claims = _hubContext.GetClaims(uploadExcelFileDto.UserId);
             table["AddUser"] = uploadExcelFileDto.UserId;

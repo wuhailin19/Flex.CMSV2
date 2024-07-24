@@ -1,31 +1,18 @@
 ﻿using Flex.Application.Contracts.Exceptions;
-using Flex.Application.Contracts.IServices;
 using Flex.Application.Contracts.ISignalRBus.Model;
 using Flex.Application.Excel;
-using Flex.Core.Config;
-using Flex.Core.Framework.Enum;
-using Flex.Domain.Dtos.System.Upload;
+using Flex.Domain.Dtos.SignalRBus.Model.Request;
 using Flex.Domain.WhiteFileds;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using SqlSugar;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data;
-using System.IO;
-using System.Linq;
-using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Flex.Application.Services
 {
     public partial class ColumnContentServices
     {
 
-        public async Task<ProblemDetails<ImportResultModel>> ImportExcelToModel(UploadExcelFileDto uploadExcelFileDto)
+        public async Task<ProblemDetails<ImportResultModel>> ImportExcelToModel(ImportRequestModel uploadExcelFileDto)
         {
             var dt=new DataTable();
             try
