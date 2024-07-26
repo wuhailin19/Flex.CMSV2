@@ -35,6 +35,7 @@ namespace Flex.Application.Contracts.IServices
         Task<ProblemDetails<string>> ContentOperation(ContentToolsDto contentToolsDto);
         [NoLogReturnValue]
         Task<ProblemDetails<ContentExportExcelDto>> GetExportExcelDataTableAsync(ExportRequestModel contentPageListParam);
+        [NoLogReturnValue]
         Task<ProblemDetails<ImportResultModel>> ImportExcelToModel(ImportRequestModel uploadExcelFileDto);
         Task<FieldContentAndColumnDto> GetFieldContentAndColumnByColumnId(int ParentId, int modelId);
     }

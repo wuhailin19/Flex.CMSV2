@@ -14,7 +14,7 @@ namespace Flex.Application.Services
 
         public async Task<ProblemDetails<ImportResultModel>> ImportExcelToModel(ImportRequestModel uploadExcelFileDto)
         {
-            var dt=new DataTable();
+            var dt = new DataTable();
             try
             {
                 using (var memoryStream = new MemoryStream(uploadExcelFileDto.FileContent))
@@ -24,9 +24,9 @@ namespace Flex.Application.Services
             }
             catch (Exception ex)
             {
-                return Problem<ImportResultModel>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
+                return TaskProblem<ImportResultModel>(HttpStatusCode.FailedDependency, uploadExcelFileDto.CurrrentTaskId, ErrorCodes.SystemError.GetEnumDescription(), ex);
             }
-            
+
             if (dt.Rows.Count == 0)
             {
                 return Problem<ImportResultModel>(HttpStatusCode.BadRequest, ErrorCodes.DataNotFound.GetEnumDescription());
@@ -71,8 +71,8 @@ namespace Flex.Application.Services
                 dt = dt,
                 statuscode = statuscode,
                 OrderId = orderId,
-                TableName= model.ContentModel.TableName
-            }, 
+                TableName = model.ContentModel.TableName
+            },
             ErrorCodes.DataInsertSuccess.GetEnumDescription());
         }
     }

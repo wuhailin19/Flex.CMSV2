@@ -78,6 +78,51 @@ function GetMsgCount() {
         }
     })
 }
+function getTaskList() {
+    ajaxHttp({
+        url: api + 'Task/GetAllTaskList',
+        type: 'get',
+        success: function (res) {
+            var jsondata = res.content;
+            var htmlstr = '';
+            if (jsondata.length == 0) {
+                htmlstr = "<p>暂无数据</p>";
+                $('.otherlist').html(htmlstr);
+                return;
+            }
+            for (var i = 0; i < jsondata.length; i++) {
+                htmlstr+="<li class=\"otheritem\">";
+                htmlstr += "<span>" + jsondata[i].Name+"</span>";
+                htmlstr += "<span>" + jsondata[i].StatusString +"</span>";
+                htmlstr += "<span>" + jsondata[i].Percent +"%</span>";
+                htmlstr += "<span>" + jsondata[i].Desc +"</span>";
+                htmlstr += "<span>" + jsondata[i].AddTime +"</span>";
+                htmlstr+="</li>";
+            }
+            $('.otherlist').html(htmlstr);
+        }
+    })
+}
+function GetRunningTaskCount() {
+    ajaxHttp({
+        url: api + "Task/GetWaittingTaskCount",
+        type: 'Get',
+        dataType: 'json',
+        success: function (res) {
+            if (res.code == 200) {
+                if (res.content != 0) {
+                    $('.task_extension').html('<span class="email_num">' + res.content + '</span>');
+                } else {
+                    tips.closeProgressbox();
+                    $('.task_extension').html('');
+                }
+            }
+        }, complete: function () {
+            //setTimeout(function () { GetMsgCount() }, 5000)
+        }
+    })
+}
+
 ajaxHttp({
     url: api + "Common/getDataStr",
     type: 'Get',
@@ -95,6 +140,7 @@ ajaxHttp({
     }
 })
 GetMsgCount();
+getTaskList();
 function InitAdmin() {
     ajaxHttp({
         url: api + 'Admin/getLoginInfo',

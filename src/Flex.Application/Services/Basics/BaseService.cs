@@ -19,6 +19,10 @@ namespace Flex.Application.Services
                 throw new AopHandledException(detail, exception);
             throw new WarningHandledException(detail, exception);
         }
+        protected ProblemDetails<T> TaskProblem<T>(HttpStatusCode? statusCode, long taskId, string detail = null, Exception exception = null)
+        {
+            throw new TaskHandledException(detail, taskId, exception);
+        }
         protected ProblemDetails<T> Problem<T>(HttpStatusCode? statusCode, T Content, string detail = null) => new ProblemDetails<T>(statusCode, Content, detail);
         public BaseService(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims)
         {

@@ -7,6 +7,7 @@
     .withAutomaticReconnect([0, 2000, 10000, 30000]) //配置重连策略，按次数递增，此处单位为毫秒
     .build();
 connection.on("ReceiveProgress", (progress) => {
+    GetRunningTaskCount();
     //tips.showSuccess(progress);
     // 更新进度条或其他UI元素
 });
@@ -14,8 +15,8 @@ connection.on("ExportCompleted", (message) => {
     tips.showSuccess(message);
     GetMsgCount();
     tips.closeProgressbox();
+    GetRunningTaskCount();
     getTaskList();
-
     // 处理导出完成的逻辑
 });
 
@@ -25,6 +26,8 @@ connection.on("SendProgress", (message) => {
 });
 connection.on("ExportError", (message) => {
     tips.showFail(message);
+    tips.closeProgressbox();
+    getTaskList();
     // 处理导出完成的逻辑
 });
 connection.onreconnecting((error) => {
@@ -52,13 +55,4 @@ connection.start()
     .catch(err => console.error("SignalR连接失败: ", err));
 var conn_signalr_id = undefined;
 
-function getTaskList() {
-    ajaxHttp({
-        url: api + 'Task/GetAllTaskList',
-        type: 'get',
-        success: function (res) {
-            console.log(res);
-        }
-    })
-}
-getTaskList();
+

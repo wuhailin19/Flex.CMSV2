@@ -8,8 +8,8 @@ html { background-color: rgb(233, 233, 235); color: #666 }
 .layui-layout-admin .layui-header .layui-nav .layui-nav-child a { color: #333 }
 .layui-layout-admin .layui-side { width: 170px; top: 49px; z-index: 1001 }
 .layui-layout-admin .layui-header .layui-nav .layui-nav-item, .layui-layout-admin .layui-logo { height: 50px; line-height: 50px }
-.layui-layout-admin .layui-logo { position: fixed; left: 0; top: 0; z-index: 1002; width: 220px; height: 49px; padding: 0 15px; box-sizing: border-box; overflow: hidden; font-weight: 300; background-repeat: no-repeat; background-position: center center }
-.layadmin-pagetabs, .layui-layout-admin .layui-body, .layui-layout-admin .layui-footer, .layui-layout-admin .layui-layout-left { left: 200px }
+.layui-layout-admin .layui-logo { position: fixed; left: 0; top: 0; z-index: 1002; width: 170px; height: 49px; padding: 0 15px; box-sizing: border-box; overflow: hidden; font-weight: 300; background-repeat: no-repeat; background-position: center center }
+.layadmin-pagetabs, .layui-layout-admin .layui-body, .layui-layout-admin .layui-footer, .layui-layout-admin .layui-layout-left { left: 155px }
 .layadmin-pagetabs { position: fixed; top: 50px; right: 0; z-index: 999 }
 .layadmin-pagetabs .layui-breadcrumb { padding: 0 15px }
 .layui-layout-admin .layui-body { position: fixed; top: 90px; bottom: 0 }
@@ -44,12 +44,15 @@ html { background-color: rgb(233, 233, 235); color: #666 }
 .layadmin-note .layui-layer-content { padding: 0 }
 .layadmin-note textarea { display: block; width: 300px; height: 132px; min-width: 300px; min-height: 132px; line-height: 20px; padding: 10px 20px; border: none; box-sizing: border-box; color: #666; word-wrap: break-word }
 .layui-layout-admin .layui-layout-left { padding: 0 10px }
-.layui-layout-admin .layui-layout-left .layui-nav-item { margin: 0 20px }
+.layui-layout-admin .layui-layout-left .layui-nav-item { padding: 0 20px; position: relative; }
+.layui-layout-admin .layui-layout-left .layui-nav-item.active { background: rgb(102, 177, 255) }
+.layui-layout-admin .layui-layout-left .layui-nav-item::before { content: ''; opacity: 0; position: absolute; bottom: 0 !important; height: 3px; background-color: rgb(102, 177, 255); width: 80%; left: 10%; }
+.layui-layout-admin .layui-layout-left .layui-nav-item:hover::before { opacity: 1; }
 .layui-layout-admin .layui-input-search { display: inline-block; vertical-align: middle; height: 32px; border: none; cursor: text }
 .layui-layout-admin .layui-layout-left a, .layui-layout-admin .layui-layout-right { padding: 0 }
 .layui-header .layui-nav-item .layui-icon { position: relative; top: 1px; font-size: 16px }
 .layui-header .layui-layout-right .layui-badge-dot { margin-left: 0 }
-.layui-header .layui-nav .layui-this:after, .layui-layout-admin .layui-header .layui-nav-bar { top: 0 !important; bottom: auto; height: 3px; background-color: #fff; background-color: rgba(255,255,255,.3) }
+.layui-header .layui-nav .layui-this:after, .layui-layout-admin .layui-header .layui-nav-bar { display: none; top: 0 !important; bottom: auto; height: 3px; background-color: #fff; background-color: rgba(255,255,255,.3) }
 .layadmin-body-shade { position: fixed; display: none; left: 0; right: 0; top: 0; bottom: 0; background-color: rgba(0,0,0,.3); z-index: 1000 }
 .layui-side-menu .layui-side-scroll { width: 240px }
 .layui-side-menu .layui-nav { width: 220px; margin-top: 50px; background: 0 0 }
@@ -262,14 +265,14 @@ html { background-color: rgb(233, 233, 235); color: #666 }
 .layadmin-tips .layui-text { width: 500px; margin: 30px auto; padding-top: 20px; border-top: 5px solid #009688; font-size: 16px }
 .layadmin-tips h1 { font-size: 100px; line-height: 100px; color: #009688 }
 .layadmin-tips .layui-text .layui-anim { display: inline-block }
-.layui-layout-admin .layui-body{left:170px}
+.layui-layout-admin .layui-body { left: 170px }
 
 @media screen and (max-width:768px) {
     .layadmin-panel-selection { margin: 0; width: auto }
     .layui-body .layui-nav .layui-nav-item { display: block }
     .layui-layout-admin .layui-body .layadmin-tabsbody-item { -webkit-overflow-scrolling: touch; overflow: auto }
-    .layui-layout-admin .layui-body { top: 50px; left:0px;}
+    .layui-layout-admin .layui-body { top: 50px; left: 0px; }
 }
 
 
-#translate{position:fixed;z-index:11111111111;}
+#translate { position: fixed; z-index: 11111111111; }

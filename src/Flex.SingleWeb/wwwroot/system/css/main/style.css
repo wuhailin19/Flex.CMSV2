@@ -7,11 +7,13 @@
 .layui-nav-item a.changesite { display: flex; }
 .changesite a { padding: 0 20px !important; }
 .changesite .layui-nav-more { display: none; }
-.changesitebox { color: #000; min-width: 80px;  }
-.changesitebox dd { text-align: center; cursor: pointer;padding: 0 5px }
+.changesitebox { color: #000; min-width: 80px; }
+.changesitebox dd { text-align: center; cursor: pointer; padding: 0 5px }
 .changesitebox dd:hover { background-color: #eee; }
 .email_extension { font-size: 22px !important; position: relative; }
 .email_extension .email_num { color: #fff !important; font-size: 10px; position: absolute; background-color: red; width: 20px; height: 20px; border-radius: 10px; right: -10px; top: -10px; line-height: 20px; text-align: center; }
+.task_extension { font-size: 22px !important; position: relative; }
+.task_extension .email_num { color: #fff !important; font-size: 10px; position: absolute; background-color: red; width: 20px; height: 20px; border-radius: 10px; right: -10px; top: -10px; line-height: 20px; text-align: center; }
 .messagebox { position: absolute; left: 50%; background: #fff; z-index: 10000; border: solid #f1f1f1; display: none; }
 .messagebox a.rabbit_email { padding: 5px 15px 5px 15px; display: block; font-size: 16px; color: #535353 }
 .messagebox .layui-icon { color: darkcyan }
@@ -23,7 +25,6 @@
 .layui-layout-admin .layui-side.active .layui-nav .layui-nav-item a { padding: 0; }
 .layui-layout-admin .layui-side.active .layui-nav-item a i { width: 50px; text-align: center; background: #2f363c; height: 60px; line-height: 60px; }
 .layui-bg-black.active .layui-nav-tree .layui-nav-item a { background-color: unset; height: 60px; line-height: 60px; }
-
 
 /*.layui-bg-black.active { background-color: unset !important; }*/
 .layui-bg-black.active .layui-nav-tree .layui-nav-child a i { background-color: #000; }
@@ -51,12 +52,37 @@
 .layui_menu_tree i.layui-icon { font-size: 16px; display: inline-block; width: 28px; }
 .layui-layout-admin .layui-logo { text-align: left; }
 .choosesite { padding-right: 5px; }
-/*@keyframes slideIn {
-  from {
-    transform: translateX(30%);*/ /* 从下面移入 */
-/*}
-  to {
-    transform: translateX(0%);*/ /* 移动到正常位置 */
-/*}
-}*/
 
+@keyframes slideIn {
+    from { transform: translateY(30%); /*从下面移入*/ }
+    to { transform: translateY(0%); /*移动到正常位置*/ }
+}
+
+.hide_box { display: none; width: 500px; height: 300px; border: 1px solid rgba(0, 0, 0, .1); padding: 5px; background: #fff; position: fixed; color: #000; box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);}
+
+.hide_box.active { display: block; animation: slideIn 0.2s ease-out;}
+.hide_box.clickactive { display: block; animation: slideIn 0.2s ease-out;}
+.hide_box .task-title { width: 100%; line-height: 20px; padding: 5px; position: absolute; top: 0; left: 0; border-bottom: 1px solid #eee; box-sizing: border-box; }
+.hide_box .task-list { width: 100%; margin-top: 31px; }
+.hide_box .task-list .headitem { display: flex; line-height: 20px; background: rgb(102, 177, 255); color: #fff; }
+.hide_box .task-list .headitem span { width: 18%; text-align: center; padding: 2px; border: 1px solid #eee; box-sizing: border-box; }
+.hide_box .task-list .headitem span:last-child { width: 28%; }
+
+
+.hide_box .task-list .otherlist { height: 233px; overflow-y: scroll; scrollbar-width:auto;}
+.hide_box .task-list .otherlist::-webkit-scrollbar{width:5px;}
+.hide_box .task-list .otherlist .otheritem { display: flex; line-height: 20px; }
+.hide_box .task-list .otherlist .otheritem span { width: 18%; text-align: center; padding: 2px; border: 1px solid #eee; box-sizing: border-box; }
+.hide_box .task-list .otherlist .otheritem span:last-child { width: 28%; }
+.hide_box .task-list .otherlist p { text-align: center; }
+.slidedown { display: none; }
+.slidedown.active { transform: rotate(180deg); }
+
+@media screen and (max-width:768px) {
+    li.layui-nav-item.topdatetime { display: none; }
+    .slidedown { display: inline-block; }
+    #sitename { display: none; }
+    ul.layui-nav.layui-layout-left { display: none; animation: slideIn 0.35s ease-out; }
+    ul.layui-nav.layui-layout-left.active { display: block; transition: 0.35s; top: 50px; background-color: #20222A !important; width: 100%; }
+    .hide_box { width: 99%; left: 0; box-sizing: border-box; }
+}

@@ -4,7 +4,7 @@ html, body, .main { width: 100%; height: 100%; margin: 0px; padding: 0px; overfl
 .email_title { width: 100%; height: calc(100% - 56px); overflow-y: scroll; }
 .email_title li { position: relative; width: 100%; padding: 4% 1% 4% 3%; font-size: 12px; /* height: 70px; */ overflow: hidden; /* line-height: 50px; */ background-color: #f1f1f1; list-style: none; color: #666; border: 5px solid #fff; box-sizing: border-box; }
 .email_title li.active, .email_title li:hover { color: #fff; background-color: #666; transition: .35s; cursor: pointer; }
-.email_title li.new::before { position: absolute; right: 2%; content: '未读'; color: #fff; font-size: 12px; /* font-weight: bold; */ top: 5%; /* line-height: 1; */ width: 19%; height: 16px; border-radius: 5px; background: rgb(102, 177, 255); text-align: center; line-height: 16px; font-family: 微软雅黑; }
+.email_title li.new::before { position: absolute; right: 2%; content: '未读'; color: #fff; font-size: 12px; /* font-weight: bold; */ top: 5%; /* line-height: 1; */ width: 19%; height: 16px; border-radius: 5px; background: rgb(102, 177, 255); text-align: center; line-height: 16px; font-family: 微软雅黑; overflow:hidden;}
 .email_title li .title_box { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 80%; display: inline-block; font-size: 12px; }
 /* 滚动条样式 IE支持*/ html { scrollbar-arrow-color: #f0f0f0; font-family: 微软雅黑; scrollbar-darkshadow-color: #f0f0f0; scrollbar-face-color: #cdcdcd; scrollbar-base-color: #f0f0f0; scrollbar-shadow-color: #f0f0f0; scrollbar-track-color: #f0f0f0; scrollbar-3dlight-color: #f0f0f0; }
 ::-webkit-scrollbar { /*滚动条整体样式*/ width: 1px; /*高宽分别对应横竖滚动条的尺寸*/ height: 5px; }
@@ -25,6 +25,7 @@ span.timespan { /* position: absolute; */ /* right: 10px; */ font-size: 10px; bo
 .excelicon img { width: 20px; }
 
 @media screen and (max-width:768px) {
-    .right_box_title { height: 100px; }
+    .right_box_title { height: 100px; padding:3%;}
     .email_title { height: calc(100% - 90px); }
+    .content_desc{padding:3%;}
 }

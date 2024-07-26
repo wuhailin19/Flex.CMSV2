@@ -173,6 +173,8 @@ app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
     return Task.CompletedTask;
 });
 
+
+
 //跨域需要放到最前面，对静态文件才生效
 app.UseCors(WebCoreSetupExtension.MyAllowSpecificOrigins);
 //重写放到StaticFiles前面

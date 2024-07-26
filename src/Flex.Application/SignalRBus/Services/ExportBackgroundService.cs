@@ -55,20 +55,24 @@ namespace Flex.Application.SignalRBus.Services
             {
                 await _exportQueue.ProcessQueueAsync(ExportDataTableInChunks, stoppingToken);
             }
+            catch (TaskHandledException ex)
+            {
+                _logger.LogError(ex.Format(), "任务处理时发生错误");
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "任务处理时发生错误");
+                _logger.LogError(ex.Format(), "任务处理时发生错误");
             }
         }
 
 
         public async Task ExportDataTableInChunks(ExportRequestModel requestmodel)
         {
-            _taskServices.UpdateTaskStatus(requestmodel, GlobalTaskStatus.Running, "正在整理数据", 0);
+            _taskServices.UpdateTaskStatus(requestmodel, GlobalTaskStatus.Start, "正在整理数据", 0);
 
             await _hubContext.SendProgress(requestmodel.UserId, $"正在整理数据");
 
-            int pageSize = 50000; // 每次处理的行数
+            int pageSize = 10000; // 每次处理的行数
             int pageIndex = 1; // 分页索引
             bool moreData = true;
             int fileIndex = 0;
@@ -78,7 +82,7 @@ namespace Flex.Application.SignalRBus.Services
 
             if (!Directory.Exists(basePath))
                 Directory.CreateDirectory(basePath);
-            
+
             while (moreData)
             {
                 requestmodel.limit = pageSize;
@@ -87,6 +91,7 @@ namespace Flex.Application.SignalRBus.Services
                 if (!resultmodel.IsSuccess)
                 {
                     await _hubContext.SendError(requestmodel.UserId, resultmodel.Detail);
+                    _taskServices.UpdateTaskStatus(requestmodel, GlobalTaskStatus.Ending, "没有数据", 0);
                     await Task.CompletedTask;
                     return;
                 }
@@ -115,12 +120,13 @@ namespace Flex.Application.SignalRBus.Services
                         $"<img src=\"/scripts/layui/module/filemanage/ico/xlsx.png\"/>" +
                         $"</span>{currentfileName}</a><br/>";
                 }
-                Remaining += pageSize <= resultmodel.Content.recount ? pageSize : resultmodel.Content.recount;
+                Remaining += pageSize;
+                Remaining = Remaining <= resultmodel.Content.recount ? Remaining : resultmodel.Content.recount;
                 var percent = Math.Round((Remaining / resultmodel.Content.recount * 100), 2);
 
                 await _hubContext.SendProgress(requestmodel.UserId, $"已导出{percent}%");
 
-                _taskServices.UpdateTaskStatus(requestmodel, GlobalTaskStatus.Running, "已导出", percent);
+                _taskServices.UpdateTaskStatus(requestmodel, GlobalTaskStatus.Running, "正在导出", percent);
 
                 pageIndex++;
             }
@@ -128,7 +134,7 @@ namespace Flex.Application.SignalRBus.Services
             //发送消息给自己
             await _messageServices.SendExportMsg("导出文件", msgcontent, _hubContext.GetClaims(requestmodel.UserId));
             await _hubContext.NotifyCompletion(requestmodel.UserId, "导出任务完成");
-            _taskServices.UpdateTaskStatus(requestmodel, GlobalTaskStatus.Running, "导出完成", 100);
+            _taskServices.UpdateTaskStatus(requestmodel, GlobalTaskStatus.Ending, "导出完成", 100);
         }
     }
 }

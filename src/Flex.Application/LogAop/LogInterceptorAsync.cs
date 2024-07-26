@@ -88,6 +88,11 @@ namespace Flex.Application.Aop
                     LogExecuteInfo(invocation, JsonHelper.ToJson(invocation.ReturnValue, NamingType.CamelCase, false));//记录日志
                 }
             }
+            catch (TaskHandledException ex)
+            {
+
+                throw;
+            }
             catch (AopHandledException ex)
             {
                 LogExecuteError(ex, invocation, out string msg);
@@ -138,10 +143,16 @@ namespace Flex.Application.Aop
                     LogExecuteInfo(invocation, "返回值过长，不予记录");
                 }
                 else
-                { 
+                {
                     LogExecuteInfo(invocation, JsonHelper.ToJson(result, NamingType.CamelCase, false));
                 }
                 return result;
+            }
+            catch (TaskHandledException ex)
+            {
+                _logger.LogError(JsonHelper.ToJson(ex));
+                Task<TResult> task = (Task<TResult>)invocation.ReturnValue;
+                return await task;
             }
             catch (AopHandledException ex)
             {

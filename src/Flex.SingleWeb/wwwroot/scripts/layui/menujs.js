@@ -91,12 +91,12 @@ layui.use('element', function () {
     element.on('tabAdd(main_content)', function () {
 
     });
-    ////点击主页
-    //$('.first-tab-title').on('click', function () {
-    //    element.tabChange('main_content', '0_0_0');
-    //    var src = $(".layui-tab-item.layui-show").find("iframe").attr("src");
-    //    $(".layui-tab-item.layui-show").find("iframe").attr("src", src);
-    //})
+    //点击主页
+    $('.admin_useravatar').on('click', function () {
+        element.tabChange('main_content', '0_0_0');
+        //var src = $(".layui-tab-item.layui-show").find("iframe").attr("src");
+        //$(".layui-tab-item.layui-show").find("iframe").attr("src", src);
+    })
     //刷新当前选项卡
     $('.refresh').on('click', function () {
         var content = $(".layui-tab-item.layui-show").html();
@@ -121,6 +121,20 @@ layui.use('element', function () {
             }
         });
         $('.messagebox').hide();
+    })
+    $('.taskevent').click(function () {
+        $(this).toggleClass('active');
+        $('.hide_box').toggleClass('clickactive')
+    })
+    $('.hide_box,.taskevent').on("mouseenter", function () {
+        $('.hide_box').addClass('active');
+    })
+    $('.hide_box,.taskevent').on('mouseleave', function () {
+        $('.hide_box').removeClass('active');
+    })
+    $('.slidedown').click(function () {
+        $(this).toggleClass('active');
+        $('ul.layui-nav.layui-layout-left').toggleClass('active');
     })
     var items = new Array();
     items[0] = undefined;

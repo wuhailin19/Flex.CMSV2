@@ -22,7 +22,8 @@
         <div class="layui-header">
             <div class="layui-logo">
                 <img src="" class="layui-nav-img admin_useravatar" />
-                <span id="sitename">后台管理系统</span>
+                <span id="sitename"></span>
+                <span class="iconfont iconGroup slidedown"></span>
             </div>
             <!-- Header -->
             <ul class="layui-nav layui-layout-left">
@@ -48,6 +49,30 @@
                         </i>
                     </a>
                 </li>
+                <li class="layui-nav-item taskevent" lay-unselect>
+                    <a href="javascript:;" layadmin-event="task" title="任务">
+                        <i class="layui-icon layui-icon-speaker task_extension">
+                            <span class="task_num"></span>
+                        </i>
+                    </a>
+                    <div class="hide_box">
+                        <div class="task-title">
+                            任务列表
+                        </div>
+                        <ul class="task-list">
+                            <li class="headitem">
+                                <span>任务名</span>
+                                <span>任务状态</span>
+                                <span>任务进度</span>
+                                <span>任务详情</span>
+                                <span>加入时间</span>
+                            </li>
+                            <ol class="otherlist">
+                                
+                            </ol>
+                        </ul>
+                    </div>
+                </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;" layadmin-event="changesite" class="changesite" title="切换站点">
                         <div class="choosesite"></div>
@@ -58,7 +83,7 @@
                 </li>
             </ul>
             <ul class="layui-nav layui-layout-right">
-                <li class="layui-nav-item">今天是：<span id="datetime"></span></li>
+                <li class="layui-nav-item topdatetime">今天是：<span id="datetime"></span></li>
                 <li class="layui-nav-item">
                     <a href="javascript:;">
                         <img src="" class="layui-nav-img admin_useravatar" />

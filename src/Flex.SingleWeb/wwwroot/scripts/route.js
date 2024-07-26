@@ -162,6 +162,8 @@ var tips = {
         layer.close(tips.index);
     },
     closeProgressbox: function () {
-        global_notice.clear();
+        setTimeout(function () { 
+            global_notice.clear();
+        }, 3000)
     }
 }

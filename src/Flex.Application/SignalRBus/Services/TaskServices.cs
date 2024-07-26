@@ -73,6 +73,7 @@ namespace Flex.Application.SignalRBus.Services
                             Percent = Percent,
                             Status = task.Status,
                             Name = task.Name,
+                            Desc = task.Desc,
                             StatusString = task.StatusString,
                             AddTime = task.AddTime
                         };
@@ -99,6 +100,7 @@ namespace Flex.Application.SignalRBus.Services
                             TaskId = model.CurrrentTaskId,
                             TaskCate = task.TaskCate,
                             Status = newStatus,
+                            Name = task.Name,
                             Percent = Percent != -1 ? Percent : task.Percent,
                             Desc = Desc.IsNullOrEmpty() ? task.Desc : Desc,
                             StatusString = newStatus.GetEnumDescription(),

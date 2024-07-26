@@ -1,4 +1,5 @@
-﻿using Flex.Application.Contracts.ISignalRBus.IServices;
+﻿using Flex.Application.Contracts.ISignalRBus.Enum;
+using Flex.Application.Contracts.ISignalRBus.IServices;
 using Flex.Application.Contracts.ISignalRBus.Queue;
 using Flex.Core.Config;
 using Flex.Core.Extensions.CommonExtensions;
@@ -25,6 +26,7 @@ namespace Flex.Application.SignalRBus.Services
         string basePath = string.Empty;
         MyContext _sqlsugar;
         ISqlTableServices _sqlTableServices;
+        private ITaskServices _taskServices;
 
         /// <summary>
         /// 文件储存位置
@@ -39,6 +41,7 @@ namespace Flex.Application.SignalRBus.Services
             , IMessageServices messageServices
             , IColumnContentServices contentServices
             , MyContext myContext
+            , ITaskServices taskServices
             , ISqlTableServices sqlTableServices
             )
         {
@@ -51,6 +54,7 @@ namespace Flex.Application.SignalRBus.Services
             _contentServices = contentServices;
             _sqlsugar = myContext;
             _sqlTableServices = sqlTableServices;
+            _taskServices = taskServices;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -60,14 +64,20 @@ namespace Flex.Application.SignalRBus.Services
             {
                 await _importQueue.ProcessQueueAsync(ImportDataTableInChunks, stoppingToken);
             }
+            catch (TaskHandledException ex)
+            {
+                _logger.LogError(ex.Format(), "任务处理时发生错误");
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "任务处理时发生错误");
+                _logger.LogError(ex.Format(), "任务处理时发生错误");
             }
         }
 
         public async Task ImportDataTableInChunks(ImportRequestModel uploadExcelFileDto)
         {
+            _taskServices.UpdateTaskStatus(uploadExcelFileDto, GlobalTaskStatus.Start, "正在准备导入", 0);
+
             await _hubContext.SendProgress(uploadExcelFileDto.UserId, $"正在准备导入");
 
             var timelist = new List<string>();
@@ -89,6 +99,7 @@ namespace Flex.Application.SignalRBus.Services
             int recordIndex = 1;
             var allcount = dt.Rows.Count;
             var Remaining = 0m;
+            var pageSize = 2000;//单次导入条数
 
             foreach (DataRow dr in dt.Rows)
             {
@@ -130,8 +141,14 @@ namespace Flex.Application.SignalRBus.Services
                     insertSqls = new List<string>();
                     hashtable = new Hashtable();
                     allParameters = new List<SugarParameter>();
-                    Remaining += 2000;
-                    await _hubContext.SendProgress(uploadExcelFileDto.UserId, $"已导入{(Remaining / allcount * 100):F2}%");
+
+                    Remaining += pageSize;
+                    Remaining = Remaining <= allcount ? Remaining : allcount;
+                    var percent = Math.Round((Remaining / allcount * 100), 2);
+
+                    await _hubContext.SendProgress(uploadExcelFileDto.UserId, $"已导入{percent}%");
+
+                    _taskServices.UpdateTaskStatus(uploadExcelFileDto, GlobalTaskStatus.Running, "正在导入", percent);
                 }
             }
             try
@@ -147,6 +164,8 @@ namespace Flex.Application.SignalRBus.Services
 
             await _messageServices.SendExportMsg("导入成功", $"共导入{allcount}条数据，耗时{(endtime - starttime).TotalSeconds}秒", _hubContext.GetClaims(uploadExcelFileDto.UserId));
             await _hubContext.NotifyCompletion(uploadExcelFileDto.UserId, "导入任务完成");
+
+            _taskServices.UpdateTaskStatus(uploadExcelFileDto, GlobalTaskStatus.Ending, "导入完成", 100);
         }
         #region 弃用
         //if (errorlist.Count > 0)

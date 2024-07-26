@@ -11,7 +11,7 @@ namespace Flex.Application.Contracts.ISignalRBus.Model
     {
         public long TaskId { get; set; }
         public string Name { get; set; }
-        public string Desc { get; set; }
+        public string Desc { get; set; } = "等待中";
         public GlobalTaskStatus Status { get; set; }
         /// <summary>
         /// 进度

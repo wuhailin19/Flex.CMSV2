@@ -5,6 +5,7 @@ using Flex.Application.Contracts.ISignalRBus.Queue;
 using Flex.Application.SignalRBus.Services;
 using Flex.Domain.Dtos.SignalRBus.Model.Request;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Flex.Application.SignalRBus.Queue
 {
@@ -22,7 +23,7 @@ namespace Flex.Application.SignalRBus.Queue
             if (item == null) throw new ArgumentNullException(nameof(item));
 
 
-            _serviceProvider.GetRequiredService<ITaskServices>().UpdateTaskStatus(item, GlobalTaskStatus.Running);
+            _serviceProvider.GetRequiredService<ITaskServices>().UpdateTaskStatus(item, GlobalTaskStatus.Waiting);
             // 添加任务到队列
             _queue.Enqueue(item);
             _signal.Release(); // 释放信号，表示有新请求
@@ -52,6 +53,7 @@ namespace Flex.Application.SignalRBus.Queue
                     catch (Exception ex)
                     {
                         _serviceProvider.GetRequiredService<ITaskServices>().UpdateTaskStatus(item, GlobalTaskStatus.Ending, "出错");
+                        throw;
                     }
                     finally
                     {
@@ -62,6 +64,5 @@ namespace Flex.Application.SignalRBus.Queue
                 }
             }
         }
-
     }
 }

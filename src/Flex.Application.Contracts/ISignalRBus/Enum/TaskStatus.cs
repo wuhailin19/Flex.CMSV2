@@ -9,6 +9,8 @@ namespace Flex.Application.Contracts.ISignalRBus.Enum
 {
     public enum GlobalTaskStatus
     {
+        [Description("准备开始")]
+        Start,
         [Description("等待中")]
         Waiting,
         [Description("运行中")]

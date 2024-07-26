@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Flex.Application.ContentModel;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Application.Contracts.ISignalRBus.Model;
 using Flex.Dapper;
 using Flex.Domain.Dtos.ColumnContent;
 using Flex.Domain.Dtos.Role;
@@ -8,6 +9,7 @@ using Flex.Domain.Dtos.SignalRBus.Model.Request;
 using Flex.Domain.Dtos.System.ColumnContent;
 using Flex.Domain.Dtos.System.ContentModel;
 using Flex.Domain.Dtos.System.TableRelation;
+using Flex.Domain.Dtos.System.Upload;
 using Flex.Domain.Dtos.WorkFlow;
 using Flex.Domain.WhiteFileds;
 
@@ -107,17 +109,24 @@ namespace Flex.Application.Services
             string swhere = string.Empty;
             _sqlTableServices.CreateSqlSugarColumnContentSelectSql(_mapper.Map<ContentPageListParamDto>(contentPageListParam), out swhere, out parameters);
             int recount = 0;
-            var result =  _sqlsugar.GetPageDataList(
+            try
+            {
+                var result = _sqlsugar.GetPageDataList(
                 contentPageListParam.page,
                 contentPageListParam.limit,
                 "select " + filed.GetCurrentBaseField()
                 + " from " + contentmodel.TableName
-                + " where " + StatusCodeExpression + swhere + " order by OrderId desc",ref recount, parameters);
+                + " where " + StatusCodeExpression + swhere + " order by OrderId desc", ref recount, parameters);
 
-            if(result.Rows.Count==0)
-                return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.BadRequest, resultmodel, ErrorCodes.DataNotFound.GetEnumDescription());
-            resultmodel.result = result;
-            resultmodel.recount = recount;
+                if (result.Rows.Count == 0)
+                    return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.BadRequest, resultmodel, ErrorCodes.DataNotFound.GetEnumDescription());
+                resultmodel.result = result;
+                resultmodel.recount = recount;
+            }
+            catch (Exception ex)
+            {
+                return TaskProblem<ContentExportExcelDto>(HttpStatusCode.FailedDependency, contentPageListParam.CurrrentTaskId, ErrorCodes.SystemError.GetEnumDescription(), ex);
+            }
             return new ProblemDetails<ContentExportExcelDto>(HttpStatusCode.OK, resultmodel);
         }
         /// <summary>
