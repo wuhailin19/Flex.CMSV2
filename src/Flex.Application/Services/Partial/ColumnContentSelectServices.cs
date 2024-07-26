@@ -90,7 +90,7 @@ namespace Flex.Application.Services
                 resultmodel.ExcelName = column.Name + "_" + contentmodel.Name;
             }
 
-            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == contentPageListParam.ModelId)).ToList();
+            var fieldmodel = (await _unitOfWork.GetRepository<sysField>().GetAllAsync(m => m.ModelId == contentPageListParam.ModelId)).OrderBy(m=>m.OrderId).ToList();
             string filed = ColumnContentUpdateFiledConfig.defaultFields;
             resultmodel.filedModels = ContentModelHelper.defaultfileds.ToList();
             foreach (var item in fieldmodel)
