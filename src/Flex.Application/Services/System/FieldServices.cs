@@ -25,7 +25,7 @@ namespace Flex.Application.Services
         }
         public async Task<IEnumerable<FieldColumnDto>> ListAsync(int Id)
         {
-            var list = (await responsity.GetAllAsync(m => m.ModelId == Id)).ToList();
+            var list = (await responsity.GetAllAsync(m => m.ModelId == Id)).OrderBy(m => m.OrderId).ToList();
             return _mapper.Map<List<FieldColumnDto>>(list);
         }
         public async Task<ProblemDetails<string>> Add(AddFieldDto model)

@@ -77,7 +77,7 @@ namespace Flex.Application.Services
             var deletefiledlist = new List<sysField>();
             try
             {
-                var fullfiledlist = (await filedresponsity.GetAllAsync(m => m.ModelId == model.Id)).ToList();
+                var fullfiledlist = (await filedresponsity.GetAllAsync(m => m.ModelId == model.Id)).OrderBy(m=>m.OrderId).ToList();
                 #region 对结果集进行分组
                 foreach (var item in fileds)
                 {
