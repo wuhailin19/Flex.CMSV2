@@ -13,8 +13,54 @@ namespace Flex.Application.SignalRBus.Services
             _hubContext = hubContext;
         }
 
-        public ConnectionModel GetClaims(long userId) {
-           var model= ExportHub.GetConnectionModel(userId);
+        public ConnectionModel GetConnectionModel(long userId)
+        {
+            if (ExportHub.UserConnections.TryGetValue(userId, out var connectionModel))
+            {
+                return connectionModel;
+            }
+            return null;
+        }
+        public bool ValidateUser(long userId)
+        {
+            var connectionModel = GetConnectionModel(userId);
+            if (connectionModel != null)
+            {
+                if (connectionModel.ExpiryTime > DateTime.UtcNow)
+                {
+                    // 用户存在且未过期
+                    return true;
+                }
+                else
+                {
+                    // 连接已过期，移除用户
+                    RemoveUser(userId);
+                }
+            }
+            // 用户不存在或连接已过期
+            return false;
+        }
+
+        /// <summary>
+        /// 让用户下线
+        /// </summary>
+        /// <param name="userId"></param>
+        public void RemoveUser(long userId)
+        {
+            ExportHub.UserConnections.TryRemove(userId, out var removedModel);
+            if (removedModel != null)
+            {
+                foreach (var connectionId in removedModel.ConnectionId)
+                {
+                    // 这里可以执行额外的清理操作，例如通知其他组件用户下线等
+                }
+            }
+        }
+
+
+        public ConnectionModel GetClaims(long userId)
+        {
+            var model = ExportHub.GetConnectionModel(userId);
             return model != null ? model : null;
         }
 

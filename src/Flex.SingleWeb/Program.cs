@@ -16,12 +16,14 @@ using Flex.Application.SignalRBus.Factory;
 using Flex.Application.SignalRBus.Hubs;
 using Flex.Application.SignalRBus.Queue;
 using Flex.Application.SignalRBus.Services;
+using Flex.Core.Config;
 using Flex.Core.Helper;
 using Flex.Domain.Dtos.SignalRBus.Model.Request;
 using Flex.SingleWeb.Components;
 using Flex.SqlSugarFactory;
 using Flex.SqlSugarFactory.UnitOfWorks;
 using Flex.WebApi.Jwt;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -70,6 +72,12 @@ builder.Services.AddEndpointsApiExplorer()
 .AddWebCoreService()
 //注册缓存
 .AddMemoryCacheSetup();
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.Strict; // 设置全局的 SameSite 策略
+    options.HttpOnly = HttpOnlyPolicy.Always;
+});
 
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<ExportBackgroundService>();
@@ -134,6 +142,8 @@ builder.Services.Configure<FormOptions>(options =>
 
 var app = builder.Build();
 
+app.UseCookiePolicy(); // 必须在其他中间件之前调用
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -173,7 +183,16 @@ app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
     return Task.CompletedTask;
 });
 
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("Content-Security-Policy", ServerConfig.Content_Security_Policy);
+    context.Response.Headers.Add("X-XSS-Protection", ServerConfig.X_XSS_Protection);
+    context.Response.Headers.Add("Strict-Transport-Security", ServerConfig.Strict_Transport_Security);
+    context.Response.Headers.Add("X-Content-Type-Options", ServerConfig.X_Content_Type_Options);
+    context.Response.Headers.Add("X-Permitted-Cross-Domain-Policies", ServerConfig.X_Permitted_Cross_Domain_Policies);
 
+    await next();
+});
 
 //跨域需要放到最前面，对静态文件才生效
 app.UseCors(WebCoreSetupExtension.MyAllowSpecificOrigins);

@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Flex.Application.Contracts.ISignalRBus.Model;
+using Flex.Core.Config;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Flex.Application.SignalRBus.Hubs
@@ -14,11 +15,13 @@ namespace Flex.Application.SignalRBus.Hubs
     public class ExportHub : Hub
     {
         IClaimsAccessor _claims;
-        private static readonly ConcurrentDictionary<long, ConnectionModel> UserConnections = new ConcurrentDictionary<long, ConnectionModel>();
+        public static readonly ConcurrentDictionary<long, ConnectionModel> UserConnections = new ConcurrentDictionary<long, ConnectionModel>();
         public ExportHub(IClaimsAccessor claims)
         {
             _claims = claims;
         }
+        
+
 
         public override async Task OnConnectedAsync()
         {
@@ -29,7 +32,9 @@ namespace Flex.Application.SignalRBus.Hubs
                 UserConnections[_claims.UserId] = new ConnectionModel { 
                     UserId = _claims.UserId, 
                     UserName = _claims.UserName, 
-                    ConnectionId = connectionId };
+                    ConnectionId = connectionId,
+                    ExpiryTime = DateTime.UtcNow.AddMinutes(ServerConfig.SignalRExpiryTime),
+                };
 
                 // 将用户加入相应的角色组
                 await Groups.AddToGroupAsync(connectionId, _claims.UserRole.ToString());

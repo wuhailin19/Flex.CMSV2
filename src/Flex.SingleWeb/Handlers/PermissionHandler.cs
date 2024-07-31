@@ -1,5 +1,6 @@
 ﻿using Flex.Application.Authorize;
 using Flex.Application.Contracts.IServices.System;
+using Flex.Application.Contracts.ISignalRBus.IServices;
 using Flex.Core.Config;
 using Flex.Core.Helper.MemoryCacheHelper;
 using Flex.Core.Timing;
@@ -20,9 +21,16 @@ namespace Flex.WebApi.Handlers
         private readonly IRoleServices _roleServices;
         private readonly ILogger<PermissionHandler> _logger;
         protected ISystemLogServices _logServices;
+        private IHubNotificationService _hubNotificationService;
         private ICaching _caching;
-        public PermissionHandler(IHttpContextAccessor Context, IClaimsAccessor claims, IRoleServices roleServices, ILogger<PermissionHandler> logger
-            , ICaching caching, ISystemLogServices logServices)
+        public PermissionHandler(
+            IHttpContextAccessor Context
+            , IClaimsAccessor claims
+            , IRoleServices roleServices
+            , ILogger<PermissionHandler> logger
+            , ICaching caching, ISystemLogServices logServices
+            , IHubNotificationService hubNotificationService
+            )
         {
             _Context = Context;
             _claims = claims;
@@ -30,10 +38,12 @@ namespace Flex.WebApi.Handlers
             _logger = logger;
             _caching = caching;
             _logServices = logServices;
+            _hubNotificationService = hubNotificationService;
         }
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
             HttpContext httpContext = _Context.HttpContext;
+            
             if (context.User.Identity?.IsAuthenticated ?? false)
             {
                 //当前接口链接
@@ -44,7 +54,16 @@ namespace Flex.WebApi.Handlers
                     CurrentSiteInfo.SiteId = httpContext.Request.Headers["siteId"].ToString().ToInt();
 
                     //Console.WriteLine("过期时间：" + DateTime.Parse(context.User.Claims.First(m => m.Type == ClaimTypes.Expiration).Value));
+                    if(_hubNotificationService.ValidateUser(_claims.UserId))
+                    {
+                        var logstr = string.Format("该用户{0}（{2}），登录已超时，链接{1}", _claims.UserName, nowurl, _claims.UserId);
+                        AddLog(logstr, nowurl);
+                        Fail(context, httpContext, StatusCodes.Status419AuthenticationTimeout);
+                        return;
+                    }
+
                     var expirationtime = DateTime.Parse(context.User.Claims.First(m => m.Type == ClaimTypes.Expiration)?.Value ?? Clock.Now.ToString());
+
                     if (expirationtime < Clock.Now)
                     {
                         var logstr = string.Format("该用户{0}（{2}），登录已超时，链接{1}", _claims.UserName, nowurl, _claims.UserId);
