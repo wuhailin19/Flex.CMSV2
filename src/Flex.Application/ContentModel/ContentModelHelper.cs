@@ -2,21 +2,14 @@
 using Flex.Domain.Dtos.System.Column;
 using Flex.Domain.Dtos.System.ContentModel;
 using Flex.SqlSugarFactory.Seed;
-using Microsoft.AspNetCore.Http;
 using ShardingCore.Extensions;
 using SqlSugar;
 using System.Data;
 using System.Linq.Expressions;
-using System.Text;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using static SKIT.FlurlHttpClient.Wechat.Api.Models.WxaGetWxaGameFrameResponse.Types.Data.Types.Frame.Types;
-using System.Collections.Generic;
-using System.Collections;
 
 namespace Flex.Application.ContentModel
 {
-    public class ContentModelHelper
+	public class ContentModelHelper
     {
         public static DataTable _column = null;
         public static DataTable _contentlist = null;

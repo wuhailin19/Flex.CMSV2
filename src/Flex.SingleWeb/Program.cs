@@ -1,6 +1,8 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
+using Azure;
+using Consul;
 using Flex.Application.Aop;
 using Flex.Application.Contracts.Exceptions;
 using Flex.Application.Contracts.ISignalRBus.IServices;
@@ -191,7 +193,10 @@ app.Use(async (context, next) =>
     context.Response.Headers.Add("X-Content-Type-Options", ServerConfig.X_Content_Type_Options);
     context.Response.Headers.Add("X-Permitted-Cross-Domain-Policies", ServerConfig.X_Permitted_Cross_Domain_Policies);
 
-    await next();
+	context.Response.Headers.Add("X-Frame-Options", ServerConfig.X_Frame_Options);
+	context.Response.Headers.Add("X-Download-Options", ServerConfig.X_Download_Options);
+	context.Response.Headers.Add("Referrer-Policy", ServerConfig.Referrer_Policy);
+	await next();
 });
 
 //跨域需要放到最前面，对静态文件才生效
@@ -240,7 +245,7 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 // 注册 SignalR Hub
-app.MapHub<ExportHub>("/exportHub");
+app.MapHub<UserHub>("/exportHub");
 
 app.Run();
 

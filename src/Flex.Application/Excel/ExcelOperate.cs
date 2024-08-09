@@ -1,102 +1,103 @@
 ﻿using Flex.Domain.Dtos.System.ContentModel;
-using OfficeOpenXml.Style;
-using OfficeOpenXml;
-using System;
-using System.Collections.Generic;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace Flex.Application.Excel
 {
-    public class ExcelOperate
+	public class ExcelOperate
     {
-        /// <summary>
-        /// 将DataTable导出为Excel
-        /// </summary>
-        /// <param name="table">DataTable数据源</param>
-        /// <param name="fileModes">字段列表</param>
-        public static MemoryStream SimpleExportToSpreadsheet(DataTable table, List<FiledModel> fileModes)
-        {
-            // 创建Excel包
-            using (var package = new ExcelPackage())
-            {
-                // 添加一个工作表
-                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
-                string thsbr = string.Empty;
-                for (int i = 0; i < fileModes.Count; i++)
-                {
-                    // 添加表头
-                    worksheet.Cells[1, i + 1].Value = fileModes[i].FiledDesc +$"-{fileModes[i].FiledName}";
-                    worksheet.Cells[1, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    worksheet.Cells[1, i + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                    worksheet.Cells[1, i + 1].Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
-                }
+		public static MemoryStream SimpleExportToSpreadsheet(DataTable table, List<FiledModel> fileModes)
+		{
+			IWorkbook workbook = new XSSFWorkbook();
+			ISheet sheet = workbook.CreateSheet("Sheet1");
 
-                for (int i = 0; i < table.Rows.Count; i++)
-                {
-                    for (int j = 0; j < fileModes.Count; j++)
-                    {
-                        worksheet.Cells[i + 2, j + 1].Value = table.Rows[i][fileModes[j].FiledName];
-                        worksheet.Cells[i + 2, j + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[i + 2, j + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                        worksheet.Cells[i + 2, j + 1].Style.Border.BorderAround(ExcelBorderStyle.Thin, System.Drawing.Color.Black);
+			// 设置表头
+			IRow headerRow = sheet.CreateRow(0);
+			for (int i = 0; i < fileModes.Count; i++)
+			{
+				ICell cell = headerRow.CreateCell(i);
+				cell.SetCellValue(fileModes[i].FiledDesc + $"-{fileModes[i].FiledName}");
+				ICellStyle headerStyle = workbook.CreateCellStyle();
+				headerStyle.Alignment = HorizontalAlignment.Center;
+				headerStyle.VerticalAlignment = VerticalAlignment.Center;
+				headerStyle.BorderTop = BorderStyle.Thin;
+				headerStyle.BorderBottom = BorderStyle.Thin;
+				headerStyle.BorderLeft = BorderStyle.Thin;
+				headerStyle.BorderRight = BorderStyle.Thin;
+				cell.CellStyle = headerStyle;
+			}
 
-                        // 如果是日期时间列，设置单元格格式
-                        if (fileModes[j].FiledMode == "date")
-                        {
-                            worksheet.Cells[i + 2, j + 1].Style.Numberformat.Format = "yyyy-mm-dd hh:mm:ss";
-                        }
-                    }
-                }
+			// 填充数据
+			for (int i = 0; i < table.Rows.Count; i++)
+			{
+				IRow row = sheet.CreateRow(i + 1);
+				for (int j = 0; j < fileModes.Count; j++)
+				{
+					ICell cell = row.CreateCell(j);
+					cell.SetCellValue(table.Rows[i][fileModes[j].FiledName]?.ToString());
+					ICellStyle cellStyle = workbook.CreateCellStyle();
+					cellStyle.Alignment = HorizontalAlignment.Center;
+					cellStyle.VerticalAlignment = VerticalAlignment.Center;
+					cellStyle.BorderTop = BorderStyle.Thin;
+					cellStyle.BorderBottom = BorderStyle.Thin;
+					cellStyle.BorderLeft = BorderStyle.Thin;
+					cellStyle.BorderRight = BorderStyle.Thin;
 
-                // 返回文件流
-                var stream = new MemoryStream();
-                package.SaveAs(stream);
-                stream.Position = 0;
-                package.Dispose();
+					// 如果是日期时间列，设置单元格格式
+					if (fileModes[j].FiledMode == "date")
+					{
+						IDataFormat format = workbook.CreateDataFormat();
+						cellStyle.DataFormat = format.GetFormat("yyyy-mm-dd hh:mm:ss");
+					}
 
-                return stream;
-            }
-        }
+					cell.CellStyle = cellStyle;
+				}
+			}
 
-        public static DataTable ImportExcelToDataTableFromStream(Stream stream)
-        {
-            var dataTable = new DataTable();
+			// 返回文件流
+			var stream = new MemoryStream();
+			workbook.Write(stream);
+			stream.Position = 0;
+			workbook.Close();
 
-            // Ensure the ExcelPackage.LicenseContext is set correctly
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+			return stream;
+		}
 
-            using (var package = new ExcelPackage(stream))
-            {
-                // Get the first worksheet
-                var worksheet = package.Workbook.Worksheets[0];
+		public static DataTable ImportExcelToDataTableFromStream(Stream stream, bool isXlsx = true)
+		{
+			DataTable dataTable = new DataTable();
+			IWorkbook workbook = isXlsx ? (IWorkbook)new XSSFWorkbook(stream) : new HSSFWorkbook(stream);
+			ISheet sheet = workbook.GetSheetAt(0);
 
-                // Get the dimensions of the worksheet
-                var rowCount = worksheet.Dimension.Rows;
-                var colCount = worksheet.Dimension.Columns;
+			// 获取表格维度
+			IRow headerRow = sheet.GetRow(0);
+			int colCount = headerRow.LastCellNum;
+			int rowCount = sheet.LastRowNum;
 
-                // Add columns to DataTable
-                for (int col = 1; col <= colCount; col++)
-                {
-                    dataTable.Columns.Add(worksheet.Cells[1, col].Text); // Assumes first row has column names
-                }
+			// 添加列
+			for (int col = 0; col < colCount; col++)
+			{
+				dataTable.Columns.Add(headerRow.GetCell(col).ToString());
+			}
 
-                // Add rows to DataTable
-                for (int row = 2; row <= rowCount; row++) // Assumes first row is header
-                {
-                    var dataRow = dataTable.NewRow();
-                    for (int col = 1; col <= colCount; col++)
-                    {
-                        dataRow[col - 1] = worksheet.Cells[row, col].Text; // or .Value.ToString() for raw value
-                    }
-                    dataTable.Rows.Add(dataRow);
-                }
-            }
+			// 添加行
+			for (int row = 1; row <= rowCount; row++) // Assumes first row is header
+			{
+				DataRow dataRow = dataTable.NewRow();
+				IRow sheetRow = sheet.GetRow(row);
 
-            return dataTable;
-        }
-    }
+				for (int col = 0; col < colCount; col++)
+				{
+					dataRow[col] = sheetRow.GetCell(col)?.ToString(); // or .ToString() for raw value
+				}
+
+				dataTable.Rows.Add(dataRow);
+			}
+
+			return dataTable;
+		}
+
+	}
 }

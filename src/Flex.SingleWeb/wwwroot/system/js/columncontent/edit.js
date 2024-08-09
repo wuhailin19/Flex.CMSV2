@@ -287,7 +287,6 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers','laydate'], fun
         let imageinput = "input[name=" + id + "]";
         //初始化上传工具
         var options = { single: true, autoupload: true, isImage: false, serverUrl: filesData[i].uploadUrl, valueElement: imageinput };
-
         ___initUpload("#uploader-show_" + id, options);
     }
     

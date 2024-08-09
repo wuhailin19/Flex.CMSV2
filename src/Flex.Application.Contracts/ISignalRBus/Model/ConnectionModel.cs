@@ -11,6 +11,7 @@ namespace Flex.Application.Contracts.ISignalRBus.Model
         public string UserName { get; set; }
         public long UserId { get; set; }
         public string ConnectionId { get; set; }
-        public DateTime ExpiryTime { get; set; }
+        public string Token { get; set; }
+        public bool Status { get; set; }
     }
 }

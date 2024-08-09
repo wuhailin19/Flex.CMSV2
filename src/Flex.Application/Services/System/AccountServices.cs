@@ -1,6 +1,7 @@
 ﻿using Flex.Application.Aop;
 using Flex.Application.Contracts.Exceptions;
 using Flex.Application.Contracts.IServices.System;
+using Flex.Application.Contracts.ISignalRBus.IServices;
 using Flex.Domain.Dtos.System.SystemLog;
 using Flex.Domain.Enums.LogLevel;
 using Flex.EFSql.UnitOfWork;
@@ -13,15 +14,20 @@ namespace Flex.Application.Services
         private IRoleServices _roleServices;
         private IMessageServices _msgServices;
         protected ISystemLogServices _logServices;
-        public AccountServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims
-            , ICaching caching, ISystemLogServices logServices, IRoleServices roleServices, IMessageServices msgServices)
+        protected IHubNotificationService _notificationService;
+        public AccountServices(IUnitOfWork unitOfWork
+            , IMapper mapper, IdWorker idWorker, IClaimsAccessor claims
+            , ICaching caching, ISystemLogServices logServices, IRoleServices roleServices, IMessageServices msgServices
+            , IHubNotificationService notificationService
+            )
             : base(unitOfWork, mapper, idWorker, claims)
         {
             _caching = caching;
             _logServices = logServices;
             _roleServices = roleServices;
             _msgServices = msgServices;
-        }
+            _notificationService = notificationService;
+		}
         /// <summary>
         /// 判断验证码
         /// </summary>
@@ -211,7 +217,8 @@ namespace Flex.Application.Services
                 UserId = admin.Id,
                 UserName = admin.UserName
             });
-            var userdata = _mapper.Map<UserData>(admin);
+
+			var userdata = _mapper.Map<UserData>(admin);
             userdata.UserRoleName = RolesName;
             return Problem(HttpStatusCode.OK, userdata);
         }

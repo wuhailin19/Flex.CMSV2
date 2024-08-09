@@ -1,5 +1,6 @@
 ﻿using Flex.Application.Authorize;
 using Flex.Application.Contracts.ISignalRBus.Model;
+using Flex.Domain.Entities.System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,6 @@ namespace Flex.Application.Contracts.ISignalRBus.IServices
         Task SendNotificationToRole(string role, string message);
         ConnectionModel GetClaims(long userId);
         Task ReceiveMessage(long userId, string progress);
-        bool ValidateUser(long userId);
         ConnectionModel GetConnectionModel(long userId);
-    }
+	}
 }

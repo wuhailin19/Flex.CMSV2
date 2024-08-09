@@ -19,7 +19,7 @@ namespace Flex.Application.Services
             {
                 using (var memoryStream = new MemoryStream(uploadExcelFileDto.FileContent))
                 {
-                    dt = ExcelOperate.ImportExcelToDataTableFromStream(memoryStream);
+                    dt = ExcelOperate.ImportExcelToDataTableFromStream(memoryStream, uploadExcelFileDto.IsXlsx);
                 }
             }
             catch (Exception ex)
