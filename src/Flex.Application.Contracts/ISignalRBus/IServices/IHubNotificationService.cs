@@ -19,5 +19,7 @@ namespace Flex.Application.Contracts.ISignalRBus.IServices
         ConnectionModel GetClaims(long userId);
         Task ReceiveMessage(long userId, string progress);
         ConnectionModel GetConnectionModel(long userId);
+		Task NotifyClientOfTokenExpiration(string tokenKey);
+		bool checkTokenStatus(string tokenKey, out string connectionId);
 	}
 }

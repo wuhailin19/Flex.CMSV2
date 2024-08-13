@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using Flex.Application.Jwt;
+using Flex.Application.SignalRBus.Hubs;
 using Flex.Application.WeChatOAuth;
 using Flex.Core.Admin.Application;
 using Flex.Core.Attributes;
@@ -9,6 +10,7 @@ using Flex.Core.Helper.MemoryCacheHelper;
 using Flex.Core.Timing;
 using Flex.Domain.Dtos.Admin;
 using Flex.Domain.Dtos.AuthCode;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,12 +25,15 @@ namespace Flex.WebApi.SystemControllers
 		private JwtService _jwtservice;
 		private ICaching _caching;
 		private IAccountServices _accountservices;
-		public AccountController(IAdminServices services, IAccountServices accountservices, JwtService jwtservice, ICaching caching)
+		private readonly ConnectionStatus _connectionStatus;
+
+		public AccountController(IAdminServices services, IAccountServices accountservices, JwtService jwtservice, ICaching caching, ConnectionStatus connectionStatus)
 		{
 			_services = services;
 			_jwtservice = jwtservice;
 			_accountservices = accountservices;
 			_caching = caching;
+			_connectionStatus = connectionStatus;
 		}
 		/// <summary>
 		/// 验证码判断
@@ -130,9 +135,9 @@ namespace Flex.WebApi.SystemControllers
 					AccessToken = _jwtservice.CreateAccessToken(result.Content),
 					RefreshToken = _jwtservice.CreateRefreshToken(result.Content)
 				};
-				//记录Token有效期
-				var expiryTime = Clock.Now.AddMinutes(ServerConfig.SignalRExpiryTime);
-				_caching.Set(tokenmodel.AccessToken, expiryTime, ServerConfig.SignalRExpiryTime);
+
+				_connectionStatus.AddOrUpdateConnection(JwtBearerDefaults.AuthenticationScheme + " " + tokenmodel.AccessToken, string.Empty);
+
 				return Success(tokenmodel);
 			}
 			return Fail(result.Detail);

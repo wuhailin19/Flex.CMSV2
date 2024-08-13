@@ -14,5 +14,6 @@ namespace Flex.Core.Helper.MemoryCacheHelper
         bool Exist(string cacheKey);
         void Set(string cacheKey, object cacheValue, TimeSpan timeSpan);
 		void Set(string cacheKey, object cacheValue, double timeSpan);
+		void Set(string cacheKey, object cacheValue);
 	}
 }

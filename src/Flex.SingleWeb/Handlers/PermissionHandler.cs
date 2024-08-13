@@ -2,6 +2,7 @@
 using Flex.Application.Contracts.IServices.System;
 using Flex.Application.Contracts.ISignalRBus.IServices;
 using Flex.Core.Config;
+using Flex.Core.Extensions;
 using Flex.Core.Helper.MemoryCacheHelper;
 using Flex.Core.Timing;
 using Flex.Domain.Cache;
@@ -55,9 +56,8 @@ namespace Flex.WebApi.Handlers
 					CurrentSiteInfo.SiteId = httpContext.Request.Headers["siteId"].ToString().ToInt();
 
 					//Console.WriteLine("过期时间：" + DateTime.Parse(context.User.Claims.First(m => m.Type == ClaimTypes.Expiration).Value));
-					var tokenexpiredtime = _caching.Get(authHeader.Replace(JwtBearerDefaults.AuthenticationScheme + " ", string.Empty));
-
-					if (tokenexpiredtime == null || tokenexpiredtime.ObjToDate() < Clock.Now)
+					//var tokenexpiredtime = _caching.Get(authHeader.Replace(JwtBearerDefaults.AuthenticationScheme + " ", string.Empty));
+					if (!_hubNotificationService.checkTokenStatus(authHeader, out string connectionId))
 					{
 						var logstr = string.Format("该用户{0}（{2}），登录已超时，链接{1}", _claims.UserName, nowurl, _claims.UserId);
 						AddLog(logstr, nowurl);

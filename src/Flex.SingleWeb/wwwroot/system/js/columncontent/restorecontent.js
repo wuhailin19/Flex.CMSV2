@@ -35,7 +35,7 @@ ajaxHttp({
     },
     complete: function () { }
 })
-
+console.log(1)
 var demojs = [];
 var parentformData;
 //JavaScript代码区域
@@ -205,6 +205,8 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
             let editor = iceEditorObjects[key];
             if (model[key] != null) {
                 editor.setContent(model[key]);
+                editor.setDisabled();
+                
             }
         }
     });

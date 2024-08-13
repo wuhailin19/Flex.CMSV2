@@ -81,6 +81,7 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.HttpOnly = HttpOnlyPolicy.Always;
 });
 
+builder.Services.AddSingleton<ConnectionStatus>();
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<ExportBackgroundService>();
 builder.Services.AddHostedService<ImportBackgroundService>();

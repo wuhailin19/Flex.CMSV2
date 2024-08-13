@@ -3,6 +3,7 @@ using Flex.Application.Contracts.ISignalRBus.Model;
 using Flex.Application.SignalRBus.Hubs;
 using Flex.Core.Config;
 using Microsoft.AspNetCore.SignalR;
+using System.Data;
 
 namespace Flex.Application.SignalRBus.Services
 {
@@ -10,13 +11,41 @@ namespace Flex.Application.SignalRBus.Services
 	{
 		private readonly IHubContext<UserHub> _hubContext;
 		ICaching _caching;
+		ConnectionStatus _connectionStatus;
 
 		public HubNotificationService(
 			IHubContext<UserHub> hubContext
-			, ICaching caching)
+			, ICaching caching
+			, ConnectionStatus connectionStatus
+			)
 		{
 			_hubContext = hubContext;
 			_caching = caching;
+			_connectionStatus = connectionStatus;
+		}
+
+		public bool checkTokenStatus(string tokenKey, out string connectionId)
+		{
+			connectionId = _connectionStatus.GetConnectionId(tokenKey, out var expiration);
+			if (expiration < Clock.Now)
+			{
+				return false;
+			}
+			return true;
+		}
+		public async Task NotifyClientOfTokenExpiration(string tokenKey)
+		{
+			// 根据 tokenKey 获取连接 ID 和过期时间
+			if (checkTokenStatus(tokenKey, out string connectionId))
+			{
+				// 向客户端发送 TokenExpired 消息
+				await _hubContext.Clients.Client(connectionId).SendAsync("TokenExpired");
+			}
+			else
+			{
+				// 处理没有找到 connectionId 的情况（例如，token 无效或过期）
+				// 可能需要记录日志或采取其他措施
+			}
 		}
 
 		public ConnectionModel GetConnectionModel(long userId)

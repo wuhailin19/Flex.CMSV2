@@ -11,15 +11,16 @@ namespace Flex.Application.SignalRBus.Hubs
 	public class UserHub : Hub
 	{
 		IClaimsAccessor _claims;
-		ICaching _caching;
+		private readonly ConnectionStatus _connectionStatus;
+
 		public static readonly ConcurrentDictionary<long, ConnectionModel> UserConnections = new ConcurrentDictionary<long, ConnectionModel>();
 		public UserHub(
 			IClaimsAccessor claims
-			, ICaching caching
+			, ConnectionStatus connectionStatus
 			)
 		{
 			_claims = claims;
-			_caching = caching;
+			_connectionStatus = connectionStatus;
 		}
 
 
@@ -30,24 +31,15 @@ namespace Flex.Application.SignalRBus.Hubs
 			{
 				// 从缓存中获取 token 的有效期
 				var tokenKey = Context.GetHttpContext().Request.Query["access_token"].ToString().Replace($"{JwtBearerDefaults.AuthenticationScheme} ", string.Empty);
-				var tokencachevalue = _caching.Get(tokenKey);
-				var tokenexpiryTime = tokencachevalue.ObjToDate();
-				if (tokenexpiryTime == DateTime.MinValue || tokenexpiryTime.ObjToDate() < Clock.Now)
-				{
-					// Token 已过期，拒绝连接
-					Context.Abort();
-					return;
-				}
 
 				var connectionId = Context.ConnectionId;
+				_connectionStatus.AddOrUpdateConnection(tokenKey, connectionId);
 
 				var model = new ConnectionModel
 				{
 					UserId = _claims.UserId,
 					UserName = _claims.UserName,
 					ConnectionId = connectionId,
-					Token = tokenKey,
-					Status = true
 				};
 
 				UserConnections.AddOrUpdate(model.UserId, model, (k, value) => model);
@@ -62,6 +54,18 @@ namespace Flex.Application.SignalRBus.Hubs
 			}
 		}
 
+		public async Task CheckTokenValidity(string tokenKey)
+		{
+			// 检查 token 的有效性
+			var connectionId = _connectionStatus.GetConnectionId(tokenKey, out var expiration);
+
+			if (connectionId == null || expiration <= DateTimeOffset.Now)
+			{
+				// Token 失效，通知前端
+				await Clients.Caller.SendAsync("TokenExpired");
+			}
+		}
+
 		public override Task OnDisconnectedAsync(Exception exception)
 		{
 			var connectionId = Context.ConnectionId;
@@ -70,6 +74,8 @@ namespace Flex.Application.SignalRBus.Hubs
 			{
 				UserConnections.TryRemove(userConnection.Key, out _);
 			}
+
+
 			return base.OnDisconnectedAsync(exception);
 		}
 

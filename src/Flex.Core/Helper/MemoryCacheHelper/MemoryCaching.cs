@@ -1,15 +1,11 @@
-﻿using Flex.Core.Extensions;
-using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
-using System;
-using System.Text;
+﻿using Microsoft.Extensions.Caching.Memory;
 
 namespace Flex.Core.Helper.MemoryCacheHelper
 {
-    /// <summary>
-    /// 实例化缓存接口ICaching
-    /// </summary>
-    public class MemoryCaching : ICaching
+	/// <summary>
+	/// 实例化缓存接口ICaching
+	/// </summary>
+	public class MemoryCaching : ICaching
     {
         //引用Microsoft.Extensions.Caching.Memory;这个和.net 还是不一样，没有了Httpruntime了
         private readonly IMemoryCache _cache;
@@ -34,8 +30,9 @@ namespace Flex.Core.Helper.MemoryCacheHelper
         {
             if (Exist(cacheKey))
                 _cache.Remove(cacheKey);
-        }
-        public void Set(string cacheKey, object cacheValue)
+		}
+		
+		public void Set(string cacheKey, object cacheValue)
         {
             _cache.Set(cacheKey, cacheValue);
         }

@@ -62,6 +62,8 @@ namespace Flex.Application.Services
         /// <returns></returns>
         public async Task<Page> HistoryListAsync(ContentPageListParamDto contentPageListParam)
         {
+            if (contentPageListParam.ContentGroupId == null)
+                contentPageListParam.ContentGroupId = "-1";
             return await AbstractList(contentPageListParam, 3, " order by LastEditDate desc");
         }
         /// <summary>

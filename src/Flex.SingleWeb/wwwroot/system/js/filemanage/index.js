@@ -63,10 +63,10 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
                     $(evt.related).addClass('targetactive').siblings().removeClass('targetactive');
                     currentitem = $(evt.dragged);
                     realteditem = $(evt.related);
-                    
+
                     return false;
                 },
-                
+
                 onEnd: function (evt) {
                     let items = sortableList.querySelectorAll('li');
                     items.forEach(function (item) {
@@ -167,8 +167,8 @@ layui.use(['fileManager', 'layer', 'upload'], function () {
                 area: ['90%', '90%'],
                 content: data.path
             });
-        }
-        window.open(data.path)
+        } else
+            window.open(data.path)
         return false;
     });
     function OpenImage(data) {

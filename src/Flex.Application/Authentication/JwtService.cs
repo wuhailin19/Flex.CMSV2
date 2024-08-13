@@ -34,7 +34,7 @@ namespace Flex.Application.Jwt
         /// <returns></returns>
         public string GetAccountFromRefeshToken(string refreshToken)
         {
-            var token = new JwtSecurityTokenHandler().ReadJwtToken(refreshToken);
+            var token =  ReadToken(refreshToken);
             if (token is null)
             {
                 return string.Empty;
@@ -42,12 +42,28 @@ namespace Flex.Application.Jwt
             var claimAccount = token.Claims.First(x => x.Type == JwtRegisteredClaimNames.UniqueName).Value;
             return claimAccount;
         }
-        /// <summary>
-        /// 生成主Token
-        /// </summary>
-        /// <param name="userData">用户数据</param>
-        /// <returns></returns>
-        public string CreateAccessToken(UserData userData)
+
+		/// <summary>
+		/// get UserData from  token
+		/// </summary>
+		/// <param name="Token"></param>
+		/// <returns></returns>
+		public Claim GetUserDataFromToken(string Token)
+		{
+			var token = ReadToken(Token);
+			if (token is null)
+			{
+				return null;
+			}
+			return token.Claims.FirstOrDefault();
+		}
+
+		/// <summary>
+		/// 生成主Token
+		/// </summary>
+		/// <param name="userData">用户数据</param>
+		/// <returns></returns>
+		public string CreateAccessToken(UserData userData)
         {
             // 配置用户标识
             var userClaims = new Claim[]
@@ -73,7 +89,7 @@ namespace Flex.Application.Jwt
         {
             var claims = new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.UniqueName, userData.Account),
+                new Claim(JwtRegisteredClaimNames.UniqueName, userData.Id.ToString()),
                 new Claim (ClaimTypes.Expiration,DateTime.Now.Add(_refreshtokenLifeTime).ToString()),
             };
             return BuildToken(claims, Tokens.RefreshToken);

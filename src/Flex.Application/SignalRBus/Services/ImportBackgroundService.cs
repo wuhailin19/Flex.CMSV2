@@ -27,7 +27,7 @@ namespace Flex.Application.SignalRBus.Services
         MyContext _sqlsugar;
         ISqlTableServices _sqlTableServices;
         private ITaskServices _taskServices;
-
+        private IdWorker _idWorker;
         /// <summary>
         /// 文件储存位置
         /// </summary>
@@ -43,7 +43,8 @@ namespace Flex.Application.SignalRBus.Services
             , MyContext myContext
             , ITaskServices taskServices
             , ISqlTableServices sqlTableServices
-            )
+            , IdWorker idWorker
+			)
         {
             _hubContext = hubContext;
             _logger = logger;
@@ -55,6 +56,7 @@ namespace Flex.Application.SignalRBus.Services
             _sqlsugar = myContext;
             _sqlTableServices = sqlTableServices;
             _taskServices = taskServices;
+            _idWorker = idWorker;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -121,9 +123,10 @@ namespace Flex.Application.SignalRBus.Services
                     hashtable.Add(item.ColumnName, dr[item.ColumnName]);
                 }
                 SugarParameter[] parameters = [];
-                hashtable.Add("StatusCode", statuscode);
-                hashtable.Add("ParentId", uploadExcelFileDto.ParentId);
-                hashtable.Add("PId", uploadExcelFileDto.PId);
+                hashtable.SetValue("StatusCode", statuscode);
+				hashtable.SetValue("ContentGroupId", _idWorker.NextId());
+				hashtable.SetValue("ParentId", uploadExcelFileDto.ParentId);
+                hashtable.SetValue("PId", uploadExcelFileDto.PId);
                 InitCreateTable(hashtable, uploadExcelFileDto);
                 var insertsql = _sqlTableServices.CreateSqlsugarInsertSqlString(hashtable, resultmodel.Content.TableName, orderId, out parameters, recordIndex);
 
