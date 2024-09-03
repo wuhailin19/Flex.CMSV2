@@ -55,4 +55,31 @@ connection.start()
     .catch(err => console.error("SignalR连接失败: ", err));
 var conn_signalr_id = undefined;
 
+function reconnectSignalR() {
+    // 检查当前的连接状态
+    if (connection.state === signalR.HubConnectionState.Connected ||
+        connection.state === signalR.HubConnectionState.Connecting) {
+        // 如果已经连接或正在连接，则先停止连接
+        connection.stop()
+            .then(() => {
+                console.log("SignalR连接已停止，准备重新连接...");
+                return startSignalRConnection(); // 在停止后再启动连接
+            })
+            .catch(err => console.error("SignalR停止连接失败: ", err));
+    } else {
+        // 如果连接已关闭或尚未建立，则直接启动连接
+        startSignalRConnection();
+    }
+}
+
+function startSignalRConnection() {
+    connection.start()
+        .then(() => {
+            console.log("重新连接SignalR成功");
+            conn_signalr_id = connection.connectionId;
+        })
+        .catch(err => console.error("SignalR重新连接失败: ", err));
+}
+
+// 在适当的地方调用 refreshToken 来刷新 token 并重新连接 SignalR
 

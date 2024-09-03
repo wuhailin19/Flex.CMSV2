@@ -28,19 +28,22 @@ namespace Flex.Application.Jwt
              jti (JWT ID)：编号
              */
         /// <summary>
-        /// get account from refesh token
+        /// get UserId from refesh token
         /// </summary>
         /// <param name="refreshToken"></param>
         /// <returns></returns>
-        public string GetAccountFromRefeshToken(string refreshToken)
+        public string GetUserIdFromRefeshToken(string refreshToken)
         {
             var token =  ReadToken(refreshToken);
             if (token is null)
             {
                 return string.Empty;
             }
-            var claimAccount = token.Claims.First(x => x.Type == JwtRegisteredClaimNames.UniqueName).Value;
-            return claimAccount;
+            var expirationtime = DateTime.Parse(token.Claims.First(m => m.Type == ClaimTypes.Expiration)?.Value ?? Clock.Now.ToString());
+            if (expirationtime < DateTime.Now)
+                return string.Empty;
+            var UserId = token.Claims.First(x => x.Type == JwtRegisteredClaimNames.UniqueName).Value;
+            return UserId;
         }
 
 		/// <summary>

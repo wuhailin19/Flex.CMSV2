@@ -1,7 +1,7 @@
 ﻿var route_href = window.location.href;
 var hostlink = route_href.split('/')[0] + "//" + route_href.split('/')[2];
 //var hostlink = "http://127.0.0.1:5004";
-var api = hostlink+"/api/";
+var api = hostlink + "/api/";
 var SystempageRoute = "/System/";
 
 function getCheckboxValue(name) {
@@ -43,7 +43,7 @@ var HttpRequest = function (options) {
         type: o.type,
         headers: {
             'Authorization': "Bearer " + o.token,
-            'Refresh_token': "Bearer " +o.refreshtoken,
+            'Refresh_token': "Bearer " + o.refreshtoken,
             'siteId': o.siteId
         },
         processData: o.processData,
@@ -55,8 +55,20 @@ var HttpRequest = function (options) {
             o.beforeSend && o.beforeSend();
         },
         success: function (res) {
-            if (res.code != 200 && res.code != 226) { tips.showFail(res.msg); return; }
-            o.success && o.success(res);
+            if (res.code == 217) {
+                refreshToken(
+                    function () {
+                        // 重新发起请求
+                        o.token = sessionStorage.getItem('access_token');
+                        HttpRequest(o);
+                    }
+                )
+            } else if (res.code != 200 && res.code != 226) {
+                tips.showFail(res.msg);
+            }
+            else {
+                o.success && o.success(res);
+            }
         },
         complete: function () {
             o.complete && o.complete();
@@ -93,6 +105,35 @@ var httpTokenHeaders = {
     'Refresh_token': "Bearer " + sessionStorage.getItem('refresh_token'),
     'siteId': sessionStorage.getItem('siteId'),
 }
+var isrefresh = true;
+var refreshToken = function (callback) {
+    if (isrefresh) {
+        isrefresh = false;
+        $.ajax({
+            url: api + 'Account/RefreshAccessTokenAsync', // 刷新 token 的接口
+            type: 'post',
+            dataType: 'json',
+            data: { RefreshToken: sessionStorage.getItem('refresh_token'), AccessToken: sessionStorage.getItem('access_token') },
+            async: false,
+            success: function (res) {
+                if (res.code == 200) {
+                    sessionStorage.setItem('access_token', res.content.AccessToken);
+                    sessionStorage.setItem('refresh_token', res.content.RefreshToken);
+                    top.reconnectSignalR();
+                    callback(); // 刷新成功后重新发起原请求
+                } else {
+                    tips.showFail(res.msg);
+                }
+            },
+            complete: function () {
+                isrefresh = true;
+            },
+            error: function () {
+                tips.showFail('请重新登录');
+            }
+        });
+    }
+};
 
 var global_notice;
 layui.extend({ 'notice': '/scripts/layui/module/notice/notice' });
@@ -162,7 +203,7 @@ var tips = {
         layer.close(tips.index);
     },
     closeProgressbox: function () {
-        setTimeout(function () { 
+        setTimeout(function () {
             global_notice.clear();
         }, 3000)
     }

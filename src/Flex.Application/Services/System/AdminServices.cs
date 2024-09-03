@@ -48,15 +48,7 @@ namespace Flex.Application.Services
                 .Map<PagedList<AdminColumnDto>>(list);
             return model;
         }
-        /// <summary>
-        /// 根据ID获取Admin
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public async Task<UserData> GetAdminValidateInfoAsync(long id) =>
-          _mapper.Map<UserData>(
-              await GetAdminById(id));
-
+        
         public async Task<SysAdmin> GetAdminById(long id) =>
              await _unitOfWork.GetRepository<SysAdmin>().GetFirstOrDefaultAsync(m => m.Id == id, null, null, true, false);
 

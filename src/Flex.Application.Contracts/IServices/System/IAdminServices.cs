@@ -9,7 +9,6 @@ namespace Flex.Application.Contracts.IServices
     {
         Task<ProblemDetails<string>> DeleteAccountListByIdArray(string Id);
         Task<PagedList<AdminColumnDto>> GetAdminListAsync(int page, int pagesize);
-        Task<UserData> GetAdminValidateInfoAsync(long id);
         Task<IEnumerable<AdminDto>> GetAsync();
         Task<SimpleAdminDto> GetCurrentAdminInfoAsync();
         Task<AdminEditInfoDto> GetEditDtoInfoByIdAsync(long Id);

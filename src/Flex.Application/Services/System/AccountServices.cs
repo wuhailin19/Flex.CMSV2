@@ -5,6 +5,7 @@ using Flex.Application.Contracts.ISignalRBus.IServices;
 using Flex.Domain.Dtos.System.SystemLog;
 using Flex.Domain.Enums.LogLevel;
 using Flex.EFSql.UnitOfWork;
+using static SKIT.FlurlHttpClient.Wechat.Api.Models.CgibinExpressBusinessAccountGetAllResponse.Types;
 
 namespace Flex.Application.Services
 {
@@ -44,6 +45,32 @@ namespace Flex.Application.Services
                 return false;
             }
             return true;
+        }
+        /// <summary>
+        /// 根据ID获取UserData
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<ProblemDetails<UserData>> GetAccountValidateInfoAsync(long id)
+        {
+            var admin_unit = _unitOfWork.GetRepository<SysAdmin>();
+            var admin = await admin_unit.GetFirstOrDefaultAsync(m => m.Id == id);
+            if(admin == null)
+                return new ProblemDetails<UserData>(HttpStatusCode.BadRequest, "认证失败");
+            var userdata = _mapper.Map<UserData>(admin);
+            var roleId = userdata.RoleId.ToInt();
+            if (roleId != 0)
+            {
+                var role = await _roleServices.GetRoleByIdAsync(roleId);
+                if (role == null)
+                    return new ProblemDetails<UserData>(HttpStatusCode.BadRequest, "认证失败");
+                userdata.UserRoleName = role.RolesName;
+            }
+            else
+            {
+                userdata.UserRoleName = "超级管理员";
+            }
+            return new ProblemDetails<UserData>(HttpStatusCode.OK, userdata);
         }
         private async Task<ProblemDetails<UserData>> DecryptStringObj(string StringObj)
         {
@@ -132,6 +159,7 @@ namespace Flex.Application.Services
             }
             return Problem<UserData>(HttpStatusCode.OK, "");
         }
+
         /// <summary>
         /// 登录
         /// </summary>
@@ -156,7 +184,7 @@ namespace Flex.Application.Services
             {
                 return Problem<UserData>(HttpStatusCode.BadRequest, ErrorCodes.AccountOrPwdWrong.GetEnumDescription());
             }
-            var admin = await admin_unit.GetFirstOrDefaultAsync(m => m.Account == Account, null, null, true, false);
+            var admin = await admin_unit.GetFirstOrDefaultAsync(m => m.Account == Account);
 
             result = await CheckPasswordAsync(admin, adminLoginDto.Password).ConfigureAwait(false);
             if (!result.IsSuccess)

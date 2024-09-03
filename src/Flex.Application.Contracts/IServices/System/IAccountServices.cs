@@ -7,6 +7,7 @@ namespace Flex.Application.Contracts.IServices
     public interface IAccountServices
     {
         bool CheckAuthCode(AuthCodeInputDto authCodeInput);
+        Task<ProblemDetails<UserData>> GetAccountValidateInfoAsync(long id);
         Task<ProblemDetails<UserData>> LoginAuthorAsync(AdminLoginDto adminLoginDto);
     }
 }
