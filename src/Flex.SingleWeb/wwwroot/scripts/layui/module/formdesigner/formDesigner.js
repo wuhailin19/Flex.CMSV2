@@ -1,4 +1,3 @@
-
 /**
  +------------------------------------------------------------------------------------+
  + ayq-layui-form-designer(layui表单设计器)
@@ -2390,7 +2389,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     });
                     if (json.dateRangeDefaultValue !== null && json.dateRangeDefaultValue !== ""
                         && json.dateRangeDefaultValue !== undefined) {
-                        var split = json.dateRangeDefaultValue.split(" - ");
+                        var split = json.dateRangeDefaultValue.split("-");
                         $('#start-' + json.tag + json.id).val(split[0]);
                         $('#end-' + json.tag + json.id).val(split[1]);
                     }
@@ -2431,7 +2430,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     });
                     if (json.dateRangeDefaultValue !== null && json.dateRangeDefaultValue !== ""
                         && json.dateRangeDefaultValue !== undefined) {
-                        var split = json.dateRangeDefaultValue.split(" - ");
+                        var split = json.dateRangeDefaultValue.split("-");
                         $('#start-' + json.tag + json.id).val(split[0]);
                         $('#end-' + json.tag + json.id).val(split[1]);
                     }
@@ -3330,6 +3329,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                         UE.delEditor(tagid);
                     let editorOption = {
                         initialFrameWidth: json.width,
+                        simpleEdit: json.simpleEdit,
                         initialFrameHeight: json.height.replace('px', ''),
                         imageUrl: json.uploadUrl
                     };
@@ -3349,6 +3349,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                  * */
                 update: function (json, that) {
                     json.IsEdit = true;
+
                     var $label = $('#' + json.id + ' .layui-form-label');
                     $label.empty();
                     $label.css("width", json.width);
@@ -3370,6 +3371,7 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                         $block.append(_html);
                         let editorOption = {
                             initialFrameWidth: json.width,
+                            simpleEdit: json.simpleEdit,
                             initialFrameHeight: json.height.replace('px', ''),
                             imageUrl: json.uploadUrl
                         };
@@ -3986,6 +3988,16 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                         _html += '  </div>';
                         _html += '</div>';
                         break;
+                    case 'simpleEdit':
+                        var yes = "文本功能";
+                        var no = "全功能";
+                        _html += '<div class="layui-form-item" >';
+                        _html += '  <label class="layui-form-label">{0}</label>'.format(staticField.lang[key]);
+                        _html += '  <div class="layui-input-block">';
+                        _html += '    <input type="checkbox" id="{1}" {0} name="{1}" lay-skin="switch" lay-text="{2}|{3}">'.format(json[key] ? 'checked' : '', key, yes, no);
+                        _html += '  </div>';
+                        _html += '</div>';
+                        break;
                     case 'expression':
                         _html += '<div class="layui-form-item" >';
                         _html += '  <label class="layui-form-label">{0}</label>'.format(staticField.lang[key]);
@@ -4461,6 +4473,8 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                             $('#dateDefaultValue' + _json.id + ' .layui-input-block').empty();
                             $('#dateDefaultValue' + _json.id + ' .layui-input-block').append(_html);
                             _json.dateType = data.value;
+                            console.log(_json.dateRangeDefaultValue)
+
                             laydate.render({
                                 elem: '#dateRangeDefaultValue' + _json.tag + _json.id,
                                 type: _json.dateType,
@@ -4607,6 +4621,12 @@ layui.config({ base: '/scripts/layui/module/formdesigner/' }).define(["layer", '
                     case 'isLabel':
                     case 'autoplay':
                     case 'LocalSource':
+                        _json[_key] = _value;
+                        that.components[_json.tag].update(_json, that);
+                        that.components[_json.tag].property(_json, that);
+                        form.render('checkbox');
+                        break;
+                    case 'simpleEdit':
                         _json[_key] = _value;
                         that.components[_json.tag].update(_json, that);
                         that.components[_json.tag].property(_json, that);

@@ -11328,7 +11328,7 @@
 
                 me.execCommand('insertHtml', html.join(''));
             }
-
+            layer.closeAll();
             me.fireEvent('afterinsertimage', opt)
         }
     };
@@ -17995,6 +17995,7 @@
                     rng.selectNode(img).select();
                     me.execCommand('imagefloat', videoObjs[i].align)
                 }
+                layer.closeAll();
             },
             queryCommandState: function () {
                 var img = me.selection.getRange().getClosedNode(),
@@ -27762,60 +27763,77 @@
                 el.style.top = Math.max(top, 0) + 'px';
             },
             showAtCenter: function () {
+                console.log(this)
+                //console.log(this.iframeUrl)
 
-                var vpRect = uiUtils.getViewportRect();
+                //var vpRect = uiUtils.getViewportRect();
 
-                if (!this.fullscreen) {
-                    this.getDom().style.display = '';
-                    var popSize = this.fitSize();
-                    var titleHeight = this.getDom('titlebar').offsetHeight | 0;
-                    var left = vpRect.width / 2 - popSize.width / 2;
-                    var top = vpRect.height / 2 - (popSize.height - titleHeight) / 2 - titleHeight;
-                    var popEl = this.getDom();
-                    this.safeSetOffset({
-                        left: Math.max(left | 0, 0),
-                        top: Math.max(top | 0, 0)
-                    });
-                    if (!domUtils.hasClass(popEl, 'edui-state-centered')) {
-                        popEl.className += ' edui-state-centered';
+                //if (!this.fullscreen) {
+                //    this.getDom().style.display = '';
+                //    var popSize = this.fitSize();
+                //    var titleHeight = this.getDom('titlebar').offsetHeight | 0;
+                //    var left = vpRect.width / 2 - popSize.width / 2;
+                //    var top = vpRect.height / 2 - (popSize.height - titleHeight) / 2 - titleHeight;
+                //    var popEl = this.getDom();
+                //    this.safeSetOffset({
+                //        left: Math.max(left | 0, 0),
+                //        top: Math.max(top | 0, 0)
+                //    });
+                //    if (!domUtils.hasClass(popEl, 'edui-state-centered')) {
+                //        popEl.className += ' edui-state-centered';
+                //    }
+                //} else {
+                //    var dialogWrapNode = this.getDom(),
+                //        contentNode = this.getDom('content');
+
+                //    dialogWrapNode.style.display = "block";
+
+                //    var wrapRect = UE.ui.uiUtils.getClientRect(dialogWrapNode),
+                //        contentRect = UE.ui.uiUtils.getClientRect(contentNode);
+                //    dialogWrapNode.style.left = "-100000px";
+
+                //    contentNode.style.width = (vpRect.width - wrapRect.width + contentRect.width) + "px";
+                //    contentNode.style.height = (vpRect.height - wrapRect.height + contentRect.height) + "px";
+
+                //    dialogWrapNode.style.width = vpRect.width + "px";
+                //    dialogWrapNode.style.height = vpRect.height + "px";
+                //    dialogWrapNode.style.left = 0;
+
+                //    //保存环境的overflow值
+                //    this._originalContext = {
+                //        html: {
+                //            overflowX: document.documentElement.style.overflowX,
+                //            overflowY: document.documentElement.style.overflowY
+                //        },
+                //        body: {
+                //            overflowX: document.body.style.overflowX,
+                //            overflowY: document.body.style.overflowY
+                //        }
+                //    };
+
+                //    document.documentElement.style.overflowX = 'hidden';
+                //    document.documentElement.style.overflowY = 'hidden';
+                //    document.body.style.overflowX = 'hidden';
+                //    document.body.style.overflowY = 'hidden';
+
+                //}
+                //iframe窗
+                layer.open({
+                    type: 1,
+                    tipsMore: false,
+                    skin: 'layui-layer-lan',
+                    title: this.title,
+                    shadeClose: true,
+                    shade: 0.2,
+                    offset: 'auto',
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ["700px", "500px"],
+                    content: this.getContentHtml(),
+                    end: function () {
+                        //defaultOptions.callBack(insTb);
                     }
-                } else {
-                    var dialogWrapNode = this.getDom(),
-                        contentNode = this.getDom('content');
-
-                    dialogWrapNode.style.display = "block";
-
-                    var wrapRect = UE.ui.uiUtils.getClientRect(dialogWrapNode),
-                        contentRect = UE.ui.uiUtils.getClientRect(contentNode);
-                    dialogWrapNode.style.left = "-100000px";
-
-                    contentNode.style.width = (vpRect.width - wrapRect.width + contentRect.width) + "px";
-                    contentNode.style.height = (vpRect.height - wrapRect.height + contentRect.height) + "px";
-
-                    dialogWrapNode.style.width = vpRect.width + "px";
-                    dialogWrapNode.style.height = vpRect.height + "px";
-                    dialogWrapNode.style.left = 0;
-
-                    //保存环境的overflow值
-                    this._originalContext = {
-                        html: {
-                            overflowX: document.documentElement.style.overflowX,
-                            overflowY: document.documentElement.style.overflowY
-                        },
-                        body: {
-                            overflowX: document.body.style.overflowX,
-                            overflowY: document.body.style.overflowY
-                        }
-                    };
-
-                    document.documentElement.style.overflowX = 'hidden';
-                    document.documentElement.style.overflowY = 'hidden';
-                    document.body.style.overflowX = 'hidden';
-                    document.body.style.overflowY = 'hidden';
-
-                }
-
-                this._show();
+                });
+                //this._show();
             },
             getContentHtml: function () {
                 var contentHtml = '';

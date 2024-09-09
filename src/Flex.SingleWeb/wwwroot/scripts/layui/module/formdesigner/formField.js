@@ -452,7 +452,9 @@ layui.define(['layer'], function (exports) {
             },
             editor: {
                 id: '-1',
-                index: '-1', uuid: '-1', IsEdit: false,
+                index: '-1', uuid: '-1',
+                IsEdit: false,
+                simpleEdit: false,
                 label: "编辑器",
                 tag: "editor",
                 tagIcon: 'editor',
@@ -460,7 +462,6 @@ layui.define(['layer'], function (exports) {
                 clearable: true,
                 maxlength: null,
                 showWordLimit: false,
-                menu: ['backColor', 'fontSize', 'foreColor', 'bold', 'italic', 'underline', 'strikeThrough', 'justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent', 'insertOrderedList', 'insertUnorderedList', 'superscript', 'subscript', 'createLink', 'unlink', 'hr', 'face', 'table', 'files', 'music', 'video', 'insertImage', 'removeFormat', 'code', 'line'],
                 height: "500px",
                 uploadUrl: '/upload/',
                 disabled: false,

@@ -72,8 +72,7 @@
 
     /* 初始化onok事件 */
     function initButtons() {
-
-        dialog.onok = function () {
+        $('.uploadbtn').click(function () { 
             var remote = false, list = [], id, tabs = $G('tabhead').children;
             for (var i = 0; i < tabs.length; i++) {
                 if (domUtils.hasClass(tabs[i], 'focus')) {
@@ -107,7 +106,8 @@
                 editor.execCommand('insertimage', list);
                 remote && editor.fireEvent("catchRemoteImage");
             }
-        };
+            
+        });
     }
 
 
@@ -376,6 +376,7 @@
                 server: actionUrl,
                 fileVal: editor.getOpt('imageFieldName'),
                 duplicate: true,
+                headers: httpTokenHeaders,
                 fileSingleSizeLimit: imageMaxSize,    // 默认 2 M
                 compress: editor.getOpt('imageCompressEnable') ? {
                     width: imageCompressBorder,
@@ -720,11 +721,15 @@
                 try {
                     var responseText = (ret._raw || ret),
                         json = utils.str2json(responseText);
-                    if (json.state == 'SUCCESS') {
-                        _this.imageList.push(json);
+                    if (json.code==200) {
+                        _this.imageList.push({
+                            url: json.msg,
+                            original: '',
+                            name: file.name
+                        });
                         $file.append('<span class="success"></span>');
                     } else {
-                        $file.find('.error').text(json.state).show();
+                        $file.find('.error').text(json.code).show();
                     }
                 } catch (e) {
                     $file.find('.error').text(lang.errorServerUpload).show();
@@ -762,7 +767,7 @@
             var file, i, status, readyFile = 0, files = this.uploader.getFiles();
             for (i = 0; file = files[i++]; ) {
                 status = file.getStatus();
-                if (status == 'queued' || status == 'uploading' || status == 'progress') readyFile++;
+                if (status == 'inited' || status == 'queued' || status == 'uploading' || status == 'progress') readyFile++;
             }
             return readyFile;
         },
@@ -776,9 +781,9 @@
             for (i = 0; i < this.imageList.length; i++) {
                 data = this.imageList[i];
                 list.push({
-                    src: prefix + data.url,
-                    _src: prefix + data.url,
-                    title: data.title,
+                    src:  data.url,
+                    _src: data.url,
+                    title: data.name,
                     alt: data.original,
                     floatStyle: align
                 });

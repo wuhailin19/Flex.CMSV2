@@ -6,9 +6,10 @@
 .bottomBtnbox { position: fixed; bottom: 0; background: #eee; width: 100%; z-index: 10000; margin-bottom: 0; padding-top: 7px; }
 .edit-form { padding-bottom: 36px; border: 3px solid #eee; }
 .leftbox { border-right: 3px solid #eee; }
+.rightbox { position: fixed; right: 0; }
 
 .uploadimg_box { width: 90%; border: 1px solid #ccc; height: 150px; display: flex; align-items: center; box-sizing: border-box; }
-.uploadimg_box.sortable-chosen {  border: 1px solid rgb(102, 177, 255);  }
+.uploadimg_box.sortable-chosen { border: 1px solid rgb(102, 177, 255); }
 
 .uploadimg_box.layui-form-item { margin-bottom: 1px; }
 .uploadimg_box .layui-input-inline { width: 65%; margin-left: 2%; }
@@ -18,9 +19,13 @@
 .layui-form-item .layui-input-inline { margin-right: 0px; }
 .sortbtn { cursor: move; background: unset; color: #000 !important; border: 1px solid #ccc; }
 
-@media screen and (max-width:800px) {
+@media screen and (max-width:1200px) {
+    .rightbox{position:relative;right:unset;}
+    }
+    @media screen and (max-width:800px) {
     .bottomBtnbox { padding-left: 10px; }
     .uploadimg_box { width: 100%; }
-    .uploadimg_box .layui-input-inline.uploadimg_inlinebox { width: 50% !important; max-width:50%; }
+    .uploadimg_box .layui-input-inline.uploadimg_inlinebox { width: 50% !important; max-width: 50%; }
     .uploadimg_box .layui-input-inline.otherbtn { margin: 5px; }
+    
 }

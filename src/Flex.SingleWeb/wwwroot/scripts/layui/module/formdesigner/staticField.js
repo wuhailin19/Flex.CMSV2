@@ -9,6 +9,7 @@ layui.define(['layer'], function (exports) {
             tagIcon: '图标',
             width: '宽度',
             height: "高度",
+            simpleEdit: "模式",
             span: '网格宽度',
             placeholder: "placeholder",
             defaultValue: "默认值",

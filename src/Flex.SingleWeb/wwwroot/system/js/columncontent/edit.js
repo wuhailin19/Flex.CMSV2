@@ -318,7 +318,7 @@ layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers','laydate'], fun
         }
         if (dateRanges.length > 0) {
             for (var i = 0; i < dateRanges.length; i++) {
-                data[dateRanges[i].id] = data["start" + dateRanges[i].id] + " - " + data["end" + dateRanges[i].id];
+                data[dateRanges[i].id] = data["start" + dateRanges[i].id] + "-" + data["end" + dateRanges[i].id];
             }
         }
         delete data["editorValue_forUeditor"];

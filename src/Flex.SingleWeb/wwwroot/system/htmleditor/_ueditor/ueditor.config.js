@@ -33,9 +33,12 @@
         , serverUrl: "/api/Upload/Config"
         , BaseUrl: "/api/Upload/"
         , imageActionName: "UploadPasteImage"
+        , videoActionName: "UploadFile"
         , catcherActionName: "UploadRemoteImage"
         , catcherFieldName: "upfile"
         , imageAllowFiles: [".png",".jpg",".gif",".svg"]
+        , videoAllowFiles: [".mp4"]
+        , videoUrlPrefix: ""
         , imageFieldName: "upfile"
         , imageUrlPrefix: hostlink
         , catcherUrlPrefix: hostlink

@@ -404,6 +404,7 @@ FodyWeavers.xsd
 /src/Flex.SingleWeb/wwwroot/Excel
 /src/Flex.SingleWeb/wwwroot/site2/upload/files/2024-08-13
 /src/Flex.SingleWeb/server.db
+/src/Flex.SingleWeb/wwwroot/site*
 /src/Flex.SingleWeb/wwwroot/site1/upload
 /src/Flex.SingleWeb/wwwroot/site2/upload/images/2024-09-03
 /src/Flex.SingleWeb/wwwroot/site7/upload
