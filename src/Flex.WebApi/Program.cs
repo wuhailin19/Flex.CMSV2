@@ -25,6 +25,11 @@ using Flex.SqlSugarFactory.UnitOfWorks;
 using Microsoft.Extensions.Hosting;
 using Flex.EFSql;
 using Microsoft.AspNetCore.Builder;
+using Flex.Application.SignalRBus.Services;
+using Flex.Application.Contracts.ISignalRBus.Queue;
+using Flex.Application.SignalRBus.Hubs;
+using Flex.Domain.Dtos.SignalRBus.Model.Request;
+using Flex.Application.SignalRBus.Queue;
 
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -47,6 +52,11 @@ builder.Services.AddAutomapperService();
 //跨域配置
 builder.Services.AddCorsPolicy();
 
+builder.Services.AddSingleton<ConnectionStatus>();
+builder.Services.AddSignalR();
+builder.Services.AddHostedService<ExportBackgroundService>();
+builder.Services.AddHostedService<ImportBackgroundService>();
+
 string webpath = builder.Environment.WebRootPath;
 //builder.Services.HtmlTemplateDictInit();
 //注册autofac
@@ -59,14 +69,18 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).
         builder.RegisterType<PhysicalFileProvider>().As<IFileProvider>().WithParameter("root", webpath).SingleInstance();
 
         builder.RegisterGeneric(typeof(BaseRepository<>)).As(typeof(IBaseRepository<>)).InstancePerDependency(); //注册Sqlsugar仓储
-        builder.RegisterAutoFacExtension();
-        //注册业务层，同时对业务层的方法进行拦截
+                                                                                                                 //注册业务层，同时对业务层的方法进行拦截
         builder.RegisterAssemblyTypes(Assembly.Load("Flex.Application"))
-             .Where(t => !t.Name.EndsWith("SqlTableServices")) // 排除以 "SqlTableServices" 结尾的类型
+             .Where(t => !t.Name.EndsWith("SqlTableServices") && !t.Name.EndsWith("Queue")) // 排除以 "SqlTableServices和Queue" 结尾的类型
             .AsImplementedInterfaces()
             .InstancePerLifetimeScope()
             .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy;// 注册被拦截的类并启用类拦截
             .InterceptedBy(typeof(LogInterceptor));//这里只有同步的，因为异步方法拦截器还是先走同步拦截器 
+
+        builder.RegisterType<ConcurrentQueue<ExportRequestModel>>().As<IConcurrentQueue<ExportRequestModel>>().SingleInstance();
+        builder.RegisterType<ConcurrentQueue<ImportRequestModel>>().As<IConcurrentQueue<ImportRequestModel>>().SingleInstance();
+        builder.RegisterType<ConcurrentQueue<RequestModel>>().As<IConcurrentQueue<RequestModel>>().SingleInstance();
+
 
         builder.RegisterType<UnitOfWorkManage>().As<IUnitOfWorkManage>()
                 .AsImplementedInterfaces()
@@ -79,6 +93,7 @@ builder.Services.AddJwtService();
 builder.Services.AddWebCoreService();
 //注册缓存
 builder.Services.AddMemoryCacheSetup();
+
 
 // 添加自定义的 MIME 类型
 builder.Services.Configure<StaticFileOptions>(options =>

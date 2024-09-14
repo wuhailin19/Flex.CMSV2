@@ -2,6 +2,7 @@
 using Flex.Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.SS.Formula.Functions;
 using ShardingCore.Extensions;
 
 namespace Flex.WebApi.NormalControllers
@@ -31,6 +32,27 @@ namespace Flex.WebApi.NormalControllers
 
                 //insertsql += @"insert into heartbeat(important,monitor_id,status,msg,time,ping,duration,down_count) values (0,)";
                 count++;
+            }
+
+            return insertsql;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("getInsertSqlString")]
+        public async Task<string> getInsertSqlString()
+        {
+            var result = await _dapperDBContext.GetDynamicAsync(@"
+                select * from news
+            ");
+            string insertsql = string.Empty;
+            int count = 400;
+            foreach (var item in result)
+            {
+                var id = count + Convert.ToInt32(item.id);
+                 var datetime = item.ndate;
+                // insertsql += @$"INSERT INTO `content_main_info` VALUES ({id}, NULL, 10969, -1, -1, '{item.subject_tc}', '', '', NULL, 'admin', '001', '', NULL, 1, '', 'color:;font-weight:;font-style:;text-decoration:',
+                //'', '{datetime}', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'id=0;t=i;sid=12;reUrl=;iw=246;ih=262;', 'id=0;t=i;sid=12;reUrl=;iw=246;ih=262;', 'id=0;t=i;sid=12;reUrl=;iw=246;ih=262;', 'id=0;t=i;sid=12;reUrl=;iw=246;ih=262;', '{datetime}', NULL, 'error:rule', NULL, 1, 1, 0, 1, {id}, '', NULL, 9836, '{datetime}', '9999-12-31 00:00:00', 1, 1, 0, 1, 1, '', '', '-1', 0, 0, 167, 12, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
+                insertsql += @$"INSERT INTO jtopcms_model_zlwj values({id},'{item.subject_tc}','id=;t=f;sid=12;reUrl={item.upload_tc};fn={item.filenames};');";
             }
 
             return insertsql;

@@ -100,7 +100,7 @@ namespace Flex.WebApi.SystemControllers
         public string EcryptPwd(string pwd)
         => EncryptHelper.RsaEncrypt(pwd, RSAHepler.RSAPrivateKey);
         /// <summary>
-        /// 测试登录
+        /// 登录
         /// </summary>
         /// <param name="adminLoginDto"></param>
         /// <returns></returns>

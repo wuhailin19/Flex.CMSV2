@@ -7,6 +7,7 @@ using Flex.Domain.Dtos.Admin;
 using Flex.Domain.Dtos.AuthCode;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShardingCore.Extensions;
 
 namespace Flex.WebApi.SystemControllers
 {
@@ -75,21 +76,19 @@ namespace Flex.WebApi.SystemControllers
         [Descriper(IsFilter = true)]
         public async Task<string> RefreshAccessTokenAsync([FromBody] AdminRefreshTokenDto refreshTokenDto)
         {
-            var admin = await _services.GetAdminValidateInfoAsync(refreshTokenDto.Id);
-            if (admin is null)
+            if (refreshTokenDto.RefreshToken.IsEmpty() || refreshTokenDto.AccessToken.IsEmpty())
+                return Fail("请重新登录");
+            var UserId = _jwtservice.GetUserIdFromRefeshToken(refreshTokenDto.RefreshToken);
+            if (UserId.IsEmpty())
+                return Fail("请重新登录");
+            var result = await _accountservices.GetAccountValidateInfoAsync(UserId.ToLong());
+            if (!result.IsSuccess)
+                return Fail("请重新登录");
+            var tokenmodel = new AdminTokenInfoDto
             {
-                return NotFound();
-            }
-            var claimAccount = _jwtservice.GetAccountFromRefeshToken(refreshTokenDto.RefreshToken);
-            if (admin.Account.EqualsIgnoreCase(claimAccount))
-            {
-                return Success(
-                    new AdminTokenInfoDto
-                    {
-                        AccessToken = _jwtservice.CreateAccessToken(admin),
-                        RefreshToken = refreshTokenDto.RefreshToken
-                    });
-            }
+                AccessToken = _jwtservice.CreateAccessToken(result.Content),
+                RefreshToken = refreshTokenDto.RefreshToken
+            };
             return NotFound();
         }
         /// <summary>
