@@ -8,69 +8,72 @@ namespace Flex.Application.Excel
 {
 	public class ExcelOperate
 	{
-		public static byte[] SimpleExportToSpreadsheet(DataTable table, List<FiledModel> fileModes)
-		{
-			using (var stream = new MemoryStream())
-			{
-				using (IWorkbook workbook = new XSSFWorkbook())
-				{
-					ISheet sheet = workbook.CreateSheet("Sheet1");
+        public static byte[] SimpleExportToSpreadsheet(DataTable table, List<FiledModel> fileModes)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (IWorkbook workbook = new XSSFWorkbook())
+                {
+                    ISheet sheet = workbook.CreateSheet("Sheet1");
 
-					// 设置表头
-					IRow headerRow = sheet.CreateRow(0);
-					for (int i = 0; i < fileModes.Count; i++)
-					{
-						ICell cell = headerRow.CreateCell(i);
-						cell.SetCellValue(fileModes[i].FiledDesc + $"-{fileModes[i].FiledName}");
-						ICellStyle headerStyle = workbook.CreateCellStyle();
-						headerStyle.Alignment = HorizontalAlignment.Center;
-						headerStyle.VerticalAlignment = VerticalAlignment.Center;
-						headerStyle.BorderTop = BorderStyle.Thin;
-						headerStyle.BorderBottom = BorderStyle.Thin;
-						headerStyle.BorderLeft = BorderStyle.Thin;
-						headerStyle.BorderRight = BorderStyle.Thin;
-						cell.CellStyle = headerStyle;
-					}
+                    // 创建单一样式
+                    ICellStyle headerStyle = workbook.CreateCellStyle();
+                    headerStyle.Alignment = HorizontalAlignment.Center;
+                    headerStyle.VerticalAlignment = VerticalAlignment.Center;
+                    headerStyle.BorderTop = BorderStyle.Thin;
+                    headerStyle.BorderBottom = BorderStyle.Thin;
+                    headerStyle.BorderLeft = BorderStyle.Thin;
+                    headerStyle.BorderRight = BorderStyle.Thin;
 
-					// 填充数据
-					for (int i = 0; i < table.Rows.Count; i++)
-					{
-						IRow row = sheet.CreateRow(i + 1);
-						for (int j = 0; j < fileModes.Count; j++)
-						{
-							ICell cell = row.CreateCell(j);
-							cell.SetCellValue(table.Rows[i][fileModes[j].FiledName]?.ToString());
-							ICellStyle cellStyle = workbook.CreateCellStyle();
-							cellStyle.Alignment = HorizontalAlignment.Center;
-							cellStyle.VerticalAlignment = VerticalAlignment.Center;
-							cellStyle.BorderTop = BorderStyle.Thin;
-							cellStyle.BorderBottom = BorderStyle.Thin;
-							cellStyle.BorderLeft = BorderStyle.Thin;
-							cellStyle.BorderRight = BorderStyle.Thin;
+                    ICellStyle cellStyle = workbook.CreateCellStyle();
+                    cellStyle.Alignment = HorizontalAlignment.Center;
+                    cellStyle.VerticalAlignment = VerticalAlignment.Center;
+                    cellStyle.BorderTop = BorderStyle.Thin;
+                    cellStyle.BorderBottom = BorderStyle.Thin;
+                    cellStyle.BorderLeft = BorderStyle.Thin;
+                    cellStyle.BorderRight = BorderStyle.Thin;
 
-							// 如果是日期时间列，设置单元格格式
-							if (fileModes[j].FiledMode == "date")
-							{
-								IDataFormat format = workbook.CreateDataFormat();
-								cellStyle.DataFormat = format.GetFormat("yyyy-mm-dd hh:mm:ss");
-							}
+                    // 设置表头
+                    IRow headerRow = sheet.CreateRow(0);
+                    for (int i = 0; i < fileModes.Count; i++)
+                    {
+                        ICell cell = headerRow.CreateCell(i);
+                        cell.SetCellValue(fileModes[i].FiledDesc + $"-{fileModes[i].FiledName}");
+                        cell.CellStyle = headerStyle;
+                    }
 
-							cell.CellStyle = cellStyle;
-						}
-					}
+                    // 填充数据
+                    for (int i = 0; i < table.Rows.Count; i++)
+                    {
+                        IRow row = sheet.CreateRow(i + 1);
+                        for (int j = 0; j < fileModes.Count; j++)
+                        {
+                            ICell cell = row.CreateCell(j);
+                            cell.SetCellValue(table.Rows[i][fileModes[j].FiledName]?.ToString());
+                            cell.CellStyle = cellStyle;
 
-					// 写入 MemoryStream
-					workbook.Write(stream);
-				}
+                            // 如果是日期时间列，设置单元格格式
+                            if (fileModes[j].FiledMode == "date")
+                            {
+                                IDataFormat format = workbook.CreateDataFormat();
+                                cellStyle.DataFormat = format.GetFormat("yyyy-mm-dd hh:mm:ss");
+                            }
+                        }
+                    }
 
-				// 返回 byte[]
-				return stream.ToArray();
-			}
-		}
+                    // 写入 MemoryStream
+                    workbook.Write(stream);
+                }
+
+                // 返回 byte[]
+                return stream.ToArray();
+            }
+        }
 
 
 
-		public static DataTable ImportExcelToDataTableFromStream(Stream stream, bool isXlsx = true)
+
+        public static DataTable ImportExcelToDataTableFromStream(Stream stream, bool isXlsx = true)
 		{
 			DataTable dataTable = new DataTable();
 			IWorkbook workbook = isXlsx ? (IWorkbook)new XSSFWorkbook(stream) : new HSSFWorkbook(stream);

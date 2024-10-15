@@ -4,9 +4,8 @@
 .layui-select-title .layui-anim.layui-anim-upbit { display: none; }
 .iconclear { width: 35px; display: inline-block; height: 16px; padding: 2px; background-color: #393D49; text-align: center; line-height: 16px; color: #fff; cursor: pointer; }
 .bottomBtnbox { position: fixed; bottom: 0; background: #eee; width: 100%; z-index: 10000; margin-bottom: 0; padding-top: 7px; }
-.edit-form { padding-bottom: 36px; border: 3px solid #eee; }
-.leftbox { border-right: 3px solid #eee; }
-.rightbox { position: fixed; right: 0; }
+.edit-form { padding-bottom: 36px; }
+.rightbox { border-left: 3px solid #eee; position: fixed; right: 0; height: 100%;}
 
 .uploadimg_box { width: 90%; border: 1px solid #ccc; height: 150px; display: flex; align-items: center; box-sizing: border-box; }
 .uploadimg_box.sortable-chosen { border: 1px solid rgb(102, 177, 255); }
@@ -20,12 +19,12 @@
 .sortbtn { cursor: move; background: unset; color: #000 !important; border: 1px solid #ccc; }
 
 @media screen and (max-width:1200px) {
-    .rightbox{position:relative;right:unset;}
-    }
-    @media screen and (max-width:800px) {
+    .rightbox { position: relative; right: unset; }
+}
+
+@media screen and (max-width:800px) {
     .bottomBtnbox { padding-left: 10px; }
     .uploadimg_box { width: 100%; }
     .uploadimg_box .layui-input-inline.uploadimg_inlinebox { width: 50% !important; max-width: 50%; }
     .uploadimg_box .layui-input-inline.otherbtn { margin: 5px; }
-    
 }

@@ -15,6 +15,7 @@
 .flexbox { display: flex; flex-wrap: wrap; height: 30px; overflow-y: scroll; box-sizing: border-box; }
 .realtionbtn { padding: 0 1%; cursor: pointer; background: rgb(102, 177, 255); color: #fff; font-size: 11px; margin-right: 2%; line-height: 28px; border-radius: 10%; height: 28px; width: 30%; margin-bottom: 5px; }
 .Export{margin-left:10px;}
+.class-layer-demo-custom iframe { border: 3px solid rgb(238, 238, 238); }
 
 @media screen and (max-width:800px) {
     .layui-form-label { width: 80px; }

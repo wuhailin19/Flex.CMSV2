@@ -18,6 +18,7 @@ using Flex.Application.SignalRBus.Services;
 using Flex.Core.Config;
 using Flex.Core.Helper;
 using Flex.Domain.Dtos.SignalRBus.Model.Request;
+using Flex.EFSql;
 using Flex.SingleWeb.Components;
 using Flex.SqlSugarFactory;
 using Flex.SqlSugarFactory.UnitOfWorks;
@@ -161,14 +162,14 @@ if (app.Environment.IsDevelopment())
 	await myService.CreateUrlList();
 }
 //// 初始化自动创建数据库
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
-//    var context = services.GetRequiredService<EfCoreDBContext>();
+using (var scope = app.Services.CreateScope())
+{
+	var services = scope.ServiceProvider;
+	var context = services.GetRequiredService<EfCoreDBContext>();
 
-//    // 确保数据库已创建
-//    context.Database.EnsureCreated();
-//}
+	// 确保数据库已创建
+	context.Database.EnsureCreated();
+}
 app.UseStatusCodePages((StatusCodeContext statusCodeContext) =>
 {
 	var context = statusCodeContext.HttpContext;

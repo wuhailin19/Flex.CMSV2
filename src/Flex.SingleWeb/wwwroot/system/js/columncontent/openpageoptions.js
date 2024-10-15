@@ -37,6 +37,7 @@ var defaultOptions = {
             title: self.addTitle,
             shadeClose: true,
             shade: false,
+            skin: 'class-layer-demo-custom',
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
             content: routePageLink + 'AddPage',
@@ -72,6 +73,7 @@ var defaultOptions = {
             title: self.editTitle,
             shadeClose: true,
             shade: false,
+            skin: 'class-layer-demo-custom',
             offset: HasOpenHistroryBox ? 'lt' : 'auto',
             maxmin: true, //开启最大化最小化按钮
             area: [widthstr, heightstr],
