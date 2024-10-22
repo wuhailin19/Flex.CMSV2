@@ -31,7 +31,7 @@ namespace Flex.Application.Services
             IUnitOfWorkManage IUnitOfWorkManage, IBaseRepository<sysMessage> msgrepository)
             : base(unitOfWork, mapper, idWorker, claims)
         {
-            contentServices = contentServices;
+            this.contentServices = contentServices;
             _sqlTableServices = sqlTableServices;
             _IUnitOfWorkManage = IUnitOfWorkManage;
             _msgrepository = msgrepository;
