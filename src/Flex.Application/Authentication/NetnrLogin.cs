@@ -7,9 +7,12 @@ using Netnr.Login;
 
 namespace Flex.Application.Authentication
 {
-	public class NetnrLogin
-	{
-		public NetnrLogin() { }
-		
-	}
+    public class NetnrLogin
+    {
+        public NetnrLogin()
+        {
+        }
+
+
+    }
 }

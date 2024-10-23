@@ -27,7 +27,8 @@ namespace Flex.Domain.Dtos.Admin
         public bool AllowMultiLogin { get; set; }
         public bool Islock { get; set; }
         public string? PwdExpiredTime { get; set; }
-        public string FilterIp { set; get; }
+        public string? FilterIp { set; get; }
+        public string? WeiboId { set; get; }
         public DateTime? ExpiredTime { get; set; }
     }
 }

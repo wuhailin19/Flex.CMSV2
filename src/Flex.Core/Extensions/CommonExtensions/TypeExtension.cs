@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flex.Core.Serialize;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,6 +34,32 @@ namespace Flex.Core.Extensions
             typeof(DateTimeOffset),
             typeof(byte[])
         };
+
+        /// <summary> 属性名(Naming属性) </summary>
+        /// <param name="item"></param>
+        /// <param name="namingType"></param>
+        /// <returns></returns>
+        public static string PropName(this MemberInfo item, NamingType? namingType = null)
+        {
+            var propAttr = item.GetCustomAttribute<NamingAttribute>(true);
+            if (propAttr != null)
+            {
+                if (propAttr.Ignore)
+                    return string.Empty;
+                if (!string.IsNullOrWhiteSpace(propAttr.Name))
+                    return propAttr.Name;
+                namingType = namingType ?? propAttr.NamingType;
+            }
+            switch (namingType)
+            {
+                case NamingType.CamelCase:
+                    return item.Name.ToCamelCase();
+                case NamingType.UrlCase:
+                    return item.Name.ToUrlCase();
+                default:
+                    return item.Name;
+            }
+        }
 
         /// <summary>
         /// 判断类型是否为Nullable类型

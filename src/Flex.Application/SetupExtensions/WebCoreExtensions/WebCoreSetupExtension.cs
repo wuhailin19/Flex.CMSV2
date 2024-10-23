@@ -42,10 +42,12 @@ namespace Flex.Application.Extensions.Register.WebCoreExtensions
             string datacenterIdStr = "SiteSetting:DataCenterId".Config(string.Empty); 
             long workId;
             long datacenterId;
+            Console.WriteLine(workIdStr);
+            Console.WriteLine(datacenterIdStr);
             try
             {
-                workId = long.Parse(workIdStr);
-                datacenterId = long.Parse(datacenterIdStr);
+                workId = workIdStr.ToLong();
+                datacenterId = datacenterIdStr.ToLong();
             }
             catch (Exception)
             {

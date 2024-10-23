@@ -42,6 +42,12 @@ namespace Flex.Application.SignalRBus.Queue
             {
                 await _signal.WaitAsync(cancellationToken); // 等待信号
 
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    Console.WriteLine("接收到取消信号，停止处理队列。");
+                    return; // 立即返回，结束处理
+                }
+
                 if (_queue.TryDequeue(out var item))
                 {
                     await ExportAndImport._processingSemaphore.WaitAsync(cancellationToken); // 控制全局并发

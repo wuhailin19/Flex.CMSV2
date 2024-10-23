@@ -1,0 +1,41 @@
+﻿@{
+    Layout = null;
+}
+<html>
+<head>
+    <script src="~/scripts/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <script src="~/scripts/core/commonutil.js"></script>
+    <script src="~/scripts/layui/layui.js"></script>
+    <script src="~/scripts/route.js"></script>
+</head>
+<body>
+    <script>
+        var requestcode = $.getUrlParam('code');
+        $.ajax({
+            url: api + 'Oauth/WeiboLogin',
+            type: 'post',
+            data: { code: requestcode },
+            dataType: 'json',
+            success: function (json) {
+                if (json.code == 200) {
+                    sessionStorage.setItem('access_token', json.content.AccessToken);
+                    sessionStorage.setItem('refresh_token', json.content.RefreshToken);
+                    sessionStorage.removeItem('sitelink');
+                    sessionStorage.removeItem('siteId');
+                    sessionStorage.removeItem('siteName');
+                    tips.showSuccess("登录成功");
+
+                    setTimeout(() => {
+                        window.location = SystempageRoute + 'Main';
+                    }, 1300);
+                } else { 
+                    tips.showFail("登录失败");
+                    setTimeout(() => {
+                        //window.location = SystempageRoute + 'Login';
+                    }, 1300);
+                }
+            }
+        })
+    </script>
+</body>
+</html>

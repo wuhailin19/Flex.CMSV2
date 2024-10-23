@@ -1,84 +1,107 @@
 ﻿@{
-	Layout = null;
+    Layout = null;
 }
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
-	<title>后台管理系统登录</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+    <title>后台管理系统登录</title>
     <link href="~/system/css/login/css/styles.css" rel="stylesheet" />
     <link href="~/system/css/login/css/reset.css" rel="stylesheet" />
-	@*<style type="text/css">
-	body, html { width: 100%; height: 100%; font-size: 12px; }
-	.login_title { width: 40%; float: left; margin-top: 8%; margin-left: 10%; }
-	/*        ._loginbox { width: 100%; height: 400px; position: absolute; top: 25%; background-color: #f1f1f1; }*/
-	.input_box { width: 50%; float: left; }
-	.login { width: 40%; margin-left: 30%; box-shadow: inset 0 0 5px rgb(0 0 0 / 20%); height: 290px; position: absolute; /* left: 50%; */ top: 25%; padding-top: 4%; padding-bottom: 2%; border-radius: 10px; background-color: #fff }
-	</style>*@
-	<style>
-		.load-z_indexs { z-index: 1000; display: none; overflow: hidden; background-image: linear-gradient( 141deg,#535353 0%,#424c63 51%,#535353 75%); text-align: center; }
-		.load-z_indexs .layui-anim-loop { color: #fff; }
-		.box_shandow { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: -1; }
-		.loadings i { display: inherit !important; text-align: center; width: 100%; }
-	</style>
-	<link href="~/system/css/login/css/iconfont/iconfont.css" rel="stylesheet" />
-	<script src="~/scripts/jquery-3.4.1.min.js" type="text/javascript"></script>
-	<link href="~/scripts/layui/css/layui.css" rel="stylesheet" />
+
+    @*<style type="text/css">
+    body, html { width: 100%; height: 100%; font-size: 12px; }
+    .login_title { width: 40%; float: left; margin-top: 8%; margin-left: 10%; }
+    /*        ._loginbox { width: 100%; height: 400px; position: absolute; top: 25%; background-color: #f1f1f1; }*/
+    .input_box { width: 50%; float: left; }
+    .login { width: 40%; margin-left: 30%; box-shadow: inset 0 0 5px rgb(0 0 0 / 20%); height: 290px; position: absolute; /* left: 50%; */ top: 25%; padding-top: 4%; padding-bottom: 2%; border-radius: 10px; background-color: #fff }
+    </style>*@
+    <style>
+        .load-z_indexs { z-index: 1000; display: none; overflow: hidden; background-image: linear-gradient( 141deg,#535353 0%,#424c63 51%,#535353 75%); text-align: center; }
+        .load-z_indexs .layui-anim-loop { color: #fff; }
+        .box_shandow { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: -1; }
+        .loadings i { display: inherit !important; text-align: center; width: 100%; }
+        .other-login { margin: 0 auto; margin-top: 15px; justify-content: center; display: flex; }
+        .other-login .layui-icon { font-size: 20px; }
+    </style>
+    <link href="~/system/css/login/css/iconfont/iconfont.css" rel="stylesheet" />
+    <script src="~/scripts/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <link href="~/scripts/layui/css/layui.css" rel="stylesheet" />
     <script src="~/scripts/layui/layui.js"></script>
+
 </head>
+
 <body>
-	
-	<div id="particles-js">
-		<div class="login">
-			<div class="login-top">
-				登录
-			</div>
-			<div class="login-center clearfix">
-				<div class="login-center-img">
-					<img src="~/system/img/login/img/name.png" />
-				</div>
-				<div class="login-center-input">
-					<input type="text" id="LoginName" name="" value="" data-title="用户名" placeholder="请输入您的用户名" onfocus="this.placeholder=''" onblur="this.placeholder='请输入您的用户名'" />
-					<div class="login-center-input-text">用户名</div>
-				</div>
-			</div>
-			<div class="login-center clearfix">
-				<div class="login-center-img">
-					<img src="~/system/img/login/img/password.png" />
-				</div>
-				<div class="login-center-input">
-					<input type="password" id="PassWord" name="" value="" data-title="密码" placeholder="请输入您的密码" onfocus="this.placeholder=''" onblur="this.placeholder='请输入您的密码'" />
-					<div class="login-center-input-text">密码</div>
-				</div>
-			</div>
-			<div class="login-center clearfix" style="margin-bottom: 10px;">
-				<div class="login-center-img">
-				</div>
-				<div class="login-center-input">
-					<img id="CheckCode" onclick="reloadcode()" alt="验证码" style="border: none" title="点击切换" height="30" width="84" src="/system/img/login/defaultcode.png?v=0.1" class="vm" />
-					<span class="s1" onclick="reloadcode()" style="display: inline-block; line-height: 30px; margin-left: 20px; cursor: pointer;">看不清楚，换一张</span>
-				</div>
-			</div>
-			<div class="login-center clearfix" style="margin-bottom: 10px;">
-				<div class="login-center-img">
-				</div>
-				<div class="login-center-input">
-					<input type="text" id="code" name="" data-title="验证码" value="" maxlength="4" placeholder="请输入验证码" onfocus="this.placeholder=''" onblur="this.placeholder='请输入验证码'">
-					<div class="login-center-input-text">验证码</div>
-				</div>
-			</div>
-			<div class="login-button" id="LoginBtn">
-				登录
-			</div>
-		</div>
-		<div class="sk-rotating-plane"></div>
-	</div>
-	<div class="loadings load-z_indexs">
-		<i class="layui-icon layui-anim layui-anim-loop">&#xe63d;</i>
-	</div>
-	<script src="~/scripts/route.js"></script>
-	<script src="~/system/js/login/js/encrypto/encrypto.js"></script>
-	<script src="~/system/js/login/js/login.js?v=0.1"></script>
+
+    <div id="particles-js">
+        <div class="login">
+            <div class="login-top">
+                登录
+            </div>
+            <div class="login-center clearfix">
+                <div class="login-center-img">
+                    <img src="~/system/img/login/img/name.png" />
+                </div>
+                <div class="login-center-input">
+                    <input type="text" id="LoginName" name="" value="" data-title="用户名" placeholder="请输入您的用户名" onfocus="this.placeholder=''" onblur="this.placeholder='请输入您的用户名'" />
+                    <div class="login-center-input-text">用户名</div>
+                </div>
+            </div>
+            <div class="login-center clearfix">
+                <div class="login-center-img">
+                    <img src="~/system/img/login/img/password.png" />
+                </div>
+                <div class="login-center-input">
+                    <input type="password" id="PassWord" name="" value="" data-title="密码" placeholder="请输入您的密码" onfocus="this.placeholder=''" onblur="this.placeholder='请输入您的密码'" />
+                    <div class="login-center-input-text">密码</div>
+                </div>
+            </div>
+            <div class="login-center clearfix" style="margin-bottom: 10px;">
+                <div class="login-center-img">
+                </div>
+                <div class="login-center-input">
+                    <img id="CheckCode" onclick="reloadcode()" alt="验证码" style="border: none" title="点击切换" height="30" width="84" src="/system/img/login/defaultcode.png?v=0.1" class="vm" />
+                    <span class="s1" onclick="reloadcode()" style="display: inline-block; line-height: 30px; margin-left: 20px; cursor: pointer;">看不清楚，换一张</span>
+                </div>
+            </div>
+            <div class="login-center clearfix" style="margin-bottom: 10px;">
+                <div class="login-center-img">
+                </div>
+                <div class="login-center-input">
+                    <input type="text" id="code" name="" data-title="验证码" value="" maxlength="4" placeholder="请输入验证码" onfocus="this.placeholder=''" onblur="this.placeholder='请输入验证码'">
+                    <div class="login-center-input-text">验证码</div>
+                </div>
+            </div>
+            <div class="login-button" id="LoginBtn">
+                登录
+            </div>
+            <div class="other-login">
+                <span style="display: flex;align-items: center">其他方式：</span>
+                <a class="layui-icon layui-icon-login-weibo" id="weibologin" href=""></a>
+            </div>
+        </div>
+        <div class="sk-rotating-plane"></div>
+    </div>
+    <div class="loadings load-z_indexs">
+        <i class="layui-icon layui-anim layui-anim-loop">&#xe63d;</i>
+    </div>
+    <script src="~/scripts/route.js"></script>
+    <script>
+        $.ajax({
+            url: api + 'Oauth/GetLoginPath',
+            type: 'get',
+            dataType: 'json',
+            success: function (json) {
+                if (json.code == 200) {
+                    $('#weibologin').attr('href',json.msg);
+                } else {
+                    
+                }
+            }
+        })
+    </script>
+    <script src="~/system/js/login/js/encrypto/encrypto.js"></script>
+    <script src="~/system/js/login/js/login.js?v=0.1"></script>
 </body>
 </html>

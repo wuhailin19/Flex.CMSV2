@@ -25,6 +25,7 @@ namespace Flex.Domain.Entities.System
         public string? UserAvatar { get; set; }
         public string? UserSign { get; set; }
         public string SaltValue { set; get; }
+        public string? WeiboId { get; set; }
         public string? LoginLogString { set; get; }
         public int ErrorCount { set; get; }
         public int MaxErrorCount { set; get; }

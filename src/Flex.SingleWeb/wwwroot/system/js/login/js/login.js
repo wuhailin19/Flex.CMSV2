@@ -111,6 +111,7 @@ function handleLoginSuccess(json) {
             window.location = SystempageRoute + 'Main';
         }, 1300);
     } else {
+        isClick = true;
         tips.showFail(json.msg);
         reloadcode();
     }

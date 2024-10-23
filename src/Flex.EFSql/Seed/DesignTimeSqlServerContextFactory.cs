@@ -11,8 +11,8 @@ public class DesignTimeSqlServerContextFactory : IDesignTimeDbContextFactory<EfC
         //builder.UseNpgsql("Host=192.168.8.128;Port=15433;Database=cms_core_copy;Username=postgres;Password=password");
         //builder.UseDm("Server=118.31.58.175;UserId=SYSDBA;PWD=SYSDBA001;Database=cms_core_copy;Port=5236;encoding=utf-8;");
         //builder.UseSqlServer("Data Source=.;Initial Catalog=cms_core_copy;uid=sa;pwd=123456;TrustServerCertificate=true;");
-        builder.UseDm("Server=127.0.0.1;UserId=CMSADMIN;PWD=SYSDBA;Database=CMSADMIN;Port=5236;encoding=utf-8;");
-        //builder.UseMySql("Server=192.168.8.128;Port=3366;Database=cms_core_copy;Uid=root;Pwd=123456;", new MySqlServerVersion(new Version("8.0.27")));
+        //builder.UseDm("Server=127.0.0.1;UserId=CMSADMIN;PWD=SYSDBA;Database=CMSADMIN;Port=5236;encoding=utf-8;");
+        builder.UseMySql("Server=211.149.184.98;Port=3306;Database=cms_core;Uid=newadmin;Pwd=tJS:eelgt1*o;", new MySqlServerVersion(new Version("8.0.27")));
 
         return new EfCoreDBContext(builder.Options);
     }

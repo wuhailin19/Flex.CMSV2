@@ -51,6 +51,9 @@ namespace Flex.Application.Services
         
         public async Task<SysAdmin> GetAdminById(long id) =>
              await _unitOfWork.GetRepository<SysAdmin>().GetFirstOrDefaultAsync(m => m.Id == id, null, null, true, false);
+        
+        public async Task<SysAdmin> GetAdminByWeiboId(string id) =>
+             await _unitOfWork.GetRepository<SysAdmin>().GetFirstOrDefaultAsync(m => m.WeiboId == id);
 
         public async Task<SimpleAdminDto> GetCurrentAdminInfoAsync() =>
           _mapper.Map<SimpleAdminDto>(
@@ -72,6 +75,41 @@ namespace Flex.Application.Services
             _unitOfWork.GetRepository<SysAdmin>().Update(model);
             await _unitOfWork.SaveChangesAsync();
             return Problem<string>(HttpStatusCode.OK, ErrorCodes.DataUpdateSuccess.GetEnumDescription());
+        }
+
+        public async Task<ProblemDetails<SysAdmin>> InsertAdminReturnEntity(AdminAddDto insertAdmin)
+        {
+            //禁止新增超管
+            if (insertAdmin.RoleId == 0)
+                return Problem<SysAdmin>(HttpStatusCode.BadRequest, ErrorCodes.NoOperationPermission.GetEnumDescription());
+            var adminRepository = _unitOfWork.GetRepository<SysAdmin>();
+            var model = await adminRepository.GetFirstOrDefaultAsync(m => m.Account == insertAdmin.Account, null, null, true, false);
+            if (model != null)
+                return Problem<SysAdmin>(HttpStatusCode.BadRequest, ErrorCodes.AccountExist.GetEnumDescription());
+            var saltvalue = SaltStringHelper.getSaltStr();
+            model = _mapper.Map<SysAdmin>(insertAdmin);
+
+            model.SaltValue = saltvalue;
+            model.Password = EncryptHelper.MD5Encoding(insertAdmin.Password, model.SaltValue);
+
+            model.Id = _idWorker.NextId();
+            model.AddUser = model.Id;
+            model.AddUserName = insertAdmin.UserName;
+            model.AddTime = Clock.Now;
+
+            model.Mutiloginccode = saltvalue;
+
+            if (insertAdmin.PwdExpiredTime.ToInt() != 0)
+            {
+                model.PwdUpdateTime = Clock.Now.AddDays(insertAdmin.PwdExpiredTime.ToInt());
+                model.PwdExpiredTime = insertAdmin.PwdExpiredTime.ToString();
+            }
+            var result = await adminRepository.InsertAsync(model);
+            await _unitOfWork.SaveChangesAsync();
+            if (result.Entity.Id > 0)
+                return Problem<SysAdmin>(HttpStatusCode.OK, result.Entity, ErrorCodes.DataInsertSuccess.GetEnumDescription());
+            else
+                return Problem<SysAdmin>(HttpStatusCode.BadRequest, ErrorCodes.DataInsertError.GetEnumDescription());
         }
 
         public async Task<ProblemDetails<string>> InsertAdmin(AdminAddDto insertAdmin)

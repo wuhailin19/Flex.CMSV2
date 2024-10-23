@@ -10,9 +10,11 @@ using Flex.Core.Helper.MemoryCacheHelper;
 using Flex.Core.Timing;
 using Flex.Domain.Dtos.Admin;
 using Flex.Domain.Dtos.AuthCode;
+using Flex.SingleWeb.Components;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Netnr.Login;
 using ShardingCore.Extensions;
 
 namespace Flex.WebApi.SystemControllers
@@ -34,6 +36,14 @@ namespace Flex.WebApi.SystemControllers
             _caching = caching;
             _connectionStatus = connectionStatus;
         }
+
+        #region 第三方登录
+
+        
+        #endregion
+
+
+
         /// <summary>
         /// 验证码判断
         /// </summary>
