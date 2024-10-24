@@ -13,21 +13,34 @@ connection.on("ReceiveProgress", (progress) => {
 });
 connection.on("ExportCompleted", (message) => {
     tips.showSuccess(message);
-    GetMsgCount();
-    tips.closeProgressbox();
-    GetRunningTaskCount();
-    getTaskList();
+    // 检查当前的连接状态
+    if (connection.state === signalR.HubConnectionState.Connected ||
+        connection.state === signalR.HubConnectionState.Connecting) {
+        GetMsgCount();
+        tips.closeProgressbox();
+        GetRunningTaskCount();
+        getTaskList();
+    }
     // 处理导出完成的逻辑
 });
 
 connection.on("SendProgress", (message) => {
     tips.showProgress("Remaining", message);
-    getTaskList();
+
+    // 检查当前的连接状态
+    if (connection.state === signalR.HubConnectionState.Connected ||
+        connection.state === signalR.HubConnectionState.Connecting) {
+        getTaskList();
+    }
 });
 connection.on("ExportError", (message) => {
     tips.showFail(message);
     tips.closeProgressbox();
-    getTaskList();
+    // 检查当前的连接状态
+    if (connection.state === signalR.HubConnectionState.Connected ||
+        connection.state === signalR.HubConnectionState.Connecting) {
+        getTaskList();
+    }
     // 处理导出完成的逻辑
 });
 connection.onreconnecting((error) => {

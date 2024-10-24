@@ -1,5 +1,6 @@
 ﻿using Flex.Application.Aop;
 using Flex.Application.Contracts.Exceptions;
+using Flex.Application.Contracts.IServices;
 using Flex.Application.Contracts.IServices.System;
 using Flex.Application.Contracts.ISignalRBus.IServices;
 using Flex.Domain.Dtos.System.SystemLog;
@@ -16,10 +17,11 @@ namespace Flex.Application.Services
         private IMessageServices _msgServices;
         protected ISystemLogServices _logServices;
         protected IHubNotificationService _notificationService;
+        private IAdminServices _adminServices;
         public AccountServices(IUnitOfWork unitOfWork
             , IMapper mapper, IdWorker idWorker, IClaimsAccessor claims
             , ICaching caching, ISystemLogServices logServices, IRoleServices roleServices, IMessageServices msgServices
-            , IHubNotificationService notificationService
+            , IHubNotificationService notificationService, IAdminServices adminServices
             )
             : base(unitOfWork, mapper, idWorker, claims)
         {
@@ -28,7 +30,11 @@ namespace Flex.Application.Services
             _roleServices = roleServices;
             _msgServices = msgServices;
             _notificationService = notificationService;
-		}
+            _adminServices = adminServices;
+        }
+
+
+
         /// <summary>
         /// 判断验证码
         /// </summary>
@@ -47,6 +53,62 @@ namespace Flex.Application.Services
             return true;
         }
         /// <summary>
+        /// 通过微博ID进行登录操作
+        /// </summary>
+        /// <param name="weiboid"></param>
+        /// <returns></returns>
+        public async Task<ProblemDetails<UserData>> GetAccountbyWeiboAsync(string weiboid)
+        {
+            var admin = await _adminServices.GetAdminByWeiboId(weiboid);
+            var RolesName = string.Empty;
+
+            if (admin == null)
+            {
+                var addadmin = new AdminAddDto();
+                addadmin.Account = weiboid;
+                addadmin.UserName = $"微博用户{weiboid}";
+                addadmin.Password = weiboid;
+                addadmin.UserAvatar = string.Empty;
+                addadmin.RoleId = 1;
+                addadmin.RoleName = "微博账号";
+                addadmin.UserSign = $"{weiboid}的后台";
+                addadmin.ErrorCount = 0;
+                addadmin.WeiboId = weiboid;
+                addadmin.MaxErrorCount = 5;
+                addadmin.AllowMultiLogin = true;
+                addadmin.Islock = false;
+                var addresult = await _adminServices.InsertAdminReturnEntity(addadmin);
+                if (!addresult.IsSuccess)
+                {
+                    return Problem<UserData>(HttpStatusCode.BadRequest, addresult.Detail);
+                }
+                admin = addresult.Content;
+            }
+            else
+            {
+                if (admin.RoleId == 0)
+                    RolesName = "超级管理员";
+                else
+                {
+                    var role = await _roleServices.GetRoleByIdAsync(admin.RoleId);
+                    RolesName = role.RolesName;
+                }
+            }
+            await _logServices.AddLoginLog(new LoginSystemLogDto()
+            {
+                systemLogLevel = SystemLogLevel.Normal,
+                operationContent = "登录成功",
+                inoperator = $"{admin.UserName}({admin.Id})",
+                IsAuthenticated = true,
+                UserId = admin.Id,
+                UserName = admin.UserName
+            });
+            var userdata = _mapper.Map<UserData>(admin);
+            userdata.UserRoleName = RolesName;
+
+            return Problem(HttpStatusCode.OK, userdata);
+        }
+        /// <summary>
         /// 根据ID获取UserData
         /// </summary>
         /// <param name="id"></param>
@@ -55,7 +117,7 @@ namespace Flex.Application.Services
         {
             var admin_unit = _unitOfWork.GetRepository<SysAdmin>();
             var admin = await admin_unit.GetFirstOrDefaultAsync(m => m.Id == id);
-            if(admin == null)
+            if (admin == null)
                 return new ProblemDetails<UserData>(HttpStatusCode.BadRequest, "认证失败");
             var userdata = _mapper.Map<UserData>(admin);
             var roleId = userdata.RoleId.ToInt();
@@ -224,7 +286,7 @@ namespace Flex.Application.Services
             admin.ErrorCount = 0;
             if (admin.PwdExpiredTime.IsNotNullOrEmpty() && admin.PwdUpdateTime != null)
             {
-                if(admin.PwdUpdateTime< Clock.Now)
+                if (admin.PwdUpdateTime < Clock.Now)
                     return Problem<UserData>(HttpStatusCode.BadRequest, ErrorCodes.PwdExpried.GetEnumDescription());
                 var time = admin.PwdUpdateTime - Clock.Now;
                 var days = time?.Days;
@@ -246,7 +308,7 @@ namespace Flex.Application.Services
                 UserName = admin.UserName
             });
 
-			var userdata = _mapper.Map<UserData>(admin);
+            var userdata = _mapper.Map<UserData>(admin);
             userdata.UserRoleName = RolesName;
             return Problem(HttpStatusCode.OK, userdata);
         }

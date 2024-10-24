@@ -23,15 +23,11 @@
                     sessionStorage.removeItem('sitelink');
                     sessionStorage.removeItem('siteId');
                     sessionStorage.removeItem('siteName');
-                    tips.showSuccess("登录成功");
-
-                    setTimeout(() => {
-                        window.location = SystempageRoute + 'Main';
-                    }, 1300);
-                } else { 
+                    window.location = SystempageRoute + 'Main';
+                } else {
                     tips.showFail("登录失败");
                     setTimeout(() => {
-                        //window.location = SystempageRoute + 'Login';
+                        window.location = SystempageRoute + 'Login';
                     }, 1300);
                 }
             }

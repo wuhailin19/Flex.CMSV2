@@ -41,7 +41,7 @@ var parentformData;
 //JavaScript代码区域
 layui.extend({
     'croppers': '../../../layui/module/cropper/croppers',
-    'formDesigner': '/scripts/layui/module/formdesigner/formdesigner'
+    'formDesigner': 'scripts/layui/module/formdesigner/formDesigner'
 });
 layui.use(['formDesigner', 'form', 'layer', 'upload', 'croppers'], function () {
     var layer = layui.layer;
