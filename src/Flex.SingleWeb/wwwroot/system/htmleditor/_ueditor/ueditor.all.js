@@ -17137,19 +17137,19 @@
                         me.hide();
                     });
 
-                    for (i = 0; i < 8; i++) {
-                        hands.push('<span class="edui-editor-imagescale-hand' + i + '"></span>');
-                    }
+                    //for (i = 0; i < 8; i++) {
+                    //    hands.push('<span class="edui-editor-imagescale-hand' + i + '"></span>');
+                    //}
                     resizer.id = me.editor.ui.id + '_imagescale';
                     resizer.className = 'edui-editor-imagescale';
                     resizer.innerHTML = hands.join('');
                     resizer.style.cssText += ';display:none;border:1px solid #3b77ff;z-index:' + (me.editor.options.zIndex) + ';';
 
-                    me.editor.ui.getDom().appendChild(cover);
-                    me.editor.ui.getDom().appendChild(resizer);
+                    //me.editor.ui.getDom().appendChild(cover);
+                    //me.editor.ui.getDom().appendChild(resizer);
 
-                    me.initStyle();
-                    me.initEvents();
+                    //me.initStyle();
+                    //me.initEvents();
                 },
                 initStyle: function () {
                     utils.cssRule('imagescale', '.edui-editor-imagescale{display:none;position:absolute;border:1px solid #38B2CE;cursor:hand;-webkit-box-sizing: content-box;-moz-box-sizing: content-box;box-sizing: content-box;}' +
@@ -17282,7 +17282,7 @@
                     domUtils.on(this.resizer, 'mousedown', me.proxy(me._eventHandler, me));
                     domUtils.on(me.doc, 'mouseup', me.proxy(me._eventHandler, me));
 
-                    me.showCover();
+                    //me.showCover();
                     me.editor.fireEvent('afterscaleshow', me);
                     me.editor.fireEvent('saveScene');
                 },
@@ -17337,9 +17337,9 @@
                             domUtils.hasClass(img, 'loadingclass') ||
                             domUtils.hasClass(img, 'loaderrorclass')) { return }
 
-                        if (!imageScale) {
+                        if (false) {
                             imageScale = new Scale();
-                            imageScale.init(me);
+                            //imageScale.init(me);
                             me.ui.getDom().appendChild(imageScale.resizer);
 
                             var _keyDownHandler = function (e) {
@@ -17387,7 +17387,7 @@
                                 }
                             });
                         }
-                        imageScale.show(img);
+                        //imageScale.show(img);
                     } else {
                         if (imageScale && imageScale.resizer.style.display != 'none') imageScale.hide();
                     }
@@ -27656,6 +27656,7 @@
         var modalMask;
         var dragMask;
         var activeDialog;
+        var imageindex;
         Dialog.prototype = {
             draggable: false,
             uiName: 'dialog',
@@ -27763,7 +27764,6 @@
                 el.style.top = Math.max(top, 0) + 'px';
             },
             showAtCenter: function () {
-                console.log(this)
                 //console.log(this.iframeUrl)
 
                 //var vpRect = uiUtils.getViewportRect();
@@ -27818,7 +27818,9 @@
 
                 //}
                 //iframe窗
-                layer.open({
+                layer.close(imageindex);
+                var that = this;
+               imageindex= layer.open({
                     type: 1,
                     tipsMore: false,
                     skin: 'layui-layer-lan',
@@ -27829,7 +27831,9 @@
                     maxmin: true, //开启最大化最小化按钮
                     area: ["700px", "500px"],
                     content: this.getContentHtml(),
-                    end: function () {
+                   end: function () {
+                       that._hide();
+                       that.close(false);
                         //defaultOptions.callBack(insTb);
                     }
                 });
@@ -29743,9 +29747,7 @@
                     '<td id="##_elementpath" class="%%-bottombar"></td>' +
                     '<td id="##_wordcount" class="%%-wordcount"></td>' +
                     '<td id="##_scale" class="%%-scale"><div class="%%-icon"></div></td>' +
-                    '</tr></table></div>' +
-                    '<div id="##_scalelayer"></div>' +
-                    '</div>';
+                    '</tr></table></div>';
             },
             showWordImageDialog: function () {
                 this._dialogs['wordimageDialog'].open();

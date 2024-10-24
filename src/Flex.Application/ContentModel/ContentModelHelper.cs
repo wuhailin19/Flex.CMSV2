@@ -473,7 +473,7 @@ namespace Flex.Application.ContentModel
             #region 拼接条件
             //columnId = "61,62,63";
             int recount = 0;
-            string swhere = $"IsHide=0  and StatusCode=1 and PublishTime<='{Clock.Now}'";
+            string swhere = $"IsHide=0  and StatusCode=1 and PublishTime<='{Clock.Now.ToDefaultDateTimeLongStr()}'";
             if (inputJsondocxDto.columnId.IsNotNullOrEmpty())
                 swhere += $" and (ParentId in({inputJsondocxDto.columnId}) or RefLinkClassId like '%,{inputJsondocxDto.columnId},%')";
             if (inputJsondocxDto.PId != 0 && inputJsondocxDto.modelId != 0)

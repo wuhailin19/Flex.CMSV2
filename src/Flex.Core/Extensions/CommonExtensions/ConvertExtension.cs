@@ -26,6 +26,16 @@ namespace Flex.Core.Extensions
         {
             return c.ToString("yyyy-MM-dd");
         }
+
+        /// <summary>
+        /// 默认时间转字符串格式 2020-01-01 00:00:00
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static string ToDefaultDateTimeLongStr(this DateTime c)
+        {
+            return c.ToString("yyyy-MM-dd HH:mm:ss");
+        }
         /// <summary>
         /// EqualsIgnoreCase
         /// </summary>
