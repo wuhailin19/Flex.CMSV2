@@ -376,3 +376,4 @@ FodyWeavers.xsd
 
 
 /src/Flex.SingleWeb/appsettings.json
+/src/Flex.SingleWeb/wwwroot/system/js/systemlog/openPageOptions.js
