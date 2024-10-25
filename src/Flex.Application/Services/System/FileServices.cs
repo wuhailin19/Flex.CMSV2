@@ -1,4 +1,5 @@
 ﻿using Flex.Application.Contracts.Exceptions;
+using Flex.Application.Word;
 using Flex.Core.Config;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +19,7 @@ namespace Flex.Application.Services
         /// 文件储存位置
         /// </summary>
         private string uploadsFolder = CurrentSiteInfo.SiteUploadPath + $"/upload/files/{DateTime.Now.ToDefaultDateTimeStr()}";
+        private string uploadsWordFolder = CurrentSiteInfo.SiteUploadPath + $"/upload/word/{DateTime.Now.ToDefaultDateTimeStr()}";
         public FileServices(IUnitOfWork unitOfWork, IMapper mapper, IdWorker idWorker, IClaimsAccessor claims, IWebHostEnvironment env)
             : base(unitOfWork, mapper, idWorker, claims)
         {
@@ -34,7 +36,7 @@ namespace Flex.Application.Services
         {
             if (input == null) return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadFail.GetEnumDescription()); ;
             var file = input[0];
-           
+
             if (!FileCheckHelper.IsAllowedFileManageExtension(file))
                 return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadTypeDenied.GetEnumDescription());
             if (!Directory.Exists(Path.Combine(basePath + path)))
@@ -73,6 +75,35 @@ namespace Flex.Application.Services
                 using FileStream fileStream = new FileStream(savePath, FileMode.Create);
                 file.CopyTo(fileStream);
                 return Problem<string>(HttpStatusCode.OK, filePath);
+            }
+            catch (Exception ex)
+            {
+                return Problem<string>(HttpStatusCode.InternalServerError, ErrorCodes.UploadFail.GetEnumDescription(), ex);
+            }
+        }
+
+        /// <summary>
+        /// 上传Word转html
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<ProblemDetails<string>> UploadWordToHTML(IFormFileCollection input)
+        {
+            if (input == null) return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadFail.GetEnumDescription()); ;
+            var file = input[0];
+            if (!FileCheckHelper.IsAllowedExtension(file))
+                return Problem<string>(HttpStatusCode.BadRequest, ErrorCodes.UploadTypeDenied.GetEnumDescription());
+            if (!Directory.Exists(Path.Combine(basePath + uploadsFolder)))
+                Directory.CreateDirectory(Path.Combine(basePath + uploadsFolder));
+            var filedate = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString() + new Random().Next(1000, 9999).ToString();
+            string uniqueFileName = filedate + Path.GetExtension(file.FileName);
+            string filePath = uploadsWordFolder + "/" + uniqueFileName;
+            string savePath = Path.Combine(basePath + filePath);
+            try
+            {
+                using Stream fileStream = file.OpenReadStream();
+                var html = await WordHelper.ReturnHtmlAsync(fileStream, savePath, filedate, uploadsWordFolder);
+                return Problem<string>(HttpStatusCode.OK, html);
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
-﻿using Flex.Core.Attributes;
+﻿using Flex.Application.Word;
+using Flex.Core.Attributes;
 using Flex.Core.Config;
 using Flex.Domain.Dtos.Upload;
 using Microsoft.AspNetCore.Authorization;
@@ -39,6 +40,17 @@ namespace Flex.WebApi.SystemControllers
             if (!result.IsSuccess)
                 return Fail(result.Detail);
             return Success(ServerConfig.FileServerUrl + result.Detail);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("UploadWord")]
+        [Descriper(Name = "上传Word转换Html")]
+        public async Task<string> UploadWord(IFormFileCollection file)
+        {
+            var result =await _fileServices.UploadWordToHTML(file);
+            if (!result.IsSuccess)
+                return Fail(result.Detail);
+            return Success(result.Detail);
         }
 
         [HttpPost("UploadFilesToPath")]

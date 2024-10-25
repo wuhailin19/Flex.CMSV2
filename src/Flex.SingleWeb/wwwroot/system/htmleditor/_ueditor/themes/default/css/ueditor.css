@@ -111,6 +111,8 @@ div.edui-box { position: relative; display: -moz-inline-box !important; display:
 
 .edui-for-searchreplace .edui-icon:before { content: "\e70f"; }
 
+.edui-for-wordupload .edui-icon:before { content: "\e646"; }
+
 .edui-for-italic .edui-icon:before { content: "\e62d"; }
 
 .edui-for-insertcaption .edui-icon:before { content: "\e657"; }

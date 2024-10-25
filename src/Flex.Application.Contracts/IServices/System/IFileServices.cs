@@ -12,5 +12,6 @@ namespace Flex.Application.Contracts.IServices
     {
         ProblemDetails<string> UploadFilesService(IFormFileCollection input);
         ProblemDetails<string> UploadFilesToPathService(IFormFileCollection input, string path);
+        Task<ProblemDetails<string>> UploadWordToHTML(IFormFileCollection input);
     }
 }

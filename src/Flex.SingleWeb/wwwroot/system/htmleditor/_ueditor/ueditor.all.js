@@ -12684,14 +12684,21 @@
             var w = window.open('', '_blank', ''),
                 d = w.document;
             d.open();
-            d.write('<!DOCTYPE html><html><head><meta charset="utf-8"/><script src="' + this.options.UEDITOR_HOME_URL + 'ueditor.parse.js"></script><script>' +
-                "setTimeout(function(){uParse('div',{rootPath: '" + this.options.UEDITOR_HOME_URL + "'})},300)" +
-                '</script></head><body><div>' + this.getContent(null, null, true) + '</div></body></html>');
+            //d.write('<!DOCTYPE html><html><head><meta charset="utf-8"/><script src="' + this.options.UEDITOR_HOME_URL + 'ueditor.parse.js"></script><script>' +
+            //    "setTimeout(function(){uParse('div',{rootPath: '" + this.options.UEDITOR_HOME_URL + "'})},300)" +
+            //    '</script></head><body><div>' + this.getContent(null, null, true) + '</div></body></html>');
             d.close();
         },
         notNeedUndo: 1
     };
 
+    UE.commands["wordupload"] = {
+        execCommand: function () {
+            tips.showInfoBox('上传word', SystempageRoute + 'ColumnContent/UploadWord?id=' + this.key, '250px', '150px');
+            //console.log(this.key)
+            //this.execCommand('insertHtml', '<hr>');
+        }
+    };
 
     // plugins/selectall.js
     /**
@@ -27820,7 +27827,7 @@
                 //iframe窗
                 layer.close(imageindex);
                 var that = this;
-               imageindex= layer.open({
+                imageindex = layer.open({
                     type: 1,
                     tipsMore: false,
                     skin: 'layui-layer-lan',
@@ -27831,9 +27838,9 @@
                     maxmin: true, //开启最大化最小化按钮
                     area: ["700px", "500px"],
                     content: this.getContentHtml(),
-                   end: function () {
-                       that._hide();
-                       that.close(false);
+                    end: function () {
+                        //that._hide();
+                        //that.close(false);
                         //defaultOptions.callBack(insTb);
                     }
                 });
@@ -28007,15 +28014,15 @@
                 }
             },
             open: function () {
-                if (this.autoReset) {
-                    //有可能还没有渲染
-                    try {
-                        this.reset();
-                    } catch (e) {
-                        this.render();
-                        this.open()
-                    }
-                }
+                //if (this.autoReset) {
+                //    //有可能还没有渲染
+                //    try {
+                //        this.reset();
+                //    } catch (e) {
+                //        this.render();
+                //        this.open()
+                //    }
+                //}
                 this.showAtCenter();
                 if (this.iframeUrl) {
                     try {
@@ -28544,7 +28551,7 @@
             'blockquote', 'pasteplain', 'pagebreak',
             'selectall', 'print', 'horizontal', 'removeformat', 'time', 'date', 'unlink',
             'insertparagraphbeforetable', 'insertrow', 'insertcol', 'mergeright', 'mergedown', 'deleterow',
-            'deletecol', 'splittorows', 'splittocols', 'splittocells', 'mergecells', 'deletetable', 'drafts'];
+            'deletecol', 'splittorows', 'splittocols', 'splittocells', 'mergecells', 'deletetable', 'drafts', 'wordupload'];
 
         for (var i = 0, ci; ci = btnCmds[i++];) {
             ci = ci.toLowerCase();

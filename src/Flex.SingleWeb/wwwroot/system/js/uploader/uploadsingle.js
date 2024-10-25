@@ -9,10 +9,12 @@
         single: false,
         isImage: true,
         autoupload: false,
+        returnValue:false,
         serverUrl: api + 'Upload/UploadImage',
         imageExtensions: 'jpg,jpeg,gif,png,bmp,svg',
         FileExtensions: 'txt,doc,docx,xls,xlsx,mp4,zip,pdf',
-        valueElement: undefined
+        valueElement: undefined,
+        editorItem: undefined
     }, options)
 
     init();
@@ -542,8 +544,12 @@
     uploader.on('uploadSuccess', function (file, data) {
         if (options.single) { fileCount = 0; fileSize = 0; uploader.removeFile(file); }
 
-        var idsobj = options.valueElement == undefined ? $('#' + $elment + 'fujian') : $(options.valueElement);
         if (data.code == 200) {
+            if (options.returnValue) {
+                options.editorItem.execCommand('insertHtml', data.msg);
+                return;
+            }
+            var idsobj = options.valueElement == undefined ? $('#' + $elment + 'fujian') : $(options.valueElement);
             if (options.single)
                 idsobj.val(data.msg);
             else {

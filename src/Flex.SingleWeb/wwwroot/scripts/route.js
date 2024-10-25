@@ -164,6 +164,26 @@ var tips = {
     msgboxtime: 1000,
     index: undefined,
     boxindex: undefined,
+    width: '90%',
+    height: '90%',
+    showInfoBox: function (title, url, w, h) {
+        tips.closeTips();
+        if (w == undefined || w == '')
+            w = tips.width;
+        if (h == undefined || h == '')
+            h = tips.height;
+        tips.index = layer.open({
+            type: 2,
+            title: title,
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: [w, h],
+            content: url,
+            success: function (layero, index) {
+            }
+        });
+    },
     showProStatus: function ($emlemt, msg) {
         tips.index = layer.tips(msg, $emlemt, {
             tips: 4,

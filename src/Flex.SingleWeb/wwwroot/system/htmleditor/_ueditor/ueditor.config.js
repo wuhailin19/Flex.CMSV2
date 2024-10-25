@@ -36,7 +36,7 @@
         , videoActionName: "UploadFile"
         , catcherActionName: "UploadRemoteImage"
         , catcherFieldName: "upfile"
-        , imageAllowFiles: [".png",".jpg",".gif",".svg"]
+        , imageAllowFiles: [".png", ".jpg", ".gif", ".svg"]
         , videoAllowFiles: [".mp4"]
         , videoUrlPrefix: ""
         , imageFieldName: "upfile"
@@ -55,12 +55,12 @@
                 'insertimage', 'insertserverimages', 'insertserverfile', 'insertservervideo', 'insertvideo', '|',
                 'horizontal', 'spechars', '|',
                 'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|',
-                'print', 'preview', 'searchreplace']
+                'print', 'preview', 'searchreplace', 'wordupload']
         ]
         , simpleEdit: false
         , simpletoolbars: [
             ['fullscreen', 'source', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain',
-                'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', 'touppercase', 'tolowercase', 
+                'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', 'touppercase', 'tolowercase',
                 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', 'undo', 'redo', 'searchreplace']
         ]
         //当鼠标放在工具栏上时显示的tooltip提示,留空支持自动多语言配置，否则以配置值为准
@@ -75,8 +75,8 @@
 
         //主题配置项,默认是default。有需要的话也可以使用如下这样的方式来自动多主题切换，当然，前提条件是themes文件夹下存在对应的主题文件：
         //现有如下皮肤:default
-        ,theme:'default'
-        ,themePath:URL +"themes/"
+        , theme: 'default'
+        , themePath: URL + "themes/"
 
         //,zIndex : 900     //编辑器层级的基数,默认是900
 
@@ -89,7 +89,7 @@
         //常用配置项目
         //,isShow : true    //默认显示编辑器
 
-        ,textarea:'editorValue_forUeditor' // 提交表单时，服务器获取编辑器提交内容的所用的参数，多实例时可以给容器name属性，会将name给定的值最为每个实例的键值，不用每次实例化的时候都设置这个值
+        , textarea: 'editorValue_forUeditor' // 提交表单时，服务器获取编辑器提交内容的所用的参数，多实例时可以给容器name属性，会将name给定的值最为每个实例的键值，不用每次实例化的时候都设置这个值
 
         //,initialContent:'欢迎使用ueditor!'    //初始化编辑器的内容,也可以通过textarea/script给值，看官网例子
 
@@ -107,7 +107,7 @@
         //,indentValue:'2em'
 
         //,initialFrameWidth:1000  //初始化编辑器宽度,默认1000
-        ,initialFrameHeight:700  //初始化编辑器高度,默认320
+        , initialFrameHeight: 700  //初始化编辑器高度,默认320
 
         //,readonly : false //编辑器初始化结束后,编辑区域是否是只读的，默认是false
 
@@ -267,8 +267,8 @@
         //,elementPathEnabled : true
 
         //wordCount
-        //,wordCount:true          //是否开启字数统计
-        //,maximumWords:10000       //允许的最大字符数
+        ,wordCount:false          //是否开启字数统计
+        //,maximumWords:1000000       //允许的最大字符数
         //字数统计提示，{#count}代表当前字数，{#leave}代表还可以输入多少字符数,留空支持多语言自动切换，否则按此配置显示
         //,wordCountMsg:''   //当前已输入 {#count} 个字符，您还可以输入{#leave} 个字符
         //超出字数限制提示  留空支持多语言自动切换，否则按此配置显示
@@ -300,7 +300,7 @@
         //是否可以拉伸长高,默认true(当开启时，自动长高失效)
         //,scaleEnabled:false
         //,minFrameWidth:800    //编辑器拖动时最小宽度,默认800
-       //,minFrameHeight:620  //编辑器拖动时最小高度,默认220
+        //,minFrameHeight:620  //编辑器拖动时最小高度,默认220
 
         //autoFloatEnabled
         //是否保持toolbar的位置不动,默认true
@@ -311,7 +311,7 @@
         //,toolbarTopOffset:400
 
         //设置远程图片是否抓取到本地保存
-        ,catchRemoteImageEnable: true //设置是否抓取远程图片
+        , catchRemoteImageEnable: true //设置是否抓取远程图片
 
         //pageBreakTag
         //分页标识符,默认是_ueditor_page_break_tag_
@@ -435,14 +435,14 @@
             strong: ['class', 'style'],
             table: ['width', 'border', 'align', 'valign', 'class', 'style'],
             tbody: ['align', 'valign', 'class', 'style'],
-            td: ['width', 'rowspan', 'colspan', 'align', 'valign', 'class', 'style','height'],
+            td: ['width', 'rowspan', 'colspan', 'align', 'valign', 'class', 'style', 'height'],
             tfoot: ['align', 'valign', 'class', 'style'],
             th: ['width', 'rowspan', 'colspan', 'align', 'valign', 'class', 'style'],
             thead: ['align', 'valign', 'class', 'style'],
             tr: ['rowspan', 'align', 'valign', 'class', 'style'],
             tt: [],
             u: [],
-            svg: ['xmlns', 'id', 'width', 'height','viewbox'],
+            svg: ['xmlns', 'id', 'width', 'height', 'viewbox'],
             path: ['id', 'data-name', 'transform', 'fill-rule', 'fill'],
             g: ['transform'],
             ul: ['class', 'style'],
